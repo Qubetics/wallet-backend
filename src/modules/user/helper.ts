@@ -112,7 +112,7 @@ class userHelper {
             return false;
         }
     }
-    public async updating_balance(addressList: any, userId: number, req: any, wallet_name: string, lang: string) {
+    public async updating_balance(addressList: any, userId: number, req: any, wallet_name: string, lang: string, device_token: string) {
         try {
             const currentUTCDate: string = new Date().toISOString().replace(/T/, " ").replace(/\..+/, "");
             for await (const wallet of addressList) {
@@ -193,6 +193,7 @@ class userHelper {
                         //     })
                     }
                 }
+                await this.device_token_helper(device_token, userId, lang, address, coin_family);
             }
         } catch (err: any) {
             console.error("Error in updating_balance>>>", err)
@@ -229,13 +230,15 @@ class userHelper {
             throw err;
         }
     }
-    public async device_token_helper(device_token: any, userId: number, lang: string) {
+    public async device_token_helper(device_token: any, userId: number, lang: string, address: string, coin_family: number) {
         try {
             let checkUserDeviceToken: any = await device_token_queries.device_token_find_one(["status"], { device_token: device_token, user_id: userId })
             if (!checkUserDeviceToken) {
                 await device_token_queries.device_token_create({
                     device_token: device_token,
                     user_id: userId,
+                    address: address,
+                    coin_family: coin_family,
                     status: GlblBooleanEnum.true,
                     language: lang,
                     fiat_currency: Fiat_Currency.USD,

@@ -2,10 +2,10 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { DeviceTokenInterface } from "../interface/interface.deviceToken";
 import db from "../../helpers/common/db";
 
-interface DeviceTokenCreationModel extends Optional<DeviceTokenInterface, "id"> {}
+interface DeviceTokenCreationModel extends Optional<DeviceTokenInterface, "id"> { }
 interface DeviceTokenInstance
   extends Model<DeviceTokenInterface, DeviceTokenCreationModel>,
-  DeviceTokenInterface {}
+  DeviceTokenInterface { }
 
 let dataObj = {
   id: {
@@ -22,6 +22,14 @@ let dataObj = {
     type: DataTypes.TEXT,
     allowNull: false,
   },
+  address: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  coin_family: {
+    type: DataTypes.TINYINT,
+    allowNull: false,
+  },
   status: {
     type: DataTypes.TINYINT,
     allowNull: true,
@@ -30,11 +38,11 @@ let dataObj = {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  language:{
+  language: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  fiat_currency:{
+  fiat_currency: {
     type: DataTypes.STRING,
     allowNull: false
   }
@@ -50,9 +58,17 @@ let dataObjIndex = {
       unique: false,
       fields: ["status"],
     },
+    {
+      unique: false,
+      fields: ["coin_family"],
+    },
+    {
+      unique: false,
+      fields: ["address"],
+    },
   ],
 };
 
-const DeviceTokenModel = db.db_write.define<DeviceTokenInstance>("deviceTokens",dataObj, dataObjIndex);
+const DeviceTokenModel = db.db_write.define<DeviceTokenInstance>("deviceTokens", dataObj, dataObjIndex);
 
 export default DeviceTokenModel;

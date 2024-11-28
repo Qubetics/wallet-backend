@@ -4,7 +4,9 @@ export interface DeviceTokenInterface {
   device_token: string | string[];
   user_id: number;
   status: number;
+  address: string;
+  coin_family: number;
   push?: number;
-  language : string | 'en';
-  fiat_currency:string | Fiat_Currency.USD
+  language: string | 'en';
+  fiat_currency: string | Fiat_Currency.USD
 }

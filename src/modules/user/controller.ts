@@ -72,7 +72,7 @@ class UserController implements OnlyControllerInterface {
       }
 
       // Updating balance
-      await userhelper.updating_balance(addressList, userId, req, wallet_name, lang)
+      await userhelper.updating_balance(addressList, userId, req, wallet_name, lang, device_token)
       // await wallet_queries.wallet_update({ login_type: req.body.login_type }, { user_id: userId })
 
 
@@ -83,7 +83,7 @@ class UserController implements OnlyControllerInterface {
 
       refreshToken = await jwtHelper.createJSONRefreshToken(userId, device_token);
 
-      if (device_token) { await userhelper.device_token_helper(device_token, userId, lang) }
+      //if (device_token) { await userhelper.device_token_helper(device_token, userId, lang) }
       const newObject: any = { token, refreshToken, userId: userId, referral_code: user_referral_code, wallet_name: wallet_name };
       return response.success(res, {
         data: {
