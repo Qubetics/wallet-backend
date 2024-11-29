@@ -8,7 +8,7 @@ export const config = {
   KAFKA_CLIENT_ID: zookeeperConfig.config.KAFKA_CLIENT_ID,
   ADMIN_TOKEN: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.ADMIN_TOKEN}`,
   GLOBAL_LIMIT_FOR_MATHCA: zookeeperConfig.config.GLOBAL_LIMIT_FOR_MATHCA,
-  ALL_COINS: zookeeperConfig.config.ALL_COINS,
+  // ALL_COINS: zookeeperConfig.config.ALL_COINS,
   DB: {
     DB_USER: zookeeperConfig.config.DB_USER,
     DB_PASSWORD: zookeeperConfig.config.DB_PASSWORD,
@@ -22,7 +22,7 @@ export const config = {
     ONEINCH_API_KEY: zookeeperConfig.config.ONEINCH_API_KEY,
   },
   ON_CHAIN_DATA: zookeeperConfig.config.ON_CHAIN_DATA,
-  BACKEND_WALLET_ADDRESSES: zookeeperConfig.config.BACKEND_WALLET_ADDRESSES,
+  BACKEND_WALLET_ADDRESSES: zookeeperConfig.config.BACKEND_WALLET_BALANCE_ADDRESSES_TOPIC,
 
   CMC: {
     KEY: zookeeperConfig.config.CMC.KEY,
@@ -81,7 +81,7 @@ export const config = {
     ETH_DAPP_RPC_URL: zookeeperConfig.config.ETH_DAPP_RPC_URL
   },
   // MATCHA_API_KEY: zookeeperConfig.config.MATCHA_API_KEY,
-  PUSH_NOTIFICATION_QUEUE: zookeeperConfig.config.PUSH_NOTIFICATION_QUEUE,
+  // PUSH_NOTIFICATION_QUEUE: zookeeperConfig.config.PUSH_NOTIFICATION_QUEUE,
 
   // CHANGELLY: {
   //   // CROSS CHAIN
