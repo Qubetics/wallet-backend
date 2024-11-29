@@ -61,6 +61,10 @@ let dataObj = {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  coin_family: {
+    type: DataTypes.TINYINT,
+    allowNull: false,
+  },
   resent_count: {
     type: DataTypes.INTEGER,
     allowNull: true,
