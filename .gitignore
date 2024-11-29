@@ -8,7 +8,7 @@ changelly
 .vscode
 .vscode/
 # .env*
-*.pem
+# *.pem
 # keys
 # admin_keys
 card_liminal

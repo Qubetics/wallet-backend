@@ -1,5 +1,6 @@
 import zookeeperConfig from "../connections/zookeeper.conn";
 const name = "qubetics";
+
 export const config = {
   SERVER: zookeeperConfig.config.SERVER,
   PORT: zookeeperConfig.config.PORT,
