@@ -1,6 +1,6 @@
-import { config } from "../../config";
+// import { config } from "../../config";
 // var aws = require("aws-sdk");
-var BigNumber = require('bignumber.js');
+const BigNumber = require('bignumber.js');
 // var s3 = new aws.S3({
 //   accessKeyId: config.S3_ACCESSID,
 //   secretAccessKey: config.S3_SECRETKEY,
