@@ -602,6 +602,147 @@ class UserController implements OnlyControllerInterface {
     }
   }
 
+  public async add_tokens_for_swap(req: Request, res: Response) {
+    try {
+      const tokens = req.body.tokens;
+      const coin_family = req.body.coin_family;
+      if (Object.keys(tokens).length > 0) {
+        let i = 0;
+        for (const address of Object.keys(tokens)) {
+          if (i <= 20) {
+            const token = tokens[address];
+            // console.log(`Token Name: ${token.name}`);
+            // console.log(`Symbol: ${token.symbol}`);
+            // console.log(`Address: ${token.address}`);
+            // console.log(`Logo URI: ${token.logoURI}`);
+            // console.log('---');
+            const data_exist: any = await Models.CoinsModel.findOne({
+              attributes: ["coin_id", "for_swap"],
+              where: { token_address: token.address, coin_family: coin_family },
+              raw: true,
+            });
+            if (data_exist && data_exist.for_swap == 0) {
+              const arrayObj: any = { for_swap: 1 };
+              await Models.CoinsModel.update(arrayObj, {
+                where: { coin_id: data_exist.coin_id },
+              });
+            } else if (!data_exist) {
+              let image: string | null = null;
+              const symbol: string = token.symbol;
+
+              // Assuming global_helper.get_token_image_from_cmc returns a Promise
+              const data: any = await global_helper.get_token_image_from_cmc({
+                symbol: symbol,
+                token_address: token.address,
+              });
+              console.log(
+                "data>>",
+                data,
+                "token address >>,",
+                token.address,
+                "symbol>>>>",
+                symbol
+              );
+              if (data != null) {
+                image = data.image;
+              }
+              if (image !== null) {
+                const arrayObj: any = {
+                  cmc_id: data.id ? data.id : 0,
+                  is_on_cmc: 1,
+                  coin_name: token.name,
+                  coin_symbol: symbol,
+                  token_address: token.address,
+                  decimals: Math.pow(10, parseInt(token.decimals)),
+                  coin_family: coin_family,
+                  coin_image: image,
+                  coin_status: GlblBooleanEnum.true, // Assuming GlblBooleanEnum is defined elsewhere
+                  is_token: GlblBooleanEnum.true,
+                  token_type: "ERC20",
+                  added_by: "admin",
+                  for_swap: 1,
+                };
+                await Models.CoinsModel.create(arrayObj);
+                console.log("coin created >>>", token);
+              }
+            }
+
+          } else {
+            console.log('tesddddddddddd11');
+            return false;
+          }
+          console.log('tesddddddddddd2222');
+
+          i = i + 1;
+
+        };
+        // for await (let token of tokens) {
+        //   const data_exist: any = await Models.CoinsModel.findOne({
+        //     attributes: ["coin_id", "for_swap"],
+        //     where: { token_address: token.address, coin_family: coin_family },
+        //     raw: true,
+        //   });
+        //   if (data_exist && data_exist.for_swap == 0) {
+        //     const arrayObj: any = { for_swap: 1 };
+        //     await Models.CoinsModel.update(arrayObj, {
+        //       where: { coin_id: data_exist.coin_id },
+        //     });
+        //   } else if (!data_exist) {
+        //     let image: string | null = null;
+        //     const symbol: string = token.symbol;
+
+        //     // Assuming global_helper.get_token_image_from_cmc returns a Promise
+        //     const data: any = await global_helper.get_token_image_from_cmc({
+        //       symbol: symbol,
+        //       token_address: token.address,
+        //     });
+        //     console.log(
+        //       "data>>",
+        //       data,
+        //       "token address >>,",
+        //       token.address,
+        //       "symbol>>>>",
+        //       symbol
+        //     );
+        //     if (data != null) {
+        //       image = data.image;
+        //     }
+        //     if (image !== null) {
+        //       const arrayObj: any = {
+        //         cmc_id: 0,
+        //         is_on_cmc: 1,
+        //         coin_name: token.name,
+        //         coin_symbol: symbol,
+        //         token_address: token.address,
+        //         decimals: Math.pow(10, parseInt(token.decimals)),
+        //         coin_family: coin_family,
+        //         coin_image: image,
+        //         coin_status: GlblBooleanEnum.true, // Assuming GlblBooleanEnum is defined elsewhere
+        //         is_token: GlblBooleanEnum.true,
+        //         token_type: "ERC20",
+        //         added_by: "admin",
+        //         for_swap: 1,
+        //       };
+        //       await Models.CoinsModel.create(arrayObj);
+        //       console.log("coin created >>>", token);
+        //     }
+        //   } else {
+        //     console.log("Already exists");
+        //   }
+        // }
+      }
+      return response.success(res, {
+        data: {
+          success: true,
+          message: "success",
+        },
+      });
+    } catch (err: any) {
+      console.error("ERROR in tokens > add_tokens_for_swap", err);
+      return response.error(res, { data: (err as Error).message });
+    }
+  }
+
 }
 
 export const userController = new UserController();

@@ -225,6 +225,7 @@ class Global_helper {
 
     public async UpdateCmcImgUrl(image_url: string) {
         try {
+            console.log('image_url >>>', image_url);
             if (image_url.includes("img/coins/16x16/")) {
                 image_url = image_url.replace('16x16', '200x200');
             } else if (image_url.includes("img/coins/32x32/")) {
@@ -342,16 +343,20 @@ class Global_helper {
         try {
             let params: any = data.symbol ? `info?symbol=${data.symbol}` : data.id ? `info?id=${data.id}` : `info?address=${data.token_address}`;
             let result: any = await cmcHelper.cmcApi(params);
-            let image: any;
-            let id: any;
-            if (data.id) {
-                id = data.id;
-                image = result.data.data[id as keyof typeof String].logo;
-            } else {
-                id = result.data.data[data.symbol.toUpperCase() as keyof typeof String][0].id;
-                image = result.data.data[data.symbol.toUpperCase() as keyof typeof String][0].logo;
+
+            let id: any = null;
+            let imageUrl: any = '';
+            if (result.data) {
+                let image: any;
+                if (data.id) {
+                    id = data.id;
+                    image = result.data.data[id as keyof typeof String].logo;
+                } else {
+                    id = result.data.data[data.symbol.toUpperCase() as keyof typeof String][0].id;
+                    image = result.data.data[data.symbol.toUpperCase() as keyof typeof String][0].logo;
+                }
+                imageUrl = await this.UpdateCmcImgUrl(image);
             }
-            let imageUrl: any = await this.UpdateCmcImgUrl(image);
             return { image: imageUrl, id: id };
         } catch (err: any) {
             console.error("Error in get_token_image_from_cmc", err);

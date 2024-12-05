@@ -22,5 +22,6 @@ export { CatchErrorMsgsInterface } from './interface.catch_error_logs';
 export { AppLanguagesInterface } from './interface.app_languages';
 export { ReferralInterface } from './interface.referrals';
 export { DappGroupsInterface } from './interface.dapp_groups';
+export { SWFTCcoinsInterface } from './interface.swftc_coins';
 export { AdminErrLogsInterface } from './interface.admin_err_logs';
 export { AdminInterface } from './interface.admins';

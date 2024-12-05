@@ -1,0 +1,24 @@
+import express from 'express';
+import { ControllerInterface } from '../../interfaces/controller.interface';
+import jwtVerification from '../../middlewares/verify.middleware';
+import { SWftcController } from './controller';
+
+
+class SwftcRoute implements ControllerInterface {
+    public path = '/swftc';
+    public router = express.Router();
+
+    constructor() {
+        this.initializeRoutes();
+    }
+
+    public initializeRoutes() {
+        this.router.post(`${this.path}/post_data`, SWftcController.post_data);
+        this.router.get(`${this.path}/coinData`, jwtVerification.verifyToken, SWftcController.coindata);
+
+        // this.router.post(`${this.path}/SWFT/queryCoinList`, jwtVerification.verifyToken, SWftcController.queryCoinList);
+        this.router.post(`${this.path}/SWFT/getBaseInfo`, jwtVerification.verifyToken, SWftcController.getBaseInfo);
+        this.router.post(`${this.path}/SWFT/accountExchange`, jwtVerification.verifyToken, SWftcController.accountExchange);
+    }
+}
+export default SwftcRoute;

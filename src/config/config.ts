@@ -22,6 +22,12 @@ export const config = {
     ONEINCH_API_URL: zookeeperConfig.config.ONEINCH_API_URL,
     ONEINCH_API_KEY: zookeeperConfig.config.ONEINCH_API_KEY,
   },
+  SWFTC: {
+    SWFTC_QUOTE_ORDER_STATE: zookeeperConfig.config.SWFTC.SWFTC_QUOTE_ORDER_STATE,
+    SWFTC_QUERY_COINLIST: zookeeperConfig.config.SWFTC.SWFTC_QUERY_COINLIST,
+    SWFTC_ACCOUNT_EXCHANGE: zookeeperConfig.config.SWFTC.SWFTC_ACCOUNT_EXCHANGE,
+    SWFTC_BASE_INFO: zookeeperConfig.config.SWFTC.SWFTC_BASE_INFO
+  },
   ON_CHAIN_DATA: `${name}_${zookeeperConfig.config.ON_CHAIN_DATA}`,
   BACKEND_WALLET_ADDRESSES: zookeeperConfig.config.BACKEND_WALLET_BALANCE_ADDRESSES_TOPIC,
 

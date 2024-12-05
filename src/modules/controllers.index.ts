@@ -9,6 +9,7 @@ import BnbRoute from "./bsc/bscRoute";
 import PolRoute from "./pol/polRoute";
 import SolRoute from "./sol/solRoute";
 import OnChainRoute from "./on-chain/routes";
+import SwftcRoute from "./swftc/routes";
 import AdminRoute from "./admin/index";
 
 const controllers = [
@@ -22,6 +23,7 @@ const controllers = [
   new BnbRoute(),
   new PolRoute(),
   new OnChainRoute(),
+  new SwftcRoute(),
   new AdminRoute(),
   new SolRoute()
 ]

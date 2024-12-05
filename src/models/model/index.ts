@@ -24,6 +24,7 @@ import AppLanguagesModel from './model.app_languages';
 import ReferralModel from './model.referral';
 import SwapSettingsModel from './model.swap_setting';
 import DappGroupModel from './model.dapp_groups';
+import SWFTCCoinsDataModel from './model.swftc_coins';
 import AdminErrLogsModel from './model.admin_err_logs';
 import AdminModel from './model.admins';
 export {
@@ -53,6 +54,7 @@ export {
     SwapSettingsModel,
     AnnouncementStatusModel,
     DappGroupModel,
+    SWFTCCoinsDataModel,
     AdminErrLogsModel,
     AdminModel
 }

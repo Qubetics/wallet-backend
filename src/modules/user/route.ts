@@ -67,6 +67,7 @@ class UserRoute implements ControllerInterface {
       jwtVerification.verifyToken,
       userController.appLanguage);
 
+    this.router.post(`${this.path}/add_swap_supported_tokens`, userController.add_tokens_for_swap)
   }
 }
 
