@@ -112,7 +112,7 @@ class userHelper {
             return false;
         }
     }
-    public async updating_balance(addressList: any, userId: number, req: any, wallet_name: string, lang: string, device_token: string) {
+    public async updating_balance(addressList: any, userId: number, req: any, wallet_name: string, lang: string, device_token: string, device_id: string) {
         try {
             const currentUTCDate: string = new Date().toISOString().replace(/T/, " ").replace(/\..+/, "");
             for await (const wallet of addressList) {
@@ -193,7 +193,7 @@ class userHelper {
                         //     })
                     }
                 }
-                await this.device_token_helper(device_token, userId, lang, address, coin_family);
+                await this.device_token_helper(device_token, userId, lang, address, coin_family, device_id);
             }
         } catch (err: any) {
             console.error("Error in updating_balance>>>", err)
@@ -230,11 +230,12 @@ class userHelper {
             throw err;
         }
     }
-    public async device_token_helper(device_token: any, userId: number, lang: string, address: string, coin_family: number) {
+    public async device_token_helper(device_token: any, userId: number, lang: string, address: string, coin_family: number, device_id: string) {
         try {
-            let checkUserDeviceToken: any = await device_token_queries.device_token_find_one(["status"], { device_token: device_token, user_id: userId })
+            let checkUserDeviceToken: any = await device_token_queries.device_token_find_one(["status"], { device_id: device_id, address: address, coin_family: coin_family })
             if (!checkUserDeviceToken) {
                 await device_token_queries.device_token_create({
+                    device_id: device_id,
                     device_token: device_token,
                     user_id: userId,
                     address: address,
@@ -245,7 +246,7 @@ class userHelper {
                     push: 1
                 })
             } else {
-                await device_token_queries.device_token_update({ status: GlblBooleanEnum.true }, { device_token: device_token, user_id: userId })
+                await device_token_queries.device_token_update({ status: GlblBooleanEnum.true, device_token: device_token }, { device_id: device_id, address: address, coin_family: coin_family })
             }
             return true;
         } catch (err: any) {

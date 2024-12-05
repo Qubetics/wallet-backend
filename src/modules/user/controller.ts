@@ -72,7 +72,7 @@ class UserController implements OnlyControllerInterface {
       }
 
       // Updating balance
-      await userhelper.updating_balance(addressList, userId, req, wallet_name, lang, device_token)
+      await userhelper.updating_balance(addressList, userId, req, wallet_name, lang, device_token, device_id)
       // await wallet_queries.wallet_update({ login_type: req.body.login_type }, { user_id: userId })
 
 
