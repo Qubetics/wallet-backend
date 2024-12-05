@@ -97,6 +97,7 @@ class UserController implements OnlyControllerInterface {
       return response.error(res, { data: {} });
     }
   }
+
   public async userLogout(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
@@ -109,10 +110,10 @@ class UserController implements OnlyControllerInterface {
       // let userId: number = 5;
 
 
-      let checkUserDeviceToken: any = await device_token_queries.device_token_find_one(["id"], { device_token: deviceToken, user_id: userId })
+      let checkUserDeviceToken: any = await device_token_queries.device_token_find_one(["id"], { user_id: userId, deviceId: deviceId })
 
       if (checkUserDeviceToken) {
-        await device_token_queries.device_token_destroy({ device_token: deviceToken, user_id: userId })
+        await device_token_queries.device_token_destroy({ deviceId: deviceId, user_id: userId })
       }
 
       if (userIds && userIds.length > 0) {
@@ -164,6 +165,7 @@ class UserController implements OnlyControllerInterface {
       });
     }
   }
+
   public async notificationList(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
@@ -205,6 +207,7 @@ class UserController implements OnlyControllerInterface {
       return response.error(res, { data: {} });
     }
   }
+
   public async addAddressBook(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
@@ -284,6 +287,7 @@ class UserController implements OnlyControllerInterface {
       });
     }
   }
+
   public async addressBook(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
@@ -336,6 +340,7 @@ class UserController implements OnlyControllerInterface {
       })
     }
   }
+
   public async getWalletName(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
@@ -384,6 +389,7 @@ class UserController implements OnlyControllerInterface {
       });
     }
   }
+
   public async search(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
@@ -415,6 +421,7 @@ class UserController implements OnlyControllerInterface {
       })
     }
   }
+
   public async deleteAddressBookWalletAddress(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
@@ -456,6 +463,7 @@ class UserController implements OnlyControllerInterface {
       });
     }
   }
+
   public async deleteAddressBook(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
@@ -495,6 +503,7 @@ class UserController implements OnlyControllerInterface {
       });
     }
   }
+
   public async announcementViewStatus(req: Request, res: Response) {
     try {
       console.log("req body user announcementViewStatus>>>", req.body)
@@ -576,6 +585,7 @@ class UserController implements OnlyControllerInterface {
       return response.error(res, { data: {} });
     }
   }
+
   /** get app languages */
   public async appLanguage(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
