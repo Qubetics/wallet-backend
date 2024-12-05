@@ -976,7 +976,9 @@ class WalletController implements OnlyControllerInterface {
         BTC_RPC_URL: config.NODE.BTC_RPC_URL,
         TRON_NODE: config.NODE.TRX_RPC_URL,
         BNB_RPC_URL: config.NODE.BNB_RPC_URL,
-        ETH_DAPP_RPC_URL: config.NODE.ETH_DAPP_RPC_URL
+        ETH_DAPP_RPC_URL: config.NODE.ETH_DAPP_RPC_URL,
+        POL_RPC_URL: config.NODE.POL_RPC_URL,
+        SOL_RPC_URL: config.NODE.SOL_RPC_URL
       };
 
       return res.status(GlblCode.SUCCESS).send(data);

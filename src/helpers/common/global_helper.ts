@@ -60,6 +60,36 @@ class Global_helper {
         }
     }
 
+    public async oneInchSwapSupported(tokenAddress: any, coin_family: number) {
+        let chain_id = 56;
+        if (coin_family == config.STATIC_COIN_FAMILY.ETH) {
+            chain_id = 1;
+        } else if (coin_family == config.STATIC_COIN_FAMILY.POL) {
+            chain_id = 137;
+        }
+        let config1: any = {
+            method: "get",
+            maxBodyLength: Infinity,
+            url: `https://api.1inch.dev/token/v1.2/${chain_id}/search?query=${tokenAddress}&ignore_listed=false`,
+            headers: {
+                Authorization: config.ON_CHAIN.ONEINCH_API_KEY,
+            },
+        };
+
+        try {
+            return axios.request(config1).then((response) => {
+                console.log(JSON.stringify(response.data));
+                if (response.data.length > 0) {
+                    return 1;
+                }
+                return 0;
+            });
+        } catch (error) {
+            console.error("Error swapping tokens:", error);
+            throw error;
+        }
+    }
+
     public async return_decimals_name_symbol(coin_family: number, token_address: string, lang: string) {
         try {
             let tokenDetails: any = { decimals: 0, name: "", symbol: "" }

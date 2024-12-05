@@ -26,12 +26,15 @@ class WalletHelpers implements OnlyControllerInterface {
   public initialize() { }
   public async add_coin_to_table(tokenAddress: string, symbol: string, name: string, coinFamily: number, tokenType: string, decimals: any, lang: any, currentUTCDate: any, userId: number) {
     try {
-      let swapData: any = await swapSettingQueries.swapSettingsFindOne(
-        ['id', 'address', 'percentage'],
-        { id: 1 },
-        [['id', 'ASC']])
+      // let swapData: any = await swapSettingQueries.swapSettingsFindOne(
+      //   ['id', 'address', 'percentage'],
+      //   { id: 1 },
+      //   [['id', 'ASC']])
+      let swapSupported: number = 0;
 
-      let swapSupported: number = await global_helper.swapSupportedByMatcha(tokenAddress, coinFamily, swapData)
+      if (coinFamily == config.STATIC_COIN_FAMILY.ETH || coinFamily == config.STATIC_COIN_FAMILY.BNB || coinFamily == config.STATIC_COIN_FAMILY.POL) {
+        swapSupported = await global_helper.oneInchSwapSupported(tokenAddress, coinFamily)
+      }
 
       let image: any = null;
       let cmc_id: number | null = null;
@@ -67,7 +70,7 @@ class WalletHelpers implements OnlyControllerInterface {
         coin_status: GlblBooleanEnum.true,
         is_token: GlblBooleanEnum.true,
         is_on_cmc: cmc_id ? GlblBooleanEnum.true : GlblBooleanEnum.false,
-        // for_swap: swapSupported,
+        for_swap: swapSupported,
         gasless: gaslessStatus,
         added_by: GlblAddedBy.USER,
         token_type: tokenType.toUpperCase(),
