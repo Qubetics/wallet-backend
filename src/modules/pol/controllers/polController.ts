@@ -10,7 +10,7 @@ import { AbiItem } from "web3-utils";
 import { RawDataInterface } from "../interfaces/interfaces.pol";
 import { language } from "../../../constants";
 import response from "../../../helpers/response/response.helpers";
-import { ethWeb3 } from "../../../helpers/common/web3_eth_helpers";
+import { polWeb3 } from "../../../helpers/common/web3_pol_helpers";
 import commonHelper from "../../../helpers/common/common.helpers";
 
 class PolController implements OnlyControllerInterface {
@@ -192,7 +192,7 @@ class PolController implements OnlyControllerInterface {
         } else {
           withdrawAmount = bigNumberSafeMath(amount, "+", gasInETH);
         }
-        var ethBalance = await ethWeb3.get_coin_balance(from, true);
+        var ethBalance = await polWeb3.get_coin_balance(from, true);
         if (Number(ethBalance) < Number(withdrawAmount)) {
           return response.error(res, {
             data: { status: false, message: language[lang].INSUFFICIENT },
@@ -203,8 +203,8 @@ class PolController implements OnlyControllerInterface {
         req.coininfo.is_token == true &&
         req.coininfo.token_type === "ERC20"
       ) {
-        var ethBalance = await ethWeb3.get_coin_balance(from, true);
-        var ERC20TokenBalance = await ethWeb3.get_erc20_token_balance(
+        var ethBalance = await polWeb3.get_coin_balance(from, true);
+        var ERC20TokenBalance = await polWeb3.get_erc20_token_balance(
           contractAddress,
           ABI as AbiItem[],
           req.body.from
@@ -229,7 +229,7 @@ class PolController implements OnlyControllerInterface {
         req.coininfo.is_token == true &&
         req.coininfo.token_type === "ERC721"
       ) {
-        var ethBalance = await ethWeb3.get_coin_balance(from, true);
+        var ethBalance = await polWeb3.get_coin_balance(from, true);
         if (Number(ethBalance) < Number(gasInETH)) {
           return response.error(res, {
             data: {
