@@ -118,11 +118,8 @@ class UserController implements OnlyControllerInterface {
 
       if (userIds && userIds.length > 0) {
 
-        let users: any = await user_queries.user_find_all(
-          ["user_id", "device_id"],
-          { user_id: userIds },
-          [['user_id', 'DESC']]
-        )
+        let users: any = await user_queries.user_find_all(["user_id", "device_id"],
+          { user_id: userIds }, [['user_id', 'DESC']])
 
         let updates = users.map((user: any) => {
           const { user_id, device_id } = user;
@@ -143,8 +140,6 @@ class UserController implements OnlyControllerInterface {
           )
         }
       }
-
-
       return response.success(res, {
         data: {
           status: true,
