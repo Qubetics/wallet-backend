@@ -22,6 +22,9 @@ export interface CoinInterface {
   updated_at?: string;
   uuid?: string | null;
   for_swap?: number;
-  added_by?: string,
-  is_on_coin_gicko: number | null
+  added_by?: string;
+  is_on_coin_gicko: number | null;
+  graph_source?: string | null;
+  graph_pair?: string | null;
+  is_on_trading_view?: number | null;
 }

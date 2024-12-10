@@ -1467,24 +1467,29 @@ class WalletController implements OnlyControllerInterface {
         coin_id,
       }: { wallet_address: string; coin_family: number; coin_id: number } =
         req.body;
-      let data: any = {
-        wallet_address: wallet_address,
-        coin_id: coin_id,
-        coin_family: coin_family,
-      };
-      data.balance = await Models.WalletModel.findOne({
+      // let data: any = {
+      //   wallet_address: wallet_address,
+      //   coin_id: coin_id,
+      //   coin_family: coin_family,
+      // };
+      const coinWalletdata = await Models.WalletModel.findOne({
         attributes: ["balance"],
         where: {
-          wallet_address: data.wallet_address,
-          coin_id: data.coin_id,
+          wallet_address: wallet_address,
+          coin_id: coin_id,
         },
-        raw: true,
+        include: [{
+          model: Models.CoinsModel,
+          attributes: ["graph_source", "graph_pair"],
+          required: true
+        }],
+        // raw: true,
       });
       return res.status(GlblCode.SUCCESS).send({
         status: true,
         code: GlblCode.SUCCESS,
         message: language[lang].REQUEST_EXECUTED,
-        data: { balance: data.balance.balance },
+        data: coinWalletdata,
       });
     } catch (err: any) {
       console.error("Error in wallet > updateBalance.", err);

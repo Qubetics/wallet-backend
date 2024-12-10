@@ -1,7 +1,7 @@
 import axios from "axios";
 import { config } from "../../config";
 import { ethWeb3 } from "./web3_eth_helpers";
-import { GlblCoins, GlblMessages } from "../../constants/global_enum";
+import { GlblCoins, GlblMessages,TradingSourceResponse } from "../../constants/global_enum";
 import { utxobtc } from "./web3_btc_helpers";
 import { trxWeb3 } from "./web3_trx_helper";
 import { CoinInterface, NotificationInterface } from "../../models";
@@ -15,6 +15,7 @@ import { polWeb3 } from "./web3_pol_helpers";
 import { SolanaHelper } from "./solana.helper";
 import cmcHelper from "./cmc.helpers";
 
+ 
 class Global_helper {
 
     public async swapSupportedByMatcha(tokenAddress: string, coinFamily: number, swapData: any) {
@@ -363,6 +364,74 @@ class Global_helper {
             return null;
         }
     }
+
+    public async getTradingSource(symbol: string): Promise<TradingSourceResponse> {
+        if (!symbol) return { status: false, graphSource: null, graphPair: '' }; // Exit if no symbol provided
+
+        const exchanges = [
+            { name: 'BINANCE', url: (symbol: string) => `https://api.binance.com/api/v3/exchangeInfo?symbol=${symbol}USDT` },
+            { name: 'OKX', url: (symbol: string) => `https://www.okx.com/api/v5/market/ticker?instId=${symbol}-USDT` },
+            { name: 'BYBIT', url: (symbol: string) => `https://api.bybit.com/v5/market/instruments-info?category=spot&symbol=${symbol}USDT` },
+            { name: 'BITGET', url: (symbol: string) => `https://api.bitget.com/api/v2/spot/public/symbols?symbol=${symbol}USDT` },
+            { name: 'BITMART', url: (symbol: string) => `https://api-cloud.bitmart.com/spot/quotation/v3/ticker?symbol=${symbol}_USDT` },
+            { name: 'COINBASE', url: (symbol: string) => `https://api.coinbase.com/api/v3/brokerage/market/products/?product_ids=${symbol}-USDT` },
+            { name: 'MEXC', url: (symbol: string) => `https://api.mexc.com/api/v3/exchangeInfo?symbol=${symbol}USDT` },
+            { name: 'GATEIO', url: (symbol: string) => `https://api.gateio.ws/api/v4/spot/currency_pairs/${symbol}_USDT` }
+        ];
+
+        const symbolUpper = symbol.toUpperCase();
+        const graphPair = `${symbolUpper}USDT`;
+
+        // Helper function to find the exchange source
+        const getExchangeSource = async (symbol: string) => {
+            for (const exchange of exchanges) {
+                try {
+                    const response = await axios.get(exchange.url(symbol));
+
+                    // Simplified exchange response validation
+                    if (isValidExchangeResponse(exchange, response)) {
+                        return exchange.name;
+                    }
+                } catch (error: any) {
+                    console.error(`Error fetching from ${exchange.name}:`, error.message);
+                }
+            }
+            return null; // No exchange source found
+        };
+
+        // Function to validate the response based on exchange name
+        const isValidExchangeResponse = (exchange: { name: string }, response: any) => {
+            switch (exchange.name) {
+                case 'BINANCE':
+                    return response.data?.code === undefined;
+                case 'OKX':
+                    return response.data?.code === 0;
+                case 'BYBIT':
+                    return response.data?.result?.list?.length > 0;
+                case 'BITGET':
+                    return response.data.code === '00000' && response.data.data?.length > 0;
+                case 'BITMART':
+                    return response?.data?.code === 1000 && response?.data?.data !== undefined;
+                case 'COINBASE':
+                    return response?.data?.products?.length > 0;
+                case 'MEXC':
+                    return response?.data?.symbols?.length > 0;
+                case 'GATEIO':
+                    return response?.data?.label === undefined;
+                default:
+                    return false;
+            }
+        };
+
+        const graphSource = await getExchangeSource(symbolUpper);
+
+        return {
+            status: graphSource !== null,
+            graphSource: graphSource,
+            graphPair: graphPair
+        };
+    }
+
 
     // public async get_token_image_from_coin_gicko(data: any) {
     //     try {

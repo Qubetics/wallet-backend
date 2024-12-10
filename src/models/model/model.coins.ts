@@ -105,6 +105,18 @@ let dataObj = {
     type: DataTypes.TINYINT,
     allowNull: true,
   },
+  graph_source: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  graph_pair: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  is_on_trading_view: {
+    type: DataTypes.TINYINT,
+    allowNull: true,
+  },
   created_at: {
     type: DataTypes.DATE,
     allowNull: true,

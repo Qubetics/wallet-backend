@@ -38,12 +38,19 @@ class WalletHelpers implements OnlyControllerInterface {
 
       let image: any = null;
       let cmc_id: number | null = null;
-
+      let graphSource: string | null = null;
+      let graphPair: string | null = null;
 
       if (tokenAddress && symbol) {
         let cmc_data: any = await global_helper.get_token_image_from_cmc({ symbol: symbol });
         cmc_id = cmc_data ? cmc_data.id : GlblBooleanEnum.false;
         image = cmc_data ? cmc_data.image : null;
+        const tradingViewData = await global_helper.getTradingSource(symbol);
+        if (tradingViewData.status) {
+          graphSource = tradingViewData.graphSource;
+          graphPair = tradingViewData.graphPair;
+        }
+
       }
       console.log(
         "coin_gicko_data>>>",
@@ -78,7 +85,10 @@ class WalletHelpers implements OnlyControllerInterface {
         token_address: tokenAddress,
         created_at: currentUTCDate,
         updated_at: currentUTCDate,
-        is_on_coin_gicko: 0
+        is_on_coin_gicko: 0,
+        graphPair: graphPair,
+        graphSource: graphSource,
+        is_on_trading_view: graphSource ? 1 : 0
       }
       let response: any = await coin_queries.coin_create(coinData)
 
@@ -89,7 +99,7 @@ class WalletHelpers implements OnlyControllerInterface {
 
       if (cmc_id != null) {
         await WalletHelper.insert_graph_reset_data(cmc_id)
-        await WalletHelper.update_fiat_coin_price(cmc_id, symbol, name, coinData.coin_family, coinData.token_address, coinData.coin_id);
+        //await WalletHelper.update_fiat_coin_price(cmc_id, symbol, name, coinData.coin_family, coinData.token_address, coinData.coin_id);
       }
 
       return { coinData: coinData }

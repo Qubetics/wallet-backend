@@ -167,3 +167,9 @@ export enum Status {
     TRUE = 'true',
     FALSE = 'false'
 }
+
+export type TradingSourceResponse = {
+    status: boolean;
+    graphSource: string | null;
+    graphPair: string;
+};
