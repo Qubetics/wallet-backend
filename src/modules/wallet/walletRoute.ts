@@ -114,6 +114,10 @@ class WalletRoute implements ControllerInterface {
       `${this.path}/transaction/downloadcsv/:id`,
       walletController.downloadCsv
     );
+    this.router.get(
+      `${this.path}/tradingView`,
+      walletController.tradingView
+    );
   }
 }
 export default WalletRoute;

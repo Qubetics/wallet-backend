@@ -1,7 +1,7 @@
 import axios from "axios";
 import { config } from "../../config";
 import { ethWeb3 } from "./web3_eth_helpers";
-import { GlblCoins, GlblMessages,TradingSourceResponse } from "../../constants/global_enum";
+import { GlblCoins, GlblMessages, TradingSourceResponse } from "../../constants/global_enum";
 import { utxobtc } from "./web3_btc_helpers";
 import { trxWeb3 } from "./web3_trx_helper";
 import { CoinInterface, NotificationInterface } from "../../models";
@@ -15,7 +15,7 @@ import { polWeb3 } from "./web3_pol_helpers";
 import { SolanaHelper } from "./solana.helper";
 import cmcHelper from "./cmc.helpers";
 
- 
+
 class Global_helper {
 
     public async swapSupportedByMatcha(tokenAddress: string, coinFamily: number, swapData: any) {
@@ -366,6 +366,7 @@ class Global_helper {
     }
 
     public async getTradingSource(symbol: string): Promise<TradingSourceResponse> {
+        console.log('symbol symbol', symbol);
         if (!symbol) return { status: false, graphSource: null, graphPair: '' }; // Exit if no symbol provided
 
         const exchanges = [
@@ -424,7 +425,7 @@ class Global_helper {
         };
 
         const graphSource = await getExchangeSource(symbolUpper);
-
+        console.log('graphSource symbol', graphSource);
         return {
             status: graphSource !== null,
             graphSource: graphSource,

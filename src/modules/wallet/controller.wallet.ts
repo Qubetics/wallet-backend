@@ -1457,6 +1457,7 @@ class WalletController implements OnlyControllerInterface {
       });
     }
   }
+
   public async updateBalance(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
@@ -1502,6 +1503,7 @@ class WalletController implements OnlyControllerInterface {
       return res.status(data.code).send(data);
     }
   }
+
   public async downloadCsv(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
@@ -1693,6 +1695,27 @@ class WalletController implements OnlyControllerInterface {
         code: GlblCode.ERROR_CODE,
         status: false,
         message: language[lang].CATCH_MSG,
+      };
+      return res.status(data.code).send(data);
+    }
+  }
+
+  public async tradingView(req: Request, res: Response) {
+    try {
+      const symbol: any = req.query.symbol;
+      const tradingData = await global_helper.getTradingSource(symbol);
+      console.log('tradingData >>>', tradingData);
+      return res.status(GlblCode.SUCCESS).send({
+        status: true,
+        code: GlblCode.SUCCESS,
+        message: "Source has been fetch successfully",
+        data: tradingData,
+      });
+    } catch (error) {
+      let data = {
+        code: GlblCode.ERROR_CODE,
+        status: false,
+        data: error
       };
       return res.status(data.code).send(data);
     }

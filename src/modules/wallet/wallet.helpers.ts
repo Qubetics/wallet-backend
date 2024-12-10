@@ -46,6 +46,7 @@ class WalletHelpers implements OnlyControllerInterface {
         cmc_id = cmc_data ? cmc_data.id : GlblBooleanEnum.false;
         image = cmc_data ? cmc_data.image : null;
         const tradingViewData = await global_helper.getTradingSource(symbol);
+        console.log('tradingViewData >>>', tradingViewData);
         if (tradingViewData.status) {
           graphSource = tradingViewData.graphSource;
           graphPair = tradingViewData.graphPair;
@@ -86,8 +87,8 @@ class WalletHelpers implements OnlyControllerInterface {
         created_at: currentUTCDate,
         updated_at: currentUTCDate,
         is_on_coin_gicko: 0,
-        graphPair: graphPair,
-        graphSource: graphSource,
+        graph_pair: graphPair,
+        graph_source: graphSource,
         is_on_trading_view: graphSource ? 1 : 0
       }
       let response: any = await coin_queries.coin_create(coinData)
