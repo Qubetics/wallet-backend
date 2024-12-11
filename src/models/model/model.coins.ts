@@ -171,7 +171,7 @@ const CoinsModel = db.db_write.define<CoinInstance>(
 
 
 
-CoinsModel.belongsTo(CoinPriceInFiatModel, { foreignKey: "coin_gicko_id", targetKey: "coin_gicko_id", as: "fiat_price_data" });
+CoinsModel.belongsTo(CoinPriceInFiatModel, { foreignKey: "cmc_id", targetKey: "cmc_id", as: "fiat_price_data" });
 CoinsModel.belongsTo(WatchlistsModel, { foreignKey: "coin_id", targetKey: "coin_id", as: "watchlist_data" })
 CoinsModel.hasOne(CoinsModel, { foreignKey: "coin_family", sourceKey: "coin_family", as: "native_coins_data" })
 export default CoinsModel;
