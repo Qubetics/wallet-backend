@@ -50,9 +50,6 @@ export const exponentialToDecimal = function (exponential: number) {
   return decimal;
 };
 
-
-
-
 export const bigNumberSafeMath = function (
   c: string,
   operation: string,
@@ -85,11 +82,13 @@ export const bigNumberSafeMath = function (
   }
   return rtn;
 };
+
 export const bigNumberSafeConversion = function (val: number): number {
   var amount = val.toString();
   var value = new BigNumber(amount);
   return value.toFixed();
 };
+
 // export async function iconInstances(file: any) {
 //   // const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'text/csv'];
 //   // let types=allowedTypes.includes(file.mimetype);

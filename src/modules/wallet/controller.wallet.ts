@@ -886,8 +886,8 @@ class WalletController implements OnlyControllerInterface {
       const coin_family: [] = req.body.coin_family;
       const addresses: [] = req.body.addrsListKeys;
       let fiat_type: string = req.body.fiat_type;
-      let where_clause: {};
-      where_clause = {
+      const coin_id: number = req.body.coin_id || null;
+      let where_clause: any = {
         for_swap: 1,
         coin_family: { [Op.in]: coin_family },
         coin_status: GlblBooleanEnum.true,
@@ -895,6 +895,9 @@ class WalletController implements OnlyControllerInterface {
           `(IF((added_by='admin' OR added_by='swap'),1=1,coins.coin_id IN(select coin_id FROM custom_tokens WHERE user_id=${req.userId})))`
         ),
       };
+      if (coin_id) {
+        where_clause.coin_id = coin_id;
+      }
       let isFav = false;
       let swap_list_data: any = await Models.CoinsModel.findAll({
         attributes: [

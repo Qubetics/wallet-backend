@@ -1,8 +1,7 @@
 import NodeRSA from "node-rsa";
 import fs from "fs";
 import { config } from "../../config";
-import * as Models from '../../models/model/index';
-import dbHelper, { catch_err_msg_queries } from "../dbHelper/index";
+import { catch_err_msg_queries } from "../dbHelper/index";
 class CommonHelper {
   constructor() { }
 
@@ -40,6 +39,7 @@ class CommonHelper {
       throw new Error(err)
     }
   }
+
   public async adminDecryptDataRSA(data: any) {
     try {
       let privateKeyFile = await fs.readFileSync(`${__dirname}/../../config/admin_keys/${config.RSA_PRIVATE_KEY_NAME}`, { encoding: "utf-8" })
@@ -53,6 +53,7 @@ class CommonHelper {
       throw new Error(err)
     }
   }
+
   public async encryptDataRSA(data: any) {
     let publicKeyFile: any = fs.readFileSync(`${__dirname}/../../config/keys/${config.RSA_PUBLIC_KEY_NAME}`, { encoding: "utf-8" })
     let publicKey: any = Buffer.from(publicKeyFile);

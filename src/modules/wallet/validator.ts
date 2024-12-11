@@ -1,7 +1,7 @@
 import { Joi } from 'express-validation';
 
 export default class wallet_validator {
-    
+
     static addTokenValidate = {
         body: Joi.object({
             name: Joi.string().required(),
@@ -73,7 +73,8 @@ export default class wallet_validator {
         body: Joi.object({
             coin_family: Joi.array().required(),
             addrsListKeys: Joi.array().required(),
-            fiat_type: Joi.string().required()
+            fiat_type: Joi.string().required(),
+            coin_id: Joi.number().optional()
         })
     }
     static updateWatchlistValidate = {
