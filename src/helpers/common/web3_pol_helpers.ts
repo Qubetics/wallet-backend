@@ -13,7 +13,7 @@ class PolWeb3 {
   public abi: AbiItem[] | string;
 
   constructor(abi: AbiItem[] | string = "") {
-    var provider = new Web3.providers.HttpProvider(config.NODE.ETH_RPC_URL || "");
+    var provider = new Web3.providers.HttpProvider(config.NODE.POL_RPC_URL || "");
     this.web3 = new Web3(provider);
     this.abi = abi != "" ? abi : "";
     this.initialize();
