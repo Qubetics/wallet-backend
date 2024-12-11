@@ -7,7 +7,7 @@ matcha
 changelly
 .vscode
 .vscode/
-# .env*
+.env
 # *.pem
 # keys
 # admin_keys
