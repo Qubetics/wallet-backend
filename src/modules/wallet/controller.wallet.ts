@@ -981,7 +981,8 @@ class WalletController implements OnlyControllerInterface {
         BNB_RPC_URL: config.NODE.BNB_RPC_URL,
         ETH_DAPP_RPC_URL: config.NODE.ETH_DAPP_RPC_URL,
         POL_RPC_URL: config.NODE.POL_RPC_URL,
-        SOL_RPC_URL: config.NODE.SOL_RPC_URL
+        // SOL_RPC_URL: config.NODE.SOL_RPC_URL
+        SOL_RPC_URL: 'https://api.mainnet-beta.solana.com'
       };
 
       return res.status(GlblCode.SUCCESS).send(data);
