@@ -21,6 +21,7 @@ import adminErrQueries from './admin_err_logs';
 import adminQueries from './admins';
 import swapSettingQueries from './swap_settings';
 import settings_queries from './settings';
+import { Op } from "sequelize";
 export {
   wallet_queries,
   user_queries,
@@ -117,6 +118,33 @@ class DbHelper {
     req: Request
   ) {
     try {
+
+      let checkTxHistory: any = await Models.TrnxHistoryModel.findOne({
+        attributes: ['id', 'tx_hash'],
+        where: {
+          tx_id: { [Op.like]: req.body.tx_hash },
+          from_adrs: { [Op.like]: req.body.from },
+          to_adrs: { [Op.like]: req.body.to },
+        },
+        raw: true
+      });
+      if (checkTxHistory) {
+        await Models.TrnxHistoryModel.update(
+          {
+            type: req.body.tx_type,
+            req_type: req.body.req_type || TxReqTypesEnum.APP,
+          },
+          {
+            where: {
+              tx_id: { [Op.like]: req.body.tx_hash },
+              from_adrs: { [Op.like]: req.body.from },
+              to_adrs: { [Op.like]: req.body.to },
+            }
+          }
+        );
+        return { status: true, data: checkTxHistory };
+      }
+
       let to_user_id: number = 0;
       let user_data: any = '';
       if (req.coininfo.coin_family == config.STATIC_COIN_FAMILY.ETH) {
