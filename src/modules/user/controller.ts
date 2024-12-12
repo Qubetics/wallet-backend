@@ -110,10 +110,10 @@ class UserController implements OnlyControllerInterface {
       // let userId: number = 5;
 
 
-      let checkUserDeviceToken: any = await device_token_queries.device_token_find_one(["id"], { user_id: userId, deviceId: deviceId })
+      let checkUserDeviceToken: any = await device_token_queries.device_token_find_one(["id"], { user_id: userId, device_id: deviceId })
 
       if (checkUserDeviceToken) {
-        await device_token_queries.device_token_destroy({ deviceId: deviceId, user_id: userId })
+        await device_token_queries.device_token_destroy({ device_id: deviceId, user_id: userId })
       }
 
       if (userIds && userIds.length > 0) {
