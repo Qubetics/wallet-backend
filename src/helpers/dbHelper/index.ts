@@ -120,7 +120,7 @@ class DbHelper {
     try {
 
       let checkTxHistory: any = await Models.TrnxHistoryModel.findOne({
-        attributes: ['id', 'tx_hash'],
+        attributes: ['id', 'tx_id'],
         where: {
           tx_id: { [Op.like]: req.body.tx_hash },
           from_adrs: { [Op.like]: req.body.from },
