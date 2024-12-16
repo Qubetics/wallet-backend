@@ -1094,10 +1094,14 @@ class WalletController implements OnlyControllerInterface {
         offset = (pageNo - GlblBooleanEnum.true) * limitNo;
       }
       let isFav = false;
+      let orderBy: string = 'coins.created_at';
+      let orderType: string = 'ASC';
       if (is_fav == GlblBooleanEnum.true) {
         isFav = true;
+        orderBy = `watchlist_data.created_at`;
+        orderType = 'DESC';
       }
-      let result: any = await Models.CoinsModel.findAndCountAll({
+      let result: any = await Models.CoinsModel.findAll({
         attributes: [
           "coin_id",
           "coin_name",
@@ -1145,21 +1149,30 @@ class WalletController implements OnlyControllerInterface {
               wallet_address: wallet_address,
               status: "1",
             },
-            required: isFav,
+            required: isFav
           },
+        ],
+        // order: [
+        //   [Sequelize.col('coins.created_at'), 'DESC']  // Correct ordering
+        // ],
+        // order: [[orderBy, orderType]],
+        order: [
+          [Sequelize.literal(orderBy), orderType]
         ],
         offset: offset,
         limit: limitNo,
+        // logging: true,
+        subQuery: false
       });
       return res.status(GlblCode.SUCCESS).send({
         status: true,
         code: GlblCode.SUCCESS,
-        data: result.rows,
+        data: result,
         meta: {
           page: page,
-          pages: Math.ceil(result.count / limitNo),
+          // pages: Math.ceil(result.count / limitNo),
           perPage: limitNo,
-          total: result.count,
+          // total: result.count,
         },
       });
     } catch (err: any) {

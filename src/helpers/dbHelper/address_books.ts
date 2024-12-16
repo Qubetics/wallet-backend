@@ -84,7 +84,8 @@ class AddressBookQueries {
                 where: where_clause1,
                 limit: per_page,
                 offset: offset,
-                order: [[set_order_by, set_order_type]]
+                order: [[set_order_by, set_order_type]],
+                // logging: true
             })
             return data;
         } catch (err: any) {

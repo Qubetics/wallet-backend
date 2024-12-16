@@ -291,7 +291,7 @@ class UserController implements OnlyControllerInterface {
       let page: number = Number(req.body.page == undefined ? (req.body.page = '1') : req.body.page);
       let offset: number = (page - 1) * per_page;
       let search: any = req.body.search == undefined ? (req.body.search = "%%") : (req.body.search = "%" + req.body.search + "%");
-      let set_order_by: string = req.body?.order_by == undefined || req.body?.order_by == "undefined" ? 'address_books.name' : req.body?.order_by as string;
+      let set_order_by: string = req.body?.order_by == undefined || req.body?.order_by == "undefined" ? 'name' : req.body?.order_by as string;
       let set_order_type: string = req.body?.order_type == "undefined" || req.body?.order_type == undefined ? 'ASC' : req.body?.order_type as string;
       let { address, coin_family }: { address: string, coin_family: number } = req.body;
       let user_id: number = req.userId;
