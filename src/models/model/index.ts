@@ -9,6 +9,7 @@ import DappModel from './model.dapp';
 import DeviceTokenModel from './model.deviceToken';
 import NFTModelModel from './model.nft';
 import NotificationModel from './model.notifications';
+import TrnxBandwidthModel from './model.trnx_bandwidth';
 import SettingsModel from './model.settings';
 import TrnxHistoryModel from './model.trnxHistory';
 import UsersModel from './model.users';
@@ -39,6 +40,7 @@ export {
     DeviceTokenModel,
     NFTModelModel,
     NotificationModel,
+    TrnxBandwidthModel,
     SettingsModel,
     TrnxHistoryModel,
     UsersModel,

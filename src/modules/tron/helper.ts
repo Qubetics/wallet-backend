@@ -109,6 +109,16 @@ class TronHelper {
         });
     }
 
+    public getEstimationGas = async (data: { fromAddress: string, toAddress: string, amount: number, is_bridge: number, coinData: any }) => {
+        try {
+            console.log('getEstimationGas data >>', data);
+            return trxWeb3.getEstimationGas(data)
+        } catch {
+            return { status: false, data: {} }
+        }
+
+    }
+
     public async GetConfirmedTransaction(tx_hash: string) {
         try {
             const transaction: {

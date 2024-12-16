@@ -12,6 +12,7 @@ export { NotificationInterface } from './interface.notifications';
 export { SettingsInterface } from './interface.settings';
 export { SwapInterface } from './interface.swapList';
 export { ITrnxHistoryInterface } from './interface.trnxHistory';
+export { TrnxBandwidthInterface } from './interface.trnxBandwidth';
 export { UserInterface } from './interface.users';
 export { WalletInterface } from './interface.wallets';
 export { WatchlistInterface } from './interface.watchlists';

@@ -25,14 +25,25 @@ class TronController implements OnlyControllerInterface {
         try {
             console.log("req body tron gasEstimation>>>", req.body)
 
-            let to_address: string = req.body.to_address;
-            let tx_raw: string = req.body.tx_raw;
-            let token_address: any = req.coininfo.token_address;
-            let fee_data: any = await Tron_Helper.Gas_Fee(
-                to_address, // toAddress,
-                tx_raw, // raw,
-                token_address /// contract_address
-            );
+            const from_address: string = req.body.from_address;
+            const to_address: string = req.body.to_address;
+            const amount: number = req.body.amount;
+            const is_bridge = 1;
+            const coinData = req.coininfo;
+            // let tx_raw: string = req.body.tx_raw;
+            // let token_address: any = req.coininfo.token_address;
+            // let fee_data: any = await Tron_Helper.Gas_Fee(
+            //     to_address, // toAddress,
+            //     tx_raw, // raw,
+            //     token_address /// contract_address
+            // );
+            let fee_data: any = await Tron_Helper.getEstimationGas({
+                fromAddress: from_address,
+                toAddress: to_address,
+                amount: amount,
+                is_bridge,
+                coinData
+            });
             return response.success(res, {
                 data: {
                     status: true,
