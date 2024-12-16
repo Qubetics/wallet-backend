@@ -1221,7 +1221,7 @@ class WalletController implements OnlyControllerInterface {
       }: { coin_family: number; fiat_currency: string } = req.body;
 
       let nativeCoin: any = await Models.CoinsModel.findOne({
-        attributes: ["coin_gicko_id"],
+        attributes: ["cmc_id"],
         where: {
           coin_family: coin_family,
           is_token: GlblBooleanEnum.false,
@@ -1234,7 +1234,7 @@ class WalletController implements OnlyControllerInterface {
       if (nativeCoin) {
         console.log(
           "Entered into if of nativeCoin",
-          nativeCoin?.coin_gicko_id,
+          nativeCoin?.cmc_id,
           ">>>>>",
           fiat_currency
         );
@@ -1242,7 +1242,7 @@ class WalletController implements OnlyControllerInterface {
         fiatCoinPrice = await Models.CoinPriceInFiatModel.findOne({
           attributes: ["value"],
           where: {
-            coin_gicko_id: nativeCoin?.coin_gicko_id,
+            cmc_id: nativeCoin?.cmc_id,
             fiat_type: fiat_currency,
           },
           raw: true,
