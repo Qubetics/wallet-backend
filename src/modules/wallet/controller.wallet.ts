@@ -1167,7 +1167,7 @@ class WalletController implements OnlyControllerInterface {
       return res.status(GlblCode.SUCCESS).send({
         status: true,
         code: GlblCode.SUCCESS,
-        data: result,
+        data: result.rows,
         meta: {
           page: page,
           pages: Math.ceil(result.count / limitNo),
