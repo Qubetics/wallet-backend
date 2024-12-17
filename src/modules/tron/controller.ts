@@ -44,13 +44,19 @@ class TronController implements OnlyControllerInterface {
                 is_bridge,
                 coinData
             });
-            return response.success(res, {
-                data: {
-                    status: true,
-                    message: language[lang].REQUEST_EXECUTED,
-                    data: fee_data,
-                },
-            });
+            if (fee_data?.status) {
+                return response.success(res, {
+                    data: {
+                        status: true,
+                        message: language[lang].REQUEST_EXECUTED,
+                        data: fee_data?.data,
+                    },
+                });
+            } else {
+                console.error("fee_data", fee_data);
+                return response.error(res, { data: { message: language[lang].CATCH_MSG } });
+            }
+
         } catch (err: any) {
             console.error("Error: in tron gas_estimation ", err);
             await commonHelper.save_error_logs("tron_gas_estimation", err.message);
