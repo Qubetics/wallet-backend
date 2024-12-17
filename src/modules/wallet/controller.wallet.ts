@@ -1101,7 +1101,7 @@ class WalletController implements OnlyControllerInterface {
         orderBy = `watchlist_data.created_at`;
         orderType = 'DESC';
       }
-      let result: any = await Models.CoinsModel.findAll({
+      let result: any = await Models.CoinsModel.findAndCountAll({
         attributes: [
           "coin_id",
           "coin_name",
@@ -1170,9 +1170,9 @@ class WalletController implements OnlyControllerInterface {
         data: result,
         meta: {
           page: page,
-          // pages: Math.ceil(result.count / limitNo),
+          pages: Math.ceil(result.count / limitNo),
           perPage: limitNo,
-          // total: result.count,
+          total: result.count,
         },
       });
     } catch (err: any) {
