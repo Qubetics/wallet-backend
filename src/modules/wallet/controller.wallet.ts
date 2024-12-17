@@ -242,7 +242,8 @@ class WalletController implements OnlyControllerInterface {
             ],
           },
         ],
-        order: [["sort_order", "ASC"]],
+        // order: [["sort_order", "ASC"]],
+        order: Sequelize.literal(`(CASE WHEN (\`coin.fiat_price_data.value\` * wallets.balance) > 0  THEN (\`coin.fiat_price_data.value\` * wallets.balance) END) DESC,(CASE WHEN sort_order IS NULL THEN wallets.created_at END) ASC,(CASE WHEN sort_order IS NOT NULL THEN wallets.sort_order END) ASC`),
         limit: limitNo,
         offset: offset,
       });
