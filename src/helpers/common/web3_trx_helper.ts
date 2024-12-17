@@ -56,6 +56,8 @@ class TrxWeb3 {
         }
     }
     public async TRC20_Token_Balance(address: string, contract_address: string | null | undefined) {
+        console.log('address >>.', address);
+        console.log('contract_address >>.', contract_address);
         try {
             await this.tronWeb.setAddress(contract_address);
             let contract: any = await this.tronWeb.contract().at(contract_address);
@@ -680,7 +682,7 @@ class TrxWeb3 {
         try {
             let result = await Promise.all([
                 this.fetchUseEnergy(fromAddress, tokenAddress, amount),
-                this.TRC20_Token_Balance(tokenAddress, toAddress),
+                this.TRC20_Token_Balance(toAddress, tokenAddress),
                 this.getUserEnergy(fromAddress),
             ])
                 .then((values) => {
@@ -783,7 +785,7 @@ class TrxWeb3 {
             var configObj: any = {
                 method: "post",
                 maxBodyLength: Infinity,
-                url: this.TRX_FULLNODE + "wallet/estimateenergy",
+                url: this.TRX_FULLNODE + "/wallet/estimateenergy",
                 // headers: {
                 //   "Content-Type": "application/json",
                 // },
