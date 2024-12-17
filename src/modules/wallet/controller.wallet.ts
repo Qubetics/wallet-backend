@@ -1415,12 +1415,12 @@ class WalletController implements OnlyControllerInterface {
     let lang: any = req.headers["content-language"] || "en";
     try {
       console.log("req body allBalances >>>", req.body)
-      let { checkerUserIds, fiatType }:
-        { checkerUserIds: Array<number>, fiatType: string }
+      let { userIds, fiatType }:
+        { userIds: Array<number>, fiatType: string }
         = req.body;
 
       let checkerWalletData: any = [];
-      let makerWalletData: any = [];
+      // let makerWalletData: any = [];
 
       let commonPart: any = [{
         model: Models.WalletModel,
@@ -1445,12 +1445,11 @@ class WalletController implements OnlyControllerInterface {
         ],
       }]
 
-      if (checkerUserIds.length > 0) {
+      if (userIds.length > 0) {
         commonPart[0].as = 'user_wallet_relation';
-
         checkerWalletData = await Models.UsersModel.findAll({
           attributes: ["user_id"],
-          where: { user_id: { [Op.in]: checkerUserIds } },
+          where: { user_id: { [Op.in]: userIds } },
           include: commonPart,
           order: [["user_id", "ASC"]]
         })
@@ -1459,8 +1458,8 @@ class WalletController implements OnlyControllerInterface {
       return response.success(res, {
         data: {
           status: true,
-          makerUserData: makerWalletData,
-          checkerUserData: checkerWalletData
+          // makerUserData: makerWalletData,
+          data: checkerWalletData
         },
       });
     } catch (err: any) {

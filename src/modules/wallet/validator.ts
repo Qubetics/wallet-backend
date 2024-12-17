@@ -102,8 +102,8 @@ export default class wallet_validator {
     }
     static allBalances = {
         body: Joi.object({
-            makerUserIds: Joi.array().required(),
-            checkerUserIds: Joi.array().required(),
+            // makerUserIds: Joi.array().required(),
+            userIds: Joi.array().required(),
             fiatType: Joi.string().required()
         })
     }
