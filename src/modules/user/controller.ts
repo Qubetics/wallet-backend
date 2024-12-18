@@ -131,9 +131,10 @@ class UserController implements OnlyControllerInterface {
             }
             return null;
           }).filter((update: any) => update !== null);
+          console.log('updates >>>', updates)
           for (const update of updates) {
             await user_queries.user_update(
-              { device_id: update.device_id },
+              { device_id: update.device_id !== '' ? update.device_id : null },
               { user_id: update.user_id }
             )
           }

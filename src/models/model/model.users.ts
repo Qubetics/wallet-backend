@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { UserInterface } from "../interface/interface.users";
 import db from "../../helpers/common/db";
 import WalletModel from "./model.wallets";
-import DeviceTokenModel from "./model.deviceToken";
+// import DeviceTokenModel from "./model.deviceToken";
 interface UserCreationModel extends Optional<UserInterface, "user_id"> { }
 interface UserInstance extends Model<UserInterface, UserCreationModel>, UserInterface { }
 
