@@ -1521,6 +1521,43 @@ class WalletController implements OnlyControllerInterface {
     }
   }
 
+  public async coinWalletDetail(req: Request, res: Response) {
+    let lang: any = req.headers["content-language"] || "en";
+    try {
+      console.log("req body coinWalletDetail >>>", req.body)
+      const { wallet_address, coin_id }: { wallet_address: string; coin_family: number; coin_id: number } = req.body;
+
+      const coinWalletdata = await Models.WalletModel.findOne({
+        attributes: ["balance"],
+        where: {
+          wallet_address: wallet_address,
+          coin_id: coin_id,
+        },
+        include: [{
+          model: Models.CoinsModel,
+          attributes: ["token_address", "is_token", "for_swap", "graph_source", "graph_pair"],
+          required: true
+        }],
+        // raw: true,
+      });
+      return res.status(GlblCode.SUCCESS).send({
+        status: true,
+        code: GlblCode.SUCCESS,
+        message: language[lang].REQUEST_EXECUTED,
+        data: coinWalletdata,
+      });
+    } catch (err: any) {
+      console.error("Error in wallet > updateBalance.", err);
+      await commonHelper.save_error_logs("wallet_updateBalance", err.message);
+      let data = {
+        code: GlblCode.ERROR_CODE,
+        status: false,
+        message: language[lang].CATCH_MSG,
+      };
+      return res.status(data.code).send(data);
+    }
+  }
+
   public async downloadCsv(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {

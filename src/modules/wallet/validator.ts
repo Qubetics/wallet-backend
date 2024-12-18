@@ -108,4 +108,10 @@ export default class wallet_validator {
         })
     }
 
+    static coinWalletDetail = {
+        body: Joi.object({
+            wallet_address: Joi.string().required(),
+            coin_id: Joi.number().optional()
+        })
+    }
 }

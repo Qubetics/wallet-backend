@@ -110,6 +110,12 @@ class WalletRoute implements ControllerInterface {
       jwtVerification.verifyToken,
       walletController.updateBalance
     );
+    this.router.post(
+      `${this.path}/coinWalletDetail`,
+      [validateExpress(wallet_validator.coinWalletDetail)],
+      jwtVerification.verifyToken,
+      walletController.coinWalletDetail
+    );
     this.router.get(
       `${this.path}/transaction/downloadcsv/:id`,
       walletController.downloadCsv
