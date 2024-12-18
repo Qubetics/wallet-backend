@@ -28,7 +28,8 @@ class TrxWeb3 {
     public async searchToken(trc20ContractAddress: string, lang: string) {
         try {
             await this.tronWeb.setAddress(trc20ContractAddress);
-            let contract: any = await this.tronWeb.contract().at(trc20ContractAddress);
+            let contract: any = await this.tronWeb.contract(config.TRON_ABI, trc20ContractAddress);
+            // let contract: any = await this.tronWeb.contract().at(trc20ContractAddress);
             let coin_name: string = await contract.name().call();
             let coin_symbol: string = await contract.symbol().call();
             let decimals: number = await contract.decimals().call();
