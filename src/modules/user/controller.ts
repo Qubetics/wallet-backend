@@ -109,11 +109,11 @@ class UserController implements OnlyControllerInterface {
         if (type == 'all') {
           await device_token_queries.device_token_destroy({ device_id: deviceId });
           users = await user_queries.user_find_all(["user_id", "device_id"],
-            { device_id: { [Op.like]: deviceId } }, [['user_id', 'DESC']])
+            { device_id: { [Op.like]: `%${deviceId}` } }, [['user_id', 'DESC']])
         } else {
           await device_token_queries.device_token_destroy({ device_id: deviceId, user_id: userIds })
           users = await user_queries.user_find_all(["user_id", "device_id"],
-            { user_id: userIds, device_id: { [Op.like]: deviceId } }, [['user_id', 'DESC']])
+            { user_id: userIds, device_id: { [Op.like]: `%${deviceId}` } }, [['user_id', 'DESC']])
         }
 
         console.log('users >>>', users);
