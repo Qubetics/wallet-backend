@@ -15,10 +15,8 @@ export default class user_validator {
     }
     static logoutValidate = {
         body: Joi.object({
-            deviceToken: Joi.string().required(),
-            deviceId: Joi.string().optional(),
-            userIds: Joi.array().optional(),
-            makerUserIds: Joi.array().optional()
+            deviceId: Joi.string().required(),
+            userIds: Joi.array().required(),
         })
     }
     static notificationListValidate = {

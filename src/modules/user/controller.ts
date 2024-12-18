@@ -102,26 +102,16 @@ class UserController implements OnlyControllerInterface {
     let lang: any = req.headers['content-language'] || 'en';
     try {
       console.log("req body user userLogout>>>", req.body)
-      const { deviceToken, deviceId, userIds }:
-        { deviceToken: string; deviceId: string, userIds: Array<number> }
-        = req.body;
-
-      let userId: number = req.userId;
-      // let userId: number = 5;
-
-
-      let checkUserDeviceToken: any = await device_token_queries.device_token_find_one(["id"], { user_id: userId, device_id: deviceId })
-
-      if (checkUserDeviceToken) {
-        await device_token_queries.device_token_destroy({ device_id: deviceId, user_id: userId })
-      }
+      const { deviceId, userIds }: { deviceToken: string; deviceId: string, userIds: Array<number> } = req.body;
 
       if (userIds && userIds.length > 0) {
 
-        let users: any = await user_queries.user_find_all(["user_id", "device_id"],
+        await device_token_queries.device_token_destroy({ device_id: deviceId, user_id: userIds })
+
+        const users: any = await user_queries.user_find_all(["user_id", "device_id"],
           { user_id: userIds }, [['user_id', 'DESC']])
 
-        let updates = users.map((user: any) => {
+        const updates = await users.map((user: any) => {
           const { user_id, device_id } = user;
 
           if (device_id) {
@@ -139,7 +129,15 @@ class UserController implements OnlyControllerInterface {
             { user_id: update.user_id }
           )
         }
+
       }
+      // let checkUserDeviceToken: any = await device_token_queries.device_token_find_one(["id"], { user_id: userId, device_id: deviceId })
+
+      // if (checkUserDeviceToken) {
+      //   await device_token_queries.device_token_destroy({ device_id: deviceId, user_id: userId })
+      // }
+
+
       return response.success(res, {
         data: {
           status: true,
