@@ -17,6 +17,7 @@ export default class user_validator {
         body: Joi.object({
             deviceId: Joi.string().required(),
             userIds: Joi.array().required(),
+            type: Joi.string().required()
         })
     }
     static notificationListValidate = {

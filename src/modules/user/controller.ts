@@ -102,32 +102,41 @@ class UserController implements OnlyControllerInterface {
     let lang: any = req.headers['content-language'] || 'en';
     try {
       console.log("req body user userLogout>>>", req.body)
-      const { deviceId, userIds }: { deviceToken: string; deviceId: string, userIds: Array<number> } = req.body;
+      const { deviceId, userIds, type }: { deviceToken: string; deviceId: string, userIds: Array<number>, type: string } = req.body;
 
       if (userIds && userIds.length > 0) {
+        let users: any = [];
+        if (type == 'all') {
+          await device_token_queries.device_token_destroy({ device_id: deviceId });
+          users = await user_queries.user_find_all(["user_id", "device_id"],
+            { device_id: { [Op.like]: deviceId } }, [['user_id', 'DESC']])
+        } else {
+          await device_token_queries.device_token_destroy({ device_id: deviceId, user_id: userIds })
+          users = await user_queries.user_find_all(["user_id", "device_id"],
+            { user_id: userIds, device_id: { [Op.like]: deviceId } }, [['user_id', 'DESC']])
+        }
 
-        await device_token_queries.device_token_destroy({ device_id: deviceId, user_id: userIds })
+        console.log('users >>>', users);
+        if (users.length > 0) {
+          console.log('in users >>>', users);
+          const updates = await users.map((user: any) => {
+            const { user_id, device_id } = user;
 
-        const users: any = await user_queries.user_find_all(["user_id", "device_id"],
-          { user_id: userIds }, [['user_id', 'DESC']])
-
-        const updates = await users.map((user: any) => {
-          const { user_id, device_id } = user;
-
-          if (device_id) {
-            const deviceIds = device_id.split(',').filter((dId: any) => dId !== deviceId);
-            return {
-              user_id,
-              device_id: deviceIds.join(',')
-            };
+            if (device_id) {
+              const deviceIds = device_id.split(',').filter((dId: any) => dId !== deviceId);
+              return {
+                user_id,
+                device_id: deviceIds.join(',')
+              };
+            }
+            return null;
+          }).filter((update: any) => update !== null);
+          for (const update of updates) {
+            await user_queries.user_update(
+              { device_id: update.device_id },
+              { user_id: update.user_id }
+            )
           }
-          return null;
-        }).filter((update: any) => update !== null);
-        for (const update of updates) {
-          await user_queries.user_update(
-            { device_id: update.device_id },
-            { user_id: update.user_id }
-          )
         }
 
       }
