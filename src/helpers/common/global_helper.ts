@@ -101,6 +101,9 @@ class Global_helper {
                 case config.STATIC_COIN_FAMILY.ETH:
                     tokenDetails = await ethWeb3.searchToken(token_address, lang);
                     break;
+                    case config.STATIC_COIN_FAMILY.TICS:
+                    tokenDetails = await ethWeb3.searchToken(token_address, lang);
+                    break;
                 case config.STATIC_COIN_FAMILY.TRX:
                     tokenDetails = await trxWeb3.searchToken(token_address, lang);
                     break;

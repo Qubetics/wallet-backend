@@ -4,7 +4,8 @@ export enum GlblCoins {
     TRX = 'TRX',
     BNB = 'BNB',
     SOL = 'SOL',
-    POL = 'POL'
+    POL = 'POL',
+    TICS = 'TICS',
 }
 export enum TokenType {
     ERC20 = 'ERC20',
@@ -16,7 +17,8 @@ export enum SWFTCCoins {
     ETH = 'ETH',
     BTC = 'BTC',
     TRX = 'TRX',
-    BSC = 'BSC'
+    BSC = 'BSC',
+    TICS = 'TICS',
 }
 
 export const chainId_coinFamily: any = {
@@ -36,7 +38,8 @@ export const coinFamily_chainId: any = {
 //     BTC = 3,
 //     POL = 4,
 //     SOL = 5,
-//     TRX = 6
+//     TRX = 6,
+//     TICS = 7
 // }
 
 export enum WalletName {
@@ -45,11 +48,13 @@ export enum WalletName {
     TRX = 'Trx',
     BNB = 'Bnb',
     POL = 'Pol',
-    SOL = 'Sol'
+    SOL = 'Sol',
+    TICS = 'Tics'
 }
 export enum BlockChain {
     ETH = 'eth',
-    BNB = 'bnb'
+    BNB = 'bnb',
+    TICS = 'tics'
 }
 
 export enum InfoMessages {
@@ -61,6 +66,7 @@ export enum InfoMessages {
 
 export enum GlblNetwork {
     ETH = 'Ethereum',
+    TICS = 'Qubetics'
 }
 
 export enum GlblBooleanEnum {

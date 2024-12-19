@@ -16,6 +16,8 @@ import helmet from "helmet";
 import { encryptionMiddleware } from "./middlewares/encryption.middleware";
 import { ValidationError, Joi } from 'express-validation';
 import { GlblCode, GlblMessages, InfoMessages } from "./constants/global_enum";
+import { last } from "lodash";
+
 
 class Server implements ServerInterface {
   public app: express.Application;
@@ -65,7 +67,6 @@ class Server implements ServerInterface {
     this.initializeControllers();
     this.startServer();
     this.checkHealth();
-
 
     this.app.use(function (
       err: any,
@@ -134,6 +135,7 @@ class Server implements ServerInterface {
     });
 
   }
+
 
   public initializeControllers() {
     const url: string = `/api/v1`;

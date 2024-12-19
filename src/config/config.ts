@@ -45,6 +45,7 @@ export const config = {
   BTC_WALLET_ADDRESS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.BTC_WALLET_ADDRESS}`,
   TRON_WALLET_ADDRESS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TRON_WALLET_ADDRESS}`,
   SOL_WALLET_ADDRESS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.SOL_WALLET_ADDRESS}`,
+  TICS_WALLET_ADDRESS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TICS_WALLET_ADDRESS}`,
 
   TOKENLIST: {
     ETH: {
@@ -66,9 +67,14 @@ export const config = {
     SOL: {
       SPL: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE_SOL}`
     },
+    TICS: {
+      ERC20: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE_TICS}`,
+      ERC721: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE721_TICS}`,
+    }
   },
   ETH_TESTNET_NODE: zookeeperConfig.config.ETH_TESTNET_NODE,
   BSC_TESTNET_NODE: zookeeperConfig.config.BSC_TESTNET_NODE,
+  TICS_TESTNET_NODE: zookeeperConfig.config.TICS_TESTNET_NODE,
   JWT_SECRET: zookeeperConfig.config.JWT_SECRET,
   ENCRYPT_SECRET: zookeeperConfig.config.ENCRYPT_SECRET,
   REFRESH_SECRET: zookeeperConfig.config.REFRESH_SECRET,
@@ -85,7 +91,10 @@ export const config = {
     BNB_RPC_URL: zookeeperConfig.config.BNB_RPC_URL,
     POL_RPC_URL: zookeeperConfig.config.POL_RPC_URL,
     SOL_RPC_URL: zookeeperConfig.config.SOL_RPC_URL,
+    TICS_RPC_URL: zookeeperConfig.config.TICS_RPC_URL,
+    TICS_DAPP_RPC_URL: zookeeperConfig.config.TICS_DAPP_RPC_URL,
     ETH_DAPP_RPC_URL: zookeeperConfig.config.ETH_DAPP_RPC_URL
+
   },
   // MATCHA_API_KEY: zookeeperConfig.config.MATCHA_API_KEY,
   // PUSH_NOTIFICATION_QUEUE: zookeeperConfig.config.PUSH_NOTIFICATION_QUEUE,

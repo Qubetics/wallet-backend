@@ -1,0 +1,364 @@
+import { Request, Response } from "express";
+import { TicsHelper } from "../helpers";
+import { OnlyControllerInterface } from "../../../interfaces/controller.interface";
+import dbHelper from "../../../helpers/dbHelper";
+import { config } from "../../../config";
+import { bigNumberSafeMath, exponentialToDecimal } from "../../../helpers/common/globalFunctions";
+import Web3 from "web3";
+import * as Models from '../../../models/model/index';
+import { AbiItem } from "web3-utils";
+import { RawDataInterface } from "../interfaces/interfaces.tics";
+import { language } from "../../../constants";
+import response from "../../../helpers/response/response.helpers";
+import { ticsWeb3 } from "../../../helpers/common/web3_tics_helpers";
+import commonHelper from "../../../helpers/common/common.helpers";
+
+class TicsController implements OnlyControllerInterface {
+  constructor() {
+    this.initialize();
+  }
+
+  public initialize() { }
+
+  public async getNonce(req: Request, res: Response): Promise<Response> {
+    let lang: any = req.headers['content-language'] || 'en';
+    console.log("req body tics nonce >>>", req.body)
+    var { wallet_address }: { wallet_address: string } = req.body;
+    var nonce_val: number = 0;
+    try {
+      var walletNonce = await TicsHelper.getWalletNonce(wallet_address);
+      nonce_val = walletNonce;
+      return response.success(res, {
+        data: {
+          data: {
+            nonce: nonce_val,
+          },
+          message: language[lang].GET_NONCE,
+        },
+      });
+
+    } catch (err: any) {
+      console.error("error in tics getting nonce", err);
+      await commonHelper.save_error_logs("tics_getNonce", err.message);
+      return response.error(res, {
+        data: {
+          message: language[lang].CATCH_MSG,
+          data: {},
+        },
+      });
+    }
+  }
+  public async getEstimationGas(
+    req: Request,
+    res: Response
+  ): Promise<Response | undefined> {
+    let lang: any = req.headers['content-language'] || 'en';
+    try {
+      console.log("req body tics getEstimationGas >>>", req.body)
+
+      var estimationRes: {
+        status: boolean;
+        gas_estimate: number;
+        message: string;
+      };
+      //Gas estimation 0 for coins other than BSC/BEP20
+      if (
+        req.coininfo &&
+        req.coininfo.coin_family !== config.STATIC_COIN_FAMILY.TICS
+      ) {
+        return response.success(res, {
+          data: { status: true, gas_estimate: 0, gas_gwei_price: 0 },
+        });
+      } else if (req.coininfo) {
+        const { from, to }: { from: string; to: string } = req.body;
+        const { token_address, token_abi, is_token } = req.coininfo;
+        if (is_token) {
+          estimationRes =
+            await TicsHelper.getErc20TokenTransferGasEstimationCost(
+              token_address,
+              token_abi,
+              from,
+              to,
+              lang
+            );
+        } else {
+          estimationRes = await TicsHelper.getTicsGasLimit(from, to, lang);
+        }
+        let resultList: any = await Models.GasPriceModel.findOne({
+          where: {
+            coin_family: config.STATIC_COIN_FAMILY.TICS
+          }
+        })
+        return response.success(res, {
+          data: {
+            status: true,
+            gas_estimate: estimationRes.gas_estimate,
+            resultList,
+          },
+        });
+      }
+    } catch (err: any) {
+      await commonHelper.save_error_logs("tics_getEstimationGas", err.message);
+      return response.error(res, {
+        data: { message: language[lang].CATCH_MSG + err },
+      });
+    }
+  }
+  public async rawDataString(req: Request, res: Response): Promise<Response> {
+    let lang: any = req.headers['content-language'] || 'en';
+    try {
+      console.log("req body tics rawDataString >>>", req.body)
+
+      var { my_address, dest_address, amount, coin_type }: RawDataInterface =
+        req.body;
+      const web3: Web3 = new Web3(
+        Web3.givenProvider || config.NODE.TICS_RPC_URL + ""
+      );
+      let minABI: AbiItem[] = [
+        // transfer
+        {
+          constant: false,
+          inputs: [
+            {
+              name: "_to",
+              type: "address",
+            },
+            {
+              name: "_value",
+              type: "uint256",
+            },
+          ],
+          name: "transfer",
+          outputs: [
+            {
+              name: "success",
+              type: "bool",
+            },
+          ],
+          payable: false,
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ];
+      // If your token is divisible to 8 decimal places, 42 = 0.00000042 of your token
+      var transferAmount = await exponentialToDecimal(amount);
+
+      // Determine the nonce
+      var count = await web3.eth.getTransactionCount(my_address);
+      var contract = new web3.eth.Contract(
+        minABI,
+        req.coininfo.token_address || "",
+        { from: my_address }
+      );
+      return response.success(res, {
+        data: {
+          status: true,
+          message: language[lang].SUCCESS,
+          data: contract.methods
+            .transfer(dest_address, transferAmount)
+            .encodeABI(),
+        },
+      });
+    } catch (err: any) {
+      console.error("rawDataString error: ==>  ", err);
+      await commonHelper.save_error_logs("tics rawDataString", err.message);
+      return response.error(res, {
+        data: { status: true, message: language[lang].SUCCESS, data: [] },
+      });
+    }
+  }
+  public async send(req: Request, res: Response) {
+    let lang: any = req.headers['content-language'] || 'en';
+    try {
+      console.log("req body tics send >>>", req.body)
+      const { token_address: contractAddress, token_abi: ABI } = req.coininfo;
+      let dapp_transaction: any = req.body.add_amount;
+      var {
+        gas_estimate,
+        amount,
+        gas_price,
+        from,
+        tx_raw,
+      } = req.body;
+
+      let maxGas = gas_price * gas_estimate;
+      var gasInTICS = await TicsHelper.convertWeiToTics(maxGas);
+      gas_price = gasInTICS;
+      var gasInTicsForErc = 0;
+      // TICS only
+      if (req.coininfo.is_token == false && req.coininfo.coin_symbol == "tics") {
+        var withdrawAmount;
+        if (dapp_transaction == 1) {
+          withdrawAmount = bigNumberSafeMath('0', "+", gasInTICS);
+        } else {
+          withdrawAmount = bigNumberSafeMath(amount, "+", gasInTICS);
+        }
+        var ticsBalance = await ticsWeb3.get_coin_balance(from, true);
+        if (Number(ticsBalance) < Number(withdrawAmount)) {
+          return response.error(res, {
+            data: { status: false, message: language[lang].INSUFFICIENT },
+          });
+        }
+      } else if (
+        req.coininfo.coin_family == config.STATIC_COIN_FAMILY.TICS &&
+        req.coininfo.is_token == true &&
+        req.coininfo.token_type === "ERC20"
+      ) {
+        var ticsBalance = await ticsWeb3.get_coin_balance(from, true);
+        var ERC20TokenBalance = await ticsWeb3.get_erc20_token_balance(
+          contractAddress,
+          ABI as AbiItem[],
+          req.body.from
+        );
+        if (Number(ticsBalance) < Number(gasInTICS)) {
+          return response.error(res, {
+            data: {
+              status: false,
+              message: language[lang].INSUFFICIENTTICS
+            },
+          });
+        } else if (Number(ERC20TokenBalance) < Number(amount)) {
+          return response.error(res, {
+            data: {
+              status: false,
+              message: language[lang].TICS_INSUFFICIENT(req.coininfo.coin_symbol)
+            },
+          });
+        }
+      } else if (
+        req.coininfo.coin_family == config.STATIC_COIN_FAMILY.TICS &&
+        req.coininfo.is_token == true &&
+        req.coininfo.token_type === "ERC721"
+      ) {
+        var ticsBalance = await ticsWeb3.get_coin_balance(from, true);
+        if (Number(ticsBalance) < Number(gasInTICS)) {
+          return response.error(res, {
+            data: {
+              status: false,
+              message: language[lang].TICS_GAS(gasInTicsForErc)
+            },
+          });
+        }
+      }
+      let transferData = await TicsHelper.sendTicsOrTokens(
+        req,
+        lang,
+        tx_raw,
+        async (err: Error, txid: string) => {
+          if (err) {
+            return response.error(res, {
+              data: {
+                status: false,
+                message: err.message.replace(/^Returned error:+/i, ""),
+              },
+            });
+          } else {
+            req.body.tx_hash = txid;
+            req.body.tx_status = "completed";
+            let resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
+
+            if (
+              req.coininfo.is_token == true &&
+              req.coininfo.token_type === "ERC721"
+            ) {
+              await Models.NFTModelModel.update(
+                {
+                  available: 0,
+                },
+                { where: { token_address: req.coininfo.token_address as string } }
+              );
+            }
+
+            if (resultStatus.status && resultStatus.status == true) {
+              // if (req.body.approval == 1 && req.body.tx_type == 'Approve') {
+              if (req.body.tx_type == 'Approve') {
+
+                return response.success(res, {
+                  data: {
+                    status: true,
+                    message: language[lang].APPROVE_REQUEST,
+                    tx_hash: txid,
+                  },
+                });
+                // } else if (req.body.approval == 0 && req.body.tx_type == 'withdraw') {
+              } else if (req.body.tx_type == 'withdraw') {
+
+                return response.success(res, {
+                  data: {
+                    status: true,
+                    message: language[lang].WITHDRAW_REQUEST_TICS(req.body.amount, req.coininfo.coin_symbol),
+                    tx_hash: txid,
+                  },
+                });
+              } else {
+                return response.success(res, {
+                  data: {
+                    status: true,
+                    message: language[lang].SWAP_REQUEST_TICS(req.body.amount, req.coininfo.coin_symbol),
+                    tx_hash: txid,
+                  },
+                });
+              }
+            } else {
+              return response.error(res, {
+                data: {
+                  status: false,
+                  message: language[lang].TRANSACTION_REQUEST
+                },
+              });
+            }
+          }
+        }
+      );
+    } catch (err: any) {
+      console.error("Error in QUBETICS send API >>>>>", err)
+      await commonHelper.save_error_logs("tics_send", err.message);
+      return response.error(res, {
+        data: {
+          message: language[lang].CATCH_MSG
+        },
+      });
+    }
+  }
+  public async sendSwapTrnx(req: Request, res: Response) {
+    let lang: any = req.headers['content-language'] || 'en';
+    try {
+      console.log("req body tics sendSwapTrnx >>>", req.body)
+
+      console.log("Entered into sendSwapTransaction")
+      let { tx_hash, amount }:
+        { tx_hash: string, amount: number }
+        = req.body;
+
+      req.body.tx_status = 'completed';
+      let resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
+
+      if (resultStatus.status && resultStatus.status == true) {
+        return response.success(res, {
+          data: {
+            status: true,
+            message: language[lang].SWAP_REQUEST_TICS(amount, req.coininfo.coin_symbol),
+            tx_hash: tx_hash
+          },
+        });
+      } else {
+        return response.error(res, {
+          data: {
+            status: false,
+            message: language[lang].TRANSACTION_REQUEST
+          },
+        });
+      }
+    } catch (err: any) {
+      console.error("Error in QUBETICS sendSwapTrnx API >>>>>", err)
+      await commonHelper.save_error_logs("tics_sendSwapTrnx", err.message);
+      return response.error(res, {
+        data: {
+          message: language[lang].CATCH_MSG
+        },
+      });
+    }
+  }
+}
+
+export const TicsControllers = new TicsController();

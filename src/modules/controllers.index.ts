@@ -2,6 +2,7 @@ import UserRoute from "./user/route";
 import WalletRoute from "./wallet/walletRoute";
 import BtcRoute from "./btc/btcRoute";
 import EthModule from "./eth/ethRoute";
+import TicsRoute from "./tics/tics.Route"
 import authRoute from "./auth/authRoute";
 import DappRoute from "./dapp/dappRoute";
 import TronRoute from "./tron/routes";
@@ -17,6 +18,7 @@ const controllers = [
   new WalletRoute(),
   new BtcRoute(),
   new EthModule(),
+  new TicsRoute(),
   new DappRoute(),
   new authRoute(),
   new TronRoute(),
