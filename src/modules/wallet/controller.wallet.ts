@@ -636,13 +636,13 @@ class WalletController implements OnlyControllerInterface {
           from_adrs: {
             [Op.in]: address_list
           },
+          type: TxTypesEnum.WITHDRAW,
           user_id: userId,
           [Op.or]: [
             { blockchain_status: GlblBlockchainTxStatusEnum.PENDING },
             { blockchain_status: GlblBlockchainTxStatusEnum.FAILED },
             { blockchain_status: GlblBlockchainTxStatusEnum.CONFIRMED },
-            { blockchain_status: null },
-            { type: TxTypesEnum.WITHDRAW }
+            { blockchain_status: null }
           ]
         };
       } else if (type == TxTypesEnum.DAPP) {
@@ -653,7 +653,8 @@ class WalletController implements OnlyControllerInterface {
           },
           user_id: userId,
         };
-      } else if (type == TxTypesEnum.SWAP) {
+      } else if (type?.toUpperCase() == TxTypesEnum.SWAP?.toUpperCase()) {
+        console.log('dddddddddddddddddddddd', type);
         where_clause = {
           [Op.or]: [
             { type: TxTypesEnum.APPROVE },
