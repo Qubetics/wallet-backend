@@ -631,28 +631,31 @@ class WalletController implements OnlyControllerInterface {
             { type: TxTypesEnum.DEPOSIT },
           ],
         };
-      }
-      if (type == TxTypesEnum.WITHDRAW) {
+      } else if (type == TxTypesEnum.WITHDRAW) {
         where_clause = {
           from_adrs: {
             [Op.in]: address_list
           },
           user_id: userId,
-
           [Op.or]: [
             { blockchain_status: GlblBlockchainTxStatusEnum.PENDING },
             { blockchain_status: GlblBlockchainTxStatusEnum.FAILED },
             { blockchain_status: GlblBlockchainTxStatusEnum.CONFIRMED },
             { blockchain_status: null },
-            { type: TxTypesEnum.WITHDRAW },
-            { type: TxTypesEnum.DEPOSIT },
+            { type: TxTypesEnum.WITHDRAW }
           ]
         };
-      }
-      if (type == TxTypesEnum.DAPP) {
+      } else if (type == TxTypesEnum.DAPP) {
+        where_clause = {
+          type: TxTypesEnum.DAPP,
+          from_adrs: {
+            [Op.in]: address_list
+          },
+          user_id: userId,
+        };
+      } else if (type == TxTypesEnum.SWAP) {
         where_clause = {
           [Op.or]: [
-            { type: TxTypesEnum.DAPP },
             { type: TxTypesEnum.APPROVE },
             { type: TxTypesEnum.SWAP },
             { type: TxTypesEnum.CROSS_CHAIN },
@@ -662,8 +665,7 @@ class WalletController implements OnlyControllerInterface {
           },
           user_id: userId,
         };
-      }
-      if (type == TxTypesEnum.BUY) {
+      } else if (type == TxTypesEnum.BUY) {
         where_clause = {
           to_adrs: {
             [Op.in]: address_list
@@ -671,8 +673,7 @@ class WalletController implements OnlyControllerInterface {
           to_user_id: userId,
           type: TxTypesEnum.BUY,
         };
-      }
-      if (type == TxTypesEnum.SELL) {
+      } else if (type == TxTypesEnum.SELL) {
         where_clause = {
           to_adrs: {
             [Op.in]: address_list
@@ -693,15 +694,7 @@ class WalletController implements OnlyControllerInterface {
           user_id: userId,
         };
       }
-      if (type == TxTypesEnum.LEVEL_UPGRADE) {
-        where_clause = {
-          type: TxTypesEnum.LEVEL_UPGRADATION_LEVEL,
-          from_adrs: {
-            [Op.in]: address_list
-          },
-          user_id: userId,
-        };
-      }
+
       if (status) {
         where_clause = {
           ...where_clause,
