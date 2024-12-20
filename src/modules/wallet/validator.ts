@@ -114,4 +114,10 @@ export default class wallet_validator {
             coin_id: Joi.number().optional()
         })
     }
+    static nativeCoinBalance = {
+        body: Joi.object({
+            coin_family: Joi.number().required(),
+            wallet_address: Joi.string().required()
+        })
+    }
 }

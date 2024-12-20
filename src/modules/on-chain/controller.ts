@@ -28,11 +28,11 @@ class onChainController implements OnlyControllerInterface {
                 },
             });
         } catch (error: any) {
-            console.error("Error in on-chain > OneinchSwapApi.", error);
+            console.error("Error in on-chain > OneinchSwapApi.", error.response.data);
             await commonHelper.save_error_logs("OneinchSwapApi", error.message);
-
+            let message = (error?.response?.data?.statusCode !== 200 && error?.response?.data?.description !== '') ? error?.response?.data?.description : language[lang].CATCH_MSG;
             return response.error(res, {
-                data: { message: language[lang].CATCH_MSG, data: {} },
+                data: { message: message, data: {} },
             });
         }
     }

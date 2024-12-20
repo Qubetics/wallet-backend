@@ -106,9 +106,10 @@ class WalletRoute implements ControllerInterface {
       walletController.allBalances
     );
     this.router.post(
-      `${this.path}/updateBalance`,
+      `${this.path}/nativeCoinBalance`,
       jwtVerification.verifyToken,
-      walletController.updateBalance
+      [validateExpress(wallet_validator.nativeCoinBalance)],
+      walletController.nativeCoinBalance
     );
     this.router.post(
       `${this.path}/coinWalletDetail`,

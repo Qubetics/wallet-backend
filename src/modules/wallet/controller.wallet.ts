@@ -1469,39 +1469,31 @@ class WalletController implements OnlyControllerInterface {
     }
   }
 
-  public async updateBalance(req: Request, res: Response) {
+  public async nativeCoinBalance(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
       console.log("req body updateBalance >>>", req.body)
-      let {
-        wallet_address,
-        coin_family,
-        coin_id,
-      }: { wallet_address: string; coin_family: number; coin_id: number } =
+      let { wallet_address, coin_family }: { wallet_address: string; coin_family: number } =
         req.body;
-      // let data: any = {
-      //   wallet_address: wallet_address,
-      //   coin_id: coin_id,
-      //   coin_family: coin_family,
-      // };
-      const coinWalletdata = await Models.WalletModel.findOne({
-        attributes: ["balance"],
-        where: {
-          wallet_address: wallet_address,
-          coin_id: coin_id,
-        },
+
+      const nativeCoinBalance = await Models.CoinsModel.findOne({
+        attributes: ["coin_id"],
+        where: { coin_family: coin_family, is_token: 0 },
         include: [{
-          model: Models.CoinsModel,
-          attributes: ["graph_source", "graph_pair"],
-          required: true
-        }],
-        // raw: true,
-      });
+          model: Models.WalletModel,
+          attributes: ["balance"],
+          where: {
+            wallet_address: wallet_address,
+            coin_family: coin_family,
+          },
+          as: 'wallet_data'
+        }]
+      })
       return res.status(GlblCode.SUCCESS).send({
         status: true,
         code: GlblCode.SUCCESS,
         message: language[lang].REQUEST_EXECUTED,
-        data: coinWalletdata,
+        data: nativeCoinBalance,
       });
     } catch (err: any) {
       console.error("Error in wallet > updateBalance.", err);
@@ -1518,7 +1510,7 @@ class WalletController implements OnlyControllerInterface {
   public async coinWalletDetail(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body coinWalletDetail >>>", req.body)
+
       const { wallet_address, coin_id }: { wallet_address: string; coin_family: number; coin_id: number } = req.body;
 
       const coinWalletdata = await Models.WalletModel.findOne({

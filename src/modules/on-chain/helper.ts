@@ -36,13 +36,13 @@ class OnChainHelpers implements OnlyControllerInterface {
                 return protocol.id
             });
             let protocolsString: string = filteredIds.join(",");
-            
-            if(fee&&!referrer)
-            throw new Error('Referrer is Required To Pass With The Fee');
+
+            if (fee && !referrer)
+                throw new Error('Referrer is Required To Pass With The Fee');
 
             let configUrl = {
                 method: 'get',
-                url: `${this.on_chain_api_url}/swap/v5.2/${chain_id}/swap?src=${src}&dst=${dst}&amount=${amount}&from=${from}&slippage=${slippage}&fee=${(fee&&referrer)?fee:''}&referrer=${referrer?referrer:''}&protocals=${protocolsString}&compatibility=true`,
+                url: `${this.on_chain_api_url}/swap/v5.2/${chain_id}/swap?src=${src}&dst=${dst}&amount=${amount}&from=${from}&slippage=${slippage}&fee=${(fee && referrer) ? fee : ''}&referrer=${referrer ? referrer : ''}&protocals=${protocolsString}&compatibility=true`,
                 headers: {
                     'Authorization': config.ON_CHAIN.ONEINCH_API_KEY,
                     'accept': 'application/json',
@@ -57,7 +57,7 @@ class OnChainHelpers implements OnlyControllerInterface {
                 return responseData;
             }
         } catch (error: any) {
-
+            console.log('error >>>', error);
             throw error
         }
     };
