@@ -160,10 +160,10 @@ class Global_helper {
                     userBalance = exponentialToDecimal(Number(tokenBalance))
                     break;
                 case config.STATIC_COIN_FAMILY.TRX:
-                    userBalance = (await trxWeb3.TRC20_Token_Balance(walletAddress, tokenAddress))?.toString()
+                    userBalance = (await trxWeb3.TRC20_Token_Balance(walletAddress, tokenAddress, false))?.toString()
                     break;
                 case config.STATIC_COIN_FAMILY.SOL:
-                    userBalance = (await SolanaHelper.getUserCRC20TokenBalance(tokenAddress, walletAddress))?.toString()
+                    userBalance = (await SolanaHelper.getUserCRC20TokenBalance(tokenAddress, walletAddress, false))?.toString()
                     break;
                 default:
                     throw GlblMessages.INVALID_COIN_FAMILY
@@ -260,10 +260,41 @@ class Global_helper {
                     balance = (await polWeb3.get_balance(coinData, wallet_address))?.toString()
                     break;
                 case config.STATIC_COIN_FAMILY.TRX:
-                    balance = (await trxWeb3.Fetch_Balance(wallet_address, coinData))?.toString()
+                    balance = (await trxWeb3.Fetch_Balance(wallet_address, coinData, false))?.toString()
                     break;
                 case config.STATIC_COIN_FAMILY.SOL:
-                    balance = (await SolanaHelper.Fetch_Balance(wallet_address, coinData))?.toString()
+                    balance = (await SolanaHelper.Fetch_Balance(wallet_address, coinData, false))?.toString()
+                    break;
+            }
+            return { status: true, balance: balance };
+        } catch (err: any) {
+            console.error("Error in get_wallet_balance.", err)
+            await commonHelper.save_error_logs("get_wallet_balance", err.message);
+            return { status: false, balance: '0' };
+        }
+    }
+
+    public async getWalletBalance(coinData: CoinInterface, wallet_address: string) {
+        try {
+            let balance: string | any = '0';
+            switch (coinData.coin_family) {
+                case config.STATIC_COIN_FAMILY.BNB:
+                    balance = (await bscWeb3.getBalance(coinData, wallet_address))?.toString()
+                    break;
+                case config.STATIC_COIN_FAMILY.ETH:
+                    balance = (await ethWeb3.getBalance(coinData, wallet_address))?.toString()
+                    break;
+                case config.STATIC_COIN_FAMILY.BTC:
+                    balance = (await utxobtc.get_balance(wallet_address))?.toString()
+                    break;
+                case config.STATIC_COIN_FAMILY.POL:
+                    balance = (await polWeb3.getBalance(coinData, wallet_address))?.toString()
+                    break;
+                case config.STATIC_COIN_FAMILY.TRX:
+                    balance = (await trxWeb3.Fetch_Balance(wallet_address, coinData, true))?.toString()
+                    break;
+                case config.STATIC_COIN_FAMILY.SOL:
+                    balance = (await SolanaHelper.Fetch_Balance(wallet_address, coinData, true))?.toString()
                     break;
             }
             return { status: true, balance: balance };

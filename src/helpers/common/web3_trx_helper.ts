@@ -4,11 +4,12 @@ import { ethers } from "ethers";
 import { config } from "../../config";
 import { GlblBooleanEnum } from '../../constants/global_enum';
 import { CoinInterface, TrnxBandwidthModel } from '../../models';
-import { exponentialToDecimal } from './globalFunctions';
+import { bigNumberSafeMath, exponentialToDecimal } from './globalFunctions';
 import commonHelper from './common.helpers';
 import { TokenData } from '../../interfaces/global.interface';
 import { language } from "../../constants";
 import axios from 'axios';
+import { isString } from 'lodash';
 
 
 
@@ -56,7 +57,7 @@ class TrxWeb3 {
             return false;
         }
     }
-    public async TRC20_Token_Balance(address: string, contract_address: string | null | undefined) {
+    public async TRC20_Token_Balance(address: string, contract_address: string | null | undefined, is_string: boolean) {
         console.log('address >>.', address);
         console.log('contract_address >>.', contract_address);
         try {
@@ -77,7 +78,9 @@ class TrxWeb3 {
                 );
             }
             let expToDecimal: string = exponentialToDecimal(toDecimal);
-            let balance: number = Number(expToDecimal) / Math.pow(10, decimals);
+            let balance = bigNumberSafeMath(expToDecimal, '/', Math.pow(10, decimals))
+            balance = is_string ? balance : Number(balance);
+            // let balance: number = Number(expToDecimal) / Math.pow(10, decimals);
             return balance;
         } catch (err: any) {
             console.error(`Tron_Helper TRC20_Token_Balance error >>`, err);
@@ -85,11 +88,11 @@ class TrxWeb3 {
             throw err;
         }
     }
-    public async Fetch_Balance(address: string, coin: CoinInterface) {
+    public async Fetch_Balance(address: string, coin: CoinInterface, isString: boolean) {
         try {
             let balance: number | any = 0;
             if (coin.is_token == GlblBooleanEnum.true) {
-                balance = await this.TRC20_Token_Balance(address, coin.token_address)
+                balance = await this.TRC20_Token_Balance(address, coin.token_address, isString)
             } else {
                 balance = await this.Coin_Fetch_Balance(address);
             }
@@ -683,7 +686,7 @@ class TrxWeb3 {
         try {
             let result = await Promise.all([
                 this.fetchUseEnergy(fromAddress, tokenAddress, amount),
-                this.TRC20_Token_Balance(toAddress, tokenAddress),
+                this.TRC20_Token_Balance(toAddress, tokenAddress, false),
                 this.getUserEnergy(fromAddress),
             ])
                 .then((values) => {

@@ -1761,8 +1761,8 @@ class WalletController implements OnlyControllerInterface {
       if (!addressValidity) throw new Error(`${language[lang].INVALID_ADDRESS}`);
 
       // Get wallet balance from global helper
-      let balDetails: any = await global_helper.get_wallet_balance(coinData, wallet_address);
-      // console.log('balDetails >>>', balDetails);
+      let balDetails: any = await global_helper.getWalletBalance(coinData, wallet_address);
+      console.log('balDetails >>>', balDetails);
       let balance: string = "0";
       if (balDetails.status) {
         balance = balDetails.balance;

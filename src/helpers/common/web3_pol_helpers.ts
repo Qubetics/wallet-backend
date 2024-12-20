@@ -79,6 +79,22 @@ class PolWeb3 {
       throw err;
     }
   }
+  public async getBalance(coinData: CoinInterface, address: string) {
+    try {
+      let balance: string | any = '0';
+      if (coinData.is_token) {
+        balance = (await this.get_erc20_token_balance(coinData.token_address, config.CONTRACT_ABI as AbiItem[], address))?.toString()
+      } else {
+        balance = (await this.get_coin_balance(address, true))?.toString();
+      }
+      balance = exponentialToDecimal(balance)
+      return balance;
+    } catch (err: any) {
+      console.error("Error in get_balance of pol", err)
+      await commonHelper.save_error_logs("get_balance_pol", err.message);
+      throw err;
+    }
+  }
   public async get_coin_balance(address: string, inEth: boolean) {
     try {
       let balance_in_wei: any = await this.web3.eth.getBalance(address)

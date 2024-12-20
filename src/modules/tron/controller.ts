@@ -118,11 +118,12 @@ class TronController implements OnlyControllerInterface {
                     };
                     return response.error(res, { data: resMsg });
                 }
-                const balance: number = await trxWeb3.Fetch_Balance(
+                const balance: string = await trxWeb3.Fetch_Balance(
                     from_address,
-                    coin
+                    coin,
+                    true
                 );
-                if (balance < Number(amount)) {
+                if (balance < amount.toString()) {
                     const resMsg = {
                         status: false,
                         message: language[lang].INSUFFICIENTTRX,

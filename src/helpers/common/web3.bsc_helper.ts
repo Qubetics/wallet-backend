@@ -66,13 +66,29 @@ class BSCWeb3 {
     }
     public async get_balance(coinData: CoinInterface, address: string) {
         try {
-            let balance: string|any = '0';
+            let balance: string | any = '0';
             if (coinData.is_token) {
                 balance = (await this.get_bep20_token_balance(coinData.token_address, config.CONTRACT_ABI as AbiItem[], address))?.toString()
             } else {
                 balance = (await this.get_coin_balance(address, true))?.toString();
             }
             balance = exponentialToDecimal(Number(balance))
+            return balance;
+        } catch (err: any) {
+            console.error("Error in get_balance of bnb", err)
+            await commonHelper.save_error_logs("get_balance_bnb", err.message);
+            throw err;
+        }
+    }
+    public async getBalance(coinData: CoinInterface, address: string) {
+        try {
+            let balance: string | any = '0';
+            if (coinData.is_token) {
+                balance = (await this.get_bep20_token_balance(coinData.token_address, config.CONTRACT_ABI as AbiItem[], address))?.toString()
+            } else {
+                balance = (await this.get_coin_balance(address, true))?.toString();
+            }
+            balance = exponentialToDecimal(balance)
             return balance;
         } catch (err: any) {
             console.error("Error in get_balance of bnb", err)

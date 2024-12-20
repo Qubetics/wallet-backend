@@ -13,6 +13,7 @@ import { CoinInterface } from "../../models";
 import { GlblBooleanEnum } from "../../constants/global_enum";
 import commonHelper from "./common.helpers";
 import { language } from "../../constants";
+import { bigNumberSafeMath } from "./globalFunctions";
 
 class SolanaHelpers {
 
@@ -30,11 +31,12 @@ class SolanaHelpers {
 
     public initialize() { }
 
-    public async getUserSolanaBalance(wallet: string, inSolana: boolean): Promise<string | number> {
+    public async getUserSolanaBalance(wallet: string, inSolana: boolean, isString: boolean): Promise<string | number> {
         try {
             let balanceInWei = await this.connection.getBalance(new PublicKey(wallet));
             if (inSolana == true) {
-                return Number(balanceInWei / 1000000000);
+                let balance = bigNumberSafeMath(balanceInWei.toString(), '/', Math.pow(10, 9));
+                return isString ? balance : Number(balance);
             }
             return balanceInWei;
         } catch (err) {
@@ -52,7 +54,7 @@ class SolanaHelpers {
         }
     }
 
-    public async getUserCRC20TokenBalance(tokenAddress: string, walletAddress: string): Promise<number> {
+    public async getUserCRC20TokenBalance(tokenAddress: string, walletAddress: string, isString: boolean): Promise<number> {
         try {
             const walletPublicKey = new PublicKey(walletAddress);
             const mintPublicKey = new PublicKey(tokenAddress);
@@ -65,7 +67,9 @@ class SolanaHelpers {
                 const amount = tokenAccountInfo.amount;
                 const mintInfo: any = await this.connection.getParsedAccountInfo(mintPublicKey);
                 const decimals = mintInfo.value.data.parsed.info.decimals;
-                const balance = Number(amount) / (10 ** decimals);
+                let balance = bigNumberSafeMath(amount.toString(), '/', Math.pow(10, decimals))
+                balance = isString ? balance : Number(balance);
+                //const balance = Number(amount) / (10 ** decimals);
                 return balance;
             } else {
                 return 0;
@@ -113,13 +117,14 @@ class SolanaHelpers {
     }
 
 
-    public async Fetch_Balance(address: string, coin: CoinInterface) {
+    public async Fetch_Balance(address: string, coin: CoinInterface, isString: boolean) {
         try {
             let balance: number | any = 0;
             if (coin.is_token == GlblBooleanEnum.true && (coin?.token_address !== null && coin?.token_address !== undefined)) {
-                balance = await this.getUserCRC20TokenBalance(coin?.token_address, address)
+                balance = await this.getUserCRC20TokenBalance(coin?.token_address, address, isString)
             } else {
-                balance = await this.getUserSolanaBalance(address, true);
+                console.log('dddddddddddddddddddddddddd');
+                balance = await this.getUserSolanaBalance(address, true, isString);
             }
             return balance;
         } catch (err: any) {
