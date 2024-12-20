@@ -24,6 +24,7 @@ const crypto = require("crypto");
 import userhelper from "../user/helper";
 import redisClient from "../../helpers/common/redis";
 import kafka_helper from "../../helpers/common/kafka_helper";
+import { CoinInterface } from "../../models";
 
 class WalletController implements OnlyControllerInterface {
   constructor() {
@@ -977,7 +978,7 @@ class WalletController implements OnlyControllerInterface {
         ETH_DAPP_RPC_URL: config.NODE.ETH_DAPP_RPC_URL,
         POL_RPC_URL: config.NODE.POL_RPC_URL,
         // SOL_RPC_URL: config.NODE.SOL_RPC_URL
-        SOL_RPC_URL: 'https://api.mainnet-beta.solana.com'
+        SOL_RPC_URL: 'https://mainnet.helius-rpc.com/?api-key=REDACTED'
       };
 
       return res.status(GlblCode.SUCCESS).send(data);
@@ -1740,6 +1741,63 @@ class WalletController implements OnlyControllerInterface {
     }
   }
 
+  public async rpcBalance(req: Request, res: Response) {
+    const lang: string = req.headers["content-language"] || "en";
+    try {
+      const { wallet_address, coin_id }: { wallet_address: string; coin_id: number } = req.body;
+      const coinData: any = await Models.CoinsModel.findOne({
+        attributes: ["token_address", "is_token", "coin_family"],
+        where: { coin_id },
+      });
+      if (!coinData) {
+        return res.status(GlblCode.ERROR_CODE).send({
+          status: false,
+          code: GlblCode.ERROR_CODE,
+          message: language[lang].COIN_NOT_FOUND,
+        });
+      }
+      const addressValidity: any = await global_helper.validate_address(wallet_address, coinData.coin_family);
+      // console.log('addressValidity >>>', addressValidity);
+      if (!addressValidity) throw new Error(`${language[lang].INVALID_ADDRESS}`);
+
+      // Get wallet balance from global helper
+      let balDetails: any = await global_helper.get_wallet_balance(coinData, wallet_address);
+      // console.log('balDetails >>>', balDetails);
+      let balance: string = "0";
+      if (balDetails.status) {
+        balance = balDetails.balance;
+      } else {
+        const walletData: any = await Models.WalletModel.findOne({
+          attributes: ["balance"],
+          where: {
+            wallet_address,
+            coin_id,
+          },
+        });
+        balance = walletData ? walletData.balance : "0";
+      }
+
+      return res.status(GlblCode.SUCCESS).send({
+        status: true,
+        code: GlblCode.SUCCESS,
+        message: language[lang].REQUEST_EXECUTED,
+        data: balance,
+      });
+
+    } catch (err: any) {
+      console.error("Error in wallet > rpcBalance:", err);
+
+      // Log the error to the error logs
+      await commonHelper.save_error_logs("rpcBalance", err.message);
+      let message = err.message ? err.message : language[lang].CATCH_MSG
+      return res.status(GlblCode.ERROR_CODE).send({
+        code: GlblCode.ERROR_CODE,
+        status: false,
+        message: message
+      });
+    }
+  }
+
   public async tradingView(req: Request, res: Response) {
     try {
       const symbol: any = req.query.symbol;
@@ -1760,6 +1818,8 @@ class WalletController implements OnlyControllerInterface {
       return res.status(data.code).send(data);
     }
   }
+
+
 }
 
 export const walletController = new WalletController();

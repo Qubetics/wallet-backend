@@ -120,4 +120,10 @@ export default class wallet_validator {
             wallet_address: Joi.string().required()
         })
     }
+    static rpcBalance = {
+        body: Joi.object({
+            coin_id: Joi.number().required(),
+            wallet_address: Joi.string().required()
+        })
+    }
 }
