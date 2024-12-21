@@ -6,7 +6,7 @@ import PolMiddleware from "./middleware/polMiddleware"
 // import { validate } from "express-validation"
 // import validator from "./../../middlewares/validator"
 
-class EthRoute implements ControllerInterface {
+class PolRoute implements ControllerInterface {
   public path = "/polygon";
   public router = express.Router();
 
@@ -46,4 +46,4 @@ class EthRoute implements ControllerInterface {
 
 }
 
-export default EthRoute;
+export default PolRoute;

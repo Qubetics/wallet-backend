@@ -58,7 +58,7 @@ class EthWeb3 {
       }
       return 0;
     } catch (err: any) {
-      console.error("Error in get_erc20_token_balance_eth of eth.", err)
+      console.error("Error in get_erc20_token_balance_tcs of eth.", err)
       await commonHelper.save_error_logs("get_erc20_token_balance_eth", err.message);
       throw err;
     }
