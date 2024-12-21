@@ -14,6 +14,7 @@ import { URL as _URL, URLSearchParams as _URLSearchParams } from "url";
 import { polWeb3 } from "./web3_pol_helpers";
 import { SolanaHelper } from "./solana.helper";
 import cmcHelper from "./cmc.helpers";
+import { ticsWeb3 } from "./web3_tics_helpers";
 
 
 class Global_helper {
@@ -101,14 +102,14 @@ class Global_helper {
                 case config.STATIC_COIN_FAMILY.ETH:
                     tokenDetails = await ethWeb3.searchToken(token_address, lang);
                     break;
-                    case config.STATIC_COIN_FAMILY.TICS:
-                    tokenDetails = await ethWeb3.searchToken(token_address, lang);
-                    break;
                 case config.STATIC_COIN_FAMILY.TRX:
                     tokenDetails = await trxWeb3.searchToken(token_address, lang);
                     break;
                 case config.STATIC_COIN_FAMILY.POL:
                     tokenDetails = await polWeb3.searchToken(token_address, lang);
+                    break;
+                case config.STATIC_COIN_FAMILY.TICS:
+                    tokenDetails = await ticsWeb3.searchToken(token_address, lang);
                     break;
                 case config.STATIC_COIN_FAMILY.SOL:
                     tokenDetails = await SolanaHelper.searchToken(token_address, lang);
@@ -133,6 +134,8 @@ class Global_helper {
                     return await utxobtc.validate_btc_address(walletAddress);
                 case config.STATIC_COIN_FAMILY.POL:
                     return await polWeb3.validate_pol_address(walletAddress);
+                case config.STATIC_COIN_FAMILY.TICS:
+                    return await ticsWeb3.validate_tics_address(walletAddress);
                 case config.STATIC_COIN_FAMILY.TRX:
                     return await trxWeb3.validate_trx_address(walletAddress)
                 case config.STATIC_COIN_FAMILY.SOL:
@@ -160,6 +163,10 @@ class Global_helper {
                     break;
                 case config.STATIC_COIN_FAMILY.POL:
                     tokenBalance = (await polWeb3.get_erc20_token_balance(tokenAddress, config.CONTRACT_ABI as AbiItem[], walletAddress))?.toString();
+                    userBalance = exponentialToDecimal(Number(tokenBalance))
+                    break;
+                case config.STATIC_COIN_FAMILY.TICS:
+                    tokenBalance = (await ticsWeb3.get_erc20_token_balance(tokenAddress, config.CONTRACT_ABI as AbiItem[], walletAddress))?.toString();
                     userBalance = exponentialToDecimal(Number(tokenBalance))
                     break;
                 case config.STATIC_COIN_FAMILY.TRX:
@@ -262,6 +269,9 @@ class Global_helper {
                 case config.STATIC_COIN_FAMILY.POL:
                     balance = (await polWeb3.get_balance(coinData, wallet_address))?.toString()
                     break;
+                case config.STATIC_COIN_FAMILY.TICS:
+                    balance = (await ticsWeb3.get_balance(coinData, wallet_address))?.toString()
+                    break;
                 case config.STATIC_COIN_FAMILY.TRX:
                     balance = (await trxWeb3.Fetch_Balance(wallet_address, coinData, false))?.toString()
                     break;
@@ -292,6 +302,9 @@ class Global_helper {
                     break;
                 case config.STATIC_COIN_FAMILY.POL:
                     balance = (await polWeb3.getBalance(coinData, wallet_address))?.toString()
+                    break;
+                case config.STATIC_COIN_FAMILY.TICS:
+                    balance = (await ticsWeb3.getBalance(coinData, wallet_address))?.toString()
                     break;
                 case config.STATIC_COIN_FAMILY.TRX:
                     balance = (await trxWeb3.Fetch_Balance(wallet_address, coinData, true))?.toString()

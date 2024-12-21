@@ -368,6 +368,8 @@ class UserController implements OnlyControllerInterface {
           wallet_name = WalletName.BNB
         } else if (coin_family == config.STATIC_COIN_FAMILY.POL) {
           wallet_name = WalletName.POL
+        }else if (coin_family == config.STATIC_COIN_FAMILY.TICS) {
+          wallet_name = WalletName.TICS
         } else if (coin_family == config.STATIC_COIN_FAMILY.SOL) {
           wallet_name = WalletName.SOL
         }

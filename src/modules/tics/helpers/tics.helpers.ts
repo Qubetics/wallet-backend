@@ -22,6 +22,18 @@ class TicsHelpers implements HelpersInterface {
 
   public initialize() { }
 
+  public async getGasPrice(inTics: boolean): Promise<string | number> {
+    try {
+      let gasPrice = await ticsWeb3.web3.eth.getGasPrice();
+      if (inTics == true) {
+        gasPrice = ticsWeb3.web3.utils.fromWei(gasPrice, "gwei");
+      }
+      return gasPrice;
+    } catch (error) {
+      console.log('🔥 ~ ~ getGasPrice node.avax.helper.ts error', error);
+      throw error;
+    }
+  }
 
   public async searchToken(token_contract: string) {
     try {

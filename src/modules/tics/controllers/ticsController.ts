@@ -84,16 +84,17 @@ class TicsController implements OnlyControllerInterface {
         } else {
           estimationRes = await TicsHelper.getTicsGasLimit(from, to, lang);
         }
-        let resultList: any = await Models.GasPriceModel.findOne({
-          where: {
-            coin_family: config.STATIC_COIN_FAMILY.TICS
-          }
-        })
+        const gas_price = await TicsHelper.getGasPrice(true);
+        // let resultList: any = await Models.GasPriceModel.findOne({
+        //   where: {
+        //     coin_family: config.STATIC_COIN_FAMILY.TICS
+        //   }
+        // })
         return response.success(res, {
           data: {
             status: true,
             gas_estimate: estimationRes.gas_estimate,
-            resultList,
+            gas_price: gas_price,
           },
         });
       }

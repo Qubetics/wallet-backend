@@ -481,6 +481,28 @@ class WalletHelpers implements OnlyControllerInterface {
             );
           }
           break;
+        case config.STATIC_COIN_FAMILY.TICS:
+          tokensList = await redisHelper.getRedisSting(
+            config.TOKENLIST.TICS.ERC20
+          );
+          tokensList = JSON.parse(tokensList);
+          if (tokensList) {
+            await tokensList.push(specific_token_data);
+            await redisHelper.setRedisSting(
+              config.TOKENLIST.TICS.ERC20,
+              JSON.stringify(tokensList)
+            );
+          } else {
+            tokensList = await coin_queries.coin_find_all([], {
+              coin_status: 1,
+              coin_family: coin_family,
+            });
+            await redisHelper.setRedisSting(
+              config.TOKENLIST.TICS.ERC20,
+              JSON.stringify(tokensList)
+            );
+          }
+          break;
         case config.STATIC_COIN_FAMILY.SOL:
           tokensList = await redisHelper.getRedisSting(
             config.TOKENLIST.SOL.SPL

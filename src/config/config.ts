@@ -69,7 +69,7 @@ export const config = {
     },
     TICS: {
       ERC20: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE_TICS}`,
-      ERC721: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE721_TICS}`,
+      // ERC721: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE721_TICS}`,
     }
   },
   ETH_TESTNET_NODE: zookeeperConfig.config.ETH_TESTNET_NODE,

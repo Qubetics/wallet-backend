@@ -222,6 +222,9 @@ class userHelper {
                 case config.STATIC_COIN_FAMILY.POL:
                     await redisClient.set_hash_table(config.POL_WALLET_ADDRESS, address, JSON.stringify({ address, user_id, wallet_name }))
                     break;
+                case config.STATIC_COIN_FAMILY.TICS:
+                    await redisClient.set_hash_table(config.TICS_WALLET_ADDRESS, address, JSON.stringify({ address, user_id, wallet_name }))
+                    break;
                 case config.STATIC_COIN_FAMILY.SOL:
                     await redisClient.set_hash_table(config.SOL_WALLET_ADDRESS, address, JSON.stringify({ address, user_id, wallet_name }))
                     break;
@@ -273,6 +276,8 @@ class userHelper {
                     wallet_name = WalletName.BNB
                 } else if (wallet_name.length == GlblBooleanEnum.false && coin_family == config.STATIC_COIN_FAMILY.POL) {
                     wallet_name = WalletName.POL
+                } else if (wallet_name.length == GlblBooleanEnum.false && coin_family == config.STATIC_COIN_FAMILY.TICS) {
+                    wallet_name = WalletName.TICS
                 } else if (wallet_name.length == GlblBooleanEnum.false && coin_family == config.STATIC_COIN_FAMILY.SOL) {
                     wallet_name = WalletName.SOL
                 }
@@ -318,6 +323,26 @@ class userHelper {
                         } else {
                             if (p >= 1) {
                                 wallet_name = `${WalletName.BNB}${p + 1}`
+                            }
+                        }
+                    } else if (coin_family == config.STATIC_COIN_FAMILY.POL) {
+                        if (check_name[i].name == WalletName.POL) {
+                            wallet_name = `${WalletName.POL}${i + 1}`
+                        } else if (check_name[i].name == `${WalletName.POL}${i}`) {
+                            wallet_name = `${WalletName.POL}${i + 1}`
+                        } else {
+                            if (p >= 1) {
+                                wallet_name = `${WalletName.POL}${p + 1}`
+                            }
+                        }
+                    } else if (coin_family == config.STATIC_COIN_FAMILY.TICS) {
+                        if (check_name[i].name == WalletName.TICS) {
+                            wallet_name = `${WalletName.TICS}${i + 1}`
+                        } else if (check_name[i].name == `${WalletName.TICS}${i}`) {
+                            wallet_name = `${WalletName.TICS}${i + 1}`
+                        } else {
+                            if (p >= 1) {
+                                wallet_name = `${WalletName.TICS}${p + 1}`
                             }
                         }
                     }
