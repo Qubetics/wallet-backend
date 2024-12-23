@@ -222,7 +222,7 @@ class TicsController implements OnlyControllerInterface {
           return response.error(res, {
             data: {
               status: false,
-              message: language[lang].TICS_INSUFFICIENT(req.coininfo.coin_symbol)
+              message: language[lang].ETH_INSUFFICIENT(req.coininfo.coin_symbol)
             },
           });
         }
@@ -236,7 +236,7 @@ class TicsController implements OnlyControllerInterface {
           return response.error(res, {
             data: {
               status: false,
-              message: language[lang].TICS_GAS(gasInTicsForErc)
+              message: language[lang].ETH_GAS(gasInTicsForErc, 'TICS')
             },
           });
         }

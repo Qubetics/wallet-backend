@@ -235,7 +235,7 @@ class EthController implements OnlyControllerInterface {
           return response.error(res, {
             data: {
               status: false,
-              message: language[lang].ETH_GAS(gasInEthForErc)
+              message: language[lang].ETH_GAS(gasInEthForErc, 'ETH')
             },
           });
         }

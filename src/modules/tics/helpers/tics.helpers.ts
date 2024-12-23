@@ -81,7 +81,7 @@ class TicsHelpers implements HelpersInterface {
         status: true,
         gas_estimate:
           gasLimit == 0 ? 60000 : Math.floor(parseFloat(gasLimit.toString())),
-        message: language[lang].ESTIMATE_TICS_TRANSFER_GAS_FEE
+        message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('TICS')
       };
 
       //return 0;
@@ -91,7 +91,7 @@ class TicsHelpers implements HelpersInterface {
       return {
         status: false,
         gas_estimate: 60000,
-        message: language[lang].ESTIMATE_TICS_TRANSFER_GAS_FEE
+        message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('TICS')
       };
     }
   }
@@ -109,7 +109,7 @@ class TicsHelpers implements HelpersInterface {
       return {
         status: true,
         gas_estimate: gasLimit > 30000 ? gasLimit : 30000,
-        message: language[lang].ESTIMATE_TICS_TRANSFER_GAS_FEE
+        message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('TICS')
       };
     } catch (err: any) {
       console.error("error, for try catch", err);
@@ -117,7 +117,7 @@ class TicsHelpers implements HelpersInterface {
       return {
         status: false,
         gas_estimate: 30000,
-        message: language[lang].ESTIMATE_TICS_TRANSFER_GAS_FEE
+        message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('TICS')
       };
     }
   }

@@ -69,7 +69,7 @@ class EthHelpers implements HelpersInterface {
         status: true,
         gas_estimate:
           gasLimit == 0 ? 60000 : Math.floor(parseFloat(gasLimit.toString())),
-        message: language[lang].ESTIMATE_ETH_TRANSFER_GAS_FEE
+        message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('ETH')
       };
 
       //return 0;
@@ -79,7 +79,7 @@ class EthHelpers implements HelpersInterface {
       return {
         status: false,
         gas_estimate: 60000,
-        message: language[lang].ESTIMATE_ETH_TRANSFER_GAS_FEE
+        message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('ETH')
       };
     }
   }
@@ -97,7 +97,7 @@ class EthHelpers implements HelpersInterface {
       return {
         status: true,
         gas_estimate: gasLimit > 30000 ? gasLimit : 30000,
-        message: language[lang].ESTIMATE_ETH_TRANSFER_GAS_FEE
+        message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('ETH')
       };
     } catch (err: any) {
       console.error("error, for try catch", err);
@@ -105,7 +105,7 @@ class EthHelpers implements HelpersInterface {
       return {
         status: false,
         gas_estimate: 30000,
-        message: language[lang].ESTIMATE_ETH_TRANSFER_GAS_FEE
+        message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('ETH')
       };
     }
   }
