@@ -287,7 +287,7 @@ class TicsController implements OnlyControllerInterface {
                 return response.success(res, {
                   data: {
                     status: true,
-                    message: language[lang].WITHDRAW_REQUEST_TICS(req.body.amount, req.coininfo.coin_symbol),
+                    message: language[lang].WITHDRAW_REQUEST_ETH(req.body.amount, req.coininfo.coin_symbol),
                     tx_hash: txid,
                   },
                 });
@@ -295,7 +295,7 @@ class TicsController implements OnlyControllerInterface {
                 return response.success(res, {
                   data: {
                     status: true,
-                    message: language[lang].SWAP_REQUEST_TICS(req.body.amount, req.coininfo.coin_symbol),
+                    message: language[lang].SWAP_REQUEST_ETH(req.body.amount, req.coininfo.coin_symbol),
                     tx_hash: txid,
                   },
                 });
@@ -338,7 +338,7 @@ class TicsController implements OnlyControllerInterface {
         return response.success(res, {
           data: {
             status: true,
-            message: language[lang].SWAP_REQUEST_TICS(amount, req.coininfo.coin_symbol),
+            message: language[lang].SWAP_REQUEST_ETH(amount, req.coininfo.coin_symbol),
             tx_hash: tx_hash
           },
         });
