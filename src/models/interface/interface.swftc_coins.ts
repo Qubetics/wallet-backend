@@ -1,5 +1,6 @@
 export interface SWFTCcoinsInterface {
     id: number,
+    coinId: number,
     coinName: string,
     coinCode: string,
     mainNetwork: string,

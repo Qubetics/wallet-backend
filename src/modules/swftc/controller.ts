@@ -4,11 +4,12 @@ import { Request, Response } from "express";
 import { config } from "../../config";
 import rp from "request-promise";
 import axios from "axios";
-import { GlblBooleanEnum, GlblCode } from "../../constants/global_enum";
+import { GlblAddedBy, GlblBooleanEnum, GlblCode } from "../../constants/global_enum";
 import { global_helper } from "../../helpers/common/global_helper";
 import { language } from "../../constants";
 import commonHelper from "../../helpers/common/common.helpers";
 import { Op } from "sequelize";
+import { coin_queries } from "../../helpers/dbHelper";
 
 
 class SwftcController implements OnlyControllerInterface {
@@ -35,7 +36,6 @@ class SwftcController implements OnlyControllerInterface {
                 data: data
             };
 
-            let arr: any = []
             let networks: any = [
                 "ETH",
                 "BTC",
@@ -45,6 +45,16 @@ class SwftcController implements OnlyControllerInterface {
                 "TRX"
             ];
 
+            let coinFamily: any = {
+                1: "BSC",
+                2: "ETH",
+                3: "BTC",
+                4: "POLYGON",
+                5: "SOL",
+                6: "TRX",
+                7: "TICS"
+            };
+
             await axios(configg)
                 .then(async function (response) {
                     // for (let value of response?.data.data) {
@@ -52,16 +62,28 @@ class SwftcController implements OnlyControllerInterface {
                     // }
                     for await (let value of response?.data.data) {
                         if (networks.indexOf(value.mainNetwork) !== -1) {
+                            let coin_family: any = Object.keys(coinFamily).find(
+                                (key) => coinFamily[key] === value.mainNetwork
+                            );
+                            console.log('coin_family >>>', coin_family);
+                            let token_type = null;
+                            if (coin_family == config.STATIC_COIN_FAMILY.ETH || coin_family == config.STATIC_COIN_FAMILY.POL || coin_family == config.STATIC_COIN_FAMILY.TICS) {
+                                token_type = "ERC20"
+                            } else if (coin_family == config.STATIC_COIN_FAMILY.BSC) {
+                                token_type = "BEP20"
+                            } else if (coin_family == config.STATIC_COIN_FAMILY.SOL) {
+                                token_type = "SPL"
+                            } else if (coin_family == config.STATIC_COIN_FAMILY.TRX) {
+                                token_type = "TRC20"
+                            }
+
+
+                            let token_address: any = value.contact ? value.contact : null;
                             let coin_symbol: string = value.coinCode.split(/[\(\)]/)
                             let symbol = coin_symbol[GlblBooleanEnum.false]
-                            let image: any = null;
-                            let token_address: any = value.contact ? value.contact : null;
-                            let result: any = await global_helper.get_token_image_from_cmc({ symbol: symbol })
-                            if (result) {
-                                image = result.image;
-                            }
+
                             let data_exist: any = await Models.SWFTCCoinsDataModel.findOne({
-                                attributes: ["coinName"],
+                                attributes: ['id', "coinName"],
                                 where: {
                                     coinName: value.coinAllCode,
                                     coinCode: value.coinCode,
@@ -71,7 +93,80 @@ class SwftcController implements OnlyControllerInterface {
                                 raw: true
                             })
                             if (!data_exist) {
+                                let coinName = value.coinAllCode;
+                                if (token_address) {
+                                    let tokenDetails = await global_helper.return_decimals_name_symbol(
+                                        parseInt(coin_family),
+                                        token_address,
+                                        lang
+                                    );
+                                    console.log('tokenDetails >>', tokenDetails);
+                                    coinName = tokenDetails.name;
+                                }
+                                let findCoin: any = await Models.CoinsModel.findOne({
+                                    attributes: ["coin_id", "coin_image"],
+                                    where: {
+                                        coin_symbol: symbol,
+                                        coin_family: coin_family,
+                                        token_address: token_address ? { [Op.like]: token_address } : null,
+                                    },
+                                    raw: true,
+                                });
+                                let image: any = null;
+                                let cmcId: any = null;
+                                let result: any = await global_helper.get_token_image_from_cmc({ symbol: symbol })
+                                if (result) {
+                                    image = result.image;
+                                    cmcId = result.id
+                                }
+                                let coin_id: number = 0;
+                                if (!findCoin) {
+                                    let graphSource: string | null = null;
+                                    let graphPair: string | null = null;
+                                    if (token_address && symbol) {
+                                        const tradingViewData = await global_helper.getTradingSource(symbol);
+                                        console.log('tradingViewData >>>', tradingViewData);
+                                        if (tradingViewData.status) {
+                                            graphSource = tradingViewData.graphSource;
+                                            graphPair = tradingViewData.graphPair;
+                                        }
+
+                                    }
+                                    let swapSupported: number = 0;
+                                    if (token_address && coin_family == config.STATIC_COIN_FAMILY.ETH || coin_family == config.STATIC_COIN_FAMILY.BNB || coin_family == config.STATIC_COIN_FAMILY.POL) {
+                                        swapSupported = await global_helper.oneInchSwapSupported(token_address, coinFamily)
+                                    }
+
+                                    let currentUTCDate: string = new Date().toISOString().replace(/T/, " ").replace(/\..+/, "");
+                                    let coinData: any = {
+                                        coin_name: coinName,
+                                        coin_symbol: symbol.toUpperCase(),
+                                        coin_image: image,
+                                        cmc_id: cmcId,
+                                        coin_family: coin_family,
+                                        coin_status: GlblBooleanEnum.true,
+                                        is_token: GlblBooleanEnum.true,
+                                        is_on_cmc: cmcId ? GlblBooleanEnum.true : GlblBooleanEnum.false,
+                                        for_swap: swapSupported,
+                                        added_by: GlblAddedBy.ADMIN,
+                                        token_type: token_type,
+                                        decimals: Math.pow(10, parseInt(value.coinDecimal)),
+                                        token_address: token_address,
+                                        is_on_coin_gicko: 0,
+                                        graph_pair: graphPair,
+                                        graph_source: graphSource,
+                                        is_on_trading_view: graphSource ? 1 : 0,
+                                        created_at: currentUTCDate,
+                                        updated_at: currentUTCDate,
+
+                                    }
+                                    let response: any = await coin_queries.coin_create(coinData);
+                                    coin_id = response?.coin_id;
+                                } else {
+                                    coin_id = findCoin?.coin_id;
+                                }
                                 await Models.SWFTCCoinsDataModel.create({
+                                    coinId: coin_id,
                                     coinName: value.coinAllCode,
                                     coinCode: value.coinCode,
                                     coinImageUrl: image,
@@ -84,7 +179,13 @@ class SwftcController implements OnlyControllerInterface {
                                     coinCodeShow: value.coinCodeShow,
                                     status: GlblBooleanEnum.true
                                 })
+
+                            } else {
+                                await Models.SWFTCCoinsDataModel.update(
+                                    { noSupportCoin: value.noSupportCoin, status: 1 },
+                                    { where: { id: data_exist.id } })
                             }
+
                         }
                     }
                 })

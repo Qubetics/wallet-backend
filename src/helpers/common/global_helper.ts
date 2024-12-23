@@ -94,6 +94,9 @@ class Global_helper {
 
     public async return_decimals_name_symbol(coin_family: number, token_address: string, lang: string) {
         try {
+            console.log('coin_family <<<<', coin_family, typeof coin_family);
+            console.log('token_address <<<<', token_address);
+            console.log('config.STATIC_COIN_FAMILY', config.STATIC_COIN_FAMILY);
             let tokenDetails: any = { decimals: 0, name: "", symbol: "" }
             switch (coin_family) {
                 case config.STATIC_COIN_FAMILY.BNB:
