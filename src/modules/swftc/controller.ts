@@ -133,9 +133,9 @@ class SwftcController implements OnlyControllerInterface {
 
                                     }
                                     let swapSupported: number = 0;
-                                    if (token_address && coin_family == config.STATIC_COIN_FAMILY.ETH || coin_family == config.STATIC_COIN_FAMILY.BNB || coin_family == config.STATIC_COIN_FAMILY.POL) {
-                                        swapSupported = await global_helper.oneInchSwapSupported(token_address, coinFamily)
-                                    }
+                                    // if (token_address && coin_family == config.STATIC_COIN_FAMILY.ETH || coin_family == config.STATIC_COIN_FAMILY.BNB || coin_family == config.STATIC_COIN_FAMILY.POL) {
+                                    //     swapSupported = await global_helper.oneInchSwapSupported(token_address, coinFamily)
+                                    // }
 
                                     let currentUTCDate: string = new Date().toISOString().replace(/T/, " ").replace(/\..+/, "");
                                     let coinData: any = {
