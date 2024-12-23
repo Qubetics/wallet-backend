@@ -112,9 +112,26 @@ class SwftcController implements OnlyControllerInterface {
     public async coindata(req: Request, res: Response) {
         let lang: any = req.headers['content-language'] || 'en';
         try {
+            const page: number = Number(req.body?.page || 1);
+            const per_page: number = Number(req.body?.per_page || 500);
+            const offset: number = (page - 1) * per_page;
+            let where: any = { status: 1 };
+            const total = await Models.SWFTCCoinsDataModel.count({ where: where });
+            if (req.body?.search) {
+                let search: any = req.body.search == undefined ? (req.body.search = "%%") : (req.body.search = "%" + req.body.search + "%");
+                where = {
+                    ...where, [Op.or]: [
+                        { coinName: { [Op.like]: search } },
+                        { coinCode: { [Op.like]: search } },
+                        { contact: { [Op.like]: search } }
+                    ]
+                }
+            }
             let swftc_data: any = await Models.SWFTCCoinsDataModel.findAll({
                 attributes: ["coinName", "coinCode", "coinImageUrl", "mainNetwork", "contact", "coinDecimal", "noSupportCoin", "isSupportAdvanced", "isSupportMemo", "coinCodeShow"],
-                where: { status: 1 }
+                where: where,
+                limit: per_page,
+                offset: offset,
             })
             // let swftc_data: any = await swftc_queries.swftc_find_all(
             //     ["coinName", "coinCode", "coinImageUrl", "mainNetwork", "contact", "coinDecimal", "noSupportCoin", "isSupportAdvanced", "isSupportMemo", "coinCodeShow"],
@@ -124,6 +141,12 @@ class SwftcController implements OnlyControllerInterface {
                 status: true,
                 code: GlblCode.SUCCESS,
                 data: swftc_data,
+                meta: {
+                    page: page,
+                    pages: Math.ceil(total / per_page),
+                    perPage: per_page,
+                    total: total,
+                },
                 message: language[lang].SUCCESS
             };
             return res.status(result.code).send(result);
@@ -171,6 +194,7 @@ class SwftcController implements OnlyControllerInterface {
     public async getBaseInfo(req: Request, res: Response) {
         let lang: any = req.headers['content-language'] || 'en';
         try {
+            req.body.sourceFlag = 'Qubetics';
             const requestOptionsForListing = {
                 method: "POST",
                 uri: `${config.SWFTC.SWFTC_BASE_INFO}`,
@@ -203,10 +227,11 @@ class SwftcController implements OnlyControllerInterface {
         let lang: any = req.headers['content-language'] || 'en';
 
         try {
-            /** if receive coin amount not received then set here */
-            if (req.body.receiveCoinAmt == undefined || req.body.receiveCoinAmt == null) {
-                req.body.receiveCoinAmt = GlblBooleanEnum.false;
-            }
+            req.body.sourceFlag = 'Qubetics';
+            // /** if receive coin amount not received then set here */
+            // if (req.body.receiveCoinAmt == undefined || req.body.receiveCoinAmt == null) {
+            //     req.body.receiveCoinAmt = GlblBooleanEnum.false;
+            // }
             const requestOptionsForListing = {
                 method: "POST",
                 uri: `${config.SWFTC.SWFTC_ACCOUNT_EXCHANGE}`,
