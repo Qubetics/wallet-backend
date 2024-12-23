@@ -8,7 +8,7 @@ import { GlblAddedBy, GlblBooleanEnum, GlblCode } from "../../constants/global_e
 import { global_helper } from "../../helpers/common/global_helper";
 import { language } from "../../constants";
 import commonHelper from "../../helpers/common/common.helpers";
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import { coin_queries } from "../../helpers/dbHelper";
 
 
@@ -213,6 +213,7 @@ class SwftcController implements OnlyControllerInterface {
     public async coindata(req: Request, res: Response) {
         let lang: any = req.headers['content-language'] || 'en';
         try {
+            const addresses = req.body.addresses;
             const page: number = Number(req.body?.page || 1);
             const per_page: number = Number(req.body?.per_page || 500);
             const offset: number = (page - 1) * per_page;
@@ -231,13 +232,29 @@ class SwftcController implements OnlyControllerInterface {
             let swftc_data: any = await Models.SWFTCCoinsDataModel.findAll({
                 attributes: ["coinName", "coinCode", "coinImageUrl", "mainNetwork", "contact", "coinDecimal", "noSupportCoin", "isSupportAdvanced", "isSupportMemo", "coinCodeShow"],
                 where: where,
+                include: [{
+                    model: Models.CoinsModel,
+                    attributes: ['coin_id', 'coin_name', 'is_token'],
+                    include: [
+                        {
+                            model: Models.WalletModel,
+                            attributes: [
+                                "wallet_address",
+                                [Sequelize.literal(`(IF (status= null,0,status))`), `status`],
+                            ],
+                            where: {
+                                wallet_address: { [Op.in]: addresses },
+                            },
+                            required: false,
+                            as: "wallet_data",
+                        }
+                    ]
+                }
+                ],
                 limit: per_page,
                 offset: offset,
             })
-            // let swftc_data: any = await swftc_queries.swftc_find_all(
-            //     ["coinName", "coinCode", "coinImageUrl", "mainNetwork", "contact", "coinDecimal", "noSupportCoin", "isSupportAdvanced", "isSupportMemo", "coinCodeShow"],
-            //     { status: 1 }
-            // )
+
             let result = {
                 status: true,
                 code: GlblCode.SUCCESS,
@@ -253,7 +270,7 @@ class SwftcController implements OnlyControllerInterface {
             return res.status(result.code).send(result);
         } catch (err: any) {
             console.error("err in get_data of SWFTC>>", err)
-            await commonHelper.save_error_logs("SWFT_get_data", err.message);
+            await commonHelper.save_error_logs("swftc_coindata", err.message);
             let data = {
                 status: false,
                 code: GlblCode.ERROR_CODE,
@@ -262,35 +279,6 @@ class SwftcController implements OnlyControllerInterface {
             return res.status(data.code).send(data);
         }
     }
-
-    // public async queryCoinList(req: Request, res: Response) {
-    //     let lang: any = req.headers['content-language'] || 'en';
-
-    //     try {
-    //         let findCoins = await Models.SWFTCCoinsDataModel.findAll({
-    //             where: {
-    //                 status: GlblBooleanEnum.true,
-    //             },
-    //             raw: true,
-    //         });
-    //         let data = {
-    //             data: findCoins,
-    //             status: true,
-    //             code: GlblCode.SUCCESS,
-    //             message: language[lang].SUCCESS
-    //         };
-    //         return res.status(data.code).send(data);
-    //     } catch (err: any) {
-    //         console.error(`queryCoinList err >>>`, err);
-    //         let data = {
-    //             details: [],
-    //             status: false,
-    //             code: GlblCode.ERROR_CODE,
-    //             message: language[lang].CATCH_MSG
-    //         };
-    //         return res.status(data.code).send(data);
-    //     }
-    // }
 
     public async getBaseInfo(req: Request, res: Response) {
         let lang: any = req.headers['content-language'] || 'en';
@@ -324,6 +312,7 @@ class SwftcController implements OnlyControllerInterface {
             return res.status(data.code).send(data);
         }
     }
+
     public async accountExchange(req: Request, res: Response) {
         let lang: any = req.headers['content-language'] || 'en';
 
