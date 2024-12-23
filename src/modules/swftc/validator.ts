@@ -2,8 +2,10 @@ import { Joi } from 'express-validation';
 
 export default class validator {
 
-    static coinData = {
+    static queryCoinList = {
         body: Joi.object({
+            addresses: Joi.array().required(),
+            fiat_type: Joi.string().optional(),
             page: Joi.number().optional(),
             per_page: Joi.number().optional(),
             search: Joi.string().optional(),

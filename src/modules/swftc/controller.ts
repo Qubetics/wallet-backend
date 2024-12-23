@@ -69,7 +69,7 @@ class SwftcController implements OnlyControllerInterface {
                             let token_type = null;
                             if (coin_family == config.STATIC_COIN_FAMILY.ETH || coin_family == config.STATIC_COIN_FAMILY.POL || coin_family == config.STATIC_COIN_FAMILY.TICS) {
                                 token_type = "ERC20"
-                            } else if (coin_family == config.STATIC_COIN_FAMILY.BSC) {
+                            } else if (coin_family == config.STATIC_COIN_FAMILY.BNB) {
                                 token_type = "BEP20"
                             } else if (coin_family == config.STATIC_COIN_FAMILY.SOL) {
                                 token_type = "SPL"
@@ -214,6 +214,7 @@ class SwftcController implements OnlyControllerInterface {
         let lang: any = req.headers['content-language'] || 'en';
         try {
             const addresses = req.body.addresses;
+            const fiat_type: string = req.body?.fiat_type || 'usd';
             const page: number = Number(req.body?.page || 1);
             const per_page: number = Number(req.body?.per_page || 500);
             const offset: number = (page - 1) * per_page;
@@ -238,8 +239,18 @@ class SwftcController implements OnlyControllerInterface {
                     as: "coin_data",
                     include: [
                         {
+                            model: Models.CoinPriceInFiatModel,
+                            as: "fiat_price_data",
+                            attributes: ["value", "price_change_percentage_24h"],
+                            where: {
+                                fiat_type: fiat_type,
+                            },
+                            required: false,
+                        },
+                        {
                             model: Models.WalletModel,
                             attributes: [
+                                "balance",
                                 "wallet_address",
                                 [Sequelize.literal(`(IF (status= null,0,status))`), `status`],
                             ],
