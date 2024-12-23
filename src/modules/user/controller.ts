@@ -624,24 +624,24 @@ class UserController implements OnlyControllerInterface {
       if (Object.keys(tokens).length > 0) {
         let i = 0;
         for (const address of Object.keys(tokens)) {
-          if (i <= 20) {
-            const token = tokens[address];
-            // console.log(`Token Name: ${token.name}`);
-            // console.log(`Symbol: ${token.symbol}`);
-            // console.log(`Address: ${token.address}`);
-            // console.log(`Logo URI: ${token.logoURI}`);
-            // console.log('---');
-            const data_exist: any = await Models.CoinsModel.findOne({
-              attributes: ["coin_id", "for_swap"],
-              where: { token_address: token.address, coin_family: coin_family },
-              raw: true,
+          //if (i <= 20) {
+          const token = tokens[address];
+          // console.log(`Token Name: ${token.name}`);
+          // console.log(`Symbol: ${token.symbol}`);
+          // console.log(`Address: ${token.address}`);
+          // console.log(`Logo URI: ${token.logoURI}`);
+          // console.log('---');
+          const data_exist: any = await Models.CoinsModel.findOne({
+            attributes: ["coin_id", "for_swap"],
+            where: { token_address: token.address, coin_family: coin_family },
+            raw: true,
+          });
+          if (data_exist && data_exist.for_swap == 0) {
+            const arrayObj: any = { for_swap: 1 };
+            await Models.CoinsModel.update(arrayObj, {
+              where: { coin_id: data_exist.coin_id },
             });
-            if (data_exist && data_exist.for_swap == 0) {
-              const arrayObj: any = { for_swap: 1 };
-              await Models.CoinsModel.update(arrayObj, {
-                where: { coin_id: data_exist.coin_id },
-              });
-            } /*else if (!data_exist) {
+          } /*else if (!data_exist) {
               let image: string | null = null;
               const symbol: string = token.symbol;
 
@@ -682,10 +682,10 @@ class UserController implements OnlyControllerInterface {
               }
             }*/
 
-          } else {
+          /*} else {
             console.log('tesddddddddddd11');
             return false;
-          }
+          }*/
           console.log('tesddddddddddd2222');
 
           i = i + 1;
