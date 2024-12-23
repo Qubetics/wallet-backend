@@ -210,7 +210,7 @@ class SwftcController implements OnlyControllerInterface {
         }
     }
 
-    public async coindata(req: Request, res: Response) {
+    public async queryCoinList(req: Request, res: Response) {
         let lang: any = req.headers['content-language'] || 'en';
         try {
             const addresses = req.body.addresses;
@@ -223,9 +223,9 @@ class SwftcController implements OnlyControllerInterface {
                 let search: any = req.body.search == undefined ? (req.body.search = "%%") : (req.body.search = "%" + req.body.search + "%");
                 where = {
                     ...where, [Op.or]: [
-                        { coinName: { [Op.like]: search } },
-                        { coinCode: { [Op.like]: search } },
-                        { contact: { [Op.like]: search } }
+                        { "$coin_data.coin_name$": { [Op.like]: search } },
+                        { "$coin_data.coin_symbol$": { [Op.like]: search } },
+                        { "$coin_data.token_address$": { [Op.like]: search } }
                     ]
                 }
             }
@@ -234,7 +234,8 @@ class SwftcController implements OnlyControllerInterface {
                 where: where,
                 include: [{
                     model: Models.CoinsModel,
-                    attributes: ['coin_id', 'coin_name', 'is_token'],
+                    attributes: ['coin_id', 'coin_symbol', 'coin_name', 'is_token', 'token_address', 'coin_image'],
+                    as: "coin_data",
                     include: [
                         {
                             model: Models.WalletModel,

@@ -1,6 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { SWFTCcoinsInterface } from "../interface/interface.swftc_coins";
 import db from "../../helpers/common/db";
+import CoinsModel from "./model.coins";
 
 interface SWFTCCoinsModel extends Optional<SWFTCcoinsInterface, "id"> { }
 interface SWFTCCoinsModelDataInterface
@@ -68,7 +69,12 @@ const SWFTCCoinsDataModel = db.db_write.define<SWFTCCoinsModelDataInterface>(
     "swftc_coins",
     dataObj, {
     underscored: false
-}
-);
+});
+
+SWFTCCoinsDataModel.belongsTo(CoinsModel, {
+    foreignKey: "coinId",
+    targetKey: "coin_id",
+    as: "coin_data"
+});
 
 export default SWFTCCoinsDataModel;

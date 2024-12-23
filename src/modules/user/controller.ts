@@ -368,7 +368,7 @@ class UserController implements OnlyControllerInterface {
           wallet_name = WalletName.BNB
         } else if (coin_family == config.STATIC_COIN_FAMILY.POL) {
           wallet_name = WalletName.POL
-        }else if (coin_family == config.STATIC_COIN_FAMILY.TICS) {
+        } else if (coin_family == config.STATIC_COIN_FAMILY.TICS) {
           wallet_name = WalletName.TICS
         } else if (coin_family == config.STATIC_COIN_FAMILY.SOL) {
           wallet_name = WalletName.SOL
@@ -641,7 +641,7 @@ class UserController implements OnlyControllerInterface {
               await Models.CoinsModel.update(arrayObj, {
                 where: { coin_id: data_exist.coin_id },
               });
-            } else if (!data_exist) {
+            } /*else if (!data_exist) {
               let image: string | null = null;
               const symbol: string = token.symbol;
 
@@ -680,7 +680,7 @@ class UserController implements OnlyControllerInterface {
                 await Models.CoinsModel.create(arrayObj);
                 console.log("coin created >>>", token);
               }
-            }
+            }*/
 
           } else {
             console.log('tesddddddddddd11');
