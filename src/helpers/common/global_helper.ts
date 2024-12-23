@@ -88,7 +88,8 @@ class Global_helper {
             });
         } catch (error) {
             console.error("Error swapping tokens:", error);
-            throw error;
+            return 0;
+            // throw error;
         }
     }
 

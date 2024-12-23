@@ -94,15 +94,15 @@ class SwftcController implements OnlyControllerInterface {
                             })
                             if (!data_exist) {
                                 let coinName = value.coinAllCode;
-                                if (token_address) {
-                                    let tokenDetails = await global_helper.return_decimals_name_symbol(
-                                        parseInt(coin_family),
-                                        token_address,
-                                        lang
-                                    );
-                                    console.log('tokenDetails >>', tokenDetails);
-                                    coinName = tokenDetails.name;
-                                }
+                                // if (token_address) {
+                                //     let tokenDetails = await global_helper.return_decimals_name_symbol(
+                                //         parseInt(coin_family),
+                                //         token_address,
+                                //         lang
+                                //     );
+                                //     console.log('tokenDetails >>', tokenDetails);
+                                //     coinName = tokenDetails.name;
+                                // }
                                 let findCoin: any = await Models.CoinsModel.findOne({
                                     attributes: ["coin_id", "coin_image"],
                                     where: {
