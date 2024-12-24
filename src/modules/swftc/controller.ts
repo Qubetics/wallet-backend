@@ -252,7 +252,7 @@ class SwftcController implements OnlyControllerInterface {
                             attributes: [
                                 "balance",
                                 "wallet_address",
-                                [Sequelize.literal(`(IF (status= null,0,status))`), `status`],
+                                "status"
                             ],
                             where: {
                                 wallet_address: { [Op.in]: addresses },
