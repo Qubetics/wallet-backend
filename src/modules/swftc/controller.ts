@@ -214,12 +214,14 @@ class SwftcController implements OnlyControllerInterface {
         let lang: any = req.headers['content-language'] || 'en';
         try {
             const addresses = req.body.addresses;
+            const coin_family = req.body.coin_family;
+            const is_wallet = req.body.is_wallet || false;
             const fiat_type: string = req.body?.fiat_type || 'usd';
             const page: number = Number(req.body?.page || 1);
             const per_page: number = Number(req.body?.per_page || 500);
             const offset: number = (page - 1) * per_page;
             let where: any = { status: 1 };
-            const total = await Models.SWFTCCoinsDataModel.count({ where: where });
+            //const total = await Models.SWFTCCoinsDataModel.count({ where: where });
             if (req.body?.search) {
                 let search: any = req.body.search == undefined ? (req.body.search = "%%") : (req.body.search = "%" + req.body.search + "%");
                 where = {
@@ -230,12 +232,13 @@ class SwftcController implements OnlyControllerInterface {
                     ]
                 }
             }
-            let swftc_data: any = await Models.SWFTCCoinsDataModel.findAll({
+            let swftc_data: any = await Models.SWFTCCoinsDataModel.findAndCountAll({
                 attributes: ["coinName", "coinCode", "coinImageUrl", "mainNetwork", "contact", "coinDecimal", "noSupportCoin", "isSupportAdvanced", "isSupportMemo", "coinCodeShow"],
                 where: where,
                 include: [{
                     model: Models.CoinsModel,
                     attributes: ['coin_id', 'coin_symbol', 'coin_name', 'is_token', 'token_address', 'coin_image'],
+                    where: { coin_family: coin_family },
                     as: "coin_data",
                     include: [
                         {
@@ -257,7 +260,7 @@ class SwftcController implements OnlyControllerInterface {
                             where: {
                                 wallet_address: { [Op.in]: addresses },
                             },
-                            required: false,
+                            required: is_wallet,
                             as: "wallet_data",
                         }
                     ]
@@ -270,12 +273,12 @@ class SwftcController implements OnlyControllerInterface {
             let result = {
                 status: true,
                 code: GlblCode.SUCCESS,
-                data: swftc_data,
+                data: swftc_data.rows,
                 meta: {
                     page: page,
-                    pages: Math.ceil(total / per_page),
+                    pages: Math.ceil(swftc_data.count / per_page),
                     perPage: per_page,
-                    total: total,
+                    total: swftc_data.count,
                 },
                 message: language[lang].SUCCESS
             };

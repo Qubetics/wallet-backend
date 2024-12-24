@@ -5,6 +5,8 @@ export default class validator {
     static queryCoinList = {
         body: Joi.object({
             addresses: Joi.array().required(),
+            coin_family: Joi.number().optional(),
+            is_wallet: Joi.boolean().optional(),
             fiat_type: Joi.string().optional(),
             page: Joi.number().optional(),
             per_page: Joi.number().optional(),
