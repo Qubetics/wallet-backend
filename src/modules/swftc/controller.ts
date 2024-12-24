@@ -214,7 +214,7 @@ class SwftcController implements OnlyControllerInterface {
         let lang: any = req.headers['content-language'] || 'en';
         try {
             const addresses = req.body.addresses;
-            const coin_family = req.body.coin_family;
+            const coin_family = req.body.coin_family || 0;
             const is_wallet = req.body.is_wallet || false;
             const fiat_type: string = req.body?.fiat_type || 'usd';
             const page: number = Number(req.body?.page || 1);
@@ -232,13 +232,14 @@ class SwftcController implements OnlyControllerInterface {
                     ]
                 }
             }
+            let coinWhere = coin_family !== 0 ? { coin_family } : {};
             let swftc_data: any = await Models.SWFTCCoinsDataModel.findAndCountAll({
                 attributes: ["coinName", "coinCode", "coinImageUrl", "mainNetwork", "contact", "coinDecimal", "noSupportCoin", "isSupportAdvanced", "isSupportMemo", "coinCodeShow"],
                 where: where,
                 include: [{
                     model: Models.CoinsModel,
                     attributes: ['coin_id', 'coin_symbol', 'coin_name', 'is_token', 'token_address', 'coin_image'],
-                    where: { coin_family: coin_family },
+                    where: coinWhere,
                     as: "coin_data",
                     include: [
                         {
