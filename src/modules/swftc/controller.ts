@@ -238,7 +238,7 @@ class SwftcController implements OnlyControllerInterface {
                 where: where,
                 include: [{
                     model: Models.CoinsModel,
-                    attributes: ['coin_id', 'coin_symbol', 'coin_name', 'is_token', 'token_address', 'coin_image'],
+                    attributes: ['coin_id', 'coin_symbol', 'coin_name', 'is_token', 'token_address', 'coin_image', 'coin_family'],
                     where: coinWhere,
                     as: "coin_data",
                     include: [
@@ -254,7 +254,6 @@ class SwftcController implements OnlyControllerInterface {
                         {
                             model: Models.WalletModel,
                             attributes: [
-                                "balance",
                                 "wallet_address",
                                 "status"
                             ],
