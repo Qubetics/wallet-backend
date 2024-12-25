@@ -76,5 +76,6 @@ SWFTCCoinsDataModel.belongsTo(CoinsModel, {
     targetKey: "coin_id",
     as: "coin_data"
 });
+CoinsModel.hasOne(SWFTCCoinsDataModel, { foreignKey: 'coinId', sourceKey: "coin_id", as: "cross_chain_data" })
 
 export default SWFTCCoinsDataModel;

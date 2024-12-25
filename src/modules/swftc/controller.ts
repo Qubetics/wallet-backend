@@ -306,7 +306,7 @@ class SwftcController implements OnlyControllerInterface {
 
             let swftc_data: any = await Models.SWFTCCoinsDataModel.findAll({
                 attributes: ["coinName", "coinCode", "coinImageUrl", "mainNetwork", "contact", "coinDecimal", "noSupportCoin", "isSupportAdvanced", "isSupportMemo", "coinCodeShow"],
-                where: { status: 1, id: { [Op.in]: id } },
+                where: { status: 1, coinId: { [Op.in]: id } },
                 include: [{
                     model: Models.CoinsModel,
                     attributes: ['coin_id', 'coin_symbol', 'coin_name', 'is_token', 'token_address', 'coin_image', 'coin_family'],

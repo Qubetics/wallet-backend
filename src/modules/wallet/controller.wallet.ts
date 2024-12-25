@@ -1525,7 +1525,13 @@ class WalletController implements OnlyControllerInterface {
         include: [{
           model: Models.CoinsModel,
           attributes: ["token_address", "is_token", "for_swap", "graph_source", "graph_pair"],
-          required: true
+          required: true,
+          include: [{
+            model: Models.SWFTCCoinsDataModel,
+            attributes: ['id'],
+            as: "cross_chain_data",
+            required: false
+          }]
         }],
         // raw: true,
       });
