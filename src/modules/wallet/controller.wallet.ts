@@ -1513,7 +1513,7 @@ class WalletController implements OnlyControllerInterface {
   public async coinWalletDetail(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-
+      let user_id: number = req.userId;
       const { wallet_address, coin_id }: { wallet_address: string; coin_family: number; coin_id: number } = req.body;
 
       const coinWalletdata = await Models.WalletModel.findOne({
@@ -1526,12 +1526,25 @@ class WalletController implements OnlyControllerInterface {
           model: Models.CoinsModel,
           attributes: ["token_address", "is_token", "for_swap", "graph_source", "graph_pair"],
           required: true,
-          include: [{
-            model: Models.SWFTCCoinsDataModel,
-            attributes: ['id'],
-            as: "cross_chain_data",
-            required: false
-          }]
+          include: [
+            {
+              model: Models.SWFTCCoinsDataModel,
+              attributes: ['id'],
+              as: "cross_chain_data",
+              required: false
+            },
+            {
+              model: Models.WatchlistsModel,
+              attributes: ["user_id", "coin_id", "wallet_address", "status"],
+              as: "watchlist_data",
+              where: {
+                user_id: user_id,
+                wallet_address: wallet_address,
+                status: "1",
+              },
+              required: false,
+            },
+          ]
         }],
         // raw: true,
       });
