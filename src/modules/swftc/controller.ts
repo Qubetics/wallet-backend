@@ -299,13 +299,14 @@ class SwftcController implements OnlyControllerInterface {
     public async queryCoinData(req: Request, res: Response) {
         let lang: any = req.headers['content-language'] || 'en';
         try {
-            const addresses = req.body.id;
+            const addresses = req.body.addresses;
+            const id = req.body.id;
             const fiat_type = req.body.fiat_type;
             const is_wallet = req.body.is_wallet || false;
 
-            let swftc_data: any = await Models.SWFTCCoinsDataModel.findOne({
+            let swftc_data: any = await Models.SWFTCCoinsDataModel.findAll({
                 attributes: ["coinName", "coinCode", "coinImageUrl", "mainNetwork", "contact", "coinDecimal", "noSupportCoin", "isSupportAdvanced", "isSupportMemo", "coinCodeShow"],
-                where: { status: 1 },
+                where: { status: 1, id: { [Op.in]: id } },
                 include: [{
                     model: Models.CoinsModel,
                     attributes: ['coin_id', 'coin_symbol', 'coin_name', 'is_token', 'token_address', 'coin_image', 'coin_family'],

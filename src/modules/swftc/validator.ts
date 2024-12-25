@@ -15,7 +15,8 @@ export default class validator {
     }
     static queryCoinData = {
         body: Joi.object({
-            id: Joi.number().required(),
+            addresses: Joi.array().required(),
+            id: Joi.array().required(),
             fiat_type: Joi.string().required(),
             is_wallet: Joi.boolean().optional()
         })
