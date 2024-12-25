@@ -234,7 +234,7 @@ class SwftcController implements OnlyControllerInterface {
             }
             let coinWhere = coin_family !== 0 ? { coin_family } : {};
             let swftc_data: any = await Models.SWFTCCoinsDataModel.findAndCountAll({
-                attributes: ["coinName", "coinCode", "coinImageUrl", "mainNetwork", "contact", "coinDecimal", "noSupportCoin", "isSupportAdvanced", "isSupportMemo", "coinCodeShow"],
+                attributes: ["id", "coinName", "coinCode", "coinImageUrl", "mainNetwork", "contact", "coinDecimal", "noSupportCoin", "isSupportAdvanced", "isSupportMemo", "coinCodeShow"],
                 where: where,
                 include: [{
                     model: Models.CoinsModel,
@@ -254,6 +254,7 @@ class SwftcController implements OnlyControllerInterface {
                         {
                             model: Models.WalletModel,
                             attributes: [
+                                "balance",
                                 "wallet_address",
                                 "status"
                             ],
@@ -286,6 +287,66 @@ class SwftcController implements OnlyControllerInterface {
         } catch (err: any) {
             console.error("err in get_data of SWFTC>>", err)
             await commonHelper.save_error_logs("swftc_coindata", err.message);
+            let data = {
+                status: false,
+                code: GlblCode.ERROR_CODE,
+                message: language[lang].CATCH_MSG
+            };
+            return res.status(data.code).send(data);
+        }
+    }
+
+    public async queryCoinData(req: Request, res: Response) {
+        let lang: any = req.headers['content-language'] || 'en';
+        try {
+            const addresses = req.body.id;
+            const fiat_type = req.body.fiat_type;
+            const is_wallet = req.body.is_wallet || false;
+
+            let swftc_data: any = await Models.SWFTCCoinsDataModel.findOne({
+                attributes: ["coinName", "coinCode", "coinImageUrl", "mainNetwork", "contact", "coinDecimal", "noSupportCoin", "isSupportAdvanced", "isSupportMemo", "coinCodeShow"],
+                where: { status: 1 },
+                include: [{
+                    model: Models.CoinsModel,
+                    attributes: ['coin_id', 'coin_symbol', 'coin_name', 'is_token', 'token_address', 'coin_image', 'coin_family'],
+                    as: "coin_data",
+                    include: [
+                        {
+                            model: Models.CoinPriceInFiatModel,
+                            as: "fiat_price_data",
+                            attributes: ["value", "price_change_percentage_24h"],
+                            where: {
+                                fiat_type: fiat_type,
+                            },
+                            required: false,
+                        },
+                        {
+                            model: Models.WalletModel,
+                            attributes: [
+                                "balance",
+                                "wallet_address",
+                                "status"
+                            ],
+                            where: {
+                                wallet_address: { [Op.in]: addresses },
+                            },
+                            required: is_wallet,
+                            as: "wallet_data",
+                        }
+                    ]
+                }]
+            })
+
+            let result = {
+                status: true,
+                code: GlblCode.SUCCESS,
+                data: swftc_data,
+                message: language[lang].SUCCESS
+            };
+            return res.status(result.code).send(result);
+        } catch (err: any) {
+            console.error("err in get_data of queryCoinData>>", err)
+            await commonHelper.save_error_logs("swftc_queryCoinData", err.message);
             let data = {
                 status: false,
                 code: GlblCode.ERROR_CODE,

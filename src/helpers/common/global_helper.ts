@@ -484,6 +484,140 @@ class Global_helper {
         };
     }
 
+    public get_nft_data = async (method: string, url: string, header: Object) => {
+        let config_data: any = {
+            method: method,
+            url: url,
+            headers: header
+        }
+        return new Promise(async function (resolve, reject) {
+            return await axios(config_data)
+                .then(function (response) {
+                    resolve(response?.data);
+                })
+                .catch(function (error) {
+                    console.log('🔥 ~ get_nft_data axios catch error', error.message);
+                    resolve(null);
+                });
+        })
+    }
+
+    public check_nft_token_uri = async (url: string) => {
+        return new Promise(async (resolve, reject) => {
+            let config_data: any = {
+                method: 'get',
+                url: url,
+                timeout: 20000
+            }
+            return await axios(config_data)
+                .then(function (response) {
+                    resolve(response?.data);
+                })
+                .catch(function (error) {
+                    console.log('🔥 ~ check_nft_token_uri catch error', error.message);
+                    resolve(null);
+                });
+        });
+    }
+    public check_nft_image = async (url: string) => {
+        return new Promise(async (resolve, reject) => {
+            let imgExtension: any = '';
+            let extension = url?.substring(url?.lastIndexOf('.') + 1);
+            imgExtension = await this.checkExtension(extension);
+            if (imgExtension !== 'text' && imgExtension !== 'undefined' && imgExtension !== undefined) {
+                resolve({ status: true, imgExtension: imgExtension, text_data: '' });
+            }
+
+            await axios.get(url, { timeout: 20000 })
+                .then(async data => {
+                    if (data?.status == 200 && data?.statusText?.toUpperCase() == 'OK') {
+                        let image_content_type = data.headers['content-type'];
+                        imgExtension = await this.checkExtension(image_content_type);
+                        let text_data: any = '';
+                        if (imgExtension == "text") {
+                            text_data = await data.data;
+                        }
+                        resolve({ status: true, imgExtension: imgExtension, text_data: text_data });
+                    } else {
+                        resolve({ status: false, imgExtension: '', text_data: '' });
+                    }
+                })
+                .catch(error => {
+                    console.log('💥 ~ ~ Request timed out', error);
+                    resolve({ status: false, imgExtension: '', text_data: '' });
+                });
+        });
+    }
+
+    public get_ipfs_image = async (url: string) => {
+        let ipfs_image = '';
+        const splitData = url.split("ipfs://");
+        if (splitData?.length > 0 && splitData[1]) {
+            let newSplitData = splitData[1].split("ipfs/");
+            let ips_data = '';
+            if (newSplitData?.length > 0 && newSplitData[1]) {
+                ips_data = newSplitData[1]
+            } else {
+                ips_data = splitData[1];
+            }
+            let check_ips_data = ips_data.split("lootpunksimage");
+            if (check_ips_data?.length > 0) {
+                ips_data = check_ips_data[0];
+            }
+            ipfs_image = ips_data ? `https://gateway.ipfs.io/ipfs/${ips_data}` : "";
+        } else {
+            let newSplitData = splitData[0].split("ipfs/");
+            let ips_data = '';
+            if (newSplitData?.length > 0 && newSplitData[1]) {
+                ips_data = newSplitData[1];
+                let check_ips_data = ips_data.split("lootpunksimage");
+                if (check_ips_data?.length > 0) {
+                    ips_data = check_ips_data[0];
+                }
+                ipfs_image = ips_data ? `https://gateway.ipfs.io/ipfs/${ips_data}` : '';
+            } else {
+                ipfs_image = splitData[0];
+            }
+        }
+        return ipfs_image;
+    }
+
+    public checkExtension = async (blob: any) => {
+        if (blob) {
+            if (blob.includes("svg")) {
+                return "svg";
+            } else if (
+                blob.includes("png") ||
+                blob.includes("jpg") ||
+                blob.includes("jpeg") ||
+                blob.includes("gif") ||
+                blob.includes("webp") ||
+                blob.includes("image")
+            ) {
+                return "image";
+            } else if (
+                blob.includes("mp4") ||
+                blob.includes("mov") ||
+                blob.includes("wmv") ||
+                blob.includes("wav") ||
+                blob.includes("avi") ||
+                blob.includes("avchd") ||
+                blob.includes("mkv") ||
+                blob.includes("webm") ||
+                blob.includes("mpeg") ||
+                blob.includes("ogg") ||
+                blob.includes("video")
+            ) {
+                return "video";
+            } else if (blob.includes("mp3") || blob.includes("audio")) {
+                return "audio";
+            } else if (blob.includes("json") || blob.includes("txt")) {
+                return "text";
+            } else {
+                return "undefined";
+            }
+        }
+    };
 
     // public async get_token_image_from_coin_gicko(data: any) {
     //     try {

@@ -1,5 +1,4 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import * as Models from './index';
 import { NFTInterface } from "../interface/interface.nft";
 import db from "../../helpers/common/db";
 import CoinsModel from '../model/model.coins';
@@ -16,11 +15,6 @@ let dataObj = {
     primaryKey: true,
     autoIncrement: true,
   },
-  coin_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    validate: {},
-  },
   wallet_address: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -35,6 +29,14 @@ let dataObj = {
     type: DataTypes.STRING,
     allowNull: true,
     validate: {},
+  },
+  image_extension: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  text_data: {
+    type: DataTypes.JSON,
+    allowNull: true
   },
   description: {
     type: DataTypes.STRING,
@@ -70,6 +72,18 @@ let dataObj = {
     allowNull: true,
     validate: {},
   },
+  balance: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
+  token_type: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  attributes: {
+    type: DataTypes.JSON,
+    allowNull: true
+  }
 };
 
 const NFTModelModel = db.db_write.define<NFTInterfaceInstance>("nfts", dataObj);

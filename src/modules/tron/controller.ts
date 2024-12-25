@@ -10,6 +10,7 @@ import redisClient from "../../helpers/common/redis";
 import { GlblBlockchainTxStatusEnum, GlblCode, GlblStatus, TxTypesEnum, TxReqTypesEnum } from "../../constants/global_enum";
 import { language } from "../../constants";
 import commonHelper from "../../helpers/common/common.helpers";
+import BigNumber from "bignumber.js";
 
 
 class TronController implements OnlyControllerInterface {
@@ -123,7 +124,8 @@ class TronController implements OnlyControllerInterface {
                     coin,
                     true
                 );
-                if (balance < amount.toString()) {
+                const insufficientBal: boolean = new BigNumber(balance).isLessThan(amount);
+                if (insufficientBal) {
                     const resMsg = {
                         status: false,
                         message: language[lang].INSUFFICIENTTRX,

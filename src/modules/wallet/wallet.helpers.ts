@@ -628,5 +628,22 @@ class WalletHelpers implements OnlyControllerInterface {
       return "0.00";
     }
   }
+  public async update_nft_token_in_redis(coinData: any) {
+    try {
+      switch (coinData.coin_family) {
+        case config.STATIC_COIN_FAMILY.ETH:
+          await redisHelper.set_hash_table(config.TOKENLIST.ETH.NFT, coinData.token_address, JSON.stringify(coinData))
+          break;
+        case config.STATIC_COIN_FAMILY.BNB:
+          await redisHelper.set_hash_table(config.TOKENLIST.BSC.NFT, coinData.token_address, JSON.stringify(coinData))
+          break;
+      }
+    } catch (err: any) {
+      console.error("Error in update_nft_token_in_redis.", err)
+      await commonHelper.save_error_logs("update_nft_token_in_redis", err.message);
+      return null;
+    }
+  }
+
 }
 export const WalletHelper = new WalletHelpers();

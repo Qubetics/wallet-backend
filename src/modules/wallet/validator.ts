@@ -126,4 +126,9 @@ export default class wallet_validator {
             wallet_address: Joi.string().required()
         })
     }
+    static nfts_from_moralis = {
+        body: Joi.object({
+            address_list: Joi.array().required(),
+        })
+    }
 }

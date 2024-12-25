@@ -117,13 +117,21 @@ class WalletRoute implements ControllerInterface {
       [validateExpress(wallet_validator.rpcBalance)],
       walletController.rpcBalance
     );
-    
+
     this.router.post(
       `${this.path}/coinWalletDetail`,
       [validateExpress(wallet_validator.coinWalletDetail)],
       jwtVerification.verifyToken,
       walletController.coinWalletDetail
     );
+    /** NFT */
+    this.router.post(
+      `${this.path}/nft/from_moalis`,
+      [validateExpress(wallet_validator.nfts_from_moralis)],
+      jwtVerification.verifyToken,
+      walletController.nfts_from_moralis
+    );
+
     this.router.get(
       `${this.path}/transaction/downloadcsv/:id`,
       walletController.downloadCsv
@@ -132,6 +140,7 @@ class WalletRoute implements ControllerInterface {
       `${this.path}/tradingView`,
       walletController.tradingView
     );
+
   }
 }
 export default WalletRoute;

@@ -13,6 +13,13 @@ export default class validator {
             search: Joi.string().optional(),
         })
     }
+    static queryCoinData = {
+        body: Joi.object({
+            id: Joi.number().required(),
+            fiat_type: Joi.string().required(),
+            is_wallet: Joi.boolean().optional()
+        })
+    }
     static getBaseInfo = {
         body: Joi.object({
             depositCoinCode: Joi.string().required(),

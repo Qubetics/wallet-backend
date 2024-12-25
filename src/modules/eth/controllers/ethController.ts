@@ -12,6 +12,7 @@ import { language } from "../../../constants";
 import response from "../../../helpers/response/response.helpers";
 import { ethWeb3 } from "../../../helpers/common/web3_eth_helpers";
 import commonHelper from "../../../helpers/common/common.helpers";
+import { TokenType } from "../../../constants/global_enum";
 
 class EthController implements OnlyControllerInterface {
   constructor() {
@@ -228,7 +229,7 @@ class EthController implements OnlyControllerInterface {
       } else if (
         req.coininfo.coin_family == config.STATIC_COIN_FAMILY.ETH &&
         req.coininfo.is_token == true &&
-        req.coininfo.token_type === "ERC721"
+        (req.coininfo.token_type === TokenType.ERC721 || req.coininfo.token_type === TokenType.ERC1155)
       ) {
         var ethBalance = await ethWeb3.get_coin_balance(from, true);
         if (Number(ethBalance) < Number(gasInETH)) {
@@ -259,7 +260,7 @@ class EthController implements OnlyControllerInterface {
 
             if (
               req.coininfo.is_token == true &&
-              req.coininfo.token_type === "ERC721"
+              (req.coininfo.token_type === TokenType.ERC721 || req.coininfo.token_type === TokenType.ERC1155)
             ) {
               await Models.NFTModelModel.update(
                 {
