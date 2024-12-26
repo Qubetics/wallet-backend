@@ -52,7 +52,8 @@ class SolanaHelpers {
             //     return balanceInWei;
             // } catch (error) {
             console.log('🔥 ~ ~ getUserSolanaBalance PUBLIC NODE node.solana.helper.ts error', err);
-            return 0;
+            // return 0;
+            throw err;
             // }
         }
     }
@@ -114,7 +115,8 @@ class SolanaHelpers {
             //     }
             // } catch (err) {
             console.log('🔥 ~ ~ getUserCRC20TokenBalance PUBLIC NODE node.solana.helper.ts error', error);
-            return 0;
+            throw error;
+            // return 0;
             // }
         }
     }
