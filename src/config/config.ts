@@ -94,7 +94,7 @@ export const config = {
     POL_RPC_URL: zookeeperConfig.config.POL_RPC_URL,
     SOL_RPC_URL: zookeeperConfig.config.SOL_RPC_URL,
     TICS_RPC_URL: zookeeperConfig.config.TICS_RPC_URL,
-    TICS_DAPP_RPC_URL: zookeeperConfig.config.TICS_DAPP_RPC_URL,
+    // TICS_DAPP_RPC_URL: zookeeperConfig.config.TICS_DAPP_RPC_URL,
     ETH_DAPP_RPC_URL: zookeeperConfig.config.ETH_DAPP_RPC_URL
 
   },
