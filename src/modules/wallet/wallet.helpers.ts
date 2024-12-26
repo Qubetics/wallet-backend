@@ -19,6 +19,7 @@ import userhelper from "../user/helper";
 import kafka_helper from "../../helpers/common/kafka_helper";
 import resent_graph_data_queries from "../../helpers/dbHelper/resent_graph_data";
 import cmcHelper from "../../helpers/common/cmc.helpers";
+import { Op } from "sequelize";
 class WalletHelpers implements OnlyControllerInterface {
   constructor() {
     this.initialize();
@@ -342,12 +343,12 @@ class WalletHelpers implements OnlyControllerInterface {
   public async create_wallet_for_coin(walletAddress: string, coinId: number, walletName: string, userId: number, coinFamily: number, lang: string, currentUTCDate: any, tokenAddress: string, isToken: number, tokenType: string) {
     try {
       let message: any;
-      let wallet_data: any = await wallet_queries.wallet_find_one_with_order(['wallet_id', 'status'], { wallet_address: walletAddress, coin_id: coinId }, [['wallet_id', 'ASC']])
+      let wallet_data: any = await wallet_queries.wallet_find_one_with_order(['wallet_id', 'status'], { wallet_address: { [Op.like]: walletAddress }, coin_id: coinId }, [['wallet_id', 'ASC']])
       if (!wallet_data) {
 
         let tokenBalData: any = await global_helper.get_new_token_balance(coinFamily, walletAddress, tokenAddress)
 
-        wallet_data = {
+        const save_wallet_data = {
           wallet_address: walletAddress,
           wallet_name: walletName,
           coin_id: coinId,
@@ -359,7 +360,7 @@ class WalletHelpers implements OnlyControllerInterface {
           created_at: currentUTCDate,
           updated_at: currentUTCDate,
         };
-        await wallet_queries.wallet_create(wallet_data);
+        await wallet_queries.wallet_create(save_wallet_data);
         message = language[lang].TOKEN_ADDED;
         if (tokenBalData.status == false) {
           // add to queue

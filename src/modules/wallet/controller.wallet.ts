@@ -27,6 +27,7 @@ import userhelper from "../user/helper";
 import redisClient from "../../helpers/common/redis";
 import kafka_helper from "../../helpers/common/kafka_helper";
 import { CoinInterface } from "../../models";
+import { SolanaHelper } from "../../helpers/common/solana.helper";
 
 class WalletController implements OnlyControllerInterface {
   constructor() {
@@ -2061,6 +2062,37 @@ class WalletController implements OnlyControllerInterface {
       return res.status(data.code).send(data);
     }
   }
+  public async solBalance(req: Request, res: Response) {
+    try {
+      const address: any = req.query.address;
+      const is_token: any = req.query.is_token;
+      let tradingData: any = '';
+      if (is_token) {
+        console.log('token >>>')
+        const token_address: any = req.query.token_address;
+        tradingData = await SolanaHelper.getUserCRC20TokenBalance(token_address, address, true)
+      } else {
+        tradingData = await SolanaHelper.getUserSolanaBalance(address, true, true);
+        console.log('tradingData >>>', tradingData);
+      }
+
+      return res.status(GlblCode.SUCCESS).send({
+        status: true,
+        code: GlblCode.SUCCESS,
+        message: "Source has been fetch successfully",
+        data: tradingData,
+      });
+    } catch (error) {
+      let data = {
+        code: GlblCode.ERROR_CODE,
+        status: false,
+        data: error
+      };
+      return res.status(data.code).send(data);
+    }
+  }
+
+
 
 
 }

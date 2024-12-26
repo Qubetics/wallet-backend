@@ -18,13 +18,13 @@ import { bigNumberSafeMath } from "./globalFunctions";
 class SolanaHelpers {
 
     public connection: Connection;
-    // public connectionNew: Connection;
+    public connectionNew: Connection;
     // public connectionNew1: Connection;
 
     constructor() {
-        //this.connection = new Connection(config.NODE.SOL_RPC_URL || '', 'confirmed');
-        this.connection = new Connection("https://solana-mainnet.g.alchemy.com/v2/REDACTED");
-        // this.connectionNew1 = new Connection("https://api.tatum.io/v3/blockchain/node/solana-mainnet/t-668bc6a95cc8a5001c84cfe5-f77baac94da7436aa48fe793");
+        this.connection = new Connection(config.NODE.SOL_RPC_URL || '', 'confirmed');
+        //this.connection = new Connection("https://solana-mainnet.g.alchemy.com/v2/REDACTED");
+        this.connectionNew = new Connection("https://api.tatum.io/v3/blockchain/node/solana-mainnet/t-668bc6a95cc8a5001c84cfe5-f77baac94da7436aa48fe793");
         this.initialize();
     }
 
@@ -34,8 +34,11 @@ class SolanaHelpers {
     public async getUserSolanaBalance(wallet: string, inSolana: boolean, isString: boolean): Promise<string | number> {
         try {
             let balanceInWei = await this.connection.getBalance(new PublicKey(wallet));
+            // console.log('balanceInWei >>>', balanceInWei);
+
             if (inSolana == true) {
                 let balance = bigNumberSafeMath(balanceInWei.toString(), '/', Math.pow(10, 9));
+                // console.log('balance >>>', balance);
                 return isString ? balance : Number(balance);
             }
             return balanceInWei;
@@ -58,14 +61,14 @@ class SolanaHelpers {
         try {
             const walletPublicKey = new PublicKey(walletAddress);
             const mintPublicKey = new PublicKey(tokenAddress);
-            const tokenAccounts = await this.connection.getTokenAccountsByOwner(walletPublicKey, {
+            const tokenAccounts = await this.connectionNew.getTokenAccountsByOwner(walletPublicKey, {
                 mint: mintPublicKey,
             });
             if (tokenAccounts.value?.length > 0) {
                 const tokenAccount = tokenAccounts.value[0].account;
                 const tokenAccountInfo = AccountLayout.decode(tokenAccount.data);
                 const amount = tokenAccountInfo.amount;
-                const mintInfo: any = await this.connection.getParsedAccountInfo(mintPublicKey);
+                const mintInfo: any = await this.connectionNew.getParsedAccountInfo(mintPublicKey);
                 const decimals = mintInfo.value.data.parsed.info.decimals;
                 let balance = bigNumberSafeMath(amount.toString(), '/', Math.pow(10, decimals))
                 balance = isString ? balance : Number(balance);

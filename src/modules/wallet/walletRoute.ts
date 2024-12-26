@@ -140,6 +140,10 @@ class WalletRoute implements ControllerInterface {
       `${this.path}/tradingView`,
       walletController.tradingView
     );
+    this.router.get(
+      `${this.path}/solBalance`,
+      walletController.solBalance
+    );
 
   }
 }
