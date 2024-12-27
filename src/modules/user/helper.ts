@@ -193,7 +193,7 @@ class userHelper {
                         //     })
                     }
                 }
-                if (device_token !== 'chrome') {
+                if (device_token !== 'chrome' && device_token !== 'abc') {
                     await this.device_token_helper(device_token, userId, lang, address, coin_family, device_id);
                 }
             }
