@@ -181,18 +181,20 @@ class PolController implements OnlyControllerInterface {
       } = req.body;
 
       let maxGas = gas_price * gas_estimate;
-      var gasInETH = await PolHelper.convertWeiToEth(maxGas);
+      console.log('maxGas >>>', maxGas);
+      let gasInETH = await PolHelper.convertWeiToEth(maxGas);
+      console.log('gasInETH >>>', gasInETH);
       gas_price = gasInETH;
-      var gasInEthForErc = 0;
+      let gasInEthForErc = 0;
       // ETH only
       if (req.coininfo.is_token == false && req.coininfo.coin_symbol == "eth") {
-        var withdrawAmount;
+        let withdrawAmount;
         if (dapp_transaction == 1) {
           withdrawAmount = bigNumberSafeMath('0', "+", gasInETH);
         } else {
           withdrawAmount = bigNumberSafeMath(amount, "+", gasInETH);
         }
-        var ethBalance = await polWeb3.get_coin_balance(from, true);
+        let ethBalance = await polWeb3.get_coin_balance(from, true);
         if (Number(ethBalance) < Number(withdrawAmount)) {
           return response.error(res, {
             data: { status: false, message: language[lang].INSUFFICIENT },
@@ -203,8 +205,8 @@ class PolController implements OnlyControllerInterface {
         req.coininfo.is_token == true &&
         req.coininfo.token_type === "ERC20"
       ) {
-        var ethBalance = await polWeb3.get_coin_balance(from, true);
-        var ERC20TokenBalance = await polWeb3.get_erc20_token_balance(
+        let ethBalance = await polWeb3.get_coin_balance(from, true);
+        let ERC20TokenBalance = await polWeb3.get_erc20_token_balance(
           contractAddress,
           ABI as AbiItem[],
           req.body.from
@@ -229,7 +231,7 @@ class PolController implements OnlyControllerInterface {
         req.coininfo.is_token == true &&
         req.coininfo.token_type === "ERC721"
       ) {
-        var ethBalance = await polWeb3.get_coin_balance(from, true);
+        let ethBalance = await polWeb3.get_coin_balance(from, true);
         if (Number(ethBalance) < Number(gasInETH)) {
           return response.error(res, {
             data: {
@@ -239,6 +241,7 @@ class PolController implements OnlyControllerInterface {
           });
         }
       }
+      console.log('Raw >>>', gasInETH);
       let transferData = await PolHelper.sendPolOrTokens(
         req,
         lang,
