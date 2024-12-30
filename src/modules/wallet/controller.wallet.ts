@@ -203,6 +203,9 @@ class WalletController implements OnlyControllerInterface {
               "decimals",
               "is_token",
               "token_address",
+              "for_swap",
+              "graph_source",
+              "graph_pair"
             ],
             required: true,
             where: {
