@@ -168,6 +168,7 @@ export enum TxTypesEnum {
 export enum TxReqTypesEnum {
     APP = 'APP',
     EXNG = 'EXNG',
+    MERCURYO = 'MERCURYO',
     NOTPRESET = 'NOT_PRESENT'
 }
 

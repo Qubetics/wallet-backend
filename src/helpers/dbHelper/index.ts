@@ -3,7 +3,7 @@ import { WalletInterface } from "../../models/interface/index.interface";
 import { config } from "../../config";
 import * as Models from '../../models/model/index'
 import redisClient from "../common/redis";
-import { GlblBlockchainTxStatusEnum, TxReqTypesEnum, Status } from "../../constants/global_enum";
+import { GlblBlockchainTxStatusEnum, TxReqTypesEnum, Status, GlblBooleanEnum } from "../../constants/global_enum";
 import wallet_queries from "./wallets";
 import user_queries from "./users";
 import coin_queries from './coins';
@@ -101,10 +101,18 @@ class DbHelper {
     }
   }
   public async getUserDeviceToken(
-    userId: number
+    address: string, coin_family: number
   ): Promise<{ device_token: Array<string> }> {
     let deviceTokensData: any = await Models.DeviceTokenModel.findAll({
-      where: { user_id: userId, status: 1 },
+      // where: { user_id: userId, status: 1 },
+      where: {
+        // user_id: user_id,
+        address: {
+          [Op.like]: address,
+        },
+        coin_family: coin_family,
+        push: GlblBooleanEnum.true
+      },
       attributes: ["device_token"],
     });
     let newValue: any = [];
