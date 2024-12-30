@@ -193,6 +193,7 @@ class OnOffRampController implements OnlyControllerInterface {
                                 tx_id: txDetail.id || 0,
                                 tx_type: webhookData?.type !== 'withdraw' ? 'SELL' : 'BUY',
                                 coin_symbol: webhookData?.currency.toLowerCase(),
+                                coin_family: txDetail.coin_family,
                                 coin_id: txDetail.coin_id,
                                 state: notification_status
                             };
@@ -201,17 +202,16 @@ class OnOffRampController implements OnlyControllerInterface {
                             let device_token_data = await dbHelper.getUserDeviceToken(txDetail.to_adrs, txDetail.coin_family);
                             if (device_token_data.device_token?.length > 0) {
                                 let dataNoti: any = {
-                                    token: device_token_data,
+                                    token: device_token_data.device_token,
                                     title: webhookData?.type.toUpperCase(),
                                     message: notiMsg,
                                     notification_type: notification_type,
                                     tx_id: txDetail.id || 0,
                                     tx_type: webhookData?.type.toUpperCase(),
                                 };
-                                //await global_helper.sendNotification(dataNoti);
+                                await global_helper.sendNotification(dataNoti);
                             }
                         }
-                        // res.sendStatus(200);
                     }
                     /* end save & send notification */
                 }

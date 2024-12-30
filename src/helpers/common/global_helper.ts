@@ -15,9 +15,20 @@ import { polWeb3 } from "./web3_pol_helpers";
 import { SolanaHelper } from "./solana.helper";
 import cmcHelper from "./cmc.helpers";
 import { ticsWeb3 } from "./web3_tics_helpers";
+import firebaseAdmin from 'firebase-admin';
+import { fcmServiceAccount } from "../../constants/firebase.admin.key";
 
 
 class Global_helper {
+    public messaging: firebaseAdmin.messaging.Messaging | undefined;
+    constructor() {
+        (async () => {
+            firebaseAdmin.initializeApp({
+                credential: firebaseAdmin.credential.cert(fcmServiceAccount),
+            });
+            this.messaging = firebaseAdmin.messaging();
+        })();
+    }
 
     public async swapSupportedByMatcha(tokenAddress: string, coinFamily: number, swapData: any) {
         try {
@@ -366,6 +377,48 @@ class Global_helper {
             return true;
         } catch (err: any) {
             console.error("Error in save_notification>>>>", err)
+            return false;
+        }
+    }
+
+
+    public async sendNotification(data: any) {
+        try {
+            if (data.token?.length > 0) {
+                const notification = {
+                    title: data.title,
+                    body: data.message,
+                };
+                if (this.messaging) {
+                    this.messaging
+                        .sendEachForMulticast({
+                            tokens: data.token,
+                            // collapse_key: "type_a",
+                            notification: notification,
+                            data: {
+                                body: data.message ? data.message : "",
+                                title: data.title ? data.title : "",
+                                notification_type: data.notification_type ? data.notification_type : "",
+                                tx_id: data.tx_id ? data.tx_id.toString() : "0",
+                                tx_type: data.tx_type ? data.tx_type : "",
+                                from_user_id: data.from_user_id ? data.from_user_id?.toString() : "0",
+                                user_coin_id: data.coin_id ? data.coin_id?.toString() : "0"
+                            }
+                        })
+                        .then((response: any) => {
+                            console.log("💥🚀 ~ firebase admin push notification", JSON.stringify(response));
+                        })
+                        .catch((error: any) => {
+                            console.error(
+                                "💥 ~ firebase admin sending notification error",
+                                error
+                            );
+                        });
+                }
+            }
+            return true;
+        } catch (error) {
+            console.error(`🔥 ~ sendNewNotification utility.helper.ts error`, error);
             return false;
         }
     }

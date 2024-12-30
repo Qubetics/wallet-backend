@@ -11,7 +11,8 @@ import { language } from "../../constants";
 import commonHelper from "../../helpers/common/common.helpers";
 import { address_book_queries, address_book_wallet_queries, device_token_queries, notification_queries, user_queries, wallet_queries } from '../../helpers/dbHelper/index'
 import { config } from "../../config";
-
+import emojiRegex from "emoji-regex";
+// const emojiRegex = require('emoji-regex');
 class UserController implements OnlyControllerInterface {
 
   constructor() {
@@ -19,11 +20,25 @@ class UserController implements OnlyControllerInterface {
   }
   public initialize() { }
 
+  private validateEmojis = (inputText: string): boolean => {
+    const regex = emojiRegex();
+    return regex.test(inputText);
+  }
+
   public async createWallet(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
+
       console.log("req body user createWallet>>>", req.body)
       let { wallet_address, addressList, wallet_name, device_token, device_id, referral_code }: { wallet_address: string, addressList: any, wallet_name: string, device_token: string, device_id: string, referral_code: string } = req.body;
+
+      // Check if the input contains emojis
+      if (this.validateEmojis(wallet_name)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Input contains emojis, which are not allowed.',
+        });
+      }
 
       if (referral_code) {
         /** check referral code is valid */
