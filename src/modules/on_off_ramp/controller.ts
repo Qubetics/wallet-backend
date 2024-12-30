@@ -34,7 +34,7 @@ class OnOffRampController implements OnlyControllerInterface {
                 coin_id: coin_id,
                 user_id: user_id,
                 coin_family: coin_family,
-                type: tx_type.toLowerCase() == TYPE.BUY ? TYPE.BUY : TYPE.SELL,
+                type: tx_type.toUpperCase() == TYPE.BUY ? TYPE.BUY.toLowerCase() : TYPE.SELL.toLowerCase(),
                 status: GlblBlockchainTxStatusEnum.PENDING,
                 blockchain_status: GlblBlockchainTxStatusEnum.PENDING,
                 amount: amount,
@@ -44,10 +44,10 @@ class OnOffRampController implements OnlyControllerInterface {
                 order_id: order_id ? order_id : null
             }
 
-            tx_type.toLowerCase() == TYPE.BUY ? { ...dataToSave, to_adrs: wallet_address } : { ...dataToSave, from_adrs: wallet_address }
+            dataToSave = tx_type.toUpperCase() === TYPE.BUY ? { ...dataToSave, to_adrs: wallet_address } : { ...dataToSave, from_adrs: wallet_address };
 
-            dataToSave.req_type = (ramp_type == TxReqTypesEnum.MERCURYO) ? TxReqTypesEnum.TRANSAK : (ramp_type == TxReqTypesEnum.ALCHEMY) ? TxReqTypesEnum.ALCHEMY : (ramp_type == TxReqTypesEnum.ON_RAMPER) ? TxReqTypesEnum.ON_RAMPER : TxReqTypesEnum.NOTPRESET;
-            console.log('dataToSave >>>', dataToSave);
+            dataToSave.req_type = (ramp_type?.toUpperCase() == TxReqTypesEnum.MERCURYO) ? TxReqTypesEnum.MERCURYO : (ramp_type == TxReqTypesEnum.ALCHEMY) ? TxReqTypesEnum.ALCHEMY : (ramp_type == TxReqTypesEnum.ON_RAMPER) ? TxReqTypesEnum.ON_RAMPER : TxReqTypesEnum.NOTPRESET;
+
 
             let check_history_exist: any = await Models.TrnxHistoryModel.findOne({
                 attributes: ["id", "tx_id"],
@@ -131,7 +131,8 @@ class OnOffRampController implements OnlyControllerInterface {
                                     order_id: webhookData?.id || null,
                                     tx_id: webhookData?.tx?.id || null,
                                     req_type: TxReqTypesEnum.MERCURYO,
-                                    status: status
+                                    status: status,
+                                    blockchain_status: (status == GlblStatus.COMPLETED) ? GlblBlockchainTxStatusEnum.CONFIRMED : GlblBlockchainTxStatusEnum.FAILED
                                 }
                                 txDetail = await Models.TrnxHistoryModel.create(newDataToSave);
                             }
@@ -147,7 +148,8 @@ class OnOffRampController implements OnlyControllerInterface {
                             fiat_type: webhookData?.fiat_currency,
                             tx_id: webhookData?.tx?.id || null,
                             country_code: webhookData?.user?.country_code,
-                            status: status
+                            status: status,
+                            blockchain_status: (status == GlblStatus.COMPLETED) ? GlblBlockchainTxStatusEnum.CONFIRMED : GlblBlockchainTxStatusEnum.FAILED
                         }
                         await Models.TrnxHistoryModel.update(dataToSave, { where: { merchant_id: webhookData?.merchant_transaction_id } });
                     }
