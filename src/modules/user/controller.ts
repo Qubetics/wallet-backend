@@ -20,10 +20,7 @@ class UserController implements OnlyControllerInterface {
   }
   public initialize() { }
 
-  private validateEmojis = (inputText: string): boolean => {
-    const regex = emojiRegex();
-    return regex.test(inputText);
-  }
+
 
   public async createWallet(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
@@ -33,12 +30,12 @@ class UserController implements OnlyControllerInterface {
       let { wallet_address, addressList, wallet_name, device_token, device_id, referral_code }: { wallet_address: string, addressList: any, wallet_name: string, device_token: string, device_id: string, referral_code: string } = req.body;
 
       // Check if the input contains emojis
-      if (this.validateEmojis(wallet_name)) {
-        return res.status(400).json({
-          success: false,
-          message: 'Input contains emojis, which are not allowed.',
-        });
-      }
+      // if (this.validateEmojis(wallet_name)) {
+      //   return res.status(400).json({
+      //     success: false,
+      //     message: 'Input contains emojis, which are not allowed.',
+      //   });
+      // }
 
       if (referral_code) {
         /** check referral code is valid */
@@ -113,6 +110,10 @@ class UserController implements OnlyControllerInterface {
     }
   }
 
+  private validateEmojis = (inputText: string): boolean => {
+    const regex = emojiRegex();
+    return regex.test(inputText);
+  }
   public async userLogout(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
