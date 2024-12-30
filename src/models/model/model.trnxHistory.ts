@@ -45,7 +45,7 @@ let dataObj = {
     },
     to_adrs: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     tx_id: {
         type: DataTypes.STRING,
