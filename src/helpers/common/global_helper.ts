@@ -483,13 +483,25 @@ class Global_helper {
             { name: 'MEXC', url: (symbol: string) => `https://api.mexc.com/api/v3/exchangeInfo?symbol=${symbol}USDT` },
             { name: 'GATEIO', url: (symbol: string) => `https://api.gateio.ws/api/v4/spot/currency_pairs/${symbol}_USDT` }
         ];
+        const usdtExchanges = [
+            { name: 'BINANCE', url: (symbol: string) => `https://api.binance.com/api/v3/exchangeInfo?symbol=${symbol}USD` },
+            { name: 'OKX', url: (symbol: string) => `https://www.okx.com/api/v5/market/ticker?instId=${symbol}-USD` },
+            { name: 'BYBIT', url: (symbol: string) => `https://api.bybit.com/v5/market/instruments-info?category=spot&symbol=${symbol}USD` },
+            { name: 'BITGET', url: (symbol: string) => `https://api.bitget.com/api/v2/spot/public/symbols?symbol=${symbol}USD` },
+            { name: 'BITMART', url: (symbol: string) => `https://api-cloud.bitmart.com/spot/quotation/v3/ticker?symbol=${symbol}_USD` },
+            { name: 'COINBASE', url: (symbol: string) => `https://api.coinbase.com/api/v3/brokerage/market/products/?product_ids=${symbol}-USD` },
+            { name: 'MEXC', url: (symbol: string) => `https://api.mexc.com/api/v3/exchangeInfo?symbol=${symbol}USD` },
+            { name: 'GATEIO', url: (symbol: string) => `https://api.gateio.ws/api/v4/spot/currency_pairs/${symbol}_USD` }
+
+        ];
 
         const symbolUpper = symbol.toUpperCase();
-        const graphPair = `${symbolUpper}USDT`;
+        const graphPair = symbolUpper == 'USDT' ? `${symbolUpper}USD` : `${symbolUpper}USDT`;
 
         // Helper function to find the exchange source
         const getExchangeSource = async (symbol: string) => {
-            for (const exchange of exchanges) {
+            const exchangesSource = symbol?.toUpperCase() == 'USDT' ? usdtExchanges : exchanges;
+            for (const exchange of exchangesSource) {
                 try {
                     const response = await axios.get(exchange.url(symbol));
 
@@ -510,7 +522,7 @@ class Global_helper {
                 case 'BINANCE':
                     return response.data?.code === undefined;
                 case 'OKX':
-                    return response.data?.code === 0;
+                    return response.data?.code === "0";
                 case 'BYBIT':
                     return response.data?.result?.list?.length > 0;
                 case 'BITGET':
