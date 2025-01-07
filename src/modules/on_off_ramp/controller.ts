@@ -32,7 +32,6 @@ class OnOffRampController implements OnlyControllerInterface {
 
             let dataToSave: any = {
                 coin_id: coin_id,
-                user_id: user_id,
                 coin_family: coin_family,
                 type: tx_type.toUpperCase() == TYPE.BUY ? TYPE.BUY.toLowerCase() : TYPE.SELL.toLowerCase(),
                 status: GlblBlockchainTxStatusEnum.PENDING,
@@ -44,7 +43,7 @@ class OnOffRampController implements OnlyControllerInterface {
                 order_id: order_id ? order_id : null
             }
 
-            dataToSave = tx_type.toUpperCase() === TYPE.BUY ? { ...dataToSave, to_adrs: wallet_address } : { ...dataToSave, from_adrs: wallet_address };
+            dataToSave = tx_type.toUpperCase() === TYPE.BUY ? { ...dataToSave, to_adrs: wallet_address, to_user_id: user_id, user_id: 0 } : { ...dataToSave, from_adrs: wallet_address, user_id: user_id };
 
             dataToSave.req_type = (ramp_type?.toUpperCase() == TxReqTypesEnum.MERCURYO) ? TxReqTypesEnum.MERCURYO : (ramp_type == TxReqTypesEnum.ALCHEMY) ? TxReqTypesEnum.ALCHEMY : (ramp_type == TxReqTypesEnum.ON_RAMPER) ? TxReqTypesEnum.ON_RAMPER : TxReqTypesEnum.NOTPRESET;
 
