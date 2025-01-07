@@ -2073,7 +2073,7 @@ class WalletController implements OnlyControllerInterface {
       if (is_token) {
         console.log('token >>>')
         const token_address: any = req.query.token_address;
-        tradingData = await SolanaHelper.getUserCRC20TokenBalance(token_address, address, true)
+        tradingData = await SolanaHelper.getUserCRC20TokenBalance(token_address, address, false)
       } else {
         tradingData = await SolanaHelper.getUserSolanaBalance(address, true, true);
         console.log('tradingData >>>', tradingData);
