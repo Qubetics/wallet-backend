@@ -23,8 +23,8 @@ class SolanaHelpers {
 
     constructor() {
         this.connection = new Connection(config.NODE.SOL_RPC_URL || '', 'confirmed');
-        //this.connection = new Connection("https://solana-mainnet.g.alchemy.com/v2/REDACTED");
-        this.connectionNew = new Connection("https://api.tatum.io/v3/blockchain/node/solana-mainnet/t-668bc6a95cc8a5001c84cfe5-f77baac94da7436aa48fe793");
+        this.connectionNew = new Connection("https://solana-mainnet.g.alchemy.com/v2/REDACTED");
+        //this.connectionNew = new Connection("https://api.tatum.io/v3/blockchain/node/solana-mainnet/t-668bc6a95cc8a5001c84cfe5-f77baac94da7436aa48fe793");
         this.initialize();
     }
 
