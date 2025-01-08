@@ -1418,17 +1418,21 @@ class WalletController implements OnlyControllerInterface {
     let lang: any = req.headers["content-language"] || "en";
     try {
       console.log("req body allBalances >>>", req.body)
-      let { userIds, fiatType }:
-        { userIds: Array<number>, fiatType: string }
+      let { userIds, fiatType, fetchFrom }:
+        { userIds: Array<number>, fiatType: string, fetchFrom: string }
         = req.body;
 
       let checkerWalletData: any = [];
       // let makerWalletData: any = [];
+      let where: { status: GlblBooleanEnum; coin_family?: { [Op.notIn]: number[] } } = { status: GlblBooleanEnum.true };
+      if (fetchFrom !== undefined && fetchFrom === 'extension') {
+        where.coin_family = { [Op.notIn]: [config.STATIC_COIN_FAMILY.TRX] };
+      }
 
       let commonPart: any = [{
         model: Models.WalletModel,
         attributes: ["wallet_id", "balance", ["user_id", "checker_user_id"]],
-        where: { status: GlblBooleanEnum.true },
+        where: where,
         include: [
           {
             model: Models.CoinsModel,
@@ -1454,6 +1458,7 @@ class WalletController implements OnlyControllerInterface {
           attributes: ["user_id"],
           where: { user_id: { [Op.in]: userIds } },
           include: commonPart,
+          // logging: true,
           order: [["user_id", "ASC"]]
         })
       }

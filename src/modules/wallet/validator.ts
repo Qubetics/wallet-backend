@@ -104,7 +104,8 @@ export default class wallet_validator {
         body: Joi.object({
             // makerUserIds: Joi.array().required(),
             userIds: Joi.array().required(),
-            fiatType: Joi.string().required()
+            fiatType: Joi.string().required(),
+            fetchFrom: Joi.string().optional()
         })
     }
 
