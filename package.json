@@ -4,8 +4,8 @@
   "description": "Crypto Wallet with ETH,BTC,BSC AND TRON",
   "main": "server.ts",
   "scripts": {
-    "build": "rm -rf build && tsc --build && cp -a ./src/public ./src/views ./build && cp -a ./src/config/keys ./build/config && cp -a ./src/config/admin_keys ./build/config",
-    "start": "rm -rf build && tsc --build && cp -a ./src/public ./src/views ./build && cp -a ./src/config/keys ./build/config && cp -a ./src/config/admin_keys ./build/config && node build/server.js",
+    "build": "rm -rf build && tsc --build && cp -a ./src/public ./src/views ./build && cp -a ./src/config/keys ./build/config && cp -a ./src/config/admin_keys ./build/config && cp ./src/swagger.json ./build/swagger.json",
+    "start": "rm -rf build && tsc --build && cp -a ./src/public ./src/views ./build && cp -a ./src/config/keys ./build/config && cp -a ./src/config/admin_keys ./build/config && cp ./src/swagger.json ./build/swagger.json && node build/server.js",
     "lint": "tslint -p tsconfig.json -c tslint.json"
   },
   "keywords": [
@@ -56,7 +56,9 @@
     "emoji-regex": "^10.4.0",
     "ethers": "^6.13.4",
     "express": "^4.18.2",
+    "express-basic-auth": "^1.2.1",
     "express-fileupload": "^1.2.1",
+    "express-rate-limit": "^7.5.0",
     "express-validation": "^4.1.0",
     "express-validator": "^6.12.1",
     "firebase-admin": "^13.0.2",
@@ -85,6 +87,7 @@
     "retry": "^0.13.1",
     "sequelize": "^6.17.0",
     "speakeasy": "^2.0.0",
+    "swagger-ui-express": "^5.0.1",
     "tronstation": "^1.0.0",
     "tronweb": "^4.0.0",
     "url": "^0.11.1",
