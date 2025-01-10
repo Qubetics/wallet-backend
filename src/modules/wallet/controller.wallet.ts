@@ -689,8 +689,7 @@ class WalletController implements OnlyControllerInterface {
           to_user_id: userId,
           type: TxTypesEnum.SELL,
         };
-      }
-      if (type == TxTypesEnum.CARDS) {
+      } else if (type == TxTypesEnum.CARDS) {
         where_clause = {
           [Op.or]: [
             { type: TxTypesEnum.CARD_FEES },
@@ -719,9 +718,10 @@ class WalletController implements OnlyControllerInterface {
       if (date_from && date_to) {
         where_clause = {
           ...where_clause,
-          [Op.and]: Sequelize.literal(
-            `DATE(trnx_history.created_at) BETWEEN '${date_from}' and '${date_to}'`
-          ),
+          created_at: { [Op.between]: [new Date(date_from), new Date(date_to)] }
+          // [Op.and]: Sequelize.literal(
+          //   `DATE(trnx_history.created_at) BETWEEN '${date_from}' and '${date_to}'`
+          // ),
         };
       }
       let coin_where: any = "";
