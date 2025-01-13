@@ -83,6 +83,98 @@ class EthHelpers implements HelpersInterface {
       };
     }
   }
+  public async getErc721TokenTransferGasEstimationCost(
+    toAddress: string,
+    fromAddress: string,
+    tokenValue: string,
+    tokenAddress: string,
+    lang: string
+  ) {
+    try {
+      let nonce = await ethWeb3.web3.eth.getTransactionCount(fromAddress, 'pending');
+      let contract = new ethWeb3.web3.eth.Contract(
+        config.ERC721ABI as AbiItem[],
+        tokenAddress
+      );
+      let data = await contract.methods
+        .transferFrom(fromAddress, toAddress, tokenValue)
+        .encodeABI();
+      let gasLimit = await ethWeb3.web3.eth.estimateGas({
+        from: fromAddress,
+        nonce: nonce,
+        to: tokenAddress,
+        data: data,
+      });
+      // return Math.floor(gasLimit * 1.5);
+      return {
+        status: true,
+        gas_estimate:
+          gasLimit == 0 ? 120000 : Math.floor(parseFloat(gasLimit.toString())),
+        message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('ETH')
+      };
+    } catch (error) {
+      console.error("🔥 ~ ~ getErc721TokenTransferGasEstimationCost node.eth.helper.ts error")
+      // throw error;
+      // return 120000;
+      return {
+        status: false,
+        gas_estimate: 120000,
+        message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('ETH')
+      };
+    }
+  }
+
+  public async getErc1155TokenTransferGasEstimationCost(
+    toAddress: string,
+    fromAddress: string,
+    tokenValue: string,
+    tokenAddress: string,
+    tokenAmount: number,
+    lang: string
+  ) {
+    try {
+      let nonce = await ethWeb3.web3.eth.getTransactionCount(
+        fromAddress,
+        'pending'
+      );
+      let contract = new ethWeb3.web3.eth.Contract(
+        config.ERC1155ABI as AbiItem[],
+        tokenAddress
+      );
+      let data = await contract.methods
+        .safeTransferFrom(
+          fromAddress,
+          toAddress,
+          tokenValue,
+          tokenAmount,
+          '0x0'
+        )
+        .encodeABI();
+      let gasLimit = await ethWeb3.web3.eth.estimateGas({
+        from: fromAddress,
+        nonce: nonce,
+        to: tokenAddress,
+        data: data,
+      });
+      // return Math.floor(gasLimit * 2);
+      return {
+        status: true,
+        gas_estimate:
+          gasLimit == 0 ? 120000 : Math.floor(parseFloat(gasLimit.toString())),
+        message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('ETH')
+      };
+    } catch (error) {
+      console.error("🔥 ~ ~ getErc1155TokenTransferGasEstimationCost node.eth.helper.ts error")
+      // throw error;
+      // return 120000;
+      return {
+        status: false,
+        gas_estimate: 120000,
+        message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('ETH')
+      };
+    }
+  }
+
   async getEthGasLimit(from: string, to: string, lang: string) {
     try {
       var amount = await ethWeb3.get_coin_balance(from, true);
@@ -109,6 +201,7 @@ class EthHelpers implements HelpersInterface {
       };
     }
   }
+
   public async broadcastEthRawTx(rawTx: string, cb: CallableFunction) {
     var sendRawRes = await ethWeb3.web3.eth
       .sendSignedTransaction("0x" + rawTx)

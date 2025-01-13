@@ -56,12 +56,6 @@ class EthController implements OnlyControllerInterface {
     let lang: any = req.headers['content-language'] || 'en';
     try {
       console.log("req body eth getEstimationGas >>>", req.body)
-
-      var estimationRes: {
-        status: boolean;
-        gas_estimate: number;
-        message: string;
-      };
       //Gas estimation 0 for coins other than BSC/BEP20
       if (
         req.coininfo &&
@@ -71,17 +65,30 @@ class EthController implements OnlyControllerInterface {
           data: { status: true, gas_estimate: 0, gas_gwei_price: 0 },
         });
       } else if (req.coininfo) {
-        const { from, to }: { from: string; to: string } = req.body;
-        const { token_address, token_abi, is_token } = req.coininfo;
-        if (is_token) {
-          estimationRes =
-            await EthHelper.getErc20TokenTransferGasEstimationCost(
-              token_address,
-              token_abi,
-              from,
-              to,
-              lang
-            );
+        let estimationRes: {
+          status: boolean;
+          gas_estimate: number;
+          message: string;
+        } = { status: true, gas_estimate: 0, message: '' }
+        const { from, to, amount, token_value }: { from: string; to: string, amount: number, token_value: string } = req.body;
+        const { token_address, token_abi, is_token, token_type } = req.coininfo;
+        if (is_token && token_address) {
+          if (token_type == TokenType.ERC20) {
+            estimationRes =
+              await EthHelper.getErc20TokenTransferGasEstimationCost(
+                token_address,
+                token_abi,
+                from,
+                to,
+                lang
+              );
+          } else if (token_type == TokenType.ERC721) {
+            estimationRes = await EthHelper.getErc721TokenTransferGasEstimationCost(to, from, token_value, token_address, lang);
+            // balance = await EthHelper.getUserERC721TokenBalance(from_address, token_address);
+          } else if (amount) {
+            estimationRes = await EthHelper.getErc1155TokenTransferGasEstimationCost(to, from, token_value, token_address, amount, lang);
+            // balance = await EthHelper.getERC1155TokenBalance(token_value, token_address, from_address);
+          }
         } else {
           estimationRes = await EthHelper.getEthGasLimit(from, to, lang);
         }
