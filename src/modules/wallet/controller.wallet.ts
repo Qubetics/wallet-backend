@@ -1874,9 +1874,9 @@ class WalletController implements OnlyControllerInterface {
               let result: any = await global_helper.get_nft_data(method, url, headers);
               if (result && result?.result?.length) {
                 for await (let nft of result.result) {
-                  if (nft?.possible_spam == true) {
-                    continue;
-                  }
+                  // if (nft?.possible_spam == true) {
+                  //   continue;
+                  // }
                   let metadata: any = '';
                   if (nft?.metadata) {
                     metadata = await JSON.parse(nft.metadata);
