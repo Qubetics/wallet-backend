@@ -93,7 +93,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Wallets created successfully.",
+            "description": "Token has been added successfully.",
             "schema": {
               "type": "object",
               "properties": {
@@ -222,7 +222,7 @@
         ],
         "responses": {
           "200": {
-            "description": "portfolio created successfully.",
+            "description": "Token has been Active/Inactive successfully.",
             "schema": {
               "type": "object",
               "properties": {

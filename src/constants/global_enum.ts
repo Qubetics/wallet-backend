@@ -98,7 +98,7 @@ export enum GlblMessages {
     UNABLE_DECODE_DATA = 'Unable to decode data.',
     NO_TOKEN_DETECTED = 'No Token detected.',
     TOKEN_EXIST = 'Token Already Exist.',
-    TOKEN_ADDED = 'Token added successfully.',
+    TOKEN_ADDED = 'Token has been added successfully.',
     UNAUTHORIZED = 'Unauthorized access. Please login to continue.',
     INVALID_COIN_FAMILY = 'Invalid coin family.',
     INVALID_TOKEN = 'Invalid Token, please try again.',
