@@ -140,6 +140,11 @@ class WalletRoute implements ControllerInterface {
       jwtVerification.verifyToken,
       walletController.getCoinGraphData
     );
+    this.router.post(
+      `${this.path}/save/device/token`,
+      jwtVerification.verifyToken,
+      walletController.saveDeviceToken
+    );
   }
 }
 export default WalletRoute;

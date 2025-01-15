@@ -2285,6 +2285,58 @@ class WalletController implements OnlyControllerInterface {
       return res.status(data.code).send(data);
     }
   }
+
+  public async saveDeviceToken(req: Request, res: Response) {
+    try {
+      let lang: string = req.headers["content-language"] || "en";
+
+      let {
+        addressList,
+        device_token,
+        device_id,
+      }: {
+        addressList: any;
+        device_token: string;
+        device_id: string;
+      } = req.body;
+
+      if (!addressList && !addressList.length) {
+        let data = {
+          code: GlblCode.ERROR_CODE,
+          status: false,
+        };
+        return res.status(data.code).send(data);
+      }
+
+      for await (const wallet of addressList) {
+        if (device_token !== "chrome" && device_token !== "abc") {
+          let address: string = wallet.address;
+          let coin_family: number = wallet.coin_family;
+          await userhelper.device_token_helper(
+            device_token,
+            req.userId,
+            lang,
+            address,
+            coin_family,
+            device_id
+          );
+        }
+      }
+
+      return res.status(GlblCode.SUCCESS).send({
+        status: true,
+        code: GlblCode.SUCCESS,
+        message: "Device token has been saved successfully",
+      });
+    } catch (error) {
+      let data = {
+        code: GlblCode.ERROR_CODE,
+        status: false,
+        data: error,
+      };
+      return res.status(data.code).send(data);
+    }
+  }
 }
 
 export const walletController = new WalletController();
