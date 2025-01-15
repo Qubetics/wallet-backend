@@ -62,7 +62,7 @@ class EthController implements OnlyControllerInterface {
         gas_estimate: number;
         message: string;
       };
-      //Gas estimation 0 for coins other than BSC/BEP20
+      
       if (
         req.coininfo &&
         req.coininfo.coin_family !== config.STATIC_COIN_FAMILY.ETH
