@@ -1,10 +1,12 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { CoinInterface } from "../interface/index.interface";
 import db from "../../helpers/common/db";
-import CoinPriceInFiatModel from '../model/model.coinPriceInFiat';
+import CoinPriceInFiatModel from "../model/model.coinPriceInFiat";
 import WatchlistsModel from "./model.watchlist";
-interface CoinCreationModel extends Optional<CoinInterface, "coin_id"> { }
-interface CoinInstance extends Model<CoinInterface, CoinCreationModel>, CoinInterface { }
+interface CoinCreationModel extends Optional<CoinInterface, "coin_id"> {}
+interface CoinInstance
+  extends Model<CoinInterface, CoinCreationModel>,
+    CoinInterface {}
 
 let dataObj = {
   coin_id: {
@@ -98,7 +100,7 @@ let dataObj = {
     allowNull: true,
   },
   added_by: {
-    type: DataTypes.ENUM('admin', 'user', 'swap'),
+    type: DataTypes.ENUM("admin", "user", "swap"),
     allowNull: true,
   },
   is_on_coin_gicko: {
@@ -110,6 +112,10 @@ let dataObj = {
     allowNull: true,
   },
   graph_pair: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  pair_address: {
     type: DataTypes.STRING,
     allowNull: true,
   },
@@ -169,9 +175,19 @@ const CoinsModel = db.db_write.define<CoinInstance>(
   dataObjIndex
 );
 
-
-
-CoinsModel.belongsTo(CoinPriceInFiatModel, { foreignKey: "cmc_id", targetKey: "cmc_id", as: "fiat_price_data" });
-CoinsModel.belongsTo(WatchlistsModel, { foreignKey: "coin_id", targetKey: "coin_id", as: "watchlist_data" })
-CoinsModel.hasOne(CoinsModel, { foreignKey: "coin_family", sourceKey: "coin_family", as: "native_coins_data" })
+CoinsModel.belongsTo(CoinPriceInFiatModel, {
+  foreignKey: "cmc_id",
+  targetKey: "cmc_id",
+  as: "fiat_price_data",
+});
+CoinsModel.belongsTo(WatchlistsModel, {
+  foreignKey: "coin_id",
+  targetKey: "coin_id",
+  as: "watchlist_data",
+});
+CoinsModel.hasOne(CoinsModel, {
+  foreignKey: "coin_family",
+  sourceKey: "coin_family",
+  as: "native_coins_data",
+});
 export default CoinsModel;

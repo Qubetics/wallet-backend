@@ -33,13 +33,13 @@ class WalletController implements OnlyControllerInterface {
   constructor() {
     this.initialize();
   }
-  public initialize() { }
+  public initialize() {}
 
   /** Used in front end */
   public async addToken(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body addToken >>>", req.body)
+      console.log("req body addToken >>>", req.body);
       let currentUTCDate: string = new Date()
         .toISOString()
         .replace(/T/, " ")
@@ -153,7 +153,7 @@ class WalletController implements OnlyControllerInterface {
   public async portfolio(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body portfolio >>>", req.body)
+      console.log("req body portfolio >>>", req.body);
       let {
         page,
         limit,
@@ -205,7 +205,7 @@ class WalletController implements OnlyControllerInterface {
               "token_address",
               "for_swap",
               "graph_source",
-              "graph_pair"
+              "graph_pair",
             ],
             required: true,
             where: {
@@ -250,7 +250,9 @@ class WalletController implements OnlyControllerInterface {
           },
         ],
         // order: [["sort_order", "ASC"]],
-        order: Sequelize.literal(`(CASE WHEN (\`coin.fiat_price_data.value\` * wallets.balance) > 0 && sort_order IS NULL THEN (\`coin.fiat_price_data.value\` * wallets.balance) END) DESC,(CASE WHEN sort_order IS NULL THEN wallets.created_at END) ASC,(CASE WHEN sort_order IS NOT NULL THEN wallets.sort_order END) ASC`),
+        order: Sequelize.literal(
+          `(CASE WHEN (\`coin.fiat_price_data.value\` * wallets.balance) > 0 && sort_order IS NULL THEN (\`coin.fiat_price_data.value\` * wallets.balance) END) DESC,(CASE WHEN sort_order IS NULL THEN wallets.created_at END) ASC,(CASE WHEN sort_order IS NOT NULL THEN wallets.sort_order END) ASC`
+        ),
         limit: limitNo,
         offset: offset,
       });
@@ -280,7 +282,7 @@ class WalletController implements OnlyControllerInterface {
   public async activeInactiveWallet(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body activeInactiveWallet >>>", req.body)
+      console.log("req body activeInactiveWallet >>>", req.body);
       let currentUTCDate: string = new Date()
         .toISOString()
         .replace(/T/, " ")
@@ -360,7 +362,7 @@ class WalletController implements OnlyControllerInterface {
           },
           wallet_address: walletAddress,
           queue_count: 0,
-        })
+        });
         // await userhelper.adding_coins_to_queue(
         //   config.BACKEND_WALLET_ADDRESSES,
         //   {
@@ -395,7 +397,7 @@ class WalletController implements OnlyControllerInterface {
   public async toggleCoinList(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body toggleCoinList >>>", req.body)
+      console.log("req body toggleCoinList >>>", req.body);
       const {
         page,
         limit,
@@ -502,8 +504,10 @@ class WalletController implements OnlyControllerInterface {
   public async transactions(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body transactions >>>", req.body)
-      let address_list: any = req.body.addrsListKeys ? req.body.addrsListKeys : [];
+      console.log("req body transactions >>>", req.body);
+      let address_list: any = req.body.addrsListKeys
+        ? req.body.addrsListKeys
+        : [];
       let fiat_currency: string = String(
         req.body.fiat_currency ? req.body.fiat_currency : Fiat_Currency.USD
       );
@@ -629,7 +633,7 @@ class WalletController implements OnlyControllerInterface {
 
         where_clause = {
           to_adrs: {
-            [Op.in]: address_list
+            [Op.in]: address_list,
           },
           to_user_id: userId,
           blockchain_status: GlblBlockchainTxStatusEnum.CONFIRMED,
@@ -641,7 +645,7 @@ class WalletController implements OnlyControllerInterface {
       } else if (type == TxTypesEnum.WITHDRAW) {
         where_clause = {
           from_adrs: {
-            [Op.in]: address_list
+            [Op.in]: address_list,
           },
           type: TxTypesEnum.WITHDRAW,
           user_id: userId,
@@ -649,19 +653,19 @@ class WalletController implements OnlyControllerInterface {
             { blockchain_status: GlblBlockchainTxStatusEnum.PENDING },
             { blockchain_status: GlblBlockchainTxStatusEnum.FAILED },
             { blockchain_status: GlblBlockchainTxStatusEnum.CONFIRMED },
-            { blockchain_status: null }
-          ]
+            { blockchain_status: null },
+          ],
         };
       } else if (type == TxTypesEnum.DAPP) {
         where_clause = {
           type: TxTypesEnum.DAPP,
           from_adrs: {
-            [Op.in]: address_list
+            [Op.in]: address_list,
           },
           user_id: userId,
         };
       } else if (type?.toUpperCase() == TxTypesEnum.SWAP?.toUpperCase()) {
-        console.log('dddddddddddddddddddddd', type);
+        console.log("dddddddddddddddddddddd", type);
         where_clause = {
           [Op.or]: [
             { type: TxTypesEnum.APPROVE },
@@ -669,14 +673,14 @@ class WalletController implements OnlyControllerInterface {
             { type: TxTypesEnum.CROSS_CHAIN },
           ],
           from_adrs: {
-            [Op.in]: address_list
+            [Op.in]: address_list,
           },
           user_id: userId,
         };
       } else if (type == TxTypesEnum.BUY) {
         where_clause = {
           to_adrs: {
-            [Op.in]: address_list
+            [Op.in]: address_list,
           },
           to_user_id: userId,
           type: TxTypesEnum.BUY,
@@ -684,7 +688,7 @@ class WalletController implements OnlyControllerInterface {
       } else if (type == TxTypesEnum.SELL) {
         where_clause = {
           to_adrs: {
-            [Op.in]: address_list
+            [Op.in]: address_list,
           },
           to_user_id: userId,
           type: TxTypesEnum.SELL,
@@ -696,7 +700,7 @@ class WalletController implements OnlyControllerInterface {
             { type: TxTypesEnum.CARD_RECHARGE },
           ],
           from_adrs: {
-            [Op.in]: address_list
+            [Op.in]: address_list,
           },
           user_id: userId,
         };
@@ -814,17 +818,16 @@ class WalletController implements OnlyControllerInterface {
   public async updateWalletOrder(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body updateWalletOrder >>>", req.body)
+      console.log("req body updateWalletOrder >>>", req.body);
       const { wallets }: any = req.body;
       for await (let wallet of wallets) {
-
         await wallet_queries.wallet_update(
           { sort_order: wallet.order },
           {
             coin_id: wallet.coin_id,
             wallet_address: wallet.wallet_address,
           }
-        )
+        );
       }
       return response.success(res, { data: { status: true } });
     } catch (err: any) {
@@ -839,7 +842,7 @@ class WalletController implements OnlyControllerInterface {
   public async searchToken(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body searchToken >>>", req.body)
+      console.log("req body searchToken >>>", req.body);
       let {
         tokenAddress,
         coinFamily,
@@ -892,7 +895,7 @@ class WalletController implements OnlyControllerInterface {
   public async swapList(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body swapList >>>", req.body)
+      console.log("req body swapList >>>", req.body);
       const coin_family: [] = req.body.coin_family;
       const addresses: [] = req.body.addrsListKeys;
       let fiat_type: string = req.body.fiat_type;
@@ -993,7 +996,8 @@ class WalletController implements OnlyControllerInterface {
         POL_RPC_URL: config.NODE.POL_RPC_URL,
         TICS_RPC_URL: config.NODE.TICS_RPC_URL,
         // SOL_RPC_URL: config.NODE.SOL_RPC_URL
-        SOL_RPC_URL: 'https://mainnet.helius-rpc.com/?api-key=REDACTED'
+        SOL_RPC_URL:
+          "https://mainnet.helius-rpc.com/?api-key=REDACTED",
       };
 
       return res.status(GlblCode.SUCCESS).send(data);
@@ -1011,7 +1015,7 @@ class WalletController implements OnlyControllerInterface {
   public async updateWatchlist(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body updateWatchlist >>>", req.body)
+      console.log("req body updateWatchlist >>>", req.body);
       let user_id: number = req.userId;
       let data: any = req.body.data;
       for (let i = GlblBooleanEnum.false; i < data.length; i++) {
@@ -1087,7 +1091,7 @@ class WalletController implements OnlyControllerInterface {
   public async getWatchlist(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body getWatchlist >>>", req.body)
+      console.log("req body getWatchlist >>>", req.body);
       let user_id: any = req.userId;
       const { page, limit }: { page: number | string; limit: number | string } =
         req.body;
@@ -1105,12 +1109,12 @@ class WalletController implements OnlyControllerInterface {
         offset = (pageNo - GlblBooleanEnum.true) * limitNo;
       }
       let isFav = false;
-      let orderBy: string = 'coins.created_at';
-      let orderType: string = 'ASC';
+      let orderBy: string = "coins.created_at";
+      let orderType: string = "ASC";
       if (is_fav == GlblBooleanEnum.true) {
         isFav = true;
         orderBy = `watchlist_data.created_at`;
-        orderType = 'DESC';
+        orderType = "DESC";
       }
       let result: any = await Models.CoinsModel.findAndCountAll({
         attributes: [
@@ -1160,20 +1164,18 @@ class WalletController implements OnlyControllerInterface {
               wallet_address: wallet_address,
               status: "1",
             },
-            required: isFav
+            required: isFav,
           },
         ],
         // order: [
         //   [Sequelize.col('coins.created_at'), 'DESC']  // Correct ordering
         // ],
         // order: [[orderBy, orderType]],
-        order: [
-          [Sequelize.literal(orderBy), orderType]
-        ],
+        order: [[Sequelize.literal(orderBy), orderType]],
         offset: offset,
         limit: limitNo,
         // logging: true,
-        subQuery: false
+        subQuery: false,
       });
       return res.status(GlblCode.SUCCESS).send({
         status: true,
@@ -1238,7 +1240,7 @@ class WalletController implements OnlyControllerInterface {
   public async NativeCoinFiatPrice(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body NativeCoinFiatPrice >>>", req.body)
+      console.log("req body NativeCoinFiatPrice >>>", req.body);
       let {
         coin_family,
         fiat_currency,
@@ -1305,7 +1307,7 @@ class WalletController implements OnlyControllerInterface {
         message: language[lang].VALUE_FETCHED,
         data: {
           value: 80,
-          crosschain: 80
+          crosschain: 80,
         },
       });
     } catch (err: any) {
@@ -1315,7 +1317,7 @@ class WalletController implements OnlyControllerInterface {
         message: language[lang].ERROR_FETCHING_DATA,
         data: {
           value: 80,
-          crosschain: 80
+          crosschain: 80,
         },
       });
     }
@@ -1323,7 +1325,7 @@ class WalletController implements OnlyControllerInterface {
   public async checkFiatBalance(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body checkFiatBalance >>>", req.body)
+      console.log("req body checkFiatBalance >>>", req.body);
       let {
         coin_family,
         fiat_currency,
@@ -1364,8 +1366,8 @@ class WalletController implements OnlyControllerInterface {
         bal_in_usd < 0.000001
           ? await WalletHelper.toFixedExp(bal_in_usd, 8)
           : bal_in_usd < 0.0001
-            ? await WalletHelper.toFixedExp(bal_in_usd, 6)
-            : await WalletHelper.toFixedExp(bal_in_usd, 2);
+          ? await WalletHelper.toFixedExp(bal_in_usd, 6)
+          : await WalletHelper.toFixedExp(bal_in_usd, 2);
       console.log("bal_in_usd", bal_in_usd);
       if (bal_in_usd >= 10) {
         return res.status(GlblCode.SUCCESS).send({
@@ -1383,18 +1385,18 @@ class WalletController implements OnlyControllerInterface {
           coin_family == 2
             ? "ETH"
             : coin_family == 6
-              ? "TRON"
-              : coin_family == 1
-                ? "BNB"
-                : "null";
+            ? "TRON"
+            : coin_family == 1
+            ? "BNB"
+            : "null";
         let token_type: string =
           coin_family == 2
             ? "ERC20"
             : coin_family == 6
-              ? "TRC20"
-              : coin_family == 1
-                ? "BEP20"
-                : "null";
+            ? "TRC20"
+            : coin_family == 1
+            ? "BEP20"
+            : "null";
         console.log("coin in wallet_checkFiatsBalance >>>", coin);
         return res.status(GlblCode.SUCCESS).send({
           status: true,
@@ -1425,57 +1427,65 @@ class WalletController implements OnlyControllerInterface {
   public async allBalances(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body allBalances >>>", req.body)
-      let { userIds, fiatType, fetchFrom }:
-        { userIds: Array<number>, fiatType: string, fetchFrom: string }
-        = req.body;
+      console.log("req body allBalances >>>", req.body);
+      let {
+        userIds,
+        fiatType,
+        fetchFrom,
+      }: { userIds: Array<number>; fiatType: string; fetchFrom: string } =
+        req.body;
 
       let checkerWalletData: any = [];
       // let makerWalletData: any = [];
-      let where: { status: GlblBooleanEnum; coin_family?: { [Op.notIn]: number[] } } = { status: GlblBooleanEnum.true };
-      if (fetchFrom !== undefined && fetchFrom === 'extension') {
+      let where: {
+        status: GlblBooleanEnum;
+        coin_family?: { [Op.notIn]: number[] };
+      } = { status: GlblBooleanEnum.true };
+      if (fetchFrom !== undefined && fetchFrom === "extension") {
         where.coin_family = { [Op.notIn]: [config.STATIC_COIN_FAMILY.TRX] };
       }
 
-      let commonPart: any = [{
-        model: Models.WalletModel,
-        attributes: ["wallet_id", "balance", ["user_id", "checker_user_id"]],
-        where: where,
-        include: [
-          {
-            model: Models.CoinsModel,
-            attributes: ["coin_id"],
-            required: true,
-            where: { coin_status: GlblBooleanEnum.true },
-            include: [
-              {
-                model: Models.CoinPriceInFiatModel,
-                as: "fiat_price_data",
-                attributes: ["id", "value"],
-                where: { fiat_type: fiatType },
-                required: false,
-              },
-            ],
-          },
-        ],
-      }]
+      let commonPart: any = [
+        {
+          model: Models.WalletModel,
+          attributes: ["wallet_id", "balance", ["user_id", "checker_user_id"]],
+          where: where,
+          include: [
+            {
+              model: Models.CoinsModel,
+              attributes: ["coin_id"],
+              required: true,
+              where: { coin_status: GlblBooleanEnum.true },
+              include: [
+                {
+                  model: Models.CoinPriceInFiatModel,
+                  as: "fiat_price_data",
+                  attributes: ["id", "value"],
+                  where: { fiat_type: fiatType },
+                  required: false,
+                },
+              ],
+            },
+          ],
+        },
+      ];
 
       if (userIds.length > 0) {
-        commonPart[0].as = 'user_wallet_relation';
+        commonPart[0].as = "user_wallet_relation";
         checkerWalletData = await Models.UsersModel.findAll({
           attributes: ["user_id"],
           where: { user_id: { [Op.in]: userIds } },
           include: commonPart,
           // logging: true,
-          order: [["user_id", "ASC"]]
-        })
+          order: [["user_id", "ASC"]],
+        });
       }
 
       return response.success(res, {
         data: {
           status: true,
           // makerUserData: makerWalletData,
-          data: checkerWalletData
+          data: checkerWalletData,
         },
       });
     } catch (err: any) {
@@ -1493,23 +1503,27 @@ class WalletController implements OnlyControllerInterface {
   public async nativeCoinBalance(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body updateBalance >>>", req.body)
-      let { wallet_address, coin_family }: { wallet_address: string; coin_family: number } =
-        req.body;
+      console.log("req body updateBalance >>>", req.body);
+      let {
+        wallet_address,
+        coin_family,
+      }: { wallet_address: string; coin_family: number } = req.body;
 
       const nativeCoinBalance = await Models.CoinsModel.findOne({
         attributes: ["coin_id"],
         where: { coin_family: coin_family, is_token: 0 },
-        include: [{
-          model: Models.WalletModel,
-          attributes: ["balance"],
-          where: {
-            wallet_address: wallet_address,
-            coin_family: coin_family,
+        include: [
+          {
+            model: Models.WalletModel,
+            attributes: ["balance"],
+            where: {
+              wallet_address: wallet_address,
+              coin_family: coin_family,
+            },
+            as: "wallet_data",
           },
-          as: 'wallet_data'
-        }]
-      })
+        ],
+      });
       return res.status(GlblCode.SUCCESS).send({
         status: true,
         code: GlblCode.SUCCESS,
@@ -1532,7 +1546,11 @@ class WalletController implements OnlyControllerInterface {
     let lang: any = req.headers["content-language"] || "en";
     try {
       let user_id: number = req.userId;
-      const { wallet_address, coin_id }: { wallet_address: string; coin_family: number; coin_id: number } = req.body;
+      const {
+        wallet_address,
+        coin_id,
+      }: { wallet_address: string; coin_family: number; coin_id: number } =
+        req.body;
 
       const coinWalletdata = await Models.WalletModel.findOne({
         attributes: ["balance"],
@@ -1540,30 +1558,39 @@ class WalletController implements OnlyControllerInterface {
           wallet_address: wallet_address,
           coin_id: coin_id,
         },
-        include: [{
-          model: Models.CoinsModel,
-          attributes: ["token_address", "is_token", "for_swap", "graph_source", "graph_pair"],
-          required: true,
-          include: [
-            {
-              model: Models.SWFTCCoinsDataModel,
-              attributes: ['id'],
-              as: "cross_chain_data",
-              required: false
-            },
-            {
-              model: Models.WatchlistsModel,
-              attributes: ["user_id", "coin_id", "wallet_address", "status"],
-              as: "watchlist_data",
-              where: {
-                user_id: user_id,
-                wallet_address: wallet_address,
-                status: "1",
+        include: [
+          {
+            model: Models.CoinsModel,
+            attributes: [
+              "token_address",
+              "is_token",
+              "for_swap",
+              "graph_source",
+              "graph_pair",
+              "pair_address",
+            ],
+            required: true,
+            include: [
+              {
+                model: Models.SWFTCCoinsDataModel,
+                attributes: ["id"],
+                as: "cross_chain_data",
+                required: false,
               },
-              required: false,
-            },
-          ]
-        }],
+              {
+                model: Models.WatchlistsModel,
+                attributes: ["user_id", "coin_id", "wallet_address", "status"],
+                as: "watchlist_data",
+                where: {
+                  user_id: user_id,
+                  wallet_address: wallet_address,
+                  status: "1",
+                },
+                required: false,
+              },
+            ],
+          },
+        ],
         // raw: true,
       });
       return res.status(GlblCode.SUCCESS).send({
@@ -1589,8 +1616,7 @@ class WalletController implements OnlyControllerInterface {
     try {
       // let id: any = req.params.id;
       let userId: any = req.params.id;
-      console.log("req body downloadCsv >>>", req.params)
-
+      console.log("req body downloadCsv >>>", req.params);
 
       let last_month_date: any = moment()
         .subtract(GlblBooleanEnum.true, "months")
@@ -1598,23 +1624,25 @@ class WalletController implements OnlyControllerInterface {
       let wallet_addresses: any = await Models.WalletModel.findAll({
         attributes: ["wallet_address"],
         where: {
-          user_id: userId
+          user_id: userId,
         },
         raw: true,
-        group: ['wallet_address']
-      })
+        group: ["wallet_address"],
+      });
       let addresses: string[] = [];
       if (wallet_addresses) {
-        addresses = wallet_addresses.map((el: { wallet_address: string }) => el.wallet_address)
+        addresses = wallet_addresses.map(
+          (el: { wallet_address: string }) => el.wallet_address
+        );
       }
       if (addresses.length == GlblBooleanEnum.false) {
         let data = {
           code: GlblCode.ERROR_CODE,
           status: false,
-          message: language[lang].NO_ADDRESS_FOUND
+          message: language[lang].NO_ADDRESS_FOUND,
         };
         return response.error(res, {
-          data: data
+          data: data,
         });
       }
       let where_clause: any = {
@@ -1694,22 +1722,22 @@ class WalletController implements OnlyControllerInterface {
             obj.type == "Cross_chain"
               ? language[lang].CROSS_CHAIN
               : obj.type == "Dapp"
-                ? language[lang].DAPP
-                : obj.type == "Deposit"
-                  ? language[lang].DEPOSIT
-                  : obj.type == "Swap"
-                    ? language[lang].SWAP
-                    : obj.type == "Withdraw"
-                      ? language[lang].WITHDRAW
-                      : obj.type == "Approve"
-                        ? language[lang].APPROVE
-                        : obj.type == "Buy"
-                          ? language[lang].BUY
-                          : obj.type == "Card_fees"
-                            ? language[lang].CARD_FEES
-                            : obj.type == "Level_upgradation_fee"
-                              ? language[lang].LEVEL_UPGRADE
-                              : language[lang].CARD_RECHARGE;
+              ? language[lang].DAPP
+              : obj.type == "Deposit"
+              ? language[lang].DEPOSIT
+              : obj.type == "Swap"
+              ? language[lang].SWAP
+              : obj.type == "Withdraw"
+              ? language[lang].WITHDRAW
+              : obj.type == "Approve"
+              ? language[lang].APPROVE
+              : obj.type == "Buy"
+              ? language[lang].BUY
+              : obj.type == "Card_fees"
+              ? language[lang].CARD_FEES
+              : obj.type == "Level_upgradation_fee"
+              ? language[lang].LEVEL_UPGRADE
+              : language[lang].CARD_RECHARGE;
           obj.status =
             obj.status == "completed"
               ? language[lang].COMPLETED
@@ -1718,8 +1746,8 @@ class WalletController implements OnlyControllerInterface {
             obj.blockchain_status == "confirmed"
               ? language[lang].CONFIRMED
               : obj.blockchain_status == "failed"
-                ? language[lang].FAILED_STATUS
-                : language[lang].PENDING_STATUS;
+              ? language[lang].FAILED_STATUS
+              : language[lang].PENDING_STATUS;
           const {
             type,
             from_adrs,
@@ -1783,7 +1811,10 @@ class WalletController implements OnlyControllerInterface {
   public async rpcBalance(req: Request, res: Response) {
     const lang: string = req.headers["content-language"] || "en";
     try {
-      const { wallet_address, coin_id }: { wallet_address: string; coin_id: number } = req.body;
+      const {
+        wallet_address,
+        coin_id,
+      }: { wallet_address: string; coin_id: number } = req.body;
       const coinData: any = await Models.CoinsModel.findOne({
         attributes: ["token_address", "is_token", "coin_family"],
         where: { coin_id },
@@ -1795,13 +1826,20 @@ class WalletController implements OnlyControllerInterface {
           message: language[lang].COIN_NOT_FOUND,
         });
       }
-      const addressValidity: any = await global_helper.validate_address(wallet_address, coinData.coin_family);
+      const addressValidity: any = await global_helper.validate_address(
+        wallet_address,
+        coinData.coin_family
+      );
       // console.log('addressValidity >>>', addressValidity);
-      if (!addressValidity) throw new Error(`${language[lang].INVALID_ADDRESS}`);
+      if (!addressValidity)
+        throw new Error(`${language[lang].INVALID_ADDRESS}`);
 
       // Get wallet balance from global helper
-      let balDetails: any = await global_helper.getWalletBalance(coinData, wallet_address);
-      console.log('balDetails >>>', balDetails);
+      let balDetails: any = await global_helper.getWalletBalance(
+        coinData,
+        wallet_address
+      );
+      console.log("balDetails >>>", balDetails);
       let balance: string = "0";
       if (balDetails.status) {
         balance = balDetails.balance;
@@ -1822,24 +1860,23 @@ class WalletController implements OnlyControllerInterface {
         message: language[lang].REQUEST_EXECUTED,
         data: balance,
       });
-
     } catch (err: any) {
       console.error("Error in wallet > rpcBalance:", err);
 
       // Log the error to the error logs
       await commonHelper.save_error_logs("rpcBalance", err.message);
-      let message = err.message ? err.message : language[lang].CATCH_MSG
+      let message = err.message ? err.message : language[lang].CATCH_MSG;
       return res.status(GlblCode.ERROR_CODE).send({
         code: GlblCode.ERROR_CODE,
         status: false,
-        message: message
+        message: message,
       });
     }
   }
 
   /**
-    * nft list api
-    */
+   * nft list api
+   */
   public nfts_from_moralis = async (req: Request, res: Response) => {
     try {
       let address_list = req.body.address_list ? req.body.address_list : [];
@@ -1850,7 +1887,7 @@ class WalletController implements OnlyControllerInterface {
       // // ];
       // if (config.SERVER == 'dev' || config.SERVER == 'prod') {
       //let chains = [{ 'chain': 'ethereum', 'type': 'eth', 'symbol': 'eth' }, { 'chain': 'binance', 'type': 'bsc', 'symbol': 'bnb' }]
-      let chains = [{ 'chain': 'ethereum', 'type': 'eth', 'symbol': 'eth' }]
+      let chains = [{ chain: "ethereum", type: "eth", symbol: "eth" }];
       // chains = [
       //     { 'chain': 'ethereum', 'type': 'mainnet', 'symbol': 'eth' },
       //     { 'chain': 'binance', 'type': 'mainnet', 'symbol': 'bnb' },
@@ -1862,29 +1899,35 @@ class WalletController implements OnlyControllerInterface {
           let symbol = data.coin_symbol;
           let address = data.wallet_address;
           let coin_family = data?.coin_family;
-          let chain_data = chains.filter(chain => chain.symbol == symbol)[0];
+          let chain_data = chains.filter((chain) => chain.symbol == symbol)[0];
           // if (symbol.toUpperCase() == 'ETH' || symbol.toUpperCase() == 'BNB') {
-          if (symbol.toUpperCase() == 'ETH') {
+          if (symbol.toUpperCase() == "ETH") {
             try {
-              let method = 'get';
+              let method = "get";
               let url = `https://deep-index.moralis.io/api/v2/${address}/nft?chain=${chain_data.type}&format=decimal&media_items=true`;
-              let headers = { 'X-API-Key': config.KEYS.MORALIS }
+              let headers = { "X-API-Key": config.KEYS.MORALIS };
               // let url = `https://app.zeeve.io/shared-api/blockchain-data/${chain_data.chain}/${chain_data.type}/api/v1/walletNFT/${address}`;
               // let headers = { 'Authorization': config.KEYS.ZEEVE }
-              let result: any = await global_helper.get_nft_data(method, url, headers);
+              let result: any = await global_helper.get_nft_data(
+                method,
+                url,
+                headers
+              );
               if (result && result?.result?.length) {
                 for await (let nft of result.result) {
                   if (nft?.possible_spam == true) {
                     continue;
                   }
-                  let metadata: any = '';
+                  let metadata: any = "";
                   if (nft?.metadata) {
                     metadata = await JSON.parse(nft.metadata);
                   }
 
                   let nftImage = null;
-                  if (nft?.media?.status == 'success') {
-                    nftImage = nft?.media?.media_collection?.medium?.url || nft?.media?.original_media_url
+                  if (nft?.media?.status == "success") {
+                    nftImage =
+                      nft?.media?.media_collection?.medium?.url ||
+                      nft?.media?.original_media_url;
                   }
                   let nftObj: any = {
                     token_address: nft.token_address,
@@ -1892,104 +1935,183 @@ class WalletController implements OnlyControllerInterface {
                     token_id: nft.token_id,
                     amount: nft.amount,
                     owner_of: nft.owner_of,
-                    token_uri: nft.token_uri || '',
-                    coin_family: coin_family ? coin_family : config.STATIC_COIN_FAMILY[symbol.toLowerCase()],
-                    name: nft.name !== undefined && nft.name !== null ? nft.name : metadata != '' && metadata.name ? metadata.name : null,
-                    symbol: nft.symbol !== undefined && nft.symbol !== null ? nft.symbol : metadata != '' && metadata?.symbol ? metadata.symbol : null,
+                    token_uri: nft.token_uri || "",
+                    coin_family: coin_family
+                      ? coin_family
+                      : config.STATIC_COIN_FAMILY[symbol.toLowerCase()],
+                    name:
+                      nft.name !== undefined && nft.name !== null
+                        ? nft.name
+                        : metadata != "" && metadata.name
+                        ? metadata.name
+                        : null,
+                    symbol:
+                      nft.symbol !== undefined && nft.symbol !== null
+                        ? nft.symbol
+                        : metadata != "" && metadata?.symbol
+                        ? metadata.symbol
+                        : null,
                     // image: metadata != '' && metadata.image ? metadata.image : null,
-                    image: nftImage !== null ? nftImage : metadata != '' && metadata.image ? metadata.image : null,
-                    description: metadata != '' && metadata.description ? metadata.description : null,
-                    attributes: metadata != '' && metadata.attributes ? metadata.attributes : null,
+                    image:
+                      nftImage !== null
+                        ? nftImage
+                        : metadata != "" && metadata.image
+                        ? metadata.image
+                        : null,
+                    description:
+                      metadata != "" && metadata.description
+                        ? metadata.description
+                        : null,
+                    attributes:
+                      metadata != "" && metadata.attributes
+                        ? metadata.attributes
+                        : null,
                   };
                   let findNft: any = await Models.NFTModelModel.findOne({
-                    attributes: ['image', 'image_extension', 'text_data'],
+                    attributes: ["image", "image_extension", "text_data"],
                     where: {
                       wallet_address: { [Op.like]: address },
                       token_id: nftObj.token_id.toString(),
                       token_address: { [Op.like]: nftObj.token_address },
                     },
-                    raw: true
+                    raw: true,
                   });
-
 
                   if (nftObj?.image && findNft?.image_extension == null) {
                     let tokenImage: any = nftObj?.image;
-                    let image_data: any = await global_helper.check_nft_image(tokenImage);
+                    let image_data: any = await global_helper.check_nft_image(
+                      tokenImage
+                    );
                     let image_extension: string | null = null;
                     let text_data: string | null = null;
-                    if (!image_data.status && nftObj?.image.indexOf("ipfs") > -1) {
-                      let imageHash = nftObj?.image?.substring(nftObj?.image.lastIndexOf("/") + 1, nftObj?.image?.length);
-                      tokenImage = `https://gateway.ipfs.io/ipfs/${imageHash}`
-                      image_data = await global_helper.check_nft_image(tokenImage);
+                    if (
+                      !image_data.status &&
+                      nftObj?.image.indexOf("ipfs") > -1
+                    ) {
+                      let imageHash = nftObj?.image?.substring(
+                        nftObj?.image.lastIndexOf("/") + 1,
+                        nftObj?.image?.length
+                      );
+                      tokenImage = `https://gateway.ipfs.io/ipfs/${imageHash}`;
+                      image_data = await global_helper.check_nft_image(
+                        tokenImage
+                      );
                       if (!image_data.status) {
-                        let ipfs_image = await global_helper.get_ipfs_image(nftObj?.image);
-                        tokenImage = ipfs_image !== '' ? ipfs_image : null //nftObj.token_uri;
-                        image_data = await global_helper.check_nft_image(tokenImage);
+                        let ipfs_image = await global_helper.get_ipfs_image(
+                          nftObj?.image
+                        );
+                        tokenImage = ipfs_image !== "" ? ipfs_image : null; //nftObj.token_uri;
+                        image_data = await global_helper.check_nft_image(
+                          tokenImage
+                        );
                         if (!image_data.status) {
                           tokenImage = null;
                           image_extension = null;
                           text_data = null;
                         } else {
                           image_extension = image_data.imgExtension;
-                          text_data = image_data.text_data !== '' ? image_data.text_data : null;
+                          text_data =
+                            image_data.text_data !== ""
+                              ? image_data.text_data
+                              : null;
                         }
                       } else {
                         image_extension = image_data.imgExtension;
-                        text_data = image_data.text_data !== '' ? image_data.text_data : null;
+                        text_data =
+                          image_data.text_data !== ""
+                            ? image_data.text_data
+                            : null;
                       }
                     } else {
-                      let ipfs_image = await global_helper.get_ipfs_image(tokenImage);
-                      tokenImage = ipfs_image !== '' ? ipfs_image : tokenImage;
+                      let ipfs_image = await global_helper.get_ipfs_image(
+                        tokenImage
+                      );
+                      tokenImage = ipfs_image !== "" ? ipfs_image : tokenImage;
                       image_extension = image_data.imgExtension;
-                      text_data = image_data.text_data !== '' ? image_data.text_data : null;
+                      text_data =
+                        image_data.text_data !== ""
+                          ? image_data.text_data
+                          : null;
                     }
                     nftObj.image = tokenImage;
                     nftObj.image_extension = image_extension;
                     nftObj.text_data = text_data;
-                  } else if (nftObj?.token_uri && findNft?.image_extension == null) {
-                    let token_uri_fetch: any = await global_helper.check_nft_token_uri(nftObj?.token_uri)
+                  } else if (
+                    nftObj?.token_uri &&
+                    findNft?.image_extension == null
+                  ) {
+                    let token_uri_fetch: any =
+                      await global_helper.check_nft_token_uri(
+                        nftObj?.token_uri
+                      );
                     let image_data: any | null = null;
                     if (token_uri_fetch) {
-                      image_data = await global_helper.check_nft_image(token_uri_fetch?.image);
+                      image_data = await global_helper.check_nft_image(
+                        token_uri_fetch?.image
+                      );
                     }
                     nftObj.image = token_uri_fetch?.image || null;
-                    nftObj.image_extension = image_data && image_data?.imgExtension || null;
-                    nftObj.text_data = image_data && image_data.text_data !== '' ? image_data.text_data : null;;
+                    nftObj.image_extension =
+                      (image_data && image_data?.imgExtension) || null;
+                    nftObj.text_data =
+                      image_data && image_data.text_data !== ""
+                        ? image_data.text_data
+                        : null;
                   } else {
-                    nftObj.image = findNft && findNft?.image ? findNft.image : null;
-                    nftObj.image_extension = findNft && findNft?.image_extension ? findNft?.image_extension : null;
-                    nftObj.text_data = findNft && findNft?.text_data ? findNft?.text_data : null;
+                    nftObj.image =
+                      findNft && findNft?.image ? findNft.image : null;
+                    nftObj.image_extension =
+                      findNft && findNft?.image_extension
+                        ? findNft?.image_extension
+                        : null;
+                    nftObj.text_data =
+                      findNft && findNft?.text_data ? findNft?.text_data : null;
                   }
                   let findCoin = await Models.CoinsModel.findOne({
-                    attributes: ['coin_id', 'coin_symbol', 'coin_name'],
+                    attributes: ["coin_id", "coin_symbol", "coin_name"],
                     where: {
                       token_address: { [Op.like]: nftObj.token_address },
                       token_type: nftObj.token_type,
                     },
-                    raw: true
+                    raw: true,
                   });
                   let coin_data: any = {};
                   /** save token if not exist */
                   if (!findCoin) {
                     let save_coin_data = await Models.CoinsModel.create({
                       coin_name: nftObj.name,
-                      coin_symbol: nftObj.symbol ? nftObj.symbol.toLowerCase() : null,
+                      coin_symbol: nftObj.symbol
+                        ? nftObj.symbol.toLowerCase()
+                        : null,
                       coin_image: null,
-                      coin_family: coin_family ? coin_family : config.STATIC_COIN_FAMILY[symbol.toLowerCase()],
+                      coin_family: coin_family
+                        ? coin_family
+                        : config.STATIC_COIN_FAMILY[symbol.toLowerCase()],
                       coin_status: 1,
                       is_token: 1,
-                      token_type: nft.contract_type == 'ERC1155' ? TokenType.ERC1155 : TokenType.ERC721,
+                      token_type:
+                        nft.contract_type == "ERC1155"
+                          ? TokenType.ERC1155
+                          : TokenType.ERC721,
                       decimals: 0,
                       token_address: nftObj.token_address,
-                      is_on_trading_view: 0
+                      is_on_trading_view: 0,
                     });
                     /** update into redis*/
-                    await WalletHelper.update_nft_token_in_redis(save_coin_data);
-                    coin_data = { coin_id: save_coin_data.coin_id, coin_symbol: nftObj.symbol ? nftObj.symbol.toLowerCase() : null, coin_name: nftObj.name }
+                    await WalletHelper.update_nft_token_in_redis(
+                      save_coin_data
+                    );
+                    coin_data = {
+                      coin_id: save_coin_data.coin_id,
+                      coin_symbol: nftObj.symbol
+                        ? nftObj.symbol.toLowerCase()
+                        : null,
+                      coin_name: nftObj.name,
+                    };
                   } else {
-                    coin_data = findCoin
+                    coin_data = findCoin;
                   }
-                  nftObj.nft_coin_data = coin_data
+                  nftObj.nft_coin_data = coin_data;
 
                   /** save nft if not exist in wallet */
                   if (!findNft) {
@@ -1999,7 +2121,9 @@ class WalletController implements OnlyControllerInterface {
                       wallet_address: address,
                       token_id: nftObj.token_id.toString(),
                       token_address: nftObj.token_address,
-                      coin_family: coin_family ? coin_family : config.STATIC_COIN_FAMILY[symbol.toLowerCase()],
+                      coin_family: coin_family
+                        ? coin_family
+                        : config.STATIC_COIN_FAMILY[symbol.toLowerCase()],
                       image: nftObj?.image,
                       description: nftObj.description,
                       attributes: nftObj.attributes,
@@ -2008,8 +2132,12 @@ class WalletController implements OnlyControllerInterface {
                       available: 1,
                       image_extension: nftObj.image_extension,
                       text_data: nftObj.text_data,
-                      balance: nft.contract_type == 'ERC1155' ? nftObj.amount : null,
-                      token_type: nft.contract_type == 'ERC1155' ? TokenType.ERC1155 : TokenType.ERC721
+                      balance:
+                        nft.contract_type == "ERC1155" ? nftObj.amount : null,
+                      token_type:
+                        nft.contract_type == "ERC1155"
+                          ? TokenType.ERC1155
+                          : TokenType.ERC721,
                     };
                     await Models.NFTModelModel.create(nftTokenData);
                   } else {
@@ -2019,23 +2147,35 @@ class WalletController implements OnlyControllerInterface {
                       attributes: nftObj.attributes,
                       token_uri: nftObj.token_uri,
                       name: nftObj.name,
-                      balance: nft.contract_type == 'ERC1155' ? nftObj.amount : null
+                      balance:
+                        nft.contract_type == "ERC1155" ? nftObj.amount : null,
                     };
-                    if (findNft.image == null || findNft.image_extension == null) {
+                    if (
+                      findNft.image == null ||
+                      findNft.image_extension == null
+                    ) {
                       nftTokenData.image = nftObj?.image;
                       nftTokenData.image_extension = nftObj.image_extension;
                       nftTokenData.text_data = nftObj.text_data;
                     }
-                    await Models.NFTModelModel.update(nftTokenData, { where: { wallet_address: address, token_id: nftObj.token_id.toString(), token_address: nftObj.token_address } });
+                    await Models.NFTModelModel.update(nftTokenData, {
+                      where: {
+                        wallet_address: address,
+                        token_id: nftObj.token_id.toString(),
+                        token_address: nftObj.token_address,
+                      },
+                    });
                   }
                   nfts.push(nftObj);
                 }
               } else {
-                console.log('🔥 ~ ~ NFT not found.', symbol.toUpperCase());
-                await Models.NFTModelModel.destroy({ where: { wallet_address: address, coin_family: coin_family } })
+                console.log("🔥 ~ ~ NFT not found.", symbol.toUpperCase());
+                await Models.NFTModelModel.destroy({
+                  where: { wallet_address: address, coin_family: coin_family },
+                });
               }
             } catch (error) {
-              console.log('🔥 ~ ~ nfts_from_moralis axios error', error);
+              console.log("🔥 ~ ~ nfts_from_moralis axios error", error);
             }
           }
         }
@@ -2044,25 +2184,25 @@ class WalletController implements OnlyControllerInterface {
             success: true,
             data: nfts,
             message: "Success",
-          }
+          },
         });
       }
     } catch (err) {
-      console.log('🔥 ~ ~ nfts_from_moralis error', err);
+      console.log("🔥 ~ ~ nfts_from_moralis error", err);
       let data = {
         code: GlblCode.ERROR_CODE,
         status: false,
-        data: err
+        data: err,
       };
       return res.status(data.code).send(data);
     }
-  }
+  };
 
   public async tradingView(req: Request, res: Response) {
     try {
       const symbol: any = req.query.symbol;
       const tradingData = await global_helper.getTradingSource(symbol);
-      console.log('tradingData >>>', tradingData);
+      console.log("tradingData >>>", tradingData);
       return res.status(GlblCode.SUCCESS).send({
         status: true,
         code: GlblCode.SUCCESS,
@@ -2073,7 +2213,7 @@ class WalletController implements OnlyControllerInterface {
       let data = {
         code: GlblCode.ERROR_CODE,
         status: false,
-        data: error
+        data: error,
       };
       return res.status(data.code).send(data);
     }
@@ -2082,14 +2222,22 @@ class WalletController implements OnlyControllerInterface {
     try {
       const address: any = req.query.address;
       const is_token: any = req.query.is_token;
-      let tradingData: any = '';
+      let tradingData: any = "";
       if (is_token) {
-        console.log('token >>>')
+        console.log("token >>>");
         const token_address: any = req.query.token_address;
-        tradingData = await SolanaHelper.getUserCRC20TokenBalance(token_address, address, false)
+        tradingData = await SolanaHelper.getUserCRC20TokenBalance(
+          token_address,
+          address,
+          false
+        );
       } else {
-        tradingData = await SolanaHelper.getUserSolanaBalance(address, true, true);
-        console.log('tradingData >>>', tradingData);
+        tradingData = await SolanaHelper.getUserSolanaBalance(
+          address,
+          true,
+          true
+        );
+        console.log("tradingData >>>", tradingData);
       }
 
       return res.status(GlblCode.SUCCESS).send({
@@ -2102,15 +2250,11 @@ class WalletController implements OnlyControllerInterface {
       let data = {
         code: GlblCode.ERROR_CODE,
         status: false,
-        data: error
+        data: error,
       };
       return res.status(data.code).send(data);
     }
   }
-
-
-
-
 }
 
 export const walletController = new WalletController();

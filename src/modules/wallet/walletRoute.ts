@@ -12,7 +12,6 @@ class WalletRoute implements ControllerInterface {
     this.initializeRoutes();
   }
   public initializeRoutes() {
-
     this.router.post(
       `${this.path}/addtoken`,
       [validateExpress(wallet_validator.addTokenValidate)],
@@ -60,9 +59,7 @@ class WalletRoute implements ControllerInterface {
       jwtVerification.verifyToken,
       walletController.swapList
     );
-    this.router.get(`${this.path}/rpcUrl`,
-      walletController.getRpcUrl
-    );
+    this.router.get(`${this.path}/rpcUrl`, walletController.getRpcUrl);
     this.router.post(
       `${this.path}/updateWatchlist`,
       [validateExpress(wallet_validator.updateWatchlistValidate)],
@@ -136,15 +133,8 @@ class WalletRoute implements ControllerInterface {
       `${this.path}/transaction/downloadcsv/:id`,
       walletController.downloadCsv
     );
-    this.router.get(
-      `${this.path}/tradingView`,
-      walletController.tradingView
-    );
-    this.router.get(
-      `${this.path}/solBalance`,
-      walletController.solBalance
-    );
-
+    this.router.get(`${this.path}/tradingView`, walletController.tradingView);
+    this.router.get(`${this.path}/solBalance`, walletController.solBalance);
   }
 }
 export default WalletRoute;
