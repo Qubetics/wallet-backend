@@ -135,6 +135,11 @@ class WalletRoute implements ControllerInterface {
     );
     this.router.get(`${this.path}/tradingView`, walletController.tradingView);
     this.router.get(`${this.path}/solBalance`, walletController.solBalance);
+    this.router.post(
+      `${this.path}/coin/graph/data`,
+      jwtVerification.verifyToken,
+      walletController.getCoinGraphData
+    );
   }
 }
 export default WalletRoute;

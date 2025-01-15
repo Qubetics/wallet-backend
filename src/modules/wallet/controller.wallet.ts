@@ -2255,6 +2255,36 @@ class WalletController implements OnlyControllerInterface {
       return res.status(data.code).send(data);
     }
   }
+
+  public async getCoinGraphData(req: Request, res: Response) {
+    try {
+      const cmcId: number = req.body.cmc_id;
+      const fiat_currency: string = req.body.fiat_currency || "USD";
+      const duration: string = req.body.duration || "1d";
+
+      let graphData = await Models.CoinPriceInFiatGraphModel.findAll({
+        where: {
+          cmc_id: cmcId,
+          fiat_type: fiat_currency,
+          type: duration,
+        },
+      });
+
+      return res.status(GlblCode.SUCCESS).send({
+        status: true,
+        code: GlblCode.SUCCESS,
+        message: "Graph data has been fetch successfully",
+        data: graphData,
+      });
+    } catch (error) {
+      let data = {
+        code: GlblCode.ERROR_CODE,
+        status: false,
+        data: error,
+      };
+      return res.status(data.code).send(data);
+    }
+  }
 }
 
 export const walletController = new WalletController();
