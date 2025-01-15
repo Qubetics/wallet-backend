@@ -258,7 +258,7 @@
     "/wallet/activeinactive": {
       "post": {
         "tags": ["Wallets"],
-        "summary": "",
+        "summary": "Toggle Wallet Active/Inactive Status",
         "parameters": [
           {
             "$ref": "#/parameters/Authorization"
@@ -266,7 +266,7 @@
           {
             "in": "body",
             "name": "activeinactive",
-            "description": "Toggle the active status of a wallet",
+            "description": "Toggles the active or inactive status of a wallet based on the provided coin ID, wallet address, and status flag.",
             "required": true,
             "schema": {
               "properties": {
@@ -285,7 +285,7 @@
         ],
         "responses": {
           "200": {
-            "description": "portfolio created successfully.",
+            "description": "Wallet status updated successfully.",
             "schema": {
               "type": "object",
               "properties": {
@@ -303,7 +303,7 @@
             }
           },
           "400": {
-            "description": "Unable to create wallets.",
+            "description": "Unable to toggle wallet status due to invalid input or server error.",
             "schema": {
               "$ref": "#/definitions/ErrorResponse"
             }
@@ -365,7 +365,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Wallets created successfully.",
+            "description": "Token added successfully in the Wallet.",
             "schema": {
               "type": "object",
               "properties": {
@@ -383,7 +383,7 @@
             }
           },
           "400": {
-            "description": "Unable to create wallets.",
+            "description": "Unable to Add Tokens in the wallets.",
             "schema": {
               "$ref": "#/definitions/ErrorResponse"
             }
@@ -522,7 +522,7 @@
     "/wallet/toggleCoinList": {
       "post": {
         "tags": ["Wallets"],
-        "summary": "",
+        "summary": "Toggles and filters the coin list in the wallet.",
         "parameters": [
           {
             "$ref": "#/parameters/Authorization"
@@ -530,7 +530,7 @@
           {
             "in": "body",
             "name": "Toggle Coin List",
-            "description": "Manages and filters the coin list in the wallet",
+            "description": "Manages the filtering and toggling of coins in the wallet based on specified parameters.",
             "required": true,
             "schema": {
               "properties": {
@@ -566,7 +566,7 @@
         ],
         "responses": {
           "200": {
-            "description": "portfolio created successfully.",
+            "description": "Coin list toggled and filtered successfully.",
             "schema": {
               "type": "object",
               "properties": {
@@ -584,7 +584,7 @@
             }
           },
           "400": {
-            "description": "Unable to create wallets.",
+            "description": "Unable to process the request. Invalid parameters or failed operation.",
             "schema": {
               "$ref": "#/definitions/ErrorResponse"
             }
@@ -693,7 +693,7 @@
     "/wallet/search": {
       "post": {
         "tags": ["Wallets"],
-        "summary": "",
+        "summary": "Searches for a specific token by its address and coin family to help create or manage a wallet portfolio.",
         "parameters": [
           {
             "$ref": "#/parameters/Authorization"
@@ -701,7 +701,7 @@
           {
             "in": "body",
             "name": "Search",
-            "description": "Allows searching for a specific token by its address and coin family, used to create a wallet portfolio.",
+            "description": "Allows searching for a token using its address and coin family to assist in creating or managing a wallet portfolio.",
             "required": true,
             "schema": {
               "properties": {
@@ -717,7 +717,7 @@
         ],
         "responses": {
           "200": {
-            "description": "portfolio created successfully.",
+            "description": "Token search successful, portfolio created or updated.",
             "schema": {
               "type": "object",
               "properties": {
@@ -735,7 +735,7 @@
             }
           },
           "400": {
-            "description": "Unable to create wallets.",
+            "description": "Unable to process the request. Invalid parameters or failed operation.",
             "schema": {
               "$ref": "#/definitions/ErrorResponse"
             }
@@ -746,7 +746,7 @@
     "/wallet/swap_coinlist": {
       "post": {
         "tags": ["Wallets"],
-        "summary": "",
+        "summary": "Swap Coin Portfolio",
         "parameters": [
           {
             "$ref": "#/parameters/Authorization"
@@ -754,7 +754,7 @@
           {
             "in": "body",
             "name": "Swap_coinlist",
-            "description": "Updates the user's coin portfolio by swapping coins based on the provided coin family and address list.",
+            "description": "Updates the user's coin portfolio by swapping coins according to the provided coin family and list of addresses.",
             "required": true,
             "schema": {
               "properties": {
@@ -784,7 +784,7 @@
         ],
         "responses": {
           "200": {
-            "description": "portfolio created successfully.",
+            "description": "Coin portfolio updated successfully.",
             "schema": {
               "type": "object",
               "properties": {
@@ -802,7 +802,7 @@
             }
           },
           "400": {
-            "description": "Unable to create wallets.",
+            "description": "Unable to update wallet due to invalid input or server error.",
             "schema": {
               "$ref": "#/definitions/ErrorResponse"
             }
@@ -814,7 +814,7 @@
     "/wallet/order/updateWatchlist": {
       "post": {
         "tags": ["Wallets"],
-        "summary": "",
+        "summary": "Update Watchlist",
         "parameters": [
           {
             "$ref": "#/parameters/Authorization"
@@ -822,7 +822,7 @@
           {
             "in": "body",
             "name": "update Watch list",
-            "description": " Updates the user's watchlist by managing the status of coins in the portfolio for specified wallet addresses.",
+            "description": "Updates the user's watchlist by managing the status of specified coins in their portfolio for the given wallet addresses.",
             "required": true,
             "schema": {
               "type": "array",
@@ -831,7 +831,7 @@
                 "properties": {
                   "coin_id": {
                     "type": "integer",
-                    "description": "Unique identifier for the coin"
+                    "description": "Unique identifier for the coin in the portfolio"
                   },
                   "address": {
                     "type": "string",
@@ -847,7 +847,7 @@
         ],
         "responses": {
           "200": {
-            "description": "portfolio created successfully.",
+            "description": "Watchlist updated successfully.",
             "schema": {
               "type": "object",
               "properties": {
@@ -865,7 +865,7 @@
             }
           },
           "400": {
-            "description": "Unable to create wallets.",
+            "description": "Unable to update watchlist due to invalid input or server error.",
             "schema": {
               "$ref": "#/definitions/ErrorResponse"
             }
@@ -932,7 +932,7 @@
     "/wallet/getWatchlist": {
       "post": {
         "tags": ["Wallets"],
-        "summary": "",
+        "summary": "Get User Watchlist",
         "parameters": [
           {
             "$ref": "#/parameters/Authorization"
@@ -940,7 +940,7 @@
           {
             "in": "body",
             "name": "get Watch list",
-            "description": "Retrieves a list of coins in the user's watchlist with optional filters like wallet address and coin family.",
+            "description": "Retrieves a list of coins from the user's watchlist, with optional filters like wallet address, coin family, and other attributes.",
             "required": true,
             "schema": {
               "properties": {
@@ -979,7 +979,7 @@
         ],
         "responses": {
           "200": {
-            "description": "portfolio created successfully.",
+            "description": "Watchlist retrieved successfully.",
             "schema": {
               "type": "object",
               "properties": {
@@ -997,7 +997,7 @@
             }
           },
           "400": {
-            "description": "Unable to create wallets.",
+            "description": "Unable to retrieve watchlist due to invalid input or server error.",
             "schema": {
               "$ref": "#/definitions/ErrorResponse"
             }
@@ -1076,7 +1076,7 @@
     "/wallet/order/update": {
       "post": {
         "tags": ["Wallets"],
-        "summary": "",
+        "summary": "Update Wallet Order",
         "parameters": [
           {
             "$ref": "#/parameters/Authorization"
@@ -1084,7 +1084,7 @@
           {
             "in": "body",
             "name": "order update",
-            "description": "Updates the order of wallet addresses in the user's portfolio by specifying the coin ID and wallet address.",
+            "description": "Updates the order of wallet addresses in the user's portfolio by specifying the coin ID, wallet address, and the desired order of the wallets.",
             "required": true,
             "schema": {
               "properties": {
@@ -1111,7 +1111,7 @@
         ],
         "responses": {
           "200": {
-            "description": "portfolio created successfully.",
+            "description": "Wallet order updated successfully.",
             "schema": {
               "type": "object",
               "properties": {
@@ -1129,7 +1129,7 @@
             }
           },
           "400": {
-            "description": "Unable to create wallets.",
+            "description": "Unable to update wallet order due to invalid input or server error.",
             "schema": {
               "$ref": "#/definitions/ErrorResponse"
             }
@@ -2657,6 +2657,133 @@
         }
       }
     },
+    "/bitcoin/{coin}/send": {
+      "post": {
+        "tags": ["bitcoin"],
+        "summary": "Send Bitcoin transaction and broadcast to the network",
+        "parameters": [
+          {
+            "name": "coin",
+            "in": "path",
+            "description": "The transaction details required for sending a Bitcoin transaction.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "is_maker": {
+                  "type": "number"
+                },
+                "tx_type": {
+                  "type": "string"
+                },
+                "nonce": {
+                  "type": "string"
+                },
+                "eth_gas_price": {
+                  "type": "string"
+                },
+                "gas_estimate": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "is_maker",
+                "tx_type",
+                "nonce",
+                "eth_gas_price",
+                "gas_estimate"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The transaction has been successfully broadcasted to the network.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The transaction failed due to an issue such as insufficient funds or other errors.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/bitcoin/unspent/{address}": {
+      "post": {
+        "tags": ["bitcoin"],
+        "summary": "Fetch unspent transaction outputs (UTXO) for a given Bitcoin address.",
+        "parameters": [
+          {
+            "name": "coin",
+            "in": "path",
+            "description": "The Bitcoin address for which unspent transaction outputs are being fetched.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved unspent transactions for the address.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to retrieve unspent transaction outputs due to an error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
     "/binancesmartchain/{coin}/gas_estimation": {
       "post": {
         "tags": ["binancesmartchain"],
@@ -2887,216 +3014,39 @@
           }
         }
       },
-    "/tron/{coin}/gas_estimation": {
-      "post": {
-        "tags": ["tron"],
-        "summary": "Estimate gas for a transaction on the Tron network",
-        "parameters": [
-          {
-            "name": "coin",
-            "in": "path",
-            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transactionData",
-            "description": "Transaction details for gas estimation",
-            "required": true,
-            "schema": {
-              "from_address": {
-                "type": "string"
-              },
-              "to_address": {
-                "type": "string"
-              },
-              "amount": {
-                "type": "number"
-              },
-              "coininfo": {
-                "type": "object",
-                "description": "Information about the coin involved in the transaction",
-                "properties": {
-                  "token_address": {
-                    "type": "string"
-                  },
-                  "token_abi": {
-                    "type": "string"
-                  },
-                  "is_token": {
-                    "type": "boolean"
-                  }
+      "/tron/{coin}/gas_estimation": {
+        "post": {
+          "tags": ["tron"],
+          "summary": "Estimate gas for a transaction on the Tron network",
+          "parameters": [
+            {
+              "name": "coin",
+              "in": "path",
+              "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "$ref": "#/parameters/Authorization"
+            },
+            {
+              "in": "body",
+              "name": "transactionData",
+              "description": "Transaction details for gas estimation",
+              "required": true,
+              "schema": {
+                "from_address": {
+                  "type": "string"
                 },
-                "required": ["token_address", "token_abi", "is_token"]
-              }
-            }
-          }
-    ],
-        "responses": {
-          "200": {
-            "description": "Gas estimation successful",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid input or validation error",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          },
-          "500": {
-          "description": "Internal server error",
-          "schema": {
-            "$ref": "#/definitions/ErrorResponse"
-          }
-        }
-      }
-    },
-    "/tron/{coin}/send": {
-      "post": {
-        "tags": ["tron"],
-        "summary": "Send a transaction",
-          "description": "Endpoint to send a transaction with Tron.",
-        "parameters": [
-          {
-            "name": "coin",
-            "in": "path",
-            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "Details of the transaction to be sent",
-            "required": true,
-            "schema": {
-              "properties": {
-                "is_maker": {
-                  "type": "number"
+                "to_address": {
+                  "type": "string"
                 },
                 "amount": {
-                  "type": "string"
-                },
-                "gas_price": {
-                  "type": "string"
-                },
-                "from": {
-                  "type": "string"
-                },
-                "tx_raw": {
-                  "type": "string"
-                },
-                "gas_estimate": {
-                  "type": "string"
+                  "type": "number"
                 },
                 "coininfo": {
                   "type": "object",
-                  "properties": {
-                    "token_address": {
-                      "type": "string"
-                    },
-                    "token_abi": {
-                      "type": "string"
-                    },
-                    "is_token": {
-                      "type": "string"
-                    },
-                    "coin_symbol": {
-                      "type": "string"
-                    }
-                  }
-                }
-              },
-              "required": [
-                "coin",
-                "coininfo",
-                "from",
-                "tx_raw",
-                "gas_estimate",
-                "coininfo"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Transaction processed successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/polygon/{coin}/gas_estimation": {
-      "post": {
-        "tags": ["polygon"],
-        "summary": "Estimate gas for a Polygon transaction",
-        "parameters": [
-          {
-            "name": "coin",
-            "in": "path",
-            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "Transaction details for gas estimation",
-            "required": true,
-            "schema": {
-              "properties": {
-                "from": {
-                  "type": "string"
-                },
-                "to": {
-                  "type": "string"
-                },
-                "coininfo": {
-                  "type": "object",
+                  "description": "Information about the coin involved in the transaction",
                   "properties": {
                     "token_address": {
                       "type": "string"
@@ -3107,915 +3057,965 @@
                     "is_token": {
                       "type": "boolean"
                     }
-                  }
+                  },
+                  "required": ["token_address", "token_abi", "is_token"]
                 }
-              },
-              "required": [ "coininfo", "from", "to"]
+              }
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Gas estimation calculated successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
+      ],
+          "responses": {
+            "200": {
+              "description": "Gas estimation successful",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "array"
+                      }
                     }
                   }
                 }
               }
-            }
-          },
-          "400": {
-            "description": "Unable to estimate gas.",
+            },
+            "400": {
+              "description": "Invalid input or validation error",
+              "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+              }
+            },
+            "500": {
+            "description": "Internal server error",
             "schema": {
               "$ref": "#/definitions/ErrorResponse"
             }
           }
+          }
         }
-      }
-    },
-    "/polygon/{coin}/send": {
-      "post": {
-        "tags": ["polygon"],
-        "summary": "Send transaction on Polygon",
-        "parameters": [
-          {
-            "name": "coin",
-            "in": "path",
-            "description": "The coin type (e.g., ETH, USDT) for which the transaction is being sent",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction",
-            "description": "Transaction details",
-            "required": true,
-            "schema": {
-              "properties": {
-                "is_maker": {
-                  "type": "number"
-                },
-                "amount": {
-                  "type": "string"
-                },
-                "gas_price": {
-                  "type": "string"
-                },
-                "from": {
-                  "type": "string"
-                },
-                "tx_raw": {
-                  "type": "string"
-                },
-                "gas_estimate": {
-                  "type": "string"
-                },
-                "coininfo": {
-                  "type": "object",
-                  "properties": {
-                    "token_address": {
-                      "type": "string"
-                    },
-                    "token_abi": {
-                      "type": "string"
-                    },
-                    "is_token": {
-                      "type": "string"
-                    },
-                    "coin_symbol": {
-                      "type": "string"
+      },
+      "/tron/{coin}/send": {
+        "post": {
+          "tags": ["tron"],
+          "summary": "Send a transaction",
+            "description": "Endpoint to send a transaction with Tron.",
+          "parameters": [
+            {
+              "name": "coin",
+              "in": "path",
+              "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "$ref": "#/parameters/Authorization"
+            },
+            {
+              "in": "body",
+              "name": "transaction list",
+              "description": "Details of the transaction to be sent",
+              "required": true,
+              "schema": {
+                "properties": {
+                  "is_maker": {
+                    "type": "number"
+                  },
+                  "amount": {
+                    "type": "string"
+                  },
+                  "gas_price": {
+                    "type": "string"
+                  },
+                  "from": {
+                    "type": "string"
+                  },
+                  "tx_raw": {
+                    "type": "string"
+                  },
+                  "gas_estimate": {
+                    "type": "string"
+                  },
+                  "coininfo": {
+                    "type": "object",
+                    "properties": {
+                      "token_address": {
+                        "type": "string"
+                      },
+                      "token_abi": {
+                        "type": "string"
+                      },
+                      "is_token": {
+                        "type": "string"
+                      },
+                      "coin_symbol": {
+                        "type": "string"
+                      }
                     }
                   }
-                }
-              },
-              "required": [
-                "coin",
-                "coininfo",
-                "from",
-                "tx_raw",
-                "gas_estimate",
-                "coininfo"
-              ]
+                },
+                "required": [
+                  "coin",
+                  "coininfo",
+                  "from",
+                  "tx_raw",
+                  "gas_estimate",
+                  "coininfo"
+                ]
+              }
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Transaction sent successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
+          ],
+          "responses": {
+            "200": {
+              "description": "Transaction processed successfully.",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "array"
+                      }
                     }
                   }
                 }
               }
-            }
-          },
-          "400": {
-            "description": "Unable to send transaction.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
+            },
+            "400": {
+              "description": "Bad Request",
+              "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+              }
             }
           }
         }
-      }
-    },
-    "/polygon/{coin}/sendSwapTrnx": {
-      "post": {
-        "tags": ["polygon"],
-        "summary": "Process a swap transaction on Polygon",
-        "parameters": [
-          {
-            "name": "coin",
-            "in": "path",
-            "description": "This endpoint is used to send a transaction on the Polygon network for a specific coin type (e.g., ETH, USDT). It expects the transaction hash, amount, and coin symbol as part of the request body, and will save the transaction details accordingly.",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "Transaction details",
-            "required": true,
-            "schema": {
-              "properties": {
-                "tx_hash": {
-                  "type": "string"
+      },
+      "/polygon/{coin}/gas_estimation": {
+        "post": {
+          "tags": ["polygon"],
+          "summary": "Estimate gas for a Polygon transaction",
+          "parameters": [
+            {
+              "name": "coin",
+              "in": "path",
+              "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "$ref": "#/parameters/Authorization"
+            },
+            {
+              "in": "body",
+              "name": "transaction list",
+              "description": "Transaction details for gas estimation",
+              "required": true,
+              "schema": {
+                "properties": {
+                  "from": {
+                    "type": "string"
+                  },
+                  "to": {
+                    "type": "string"
+                  },
+                  "coininfo": {
+                    "type": "object",
+                    "properties": {
+                      "token_address": {
+                        "type": "string"
+                      },
+                      "token_abi": {
+                        "type": "string"
+                      },
+                      "is_token": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
                 },
-                "amount": {
-                  "type": "number"
-                },
-                "coin_symbol": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "tx_hash",
-                "amount",
-                "coin_symbol"        
-              ]
+                "required": [ "coininfo", "from", "to"]
+              }
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully processed the swap transaction.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
+          ],
+          "responses": {
+            "200": {
+              "description": "Gas estimation calculated successfully.",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "array"
+                      }
                     }
                   }
                 }
               }
-            }
-          },
-          "400": {
-            "description": "The error code indicating the nature of the error.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
+            },
+            "400": {
+              "description": "Unable to estimate gas.",
+              "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+              }
             }
           }
         }
-      }
-    },
-    "/polygon/{coin}/nonce": {
-      "post": {
-        "tags": ["polygon"],
-        "summary": "Retrieve the nonce for a specified wallet address",
-        "parameters": [ 
-          {
-            "name": "coin",
-            "in": "path",
-            "description": "he type of coin (e.g., ETH, USDT) for which the nonce is being requested.",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "The wallet address for which the nonce is being requested.",
-            "required": true,
-            "schema": {
-              "properties": {
-                "wallet_address": {
-                  "type": "string"
-                }
-              },
-              "required": ["wallet_address"]
+      },
+      "/polygon/{coin}/send": {
+        "post": {
+          "tags": ["polygon"],
+          "summary": "Send transaction on Polygon",
+          "parameters": [
+            {
+              "name": "coin",
+              "in": "path",
+              "description": "The coin type (e.g., ETH, USDT) for which the transaction is being sent",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "$ref": "#/parameters/Authorization"
+            },
+            {
+              "in": "body",
+              "name": "transaction",
+              "description": "Transaction details",
+              "required": true,
+              "schema": {
+                "properties": {
+                  "is_maker": {
+                    "type": "number"
+                  },
+                  "amount": {
+                    "type": "string"
+                  },
+                  "gas_price": {
+                    "type": "string"
+                  },
+                  "from": {
+                    "type": "string"
+                  },
+                  "tx_raw": {
+                    "type": "string"
+                  },
+                  "gas_estimate": {
+                    "type": "string"
+                  },
+                  "coininfo": {
+                    "type": "object",
+                    "properties": {
+                      "token_address": {
+                        "type": "string"
+                      },
+                      "token_abi": {
+                        "type": "string"
+                      },
+                      "is_token": {
+                        "type": "string"
+                      },
+                      "coin_symbol": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "coin",
+                  "coininfo",
+                  "from",
+                  "tx_raw",
+                  "gas_estimate",
+                  "coininfo"
+                ]
+              }
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved the nonce for the provided wallet address.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
+          ],
+          "responses": {
+            "200": {
+              "description": "Transaction sent successfully.",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "array"
+                      }
                     }
                   }
                 }
               }
-            }
-          },
-          "400": {
-            "description": "Unable to retrieve the nonce due to an error with the wallet address or other issues.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/polygon/{coin}/get_raw_data_string": {
-      "post": {
-        "tags": ["polygon"],
-        "summary": "Retrieve the raw transaction data string for a transfer",
-        "parameters": [
-          {
-            "name": "coin",
-            "in": "path",
-            "description": "The type of coin (e.g., ETH, USDT) for which the raw transaction data is being generated.",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "The transaction details for generating the raw data string.",
-            "required": true,
-            "schema": {
-              "properties": {
-                "my_address": {
-                  "type": "string"
-                },
-                "dest_address": {
-                  "type": "string"
-                },
-                "amount": {
-                  "type": "string"
-                },
-                "coin_type": {
-                  "type": "string"
-                }
-              },
-              "required": ["my_address", "dest_address", "amount", "coin_type"]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": " Successfully generated the raw transaction data string.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
+            },
+            "400": {
+              "description": "Unable to send transaction.",
+              "schema": {
+                "$ref": "#/definitions/ErrorResponse"
               }
             }
-          },
-          "400": {
-            "description": "Unable to generate the raw transaction data due to an error with the provided transaction details.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
           }
         }
-      }
-    },
-    "/bitcoin/{coin}/send": {
-      "post": {
-        "tags": ["bitcoin"],
-        "summary": "Send Bitcoin transaction and broadcast to the network",
-        "parameters": [
-          {
-            "name": "coin",
-            "in": "path",
-            "description": "The transaction details required for sending a Bitcoin transaction.",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "",
-            "required": true,
-            "schema": {
-              "properties": {
-                "is_maker": {
-                  "type": "number"
-                },
-                "tx_type": {
-                  "type": "string"
-                },
-                "nonce": {
-                  "type": "string"
-                },
-                "eth_gas_price": {
-                  "type": "string"
-                },
-                "gas_estimate": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "is_maker",
-                "tx_type",
-                "nonce",
-                "eth_gas_price",
-                "gas_estimate"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The transaction has been successfully broadcasted to the network.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "The transaction failed due to an issue such as insufficient funds or other errors.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/bitcoin/unspent/{address}": {
-      "post": {
-        "tags": ["bitcoin"],
-        "summary": "Fetch unspent transaction outputs (UTXO) for a given Bitcoin address.",
-        "parameters": [
-          {
-            "name": "coin",
-            "in": "path",
-            "description": "The Bitcoin address for which unspent transaction outputs are being fetched.",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "",
-            "required": true,
-            "schema": {}
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved unspent transactions for the address.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unable to retrieve unspent transaction outputs due to an error.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-
-    "/priceAlert/addNew": {
-      "post": {
-        "tags": ["priceAlert"],
-        "summary": "",
-        "parameters": [
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "",
-            "required": true,
-            "schema": {
-              "properties": {
-                "wallet_address": {
-                  "type": "string"
-                },
-                "coin_symbol": {
-                  "type": "string"
-                },
-                "coin_name": {
-                  "type": "string"
-                },
-                "percentage": {
-                  "type": "string"
-                },
-                "price_in_usd_per_unit": {
-                  "type": "string"
-                },
-                "alert_price": {
-                  "type": "string"
-                },
-                "coin_family": {
-                  "type": "string"
-                },
-                "token_address": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "wallet_address",
-                "coin_symbol",
-                "coin_name",
-                "percentage",
-                "price_in_usd_per_unit",
-                "alert_price",
-                "coin_family",
-                "token_address"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "portfolio created successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unable to create wallets.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/priceAlert/changeStatus": {
-      "post": {
-        "tags": ["priceAlert"],
-        "summary": "",
-        "parameters": [
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "",
-            "required": true,
-            "schema": {
-              "properties": {
-                "price_id": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              },
-              "required": ["price_id", "status"]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "portfolio created successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unable to create wallets.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/priceAlert/changeAmount": {
-      "post": {
-        "tags": ["priceAlert"],
-        "summary": "",
-        "parameters": [
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "",
-            "required": true,
-            "schema": {
-              "properties": {
-                "price_id": {
-                  "type": "string"
-                },
-                "amount": {
-                  "type": "string"
-                }
-              },
-              "required": ["price_id", "amount"]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "portfolio created successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unable to create wallets.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/priceAlert/delete": {
-      "delete": {
-        "tags": ["priceAlert"],
-        "summary": "",
-        "parameters": [
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "",
-            "required": true,
-            "schema": {
-              "properties": {
-                "price_id": {
-                  "type": "string"
-                }
-              },
-              "required": ["price_id"]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "portfolio created successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unable to create wallets.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/priceAlert/delete-all": {
-      "post": {
-        "tags": ["priceAlert"],
-        "summary": "",
-        "parameters": [
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "",
-            "required": true,
-            "schema": {
-              "properties": {
-                "coin_id": {
-                  "type": "string"
-                }
-              },
-              "required": ["coin_id"]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "portfolio created successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unable to create wallets.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/priceAlert/get": {
-      "post": {
-        "tags": ["priceAlert"],
-        "summary": "",
-        "parameters": [
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "",
-            "required": true,
-            "schema": {
-              "properties": {
-                "coin_id": {
-                  "type": "string"
-                }
-              },
-              "required": ["coin_id"]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "portfolio created successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unable to create wallets.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/priceAlert/coins": {
-      "post": {
-        "tags": ["priceAlert"],
-        "summary": "",
-        "parameters": [
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "",
-            "required": true,
-            "schema": {
-              "properties": {
-                "page": {
-                  "type": "string"
-                },
-                "limit": {
-                  "type": "string"
-                },
-                "coin_id": {
-                  "type": "string"
-                }
-              },
-              "required": ["coin_id", "page", "limit"]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "portfolio created successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unable to create wallets.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/priceAlert/getList": {
-      "post": {
-        "tags": ["priceAlert"],
-        "summary": "",
-        "parameters": [
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "",
-            "required": true,
-            "schema": {
-              "properties": {
-                "fiat_type": {
-                  "type": "string"
-                },
-                "addressList": {
-                  "type": "array",
-                  "items": {
+      },
+      "/polygon/{coin}/sendSwapTrnx": {
+        "post": {
+          "tags": ["polygon"],
+          "summary": "Process a swap transaction on Polygon",
+          "parameters": [
+            {
+              "name": "coin",
+              "in": "path",
+              "description": "This endpoint is used to send a transaction on the Polygon network for a specific coin type (e.g., ETH, USDT). It expects the transaction hash, amount, and coin symbol as part of the request body, and will save the transaction details accordingly.",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "$ref": "#/parameters/Authorization"
+            },
+            {
+              "in": "body",
+              "name": "transaction list",
+              "description": "Transaction details",
+              "required": true,
+              "schema": {
+                "properties": {
+                  "tx_hash": {
+                    "type": "string"
+                  },
+                  "amount": {
+                    "type": "number"
+                  },
+                  "coin_symbol": {
                     "type": "string"
                   }
-                }
-              },
-              "required": ["fiat_type"]
+                },
+                "required": [
+                  "tx_hash",
+                  "amount",
+                  "coin_symbol"        
+                ]
+              }
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "portfolio created successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully processed the swap transaction.",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "array"
+                      }
                     }
                   }
                 }
               }
+            },
+            "400": {
+              "description": "The error code indicating the nature of the error.",
+              "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+              }
             }
-          },
-          "400": {
-            "description": "Unable to create wallets.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
+          }
+        }
+      },
+      "/polygon/{coin}/nonce": {
+        "post": {
+          "tags": ["polygon"],
+          "summary": "Retrieve the nonce for a specified wallet address",
+          "parameters": [ 
+            {
+              "name": "coin",
+              "in": "path",
+              "description": "he type of coin (e.g., ETH, USDT) for which the nonce is being requested.",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "$ref": "#/parameters/Authorization"
+            },
+            {
+              "in": "body",
+              "name": "transaction list",
+              "description": "The wallet address for which the nonce is being requested.",
+              "required": true,
+              "schema": {
+                "properties": {
+                  "wallet_address": {
+                    "type": "string"
+                  }
+                },
+                "required": ["wallet_address"]
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully retrieved the nonce for the provided wallet address.",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "array"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Unable to retrieve the nonce due to an error with the wallet address or other issues.",
+              "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+              }
+            }
+          }
+        }
+      },
+      "/polygon/{coin}/get_raw_data_string": {
+        "post": {
+          "tags": ["polygon"],
+          "summary": "Retrieve the raw transaction data string for a transfer",
+          "parameters": [
+            {
+              "name": "coin",
+              "in": "path",
+              "description": "The type of coin (e.g., ETH, USDT) for which the raw transaction data is being generated.",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "$ref": "#/parameters/Authorization"
+            },
+            {
+              "in": "body",
+              "name": "transaction list",
+              "description": "The transaction details for generating the raw data string.",
+              "required": true,
+              "schema": {
+                "properties": {
+                  "my_address": {
+                    "type": "string"
+                  },
+                  "dest_address": {
+                    "type": "string"
+                  },
+                  "amount": {
+                    "type": "string"
+                  },
+                  "coin_type": {
+                    "type": "string"
+                  }
+                },
+                "required": ["my_address", "dest_address", "amount", "coin_type"]
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": " Successfully generated the raw transaction data string.",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "array"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Unable to generate the raw transaction data due to an error with the provided transaction details.",
+              "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+              }
+            }
+          }
+        }
+      },
+
+      "/priceAlert/addNew": {
+        "post": {
+          "tags": ["priceAlert"],
+          "summary": "",
+          "parameters": [
+            {
+              "$ref": "#/parameters/Authorization"
+            },
+            {
+              "in": "body",
+              "name": "transaction list",
+              "description": "",
+              "required": true,
+              "schema": {
+                "properties": {
+                  "wallet_address": {
+                    "type": "string"
+                  },
+                  "coin_symbol": {
+                    "type": "string"
+                  },
+                  "coin_name": {
+                    "type": "string"
+                  },
+                  "percentage": {
+                    "type": "string"
+                  },
+                  "price_in_usd_per_unit": {
+                    "type": "string"
+                  },
+                  "alert_price": {
+                    "type": "string"
+                  },
+                  "coin_family": {
+                    "type": "string"
+                  },
+                  "token_address": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "wallet_address",
+                  "coin_symbol",
+                  "coin_name",
+                  "percentage",
+                  "price_in_usd_per_unit",
+                  "alert_price",
+                  "coin_family",
+                  "token_address"
+                ]
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "portfolio created successfully.",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "array"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Unable to create wallets.",
+              "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+              }
+            }
+          }
+        }
+      },
+      "/priceAlert/changeStatus": {
+        "post": {
+          "tags": ["priceAlert"],
+          "summary": "",
+          "parameters": [
+            {
+              "$ref": "#/parameters/Authorization"
+            },
+            {
+              "in": "body",
+              "name": "transaction list",
+              "description": "",
+              "required": true,
+              "schema": {
+                "properties": {
+                  "price_id": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string"
+                  }
+                },
+                "required": ["price_id", "status"]
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "portfolio created successfully.",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "array"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Unable to create wallets.",
+              "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+              }
+            }
+          }
+        }
+      },
+      "/priceAlert/changeAmount": {
+        "post": {
+          "tags": ["priceAlert"],
+          "summary": "",
+          "parameters": [
+            {
+              "$ref": "#/parameters/Authorization"
+            },
+            {
+              "in": "body",
+              "name": "transaction list",
+              "description": "",
+              "required": true,
+              "schema": {
+                "properties": {
+                  "price_id": {
+                    "type": "string"
+                  },
+                  "amount": {
+                    "type": "string"
+                  }
+                },
+                "required": ["price_id", "amount"]
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "portfolio created successfully.",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "array"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Unable to create wallets.",
+              "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+              }
+            }
+          }
+        }
+      },
+      "/priceAlert/delete": {
+        "delete": {
+          "tags": ["priceAlert"],
+          "summary": "",
+          "parameters": [
+            {
+              "$ref": "#/parameters/Authorization"
+            },
+            {
+              "in": "body",
+              "name": "transaction list",
+              "description": "",
+              "required": true,
+              "schema": {
+                "properties": {
+                  "price_id": {
+                    "type": "string"
+                  }
+                },
+                "required": ["price_id"]
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "portfolio created successfully.",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "array"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Unable to create wallets.",
+              "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+              }
+            }
+          }
+        }
+      },
+      "/priceAlert/delete-all": {
+        "post": {
+          "tags": ["priceAlert"],
+          "summary": "",
+          "parameters": [
+            {
+              "$ref": "#/parameters/Authorization"
+            },
+            {
+              "in": "body",
+              "name": "transaction list",
+              "description": "",
+              "required": true,
+              "schema": {
+                "properties": {
+                  "coin_id": {
+                    "type": "string"
+                  }
+                },
+                "required": ["coin_id"]
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "portfolio created successfully.",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "array"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Unable to create wallets.",
+              "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+              }
+            }
+          }
+        }
+      },
+      "/priceAlert/get": {
+        "post": {
+          "tags": ["priceAlert"],
+          "summary": "",
+          "parameters": [
+            {
+              "$ref": "#/parameters/Authorization"
+            },
+            {
+              "in": "body",
+              "name": "transaction list",
+              "description": "",
+              "required": true,
+              "schema": {
+                "properties": {
+                  "coin_id": {
+                    "type": "string"
+                  }
+                },
+                "required": ["coin_id"]
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "portfolio created successfully.",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "array"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Unable to create wallets.",
+              "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+              }
+            }
+          }
+        }
+      },
+      "/priceAlert/coins": {
+        "post": {
+          "tags": ["priceAlert"],
+          "summary": "",
+          "parameters": [
+            {
+              "$ref": "#/parameters/Authorization"
+            },
+            {
+              "in": "body",
+              "name": "transaction list",
+              "description": "",
+              "required": true,
+              "schema": {
+                "properties": {
+                  "page": {
+                    "type": "string"
+                  },
+                  "limit": {
+                    "type": "string"
+                  },
+                  "coin_id": {
+                    "type": "string"
+                  }
+                },
+                "required": ["coin_id", "page", "limit"]
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "portfolio created successfully.",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "array"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Unable to create wallets.",
+              "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+              }
+            }
+          }
+        }
+      },
+      "/priceAlert/getList": {
+        "post": {
+          "tags": ["priceAlert"],
+          "summary": "",
+          "parameters": [
+            {
+              "$ref": "#/parameters/Authorization"
+            },
+            {
+              "in": "body",
+              "name": "transaction list",
+              "description": "",
+              "required": true,
+              "schema": {
+                "properties": {
+                  "fiat_type": {
+                    "type": "string"
+                  },
+                  "addressList": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": ["fiat_type"]
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "portfolio created successfully.",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "array"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Unable to create wallets.",
+              "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+              }
             }
           }
         }
       }
-    }
-  }
   }
 }
