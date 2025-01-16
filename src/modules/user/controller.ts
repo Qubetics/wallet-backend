@@ -319,6 +319,8 @@ class UserController implements OnlyControllerInterface {
       let set_order_type: string = req.body?.order_type == "undefined" || req.body?.order_type == undefined ? 'ASC' : req.body?.order_type as string;
       let { address, coin_family }: { address: string, coin_family: number } = req.body;
       let user_id: number = req.userId;
+      console.log("page",page);
+      
 
       let address_book_data: any = await address_book_queries.address_book_with_address_book_wallet_coins_joint(
         ['id', 'name', 'address', 'created_at'],

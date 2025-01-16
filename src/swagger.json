@@ -277,7 +277,7 @@
                   "type": "string"
                 },
                 "isActive": {
-                  "type": "string"
+                  "type": "number"
                 }
               }
             }
@@ -327,7 +327,7 @@
             "schema": {
               "properties": {
                 "coin_family": {
-                  "type": "string"
+                  "type": "number"
                 },
                 "coin_gicko_id": {
                   "type": "string"
@@ -357,7 +357,7 @@
                   "type": "string"
                 },
                 "isSwapList": {
-                  "type": "string"
+                  "type": "boolean"
                 }
               }
             }
