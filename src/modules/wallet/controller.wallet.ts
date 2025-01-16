@@ -1560,7 +1560,7 @@ class WalletController implements OnlyControllerInterface {
         fiat_currency: string;
       } = req.body;
 
-      const coinWalletdata = await Models.WalletModel.findOne({
+      const coinWalletdata: any = await Models.WalletModel.findOne({
         attributes: ["balance"],
         where: {
           wallet_address: wallet_address,
@@ -1614,16 +1614,14 @@ class WalletController implements OnlyControllerInterface {
           }
         }
       }
-      let ResObj = {
-        coinWalletdata,
-        graph: graphData,
-      };
+
+      coinWalletdata.graph = graphData;
 
       return res.status(GlblCode.SUCCESS).send({
         status: true,
         code: GlblCode.SUCCESS,
         message: language[lang].REQUEST_EXECUTED,
-        data: ResObj,
+        data: coinWalletdata,
       });
     } catch (err: any) {
       console.error("Error in wallet > updateBalance.", err);
