@@ -1608,10 +1608,15 @@ class WalletController implements OnlyControllerInterface {
         });
         if (findGraph && findGraph?.sparkline) {
           const graphArray = findGraph?.sparkline;
-          graphData = WalletHelper.filterByAgeRange(
-            JSON.parse(graphArray),
-            "1d"
-          );
+          if (graphArray && graphArray) {
+            console.log(
+              "graphArray :>> ",
+              graphArray,
+              "type of ",
+              typeof graphArray
+            );
+            // graphData = WalletHelper.filterByAgeRange(graphArray, "1d");
+          }
         }
       }
 
