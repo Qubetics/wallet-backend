@@ -2304,7 +2304,7 @@ class WalletController implements OnlyControllerInterface {
       const fiat_currency: string = req.body.fiat_currency || "USD";
       const duration: string = req.body.duration || "1d";
 
-      let graphData = await Models.CoinPriceInFiatGraphModel.findAll({
+      let graphData = await Models.CoinPriceInFiatGraphModel.findOne({
         where: {
           cmc_id: cmcId,
           fiat_type: fiat_currency,
