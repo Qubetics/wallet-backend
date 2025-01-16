@@ -128,6 +128,23 @@ class WalletController implements OnlyControllerInterface {
         coinDataExist = response.coinData;
       }
 
+      if (
+        coin_family == config.STATIC_COIN_FAMILY.ETH ||
+        coin_family == config.STATIC_COIN_FAMILY.BNB ||
+        coin_family == config.STATIC_COIN_FAMILY.SOL ||
+        coin_family == config.STATIC_COIN_FAMILY.POL
+      ) {
+        let redis_token_data: any = {
+          coin_family: coin_family,
+          token_address: token_address,
+        };
+
+        await kafka_helper.produceMessage(
+          config.MORALIS_TRADINGVIEW_TOPIC,
+          redis_token_data
+        );
+      }
+
       let message: string = await WalletHelper.create_wallet_for_coin(
         wallet_address,
         coinDataExist.coin_id,
