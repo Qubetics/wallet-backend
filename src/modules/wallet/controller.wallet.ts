@@ -1615,13 +1615,14 @@ class WalletController implements OnlyControllerInterface {
         }
       }
 
-      coinWalletdata.graph = graphData;
+      // coinWalletdata.graph = graphData;
 
       return res.status(GlblCode.SUCCESS).send({
         status: true,
         code: GlblCode.SUCCESS,
         message: language[lang].REQUEST_EXECUTED,
         data: coinWalletdata,
+        graph: graphData,
       });
     } catch (err: any) {
       console.error("Error in wallet > updateBalance.", err);
