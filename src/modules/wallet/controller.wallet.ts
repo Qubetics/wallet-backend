@@ -1601,7 +1601,7 @@ class WalletController implements OnlyControllerInterface {
         ],
         // raw: true,
       });
-      let graphData: any;
+      let graphData: any = [];
       if (cmc_id && fiat_currency) {
         const findGraph = await Models.CoinPriceInFiatGraphModel.findOne({
           where: { cmc_id: cmc_id, fiat_type: fiat_currency, type: "1d" },
@@ -1616,6 +1616,7 @@ class WalletController implements OnlyControllerInterface {
             //   typeof graphArray
             // );
             graphData = WalletHelper.filterByAgeRange(graphArray, "1d");
+            console.log("graphData :>> ", graphData);
           }
         }
       }
