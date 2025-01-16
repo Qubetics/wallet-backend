@@ -1601,10 +1601,12 @@ class WalletController implements OnlyControllerInterface {
         ],
         // raw: true,
       });
-
-      let findGraph = await Models.CoinPriceInFiatGraphModel.findOne({
-        where: { cmc_id: cmc_id, fiat_type: fiat_currency, type: "1d" },
-      });
+      let findGraph: any = {};
+      if (cmc_id && fiat_currency) {
+        findGraph = await Models.CoinPriceInFiatGraphModel.findOne({
+          where: { cmc_id: cmc_id, fiat_type: fiat_currency, type: "1d" },
+        });
+      }
 
       return res.status(GlblCode.SUCCESS).send({
         status: true,
