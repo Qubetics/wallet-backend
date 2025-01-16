@@ -792,13 +792,15 @@ class WalletHelpers implements OnlyControllerInterface {
 
   // Function to filter elements based on the age range
   public async filterByAgeRange(
-    elementsArray: any[],
+    elementsArray: any,
     range: string
   ): Promise<any[]> {
     try {
       const now = Date.now(); // Current timestamp
       let timeRange: number = 0;
-
+      console.log("elementsArray :>> ", elementsArray);
+      // elementsArray = JSON.parse(elementsArray);
+      // console.log("elementsArray after:>> ", elementsArray);
       // Define time ranges
       switch (range) {
         case "1d":

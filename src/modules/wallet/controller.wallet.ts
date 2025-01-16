@@ -1609,13 +1609,13 @@ class WalletController implements OnlyControllerInterface {
         if (findGraph && findGraph?.sparkline) {
           const graphArray = findGraph?.sparkline;
           if (graphArray && graphArray) {
-            console.log(
-              "graphArray :>> ",
-              graphArray,
-              "type of ",
-              typeof graphArray
-            );
-            // graphData = WalletHelper.filterByAgeRange(graphArray, "1d");
+            // console.log(
+            //   "graphArray :>> ",
+            //   graphArray,
+            //   "type of ",
+            //   typeof graphArray
+            // );
+            graphData = WalletHelper.filterByAgeRange(graphArray, "1d");
           }
         }
       }
@@ -1629,7 +1629,7 @@ class WalletController implements OnlyControllerInterface {
       });
     } catch (err: any) {
       console.error("Error in wallet > updateBalance.", err);
-      await commonHelper.save_error_logs("wallet_updateBalance", err.message);
+      await commonHelper.save_error_logs("coinWalletDetail", err.message);
       let data = {
         code: GlblCode.ERROR_CODE,
         status: false,
