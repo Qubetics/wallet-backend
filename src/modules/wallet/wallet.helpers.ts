@@ -8,7 +8,7 @@ import {
   coin_price_in_fiat_queries,
   coin_queries,
   custom_token_queries,
-  swapSettingQueries
+  swapSettingQueries,
 } from "../../helpers/dbHelper";
 import { language } from "../../constants";
 import { global_helper } from "../../helpers/common/global_helper";
@@ -24,8 +24,18 @@ class WalletHelpers implements OnlyControllerInterface {
   constructor() {
     this.initialize();
   }
-  public initialize() { }
-  public async add_coin_to_table(tokenAddress: string, symbol: string, name: string, coinFamily: number, tokenType: string, decimals: any, lang: any, currentUTCDate: any, userId: number) {
+  public initialize() {}
+  public async add_coin_to_table(
+    tokenAddress: string,
+    symbol: string,
+    name: string,
+    coinFamily: number,
+    tokenType: string,
+    decimals: any,
+    lang: any,
+    currentUTCDate: any,
+    userId: number
+  ) {
     try {
       // let swapData: any = await swapSettingQueries.swapSettingsFindOne(
       //   ['id', 'address', 'percentage'],
@@ -33,8 +43,15 @@ class WalletHelpers implements OnlyControllerInterface {
       //   [['id', 'ASC']])
       let swapSupported: number = 0;
 
-      if (coinFamily == config.STATIC_COIN_FAMILY.ETH || coinFamily == config.STATIC_COIN_FAMILY.BNB || coinFamily == config.STATIC_COIN_FAMILY.POL) {
-        swapSupported = await global_helper.oneInchSwapSupported(tokenAddress, coinFamily)
+      if (
+        coinFamily == config.STATIC_COIN_FAMILY.ETH ||
+        coinFamily == config.STATIC_COIN_FAMILY.BNB ||
+        coinFamily == config.STATIC_COIN_FAMILY.POL
+      ) {
+        swapSupported = await global_helper.oneInchSwapSupported(
+          tokenAddress,
+          coinFamily
+        );
       }
 
       let image: any = null;
@@ -43,23 +60,19 @@ class WalletHelpers implements OnlyControllerInterface {
       let graphPair: string | null = null;
 
       if (tokenAddress && symbol) {
-        let cmc_data: any = await global_helper.get_token_image_from_cmc({ symbol: symbol });
+        let cmc_data: any = await global_helper.get_token_image_from_cmc({
+          symbol: symbol,
+        });
         cmc_id = cmc_data ? cmc_data.id : GlblBooleanEnum.false;
         image = cmc_data ? cmc_data.image : null;
         const tradingViewData = await global_helper.getTradingSource(symbol);
-        console.log('tradingViewData >>>', tradingViewData);
+        console.log("tradingViewData >>>", tradingViewData);
         if (tradingViewData.status) {
           graphSource = tradingViewData.graphSource;
           graphPair = tradingViewData.graphPair;
         }
-
       }
-      console.log(
-        "coin_gicko_data>>>",
-        image,
-        "token_type>>",
-        image
-      );
+      console.log("coin_gicko_data>>>", image, "token_type>>", image);
 
       // Get gasless status
       let gaslessStatus: any = null;
@@ -90,21 +103,24 @@ class WalletHelpers implements OnlyControllerInterface {
         is_on_coin_gicko: 0,
         graph_pair: graphPair,
         graph_source: graphSource,
-        is_on_trading_view: graphSource ? 1 : 0
-      }
-      let response: any = await coin_queries.coin_create(coinData)
+        is_on_trading_view: graphSource ? 1 : 0,
+      };
+      let response: any = await coin_queries.coin_create(coinData);
 
       coinData.coin_id = response.coin_id;
 
-      await WalletHelper.update_token_in_redis(coinData, 0)
-      await custom_token_queries.custom_token_create({ coin_id: coinData.coin_id, user_id: userId })
+      await WalletHelper.update_token_in_redis(coinData, 0);
+      await custom_token_queries.custom_token_create({
+        coin_id: coinData.coin_id,
+        user_id: userId,
+      });
 
       if (cmc_id != null) {
-        await WalletHelper.insert_graph_reset_data(cmc_id)
+        await WalletHelper.insert_graph_reset_data(cmc_id);
         //await WalletHelper.update_fiat_coin_price(cmc_id, symbol, name, coinData.coin_family, coinData.token_address, coinData.coin_id);
       }
 
-      return { coinData: coinData }
+      return { coinData: coinData };
     } catch (err: any) {
       console.error("Error in add_coin_to_table>>", err);
       await commonHelper.save_error_logs("add_coin_to_table", err.message);
@@ -114,59 +130,119 @@ class WalletHelpers implements OnlyControllerInterface {
 
   private async insert_graph_reset_data(cmc_id: number) {
     try {
-      let currentUTCDate: string = new Date().toISOString().replace(/T/, " ").replace(/\..+/, "");
-      let graph_data: any = await resent_graph_data_queries.resent_graph_data_find_one(["id"], { cmc_id: cmc_id })
+      let currentUTCDate: string = new Date()
+        .toISOString()
+        .replace(/T/, " ")
+        .replace(/\..+/, "");
+      let graph_data: any =
+        await resent_graph_data_queries.resent_graph_data_find_one(["id"], {
+          cmc_id: cmc_id,
+        });
       if (graph_data == null) {
-        await resent_graph_data_queries.resent_graph_data_create({ cmc_id: cmc_id, graph_type: '1d', created_at: currentUTCDate, updated_at: null })
+        await resent_graph_data_queries.resent_graph_data_create({
+          cmc_id: cmc_id,
+          graph_type: "1d",
+          created_at: currentUTCDate,
+          updated_at: null,
+        });
       }
     } catch (err: any) {
-      console.error("Error in insert_graph_reset_data>>", err)
-      await commonHelper.save_error_logs("insert_graph_reset_data", err.message)
+      console.error("Error in insert_graph_reset_data>>", err);
+      await commonHelper.save_error_logs(
+        "insert_graph_reset_data",
+        err.message
+      );
       throw err;
     }
-
   }
 
-  private async update_fiat_coin_price(cmc_id: number, coin_symbol: string, coin_name: string, coin_family: number, token_address: any, coin_id: number) {
+  private async update_fiat_coin_price(
+    cmc_id: number,
+    coin_symbol: string,
+    coin_name: string,
+    coin_family: number,
+    token_address: any,
+    coin_id: number
+  ) {
     try {
       let coin_data: any = {
         coin_symbol: coin_symbol,
         coin_name: coin_name,
         coin_family: coin_family,
-        token_address: token_address
-      }
-      console.log("coin_data>>", coin_data)
-      let fiatCurrency: any = await currency_fiat_queries.currency_fiat_find_all(["currency_code", "status"], { status: 1 })
+        token_address: token_address,
+      };
+      console.log("coin_data>>", coin_data);
+      let fiatCurrency: any =
+        await currency_fiat_queries.currency_fiat_find_all(
+          ["currency_code", "status"],
+          { status: 1 }
+        );
       if (fiatCurrency) {
         let codes: any = fiatCurrency.map((el: any) => el.currency_code);
-        let currencyFormat: any = codes.toString().replace(/[\[\]']+/g, '');
-        let result: any = await cmcHelper.cmcApi(`quotes/latest?id=${cmc_id}&convert=${currencyFormat}`);
+        let currencyFormat: any = codes.toString().replace(/[\[\]']+/g, "");
+        let result: any = await cmcHelper.cmcApi(
+          `quotes/latest?id=${cmc_id}&convert=${currencyFormat}`
+        );
         if (result?.data?.data) {
           for (let i: number = 0; i < fiatCurrency.length; i++) {
             // Check cmc data in coin price in fiat
-            let data_exist: any = await coin_price_in_fiat_queries.coin_price_in_fiat_find_one(["id"], { cmc_id: cmc_id, fiat_type: (fiatCurrency[i].currency_code).toLowerCase() })
+            let data_exist: any =
+              await coin_price_in_fiat_queries.coin_price_in_fiat_find_one(
+                ["id"],
+                {
+                  cmc_id: cmc_id,
+                  fiat_type: fiatCurrency[i].currency_code.toLowerCase(),
+                }
+              );
             if (!data_exist) {
               let latest_price: any = {
-                price: result.data.data[cmc_id].quote[(fiatCurrency[i].currency_code).toUpperCase()].price,
-                timestamp: result.data.data[cmc_id].quote[(fiatCurrency[i].currency_code).toUpperCase()].last_updated,
-                volume_24h: result.data.data[cmc_id].quote[(fiatCurrency[i].currency_code).toUpperCase()].volume_24h,
-                price_change_24h: result.data.data[cmc_id].quote[(fiatCurrency[i].currency_code).toUpperCase()].percent_change_24h
-              }
+                price:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].price,
+                timestamp:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].last_updated,
+                volume_24h:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].volume_24h,
+                price_change_24h:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].percent_change_24h,
+              };
               let data_to_insert: any = {
                 coin_id: coin_id,
                 coin_symbol: coin_data.coin_symbol,
                 coin_name: coin_data.coin_name,
                 coin_family: coin_data.coin_family,
                 cmc_id: cmc_id,
-                fiat_type: (fiatCurrency[i].currency_code).toLowerCase(),
-                value: result.data.data[cmc_id].quote[(fiatCurrency[i].currency_code).toUpperCase()].price,
-                price_change_24h: result.data.data[cmc_id].quote[(fiatCurrency[i].currency_code).toUpperCase()].percent_change_24h,
-                price_change_percentage_24h: result.data.data[cmc_id].quote[(fiatCurrency[i].currency_code).toUpperCase()].percent_change_24h,
-                market_cap: result.data.data[cmc_id].quote[(fiatCurrency[i].currency_code).toUpperCase()].market_cap,
+                fiat_type: fiatCurrency[i].currency_code.toLowerCase(),
+                value:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].price,
+                price_change_24h:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].percent_change_24h,
+                price_change_percentage_24h:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].percent_change_24h,
+                market_cap:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].market_cap,
                 circulating: result.data.data[cmc_id].circulating_supply,
                 total_supply: result.data.data[cmc_id].total_supply,
                 rank: result.data.data[cmc_id].cmc_rank,
-                volume_24h: result.data.data[cmc_id].quote[(fiatCurrency[i].currency_code).toUpperCase()].volume_24h,
+                volume_24h:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].volume_24h,
                 token_address: coin_data.token_address,
                 max_supply: result.data.data[cmc_id].max_supply,
                 latest_price: latest_price,
@@ -177,18 +253,41 @@ class WalletHelpers implements OnlyControllerInterface {
                 close: null,
                 low: null,
                 change_price: null,
-              }
-              await coin_price_in_fiat_queries.coin_price_in_fiat_create(data_to_insert)
+              };
+              await coin_price_in_fiat_queries.coin_price_in_fiat_create(
+                data_to_insert
+              );
             }
-            let types = ['1d'];
-            let graph_data_exist: any = await coin_price_in_fiat_queries.coin_price_in_fiat_graph_find_one(["id"], { cmc_id: cmc_id, fiat_type: (fiatCurrency[i].currency_code).toLowerCase() })
+            let types = ["1d"];
+            let graph_data_exist: any =
+              await coin_price_in_fiat_queries.coin_price_in_fiat_graph_find_one(
+                ["id"],
+                {
+                  cmc_id: cmc_id,
+                  fiat_type: fiatCurrency[i].currency_code.toLowerCase(),
+                }
+              );
             if (!graph_data_exist) {
-              let latest_price_graph: any = [{
-                price: result.data.data[cmc_id].quote[(fiatCurrency[i].currency_code).toUpperCase()].price,
-                timestamp: result.data.data[cmc_id].quote[(fiatCurrency[i].currency_code).toUpperCase()].last_updated,
-                volume_24h: result.data.data[cmc_id].quote[(fiatCurrency[i].currency_code).toUpperCase()].volume_24h,
-                price_change_24h: result.data.data[cmc_id].quote[(fiatCurrency[i].currency_code).toUpperCase()].percent_change_24h
-              }]
+              let latest_price_graph: any = [
+                {
+                  price:
+                    result.data.data[cmc_id].quote[
+                      fiatCurrency[i].currency_code.toUpperCase()
+                    ].price,
+                  timestamp:
+                    result.data.data[cmc_id].quote[
+                      fiatCurrency[i].currency_code.toUpperCase()
+                    ].last_updated,
+                  volume_24h:
+                    result.data.data[cmc_id].quote[
+                      fiatCurrency[i].currency_code.toUpperCase()
+                    ].volume_24h,
+                  price_change_24h:
+                    result.data.data[cmc_id].quote[
+                      fiatCurrency[i].currency_code.toUpperCase()
+                    ].percent_change_24h,
+                },
+              ];
 
               let data_to_insert_graph: any = {
                 coin_id: coin_id,
@@ -197,25 +296,36 @@ class WalletHelpers implements OnlyControllerInterface {
                 coin_type: coin_data.coin_symbol,
                 // volume_24h: result.data.data[cmc_id].quote[(fiatCurrency[i].currency_code).toUpperCase()].volume_24h,
                 type: types[0],
-                fiat_type: (fiatCurrency[i].currency_code).toUpperCase(),
+                fiat_type: fiatCurrency[i].currency_code.toUpperCase(),
                 latest_price: latest_price_graph,
                 latest_price_source: types[0],
-                value: result.data.data[cmc_id].quote[(fiatCurrency[i].currency_code).toUpperCase()].price,
-                price_change_24h: result.data.data[cmc_id].quote[(fiatCurrency[i].currency_code).toUpperCase()].percent_change_24h,
-                price_change_percentage_24h: result.data.data[cmc_id].quote[(fiatCurrency[i].currency_code).toUpperCase()].percent_change_24h,
-              }
-              await coin_price_in_fiat_queries.coin_price_in_fiat_graph_create(data_to_insert_graph)
+                value:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].price,
+                price_change_24h:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].percent_change_24h,
+                price_change_percentage_24h:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].percent_change_24h,
+              };
+              await coin_price_in_fiat_queries.coin_price_in_fiat_graph_create(
+                data_to_insert_graph
+              );
             }
           }
         } else {
-          console.log("no data in cmc")
+          console.log("no data in cmc");
         }
       } else {
-        console.log("no fiat currency")
+        console.log("no fiat currency");
       }
     } catch (err: any) {
-      console.error("Error in update_fiat_coin_price>>", err)
-      await commonHelper.save_error_logs("update_fiat_coin_price", err.message)
+      console.error("Error in update_fiat_coin_price>>", err);
+      await commonHelper.save_error_logs("update_fiat_coin_price", err.message);
       throw err;
     }
   }
@@ -317,7 +427,10 @@ class WalletHelpers implements OnlyControllerInterface {
   //     return null;
   //   }
   // }
-  public async insert_entry_in_custom_token_table(coinId: number, userId: number) {
+  public async insert_entry_in_custom_token_table(
+    coinId: number,
+    userId: number
+  ) {
     try {
       let selectToken: any = await custom_token_queries.custom_token_find_one(
         ["id", "user_id", "coin_id"],
@@ -329,7 +442,7 @@ class WalletHelpers implements OnlyControllerInterface {
           user_id: userId,
         });
       } else {
-        console.log("Data is present in selectToken")
+        console.log("Data is present in selectToken");
       }
     } catch (err: any) {
       console.error("Error in insert_entry_in_custom_token_table>>", err);
@@ -340,20 +453,38 @@ class WalletHelpers implements OnlyControllerInterface {
       return null;
     }
   }
-  public async create_wallet_for_coin(walletAddress: string, coinId: number, walletName: string, userId: number, coinFamily: number, lang: string, currentUTCDate: any, tokenAddress: string, isToken: number, tokenType: string) {
+  public async create_wallet_for_coin(
+    walletAddress: string,
+    coinId: number,
+    walletName: string,
+    userId: number,
+    coinFamily: number,
+    lang: string,
+    currentUTCDate: any,
+    tokenAddress: string,
+    isToken: number,
+    tokenType: string
+  ) {
     try {
       let message: any;
-      let wallet_data: any = await wallet_queries.wallet_find_one_with_order(['wallet_id', 'status'], { wallet_address: { [Op.like]: walletAddress }, coin_id: coinId }, [['wallet_id', 'ASC']])
+      let wallet_data: any = await wallet_queries.wallet_find_one_with_order(
+        ["wallet_id", "status"],
+        { wallet_address: { [Op.like]: walletAddress }, coin_id: coinId },
+        [["wallet_id", "ASC"]]
+      );
       if (!wallet_data) {
-
-        let tokenBalData: any = await global_helper.get_new_token_balance(coinFamily, walletAddress, tokenAddress)
+        let tokenBalData: any = await global_helper.get_new_token_balance(
+          coinFamily,
+          walletAddress,
+          tokenAddress
+        );
 
         const save_wallet_data = {
           wallet_address: walletAddress,
           wallet_name: walletName,
           coin_id: coinId,
           user_id: userId,
-          balance: tokenBalData.status ? tokenBalData.balance : '0',
+          balance: tokenBalData.status ? tokenBalData.balance : "0",
           default_wallet: 1,
           coin_family: coinFamily,
           status: 1,
@@ -370,9 +501,11 @@ class WalletHelpers implements OnlyControllerInterface {
               coin_family: coinFamily,
               is_token: isToken,
               token_address: tokenAddress,
-              token_type: tokenType
-            }, wallet_address: walletAddress, queue_count: 0
-          })
+              token_type: tokenType,
+            },
+            wallet_address: walletAddress,
+            queue_count: 0,
+          });
           // await userhelper.adding_coins_to_queue(config.BACKEND_WALLET_ADDRESSES,
           //   {
           //     coin_data: {
@@ -603,8 +736,8 @@ class WalletHelpers implements OnlyControllerInterface {
         min_bal_in_fiat < 0.000001
           ? await WalletHelper.toFixedExp(min_bal_in_fiat, 8)
           : min_bal_in_fiat < 0.0001
-            ? await WalletHelper.toFixedExp(min_bal_in_fiat, 6)
-            : await WalletHelper.toFixedExp(min_bal_in_fiat, 2);
+          ? await WalletHelper.toFixedExp(min_bal_in_fiat, 6)
+          : await WalletHelper.toFixedExp(min_bal_in_fiat, 2);
       console.log("min_bal>>>>", min_bal_in_fiat);
       return {
         min_bal_in_fiat: min_bal_in_fiat,
@@ -633,18 +766,86 @@ class WalletHelpers implements OnlyControllerInterface {
     try {
       switch (coinData.coin_family) {
         case config.STATIC_COIN_FAMILY.ETH:
-          await redisHelper.set_hash_table(config.TOKENLIST.ETH.NFT, coinData.token_address, JSON.stringify(coinData))
+          await redisHelper.set_hash_table(
+            config.TOKENLIST.ETH.NFT,
+            coinData.token_address,
+            JSON.stringify(coinData)
+          );
           break;
         case config.STATIC_COIN_FAMILY.BNB:
-          await redisHelper.set_hash_table(config.TOKENLIST.BSC.NFT, coinData.token_address, JSON.stringify(coinData))
+          await redisHelper.set_hash_table(
+            config.TOKENLIST.BSC.NFT,
+            coinData.token_address,
+            JSON.stringify(coinData)
+          );
           break;
       }
     } catch (err: any) {
-      console.error("Error in update_nft_token_in_redis.", err)
-      await commonHelper.save_error_logs("update_nft_token_in_redis", err.message);
+      console.error("Error in update_nft_token_in_redis.", err);
+      await commonHelper.save_error_logs(
+        "update_nft_token_in_redis",
+        err.message
+      );
       return null;
     }
   }
 
+  // Function to filter elements based on the age range
+  public async filterByAgeRange(
+    elementsArray: any[],
+    range: string
+  ): Promise<any[]> {
+    try {
+      const now = Date.now(); // Current timestamp
+      let timeRange: number = 0;
+
+      // Define time ranges
+      switch (range) {
+        case "1d":
+          timeRange = 1 * 24 * 60 * 60 * 1000; // 1 day in milliseconds
+          break;
+        case "1w":
+          timeRange = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+          break;
+        case "1m":
+          timeRange = 30 * 24 * 60 * 60 * 1000; // 30 days (approx 1 month)
+          break;
+        case "3m":
+          timeRange = 90 * 24 * 60 * 60 * 1000; // 90 days (approx 3 months)
+          break;
+        case "1y":
+          timeRange = 365 * 24 * 60 * 60 * 1000; // 1 year
+          break;
+        case "all":
+          timeRange = 0; // all time
+          break;
+        default:
+          timeRange = 0; // If invalid range, default to zero
+      }
+
+      if (!timeRange) {
+        return elementsArray;
+      }
+      // Calculate the time threshold
+      const thresholdTime = new Date(now - timeRange);
+
+      // Find the index of the first element that meets the time condition
+      const firstMatchIndex = elementsArray.findIndex((item: any) => {
+        const itemTime = new Date(item.timestamp);
+        return itemTime >= thresholdTime; // Match items within the specified range
+      });
+
+      // Return all remaining elements starting from the first match
+      if (firstMatchIndex !== -1) {
+        return elementsArray.slice(firstMatchIndex);
+      }
+
+      // If no match is found, return an empty array
+      return [];
+    } catch (error) {
+      console.log("::Error log:: filterByAgeRange :>> ", error);
+      return [];
+    }
+  }
 }
 export const WalletHelper = new WalletHelpers();

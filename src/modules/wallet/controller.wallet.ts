@@ -1601,11 +1601,18 @@ class WalletController implements OnlyControllerInterface {
         ],
         // raw: true,
       });
-      let findGraph: any = {};
+      let graphData: any;
       if (cmc_id && fiat_currency) {
-        findGraph = await Models.CoinPriceInFiatGraphModel.findOne({
+        const findGraph = await Models.CoinPriceInFiatGraphModel.findOne({
           where: { cmc_id: cmc_id, fiat_type: fiat_currency, type: "1d" },
         });
+        if (findGraph && findGraph?.sparkline) {
+          const graphArray = findGraph?.sparkline;
+          graphData = WalletHelper.filterByAgeRange(
+            JSON.parse(graphArray),
+            "1d"
+          );
+        }
       }
 
       return res.status(GlblCode.SUCCESS).send({
@@ -1613,7 +1620,7 @@ class WalletController implements OnlyControllerInterface {
         code: GlblCode.SUCCESS,
         message: language[lang].REQUEST_EXECUTED,
         data: coinWalletdata,
-        graph: findGraph,
+        graph: graphData,
       });
     } catch (err: any) {
       console.error("Error in wallet > updateBalance.", err);
