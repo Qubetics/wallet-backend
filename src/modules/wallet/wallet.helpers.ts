@@ -798,7 +798,7 @@ class WalletHelpers implements OnlyControllerInterface {
     try {
       const now = Date.now(); // Current timestamp
       let timeRange: number = 0;
-      console.log("elementsArray :>> ", elementsArray);
+      // console.log("elementsArray :>> ", elementsArray);
       // elementsArray = JSON.parse(elementsArray);
       // console.log("elementsArray after:>> ", elementsArray);
       // Define time ranges
