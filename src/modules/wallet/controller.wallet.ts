@@ -1615,7 +1615,7 @@ class WalletController implements OnlyControllerInterface {
             //   "type of ",
             //   typeof graphArray
             // );
-            graphData = WalletHelper.filterByAgeRange(graphArray, "1d");
+            graphData = await WalletHelper.filterByAgeRange(graphArray, "1d");
             console.log("graphData :>> ", graphData);
           }
         }
