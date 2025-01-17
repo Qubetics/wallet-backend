@@ -1,8 +1,8 @@
 export interface CoinPriceInFiatGraphInterface {
   id: number;
-  coin_id: number;
+  // coin_id: number;
   cmc_id?: number;
-  coin_type: string;
+  // coin_type: string;
   fiat_type: string;
   value: number | 0;
   sparkline?: string;

@@ -15,18 +15,18 @@ let dataObj = {
     primaryKey: true,
     autoIncrement: true,
   },
-  coin_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
+  // coin_id: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: false,
+  // },
   cmc_id: {
     type: DataTypes.NUMBER,
     allowNull: true,
   },
-  coin_type: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
+  // coin_type: {
+  //   type: DataTypes.STRING,
+  //   allowNull: false,
+  // },
   fiat_type: {
     type: DataTypes.STRING,
     allowNull: true,
