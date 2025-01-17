@@ -1625,10 +1625,8 @@ class WalletController implements OnlyControllerInterface {
         });
         if (findGraph && findGraph?.sparkline) {
           const graphArray = findGraph?.sparkline;
-          if (graphArray && graphArray) {
-            graphData = await WalletHelper.filterByAgeRange(graphArray, "1d");
-            // console.log("graphData :>> ", graphData);
-          }
+          graphData = await WalletHelper.filterByAgeRange(graphArray, "1d");
+          // console.log("graphData :>> ", graphData);
         }
       }
 
@@ -2304,13 +2302,20 @@ class WalletController implements OnlyControllerInterface {
       const fiat_currency: string = req.body.fiat_currency || "USD";
       const duration: string = req.body.duration || "1d";
 
-      let graphData = await Models.CoinPriceInFiatGraphModel.findOne({
+      let graphData: any = await Models.CoinPriceInFiatGraphModel.findOne({
         where: {
           cmc_id: cmcId,
           fiat_type: fiat_currency,
           type: duration,
         },
       });
+
+      if (graphData) {
+        graphData = await WalletHelper.filterByAgeRange(
+          graphData.sparkline,
+          duration
+        );
+      }
 
       return res.status(GlblCode.SUCCESS).send({
         status: true,
