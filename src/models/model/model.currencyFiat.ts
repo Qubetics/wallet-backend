@@ -3,10 +3,10 @@ import { CurrencyFiatInterface } from "../interface/interface.currencyFiat";
 import db from "../../helpers/common/db";
 
 interface CurrencyFiatCreationModel
-  extends Optional<CurrencyFiatInterface, "currency_id"> { }
+  extends Optional<CurrencyFiatInterface, "currency_id"> {}
 interface CurrencyFiatInstance
   extends Model<CurrencyFiatInterface, CurrencyFiatCreationModel>,
-  CurrencyFiatInterface { }
+    CurrencyFiatInterface {}
 
 let dataObj = {
   currency_id: {
@@ -21,6 +21,10 @@ let dataObj = {
   },
   currency_code: {
     type: DataTypes.STRING,
+    allowNull: false,
+  },
+  price_in_usd: {
+    type: DataTypes.DECIMAL,
     allowNull: false,
   },
   status: {
