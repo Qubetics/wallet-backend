@@ -43,8 +43,6 @@ class SolanaHelpers {
     isString: boolean
   ): Promise<string | number> {
     try {
-      return 0; // temprary return zero until solana node not in working condition
-
       let balanceInWei = await this.connection.getBalance(
         new PublicKey(wallet)
       );
