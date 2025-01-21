@@ -1,5 +1,5 @@
 import express from "express";
-import { validate } from "express-validation"
+import { validate } from "express-validation";
 import { ControllerInterface } from "../../interfaces/controller.interface";
 import jwtVerification from "../../middlewares/verify.middleware";
 import { userController } from "./controller";
@@ -14,60 +14,85 @@ class UserRoute implements ControllerInterface {
   }
 
   public initializeRoutes() {
-    this.router.post(`${this.path}/create/wallet`,
+    this.router.post(
+      `${this.path}/create/wallet`,
       [validate(validator.createWalletValidate)],
-      userController.createWallet);
+      userController.createWallet
+    );
 
-    this.router.post(`${this.path}/logout`,
+    this.router.post(
+      `${this.path}/logout`,
       [validate(validator.logoutValidate)],
       jwtVerification.verifyToken,
-      userController.userLogout);
+      userController.userLogout
+    );
 
-    this.router.post(`${this.path}/notification/list`,
+    this.router.post(
+      `${this.path}/notification/list`,
       [validate(validator.notificationListValidate)],
       jwtVerification.verifyToken,
-      userController.notificationList);
+      userController.notificationList
+    );
 
-    this.router.post(`${this.path}/add_address_book`,
+    this.router.post(
+      `${this.path}/add_address_book`,
       [validate(validator.addAddressBookValidate)],
       jwtVerification.verifyToken,
-      userController.addAddressBook);
+      userController.addAddressBook
+    );
 
-    this.router.post(`${this.path}/address_book`,
+    this.router.post(
+      `${this.path}/address_book`,
       [validate(validator.pageListValidate)],
       jwtVerification.verifyToken,
-      userController.addressBook);
+      userController.addressBook
+    );
 
-    this.router.post(`${this.path}/get_wallet_name`,
+    this.router.post(
+      `${this.path}/get_wallet_name`,
       [validate(validator.getWalletName)],
       jwtVerification.verifyToken,
-      userController.getWalletName);
+      userController.getWalletName
+    );
 
-    this.router.post(`${this.path}/search`,
+    this.router.post(
+      `${this.path}/search`,
       [validate(validator.search)],
       jwtVerification.verifyToken,
-      userController.search);
+      userController.search
+    );
 
-    this.router.post(`${this.path}/delete_address_book_wallet_address`,
+    this.router.post(
+      `${this.path}/delete_address_book_wallet_address`,
       [validate(validator.deleteAddressBookWalletAddress)],
       jwtVerification.verifyToken,
-      userController.deleteAddressBookWalletAddress);
+      userController.deleteAddressBookWalletAddress
+    );
 
-    this.router.post(`${this.path}/delete_address_book`,
+    this.router.post(
+      `${this.path}/delete_address_book`,
       [validate(validator.deleteAddressBook)],
       jwtVerification.verifyToken,
-      userController.deleteAddressBook);
+      userController.deleteAddressBook
+    );
 
-    this.router.post(`${this.path}/announcement/view_status`,
+    this.router.post(
+      `${this.path}/announcement/view_status`,
       [validate(validator.announcementViewStatus)],
       jwtVerification.verifyToken,
-      userController.announcementViewStatus);
+      userController.announcementViewStatus
+    );
 
-    this.router.get(`${this.path}/app_language`,
+    this.router.get(
+      `${this.path}/app_language`,
       jwtVerification.verifyToken,
-      userController.appLanguage);
+      userController.appLanguage
+    );
 
-    this.router.post(`${this.path}/add_swap_supported_tokens`, userController.add_tokens_for_swap)
+    this.router.post(
+      `${this.path}/add_swap_supported_tokens`,
+      userController.add_tokens_for_swap
+    );
   }
 }
 

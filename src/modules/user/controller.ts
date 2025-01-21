@@ -130,7 +130,7 @@ class UserController implements OnlyControllerInterface {
       }
 
       // Updating balance
-      await userhelper.updating_balance(
+      userhelper.updating_balance(
         addressList,
         userId,
         req,
