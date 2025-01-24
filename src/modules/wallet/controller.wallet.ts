@@ -2308,7 +2308,10 @@ class WalletController implements OnlyControllerInterface {
           fiat_type: fiat_currency,
           type: duration,
         },
+        raw:true,
+        logging: console.log
       });
+      // console.log("🚀 ~ getCoinGraphData ~ graphData:", graphData)
 
       if (graphData) {
         graphData = await WalletHelper.filterByAgeRange(
