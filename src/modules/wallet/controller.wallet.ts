@@ -1014,6 +1014,8 @@ class WalletController implements OnlyControllerInterface {
         POL_RPC_URL: config.NODE.POL_RPC_URL,
         TICS_RPC_URL: config.NODE.TICS_RPC_URL,
         // SOL_RPC_URL: config.NODE.SOL_RPC_URL
+        // SOL_RPC_URL:
+        //   "https://mainnet.helius-rpc.com/?api-key=REDACTED",
         SOL_RPC_URL:
           "https://mainnet.helius-rpc.com/?api-key=REDACTED",
       };
@@ -2308,8 +2310,8 @@ class WalletController implements OnlyControllerInterface {
           fiat_type: fiat_currency,
           type: duration,
         },
-        raw:true,
-        logging: console.log
+        raw: true,
+        logging: console.log,
       });
       // console.log("🚀 ~ getCoinGraphData ~ graphData:", graphData)
 
