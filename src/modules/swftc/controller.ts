@@ -268,6 +268,7 @@ class SwftcController implements OnlyControllerInterface {
               "coin_symbol",
               "coin_name",
               "is_token",
+              "decimals",
               "token_address",
               "coin_image",
               "coin_family",
