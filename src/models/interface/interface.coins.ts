@@ -28,4 +28,5 @@ export interface CoinInterface {
   graph_pair?: string | null;
   pair_address?: string | null;
   is_on_trading_view?: number | null;
+  is_on_moralis_inactive?: number | null;
 }

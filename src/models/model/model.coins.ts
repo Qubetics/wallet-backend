@@ -123,6 +123,10 @@ let dataObj = {
     type: DataTypes.TINYINT,
     allowNull: true,
   },
+  is_on_moralis_inactive: {
+    type: DataTypes.TINYINT,
+    allowNull: true,
+  },
   created_at: {
     type: DataTypes.DATE,
     allowNull: true,
