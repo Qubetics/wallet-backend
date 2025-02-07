@@ -42,7 +42,8 @@ class EthHelpers implements HelpersInterface {
   }
 
   public async getWalletNonce(wallet: string): Promise<number> {
-    return await ethWeb3.web3.eth.getTransactionCount(wallet, "pending");
+    // return await ethWeb3.web3.eth.getTransactionCount(wallet, "pending");
+    return await ethWeb3.web3.eth.getTransactionCount(wallet);
   }
   async getErc20TokenTransferGasEstimationCost(
     token_contract: string | null | undefined,
