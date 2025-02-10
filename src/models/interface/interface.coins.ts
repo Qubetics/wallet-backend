@@ -2,7 +2,7 @@ export interface CoinInterface {
   coin_id: number;
   coin_name: string;
   coin_symbol: string;
-  coin_gicko_alias: string | null;
+  // coin_gicko_alias: string | null;
   coin_image?: string | null;
   coin_family: number;
   cmc_id?: number;

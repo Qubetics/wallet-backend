@@ -43,10 +43,10 @@ let dataObj = {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  coin_gicko_alias: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
+  // coin_gicko_alias: {
+  //   type: DataTypes.STRING,
+  //   allowNull: true,
+  // },
   coin_image: {
     type: DataTypes.STRING,
     allowNull: true,
@@ -146,10 +146,10 @@ let dataObjIndex = {
       unique: false,
       fields: ["coin_symbol"],
     },
-    {
-      unique: false,
-      fields: ["coin_gicko_alias"],
-    },
+    // {
+    //   unique: false,
+    //   fields: ["coin_gicko_alias"],
+    // },
     {
       unique: false,
       fields: ["coin_family"],
