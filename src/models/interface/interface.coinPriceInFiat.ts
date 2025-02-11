@@ -5,7 +5,7 @@ export interface CoinPriceInFiatInterface {
   coin_name?: string;
   coin_family?: number;
   cmc_id?: number;
-  coin_gicko_id:string|null;
+  // coin_gicko_id:string|null;
   fiat_type: string;
   value: number | 0;
   price_change_24h?: number | 0;
@@ -18,11 +18,11 @@ export interface CoinPriceInFiatInterface {
   token_address?: string;
   max_supply?: number;
   latest_price: string | null;
-  roi?: number;
-  open?: number;
-  high?: number;
-  average?: number;
-  close?: number;
-  low?: number;
-  change_price?: number;
+  // roi?: number;
+  // open?: number;
+  // high?: number;
+  // average?: number;
+  // close?: number;
+  // low?: number;
+  // change_price?: number;
 }

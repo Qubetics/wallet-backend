@@ -12,7 +12,7 @@ export default class wallet_validator {
       wallet_address: Joi.string().required(),
       coin_gicko_id: Joi.string().allow(null, "").optional(),
       wallet_name: Joi.string().allow(null, "").optional(),
-      isSwapList: Joi.bool().required(),
+      isSwapList: Joi.bool().optional(),
       token_type: Joi.string().required(),
     }),
   };

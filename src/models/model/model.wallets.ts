@@ -58,10 +58,10 @@ let dataObj = {
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
-  user_withdraw_limit: {
-    type: DataTypes.FLOAT,
-    allowNull: true,
-  },
+  // user_withdraw_limit: {
+  //   type: DataTypes.FLOAT,
+  //   allowNull: true,
+  // },
   default_wallet: {
     type: DataTypes.TINYINT,
     allowNull: true,

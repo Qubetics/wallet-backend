@@ -23,7 +23,7 @@ class TronController implements OnlyControllerInterface {
     this.initialize();
   }
 
-  public initialize() {}
+  public initialize() { }
 
   public async gasEstimation(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
@@ -144,10 +144,10 @@ class TronController implements OnlyControllerInterface {
             "token_type",
             "decimals",
             "usd_price",
-            "withdraw_limit",
+            // "withdraw_limit",
             "token_abi",
             "token_address",
-            "uuid",
+            // "uuid",
             "for_swap",
             "added_by",
             "created_at",
