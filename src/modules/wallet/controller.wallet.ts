@@ -33,7 +33,7 @@ class WalletController implements OnlyControllerInterface {
   constructor() {
     this.initialize();
   }
-  public initialize() {}
+  public initialize() { }
 
   /** Used in front end */
   public async addToken(req: Request, res: Response) {
@@ -1387,8 +1387,8 @@ class WalletController implements OnlyControllerInterface {
         bal_in_usd < 0.000001
           ? await WalletHelper.toFixedExp(bal_in_usd, 8)
           : bal_in_usd < 0.0001
-          ? await WalletHelper.toFixedExp(bal_in_usd, 6)
-          : await WalletHelper.toFixedExp(bal_in_usd, 2);
+            ? await WalletHelper.toFixedExp(bal_in_usd, 6)
+            : await WalletHelper.toFixedExp(bal_in_usd, 2);
       console.log("bal_in_usd", bal_in_usd);
       if (bal_in_usd >= 10) {
         return res.status(GlblCode.SUCCESS).send({
@@ -1406,18 +1406,18 @@ class WalletController implements OnlyControllerInterface {
           coin_family == 2
             ? "ETH"
             : coin_family == 6
-            ? "TRON"
-            : coin_family == 1
-            ? "BNB"
-            : "null";
+              ? "TRON"
+              : coin_family == 1
+                ? "BNB"
+                : "null";
         let token_type: string =
           coin_family == 2
             ? "ERC20"
             : coin_family == 6
-            ? "TRC20"
-            : coin_family == 1
-            ? "BEP20"
-            : "null";
+              ? "TRC20"
+              : coin_family == 1
+                ? "BEP20"
+                : "null";
         console.log("coin in wallet_checkFiatsBalance >>>", coin);
         return res.status(GlblCode.SUCCESS).send({
           status: true,
@@ -1766,22 +1766,22 @@ class WalletController implements OnlyControllerInterface {
             obj.type == "Cross_chain"
               ? language[lang].CROSS_CHAIN
               : obj.type == "Dapp"
-              ? language[lang].DAPP
-              : obj.type == "Deposit"
-              ? language[lang].DEPOSIT
-              : obj.type == "Swap"
-              ? language[lang].SWAP
-              : obj.type == "Withdraw"
-              ? language[lang].WITHDRAW
-              : obj.type == "Approve"
-              ? language[lang].APPROVE
-              : obj.type == "Buy"
-              ? language[lang].BUY
-              : obj.type == "Card_fees"
-              ? language[lang].CARD_FEES
-              : obj.type == "Level_upgradation_fee"
-              ? language[lang].LEVEL_UPGRADE
-              : language[lang].CARD_RECHARGE;
+                ? language[lang].DAPP
+                : obj.type == "Deposit"
+                  ? language[lang].DEPOSIT
+                  : obj.type == "Swap"
+                    ? language[lang].SWAP
+                    : obj.type == "Withdraw"
+                      ? language[lang].WITHDRAW
+                      : obj.type == "Approve"
+                        ? language[lang].APPROVE
+                        : obj.type == "Buy"
+                          ? language[lang].BUY
+                          : obj.type == "Card_fees"
+                            ? language[lang].CARD_FEES
+                            : obj.type == "Level_upgradation_fee"
+                              ? language[lang].LEVEL_UPGRADE
+                              : language[lang].CARD_RECHARGE;
           obj.status =
             obj.status == "completed"
               ? language[lang].COMPLETED
@@ -1790,8 +1790,8 @@ class WalletController implements OnlyControllerInterface {
             obj.blockchain_status == "confirmed"
               ? language[lang].CONFIRMED
               : obj.blockchain_status == "failed"
-              ? language[lang].FAILED_STATUS
-              : language[lang].PENDING_STATUS;
+                ? language[lang].FAILED_STATUS
+                : language[lang].PENDING_STATUS;
           const {
             type,
             from_adrs,
@@ -1987,21 +1987,21 @@ class WalletController implements OnlyControllerInterface {
                       nft.name !== undefined && nft.name !== null
                         ? nft.name
                         : metadata != "" && metadata.name
-                        ? metadata.name
-                        : null,
+                          ? metadata.name
+                          : null,
                     symbol:
                       nft.symbol !== undefined && nft.symbol !== null
                         ? nft.symbol
                         : metadata != "" && metadata?.symbol
-                        ? metadata.symbol
-                        : null,
+                          ? metadata.symbol
+                          : null,
                     // image: metadata != '' && metadata.image ? metadata.image : null,
                     image:
                       nftImage !== null
                         ? nftImage
                         : metadata != "" && metadata.image
-                        ? metadata.image
-                        : null,
+                          ? metadata.image
+                          : null,
                     description:
                       metadata != "" && metadata.description
                         ? metadata.description
@@ -2241,64 +2241,6 @@ class WalletController implements OnlyControllerInterface {
       return res.status(data.code).send(data);
     }
   };
-
-  public async tradingView(req: Request, res: Response) {
-    try {
-      const symbol: any = req.query.symbol;
-      const tradingData = await global_helper.getTradingSource(symbol);
-      console.log("tradingData >>>", tradingData);
-      return res.status(GlblCode.SUCCESS).send({
-        status: true,
-        code: GlblCode.SUCCESS,
-        message: "Source has been fetch successfully",
-        data: tradingData,
-      });
-    } catch (error) {
-      let data = {
-        code: GlblCode.ERROR_CODE,
-        status: false,
-        data: error,
-      };
-      return res.status(data.code).send(data);
-    }
-  }
-  public async solBalance(req: Request, res: Response) {
-    try {
-      const address: any = req.query.address;
-      const is_token: any = req.query.is_token;
-      let tradingData: any = "";
-      if (is_token) {
-        console.log("token >>>");
-        const token_address: any = req.query.token_address;
-        tradingData = await SolanaHelper.getUserCRC20TokenBalance(
-          token_address,
-          address,
-          false
-        );
-      } else {
-        tradingData = await SolanaHelper.getUserSolanaBalance(
-          address,
-          true,
-          true
-        );
-        console.log("tradingData >>>", tradingData);
-      }
-
-      return res.status(GlblCode.SUCCESS).send({
-        status: true,
-        code: GlblCode.SUCCESS,
-        message: "Source has been fetch successfully",
-        data: tradingData,
-      });
-    } catch (error) {
-      let data = {
-        code: GlblCode.ERROR_CODE,
-        status: false,
-        data: error,
-      };
-      return res.status(data.code).send(data);
-    }
-  }
 
   public async getCoinGraphData(req: Request, res: Response) {
     try {
