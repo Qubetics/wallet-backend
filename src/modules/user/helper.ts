@@ -3,13 +3,10 @@ import {
   GlblBooleanEnum,
   WalletName,
 } from "../../constants/global_enum";
-// import * as Models from './../../models/index'
-// import { Messages } from './enum';
+
 import { Sequelize } from "sequelize";
-// import rabbitMq from '../../helpers/common/rabbitMq';
 import { global_helper } from "../../helpers/common/global_helper";
 import redisClient from "../../helpers/common/redis";
-// import AWS from 'aws-sdk';
 import { config } from "../../config";
 import dbHelper, {
   wallet_queries,
@@ -22,26 +19,10 @@ import commonHelper from "../../helpers/common/common.helpers";
 import { language } from "../../constants";
 import kafka_helper from "../../helpers/common/kafka_helper";
 
-// AWS.config.update({
-//     accessKeyId: config.S3_ACCESSID,
-//     secretAccessKey: config.S3_SECRETKEY,
-//     region: config.REGION
-// })
-// const s3 = new AWS.S3();
 
 class userHelper {
-  constructor() {}
-  // public async adding_coins_to_queue(queueName: string, data: any) {
-  //     try {
-  //         await rabbitMq.assertQueue(queueName)
-  //         await rabbitMq.sendToQueue(queueName, Buffer.from(JSON.stringify(data)))
-  //         return true;
-  //     } catch (err: any) {
-  //         console.error("Error in adding_coins_to_queue>>>", err)
-  //         await commonHelper.save_error_logs("adding_coins_to_queue", err.message);
-  //         return null;
-  //     }
-  // }
+  constructor() { }
+
   public async old_user_generate_referral(device_id: any, userId: any) {
     try {
       let user_exist: any = await user_queries.user_find_one(
@@ -252,16 +233,7 @@ class userHelper {
               wallet_address: address,
               queue_count: 0,
             });
-            // await this.adding_coins_to_queue(config.BACKEND_WALLET_ADDRESSES,
-            //     {
-            //         coin_data: {
-            //             coin_id: coinData.coin_id,
-            //             coin_family: coinData.coin_family,
-            //             is_token: coinData.is_token,
-            //             token_address: coinData.token_address,
-            //             token_type: coinData.token_type
-            //         }, wallet_address: address, queue_count: 0
-            //     })
+
           }
         }
         if (device_token !== "chrome" && device_token !== "abc") {

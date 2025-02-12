@@ -15,10 +15,10 @@ let dataObj = {
     primaryKey: true,
     autoIncrement: true,
   },
-  mainnet_token_address: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
+  // mainnet_token_address: {
+  //   type: DataTypes.STRING,
+  //   allowNull: true,
+  // },
   // coin_market_id: {
   //   type: DataTypes.INTEGER,
   //   allowNull: true,
@@ -71,10 +71,10 @@ let dataObj = {
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
-  usd_price: {
-    type: DataTypes.FLOAT,
-    allowNull: true,
-  },
+  // usd_price: {
+  //   type: DataTypes.FLOAT,
+  //   allowNull: true,
+  // },
   // withdraw_limit: {
   //   type: DataTypes.FLOAT,
   //   allowNull: true,
@@ -95,10 +95,10 @@ let dataObj = {
     type: DataTypes.TINYINT,
     allowNull: true,
   },
-  gasless: {
-    type: DataTypes.TINYINT,
-    allowNull: true,
-  },
+  // gasless: {
+  //   type: DataTypes.TINYINT,
+  //   allowNull: true,
+  // },
   added_by: {
     type: DataTypes.ENUM("admin", "user", "swap"),
     allowNull: true,

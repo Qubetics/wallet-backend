@@ -338,7 +338,7 @@ class WalletController implements OnlyControllerInterface {
           coin_id: coinId,
           balance: balDetails.status ? balDetails.balance : "0",
           default_wallet: GlblBooleanEnum.true,
-          is_verified: GlblBooleanEnum.true,
+          // is_verified: GlblBooleanEnum.true,
           status: GlblBooleanEnum.true,
           created_at: currentUTCDate,
           updated_at: currentUTCDate,
@@ -606,7 +606,7 @@ class WalletController implements OnlyControllerInterface {
         "fiat_type",
         "created_at",
         "updated_at",
-        "referral_upgrade_level",
+        // "referral_upgrade_level",
       ];
 
       if (type == TxTypesEnum.DEPOSIT) {
@@ -639,7 +639,7 @@ class WalletController implements OnlyControllerInterface {
           "fiat_type",
           "created_at",
           "updated_at",
-          "referral_upgrade_level",
+          // "referral_upgrade_level",
         ];
 
         where_clause = {
@@ -926,7 +926,7 @@ class WalletController implements OnlyControllerInterface {
       let swap_list_data: any = await Models.CoinsModel.findAll({
         attributes: [
           "coin_id",
-          "mainnet_token_address",
+          // "mainnet_token_address",
           "is_token",
           "coin_name",
           "coin_symbol",

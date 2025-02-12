@@ -10,16 +10,14 @@ export interface CoinInterface {
   is_on_cmc?: number;
   coin_status: number | 0;
   is_token: number | 0;
-  gasless?: number | 0;
+  // gasless?: number | 0;
   token_type: string | null;
   decimals: number | 0;
-  usd_price?: number | 1;
+  // usd_price?: number | 1;
   // withdraw_limit?: number | 0;
   token_abi?: string | null;
   token_address?: string | null;
-  mainnet_token_address?: string | null;
-  created_at?: string;
-  updated_at?: string;
+  // mainnet_token_address?: string | null;
   // uuid?: string | null;
   for_swap?: number;
   added_by?: string;
@@ -29,4 +27,6 @@ export interface CoinInterface {
   pair_address?: string | null;
   is_on_trading_view?: number | null;
   is_on_moralis_inactive?: number | null;
+  created_at?: string;
+  updated_at?: string;
 }
