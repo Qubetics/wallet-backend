@@ -34,10 +34,10 @@ let dataObj = {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  checker_code: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
+  // checker_code: {
+  //   type: DataTypes.STRING,
+  //   allowNull: true,
+  // },
   wallet_address: {
     type: DataTypes.STRING,
     allowNull: false,

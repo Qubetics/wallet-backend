@@ -5,7 +5,7 @@ export interface WalletInterface {
   // login_type: string,
   // social_id: string,
   wallet_name: string;
-  checker_code: string | null,
+  // checker_code: string | null,
   wallet_address: string;
   coin_id: number;
   coin_family?: number;
