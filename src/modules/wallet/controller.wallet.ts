@@ -47,28 +47,22 @@ class WalletController implements OnlyControllerInterface {
 
       let {
         coin_family,
-        coin_gicko_id,
         token_type,
         token_address,
         name,
         symbol,
-        coin_gicko_alias,
         decimals,
         wallet_address,
-        wallet_name,
-        isSwapList,
+        wallet_name
       }: {
         coin_family: number;
-        coin_gicko_id: string;
         token_type: string;
         token_address: string;
         name: string;
         symbol: string;
-        coin_gicko_alias: string;
         decimals: string;
         wallet_address: string;
         wallet_name: string;
-        isSwapList: any;
       } = req.body;
 
       let coinDataExist: any = await coin_queries.coin_find_one(
@@ -78,7 +72,6 @@ class WalletController implements OnlyControllerInterface {
           "coin_symbol",
           "coin_image",
           "cmc_id",
-          // "coin_gicko_alias",
           "coin_family",
           "coin_status",
           "is_token",
@@ -87,8 +80,7 @@ class WalletController implements OnlyControllerInterface {
           "added_by",
           "token_type",
           "decimals",
-          "token_address",
-          "coin_gicko_id",
+          "token_address"
         ],
         { coin_family: coin_family, token_address: token_address }
       );
@@ -346,7 +338,7 @@ class WalletController implements OnlyControllerInterface {
           coin_id: coinId,
           balance: balDetails.status ? balDetails.balance : "0",
           default_wallet: GlblBooleanEnum.true,
-          is_verified: GlblBooleanEnum.true,
+          // is_verified: GlblBooleanEnum.true,
           status: GlblBooleanEnum.true,
           created_at: currentUTCDate,
           updated_at: currentUTCDate,
@@ -614,7 +606,7 @@ class WalletController implements OnlyControllerInterface {
         "fiat_type",
         "created_at",
         "updated_at",
-        "referral_upgrade_level",
+        // "referral_upgrade_level",
       ];
 
       if (type == TxTypesEnum.DEPOSIT) {
@@ -647,7 +639,7 @@ class WalletController implements OnlyControllerInterface {
           "fiat_type",
           "created_at",
           "updated_at",
-          "referral_upgrade_level",
+          // "referral_upgrade_level",
         ];
 
         where_clause = {
@@ -934,7 +926,7 @@ class WalletController implements OnlyControllerInterface {
       let swap_list_data: any = await Models.CoinsModel.findAll({
         attributes: [
           "coin_id",
-          "mainnet_token_address",
+          // "mainnet_token_address",
           "is_token",
           "coin_name",
           "coin_symbol",

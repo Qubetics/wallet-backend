@@ -20,7 +20,7 @@ class SwftcController implements OnlyControllerInterface {
     this.initialize();
   }
 
-  public initialize() {}
+  public initialize() { }
 
   public async post_data(req: Request, res: Response) {
     console.log(
@@ -162,7 +162,7 @@ class SwftcController implements OnlyControllerInterface {
                     token_type: token_type,
                     decimals: Math.pow(10, parseInt(value.coinDecimal)),
                     token_address: token_address,
-                    is_on_coin_gicko: 0,
+                    // is_on_coin_gicko: 0,
                     graph_pair: graphPair,
                     graph_source: graphSource,
                     is_on_trading_view: graphSource ? 1 : 0,

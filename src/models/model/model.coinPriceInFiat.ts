@@ -39,10 +39,10 @@ let dataObj = {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  coin_gicko_id: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
+  // coin_gicko_id: {
+  //   type: DataTypes.STRING,
+  //   allowNull: true,
+  // },
   value: {
     type: DataTypes.DOUBLE,
     allowNull: false,
@@ -83,38 +83,38 @@ let dataObj = {
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
-  roi: {
-    type: DataTypes.DOUBLE,
-    allowNull: true,
-  },
-  open: {
-    type: DataTypes.DOUBLE,
-    allowNull: true,
-  },
-  high: {
-    type: DataTypes.DOUBLE,
-    allowNull: true,
-  },
+  // roi: {
+  //   type: DataTypes.DOUBLE,
+  //   allowNull: true,
+  // },
+  // open: {
+  //   type: DataTypes.DOUBLE,
+  //   allowNull: true,
+  // },
+  // high: {
+  //   type: DataTypes.DOUBLE,
+  //   allowNull: true,
+  // },
   latest_price: {
     type: DataTypes.JSON,
     allowNull: true,
   },
-  average: {
-    type: DataTypes.DOUBLE,
-    allowNull: true,
-  },
-  close: {
-    type: DataTypes.DOUBLE,
-    allowNull: true,
-  },
-  low: {
-    type: DataTypes.DOUBLE,
-    allowNull: true,
-  },
-  change_price: {
-    type: DataTypes.DOUBLE,
-    allowNull: true,
-  },
+  // average: {
+  //   type: DataTypes.DOUBLE,
+  //   allowNull: true,
+  // },
+  // close: {
+  //   type: DataTypes.DOUBLE,
+  //   allowNull: true,
+  // },
+  // low: {
+  //   type: DataTypes.DOUBLE,
+  //   allowNull: true,
+  // },
+  // change_price: {
+  //   type: DataTypes.DOUBLE,
+  //   allowNull: true,
+  // },
 };
 
 let dataObjIndex = {
@@ -127,10 +127,6 @@ let dataObjIndex = {
       unique: false,
       fields: ["fiat_type"],
     },
-    {
-      unique: false,
-      fields: ["coin_gicko_id"],
-    }
   ],
 };
 

@@ -24,7 +24,7 @@ class WalletHelpers implements OnlyControllerInterface {
   constructor() {
     this.initialize();
   }
-  public initialize() {}
+  public initialize() { }
   public async add_coin_to_table(
     tokenAddress: string,
     symbol: string,
@@ -72,10 +72,10 @@ class WalletHelpers implements OnlyControllerInterface {
           graphPair = tradingViewData.graphPair;
         }
       }
-      console.log("coin_gicko_data>>>", image, "token_type>>", image);
+      console.log("coinZone>>>", image, "token_type>>", image);
 
       // Get gasless status
-      let gaslessStatus: any = null;
+      // let gaslessStatus: any = null;
 
       // if (coinFamily == 2) {
       //   gaslessStatus = await global_helper.getGasLessStatus(tokenAddress, swapData);
@@ -86,21 +86,18 @@ class WalletHelpers implements OnlyControllerInterface {
         coin_symbol: symbol.toUpperCase(),
         coin_image: image,
         cmc_id: cmc_id,
-        // coin_gicko_id: coinGeckoId,
-        // coin_gicko_alias: coinGickoAlias,
         coin_family: coinFamily,
         coin_status: GlblBooleanEnum.true,
         is_token: GlblBooleanEnum.true,
         is_on_cmc: cmc_id ? GlblBooleanEnum.true : GlblBooleanEnum.false,
         for_swap: swapSupported,
-        gasless: gaslessStatus,
+        // gasless: gaslessStatus,
         added_by: GlblAddedBy.USER,
         token_type: tokenType.toUpperCase(),
         decimals: Math.pow(10, parseInt(decimals)),
         token_address: tokenAddress,
         created_at: currentUTCDate,
         updated_at: currentUTCDate,
-        is_on_coin_gicko: 0,
         graph_pair: graphPair,
         graph_source: graphSource,
         is_on_trading_view: graphSource ? 1 : 0,
@@ -246,13 +243,13 @@ class WalletHelpers implements OnlyControllerInterface {
                 token_address: coin_data.token_address,
                 max_supply: result.data.data[cmc_id].max_supply,
                 latest_price: latest_price,
-                roi: null,
-                open: null,
-                high: null,
-                average: null,
-                close: null,
-                low: null,
-                change_price: null,
+                // roi: null,
+                // open: null,
+                // high: null,
+                // average: null,
+                // close: null,
+                // low: null,
+                // change_price: null,
               };
               await coin_price_in_fiat_queries.coin_price_in_fiat_create(
                 data_to_insert
@@ -736,8 +733,8 @@ class WalletHelpers implements OnlyControllerInterface {
         min_bal_in_fiat < 0.000001
           ? await WalletHelper.toFixedExp(min_bal_in_fiat, 8)
           : min_bal_in_fiat < 0.0001
-          ? await WalletHelper.toFixedExp(min_bal_in_fiat, 6)
-          : await WalletHelper.toFixedExp(min_bal_in_fiat, 2);
+            ? await WalletHelper.toFixedExp(min_bal_in_fiat, 6)
+            : await WalletHelper.toFixedExp(min_bal_in_fiat, 2);
       console.log("min_bal>>>>", min_bal_in_fiat);
       return {
         min_bal_in_fiat: min_bal_in_fiat,

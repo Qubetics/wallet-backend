@@ -31,10 +31,10 @@ let dataObj = {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  value: {
-    type: DataTypes.DOUBLE,
-    allowNull: false,
-  },
+  // value: {
+  //   type: DataTypes.DOUBLE,
+  //   allowNull: false,
+  // },
   sparkline: {
     type: DataTypes.JSON,
   },
@@ -42,14 +42,14 @@ let dataObj = {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  price_change_24h: {
-    type: DataTypes.DOUBLE,
-    allowNull: true,
-  },
-  price_change_percentage_24h: {
-    type: DataTypes.DOUBLE,
-    allowNull: true,
-  },
+  // price_change_24h: {
+  //   type: DataTypes.DOUBLE,
+  //   allowNull: true,
+  // },
+  // price_change_percentage_24h: {
+  //   type: DataTypes.DOUBLE,
+  //   allowNull: true,
+  // },
   // created_at: {
   //   type: DataTypes.DATE,
   //   allowNull: true,

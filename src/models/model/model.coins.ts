@@ -3,10 +3,10 @@ import { CoinInterface } from "../interface/index.interface";
 import db from "../../helpers/common/db";
 import CoinPriceInFiatModel from "../model/model.coinPriceInFiat";
 import WatchlistsModel from "./model.watchlist";
-interface CoinCreationModel extends Optional<CoinInterface, "coin_id"> {}
+interface CoinCreationModel extends Optional<CoinInterface, "coin_id"> { }
 interface CoinInstance
   extends Model<CoinInterface, CoinCreationModel>,
-    CoinInterface {}
+  CoinInterface { }
 
 let dataObj = {
   coin_id: {
@@ -15,10 +15,10 @@ let dataObj = {
     primaryKey: true,
     autoIncrement: true,
   },
-  mainnet_token_address: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
+  // mainnet_token_address: {
+  //   type: DataTypes.STRING,
+  //   allowNull: true,
+  // },
   // coin_market_id: {
   //   type: DataTypes.INTEGER,
   //   allowNull: true,
@@ -31,10 +31,10 @@ let dataObj = {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  coin_gicko_id: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
+  // coin_gicko_id: {
+  //   type: DataTypes.STRING,
+  //   allowNull: true,
+  // },
   is_on_cmc: {
     type: DataTypes.INTEGER,
     allowNull: true,
@@ -71,14 +71,14 @@ let dataObj = {
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
-  usd_price: {
-    type: DataTypes.FLOAT,
-    allowNull: true,
-  },
-  withdraw_limit: {
-    type: DataTypes.FLOAT,
-    allowNull: true,
-  },
+  // usd_price: {
+  //   type: DataTypes.FLOAT,
+  //   allowNull: true,
+  // },
+  // withdraw_limit: {
+  //   type: DataTypes.FLOAT,
+  //   allowNull: true,
+  // },
   token_abi: {
     type: DataTypes.STRING,
     allowNull: true,
@@ -87,26 +87,26 @@ let dataObj = {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  uuid: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
+  // uuid: {
+  //   type: DataTypes.STRING,
+  //   allowNull: true,
+  // },
   for_swap: {
     type: DataTypes.TINYINT,
     allowNull: true,
   },
-  gasless: {
-    type: DataTypes.TINYINT,
-    allowNull: true,
-  },
+  // gasless: {
+  //   type: DataTypes.TINYINT,
+  //   allowNull: true,
+  // },
   added_by: {
     type: DataTypes.ENUM("admin", "user", "swap"),
     allowNull: true,
   },
-  is_on_coin_gicko: {
-    type: DataTypes.TINYINT,
-    allowNull: true,
-  },
+  // is_on_coin_gicko: {
+  //   type: DataTypes.TINYINT,
+  //   allowNull: true,
+  // },
   graph_source: {
     type: DataTypes.STRING,
     allowNull: true,

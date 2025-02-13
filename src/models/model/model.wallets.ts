@@ -34,10 +34,10 @@ let dataObj = {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  checker_code: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
+  // checker_code: {
+  //   type: DataTypes.STRING,
+  //   allowNull: true,
+  // },
   wallet_address: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -54,30 +54,30 @@ let dataObj = {
     type: DataTypes.DOUBLE,
     allowNull: false,
   },
-  balance_blocked: {
-    type: DataTypes.DOUBLE,
-    allowNull: true,
-  },
-  user_withdraw_limit: {
-    type: DataTypes.FLOAT,
-    allowNull: true,
-  },
+  // balance_blocked: {
+  //   type: DataTypes.DOUBLE,
+  //   allowNull: true,
+  // },
+  // user_withdraw_limit: {
+  //   type: DataTypes.FLOAT,
+  //   allowNull: true,
+  // },
   default_wallet: {
     type: DataTypes.TINYINT,
     allowNull: true,
   },
-  is_verified: {
-    type: DataTypes.TINYINT,
-    allowNull: true,
-  },
+  // is_verified: {
+  //   type: DataTypes.TINYINT,
+  //   allowNull: true,
+  // },
   status: {
     type: DataTypes.TINYINT,
     allowNull: true,
   },
-  is_deleted: {
-    type: DataTypes.TINYINT,
-    allowNull: true,
-  },
+  // is_deleted: {
+  //   type: DataTypes.TINYINT,
+  //   allowNull: true,
+  // },
   sort_order: {
     type: DataTypes.INTEGER,
     allowNull: true,

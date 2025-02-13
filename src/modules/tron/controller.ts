@@ -23,7 +23,7 @@ class TronController implements OnlyControllerInterface {
     this.initialize();
   }
 
-  public initialize() {}
+  public initialize() { }
 
   public async gasEstimation(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
@@ -76,9 +76,9 @@ class TronController implements OnlyControllerInterface {
     let lang: any = req.headers["content-language"] || "en";
     try {
       console.log("req body tron send>>>", req.body);
-      let is_maker: number | null = req.body.is_maker
-        ? req.body.is_maker
-        : null;
+      // let is_maker: number | null = req.body.is_maker
+      //   ? req.body.is_maker
+      //   : null;
       const user_id = req.userId;
       let card_id: any = req.body.card_id;
       const trnx_type: any = req.body.tx_type
@@ -87,9 +87,9 @@ class TronController implements OnlyControllerInterface {
       if (trnx_type == "card_fees") {
         card_id = card_id ? card_id : 1;
       }
-      let referral_upgrade_level: string = req.body.referral_upgrade_level
-        ? req.body.referral_upgrade_level
-        : null;
+      // let referral_upgrade_level: string = req.body.referral_upgrade_level
+      //   ? req.body.referral_upgrade_level
+      //   : null;
       const from_address: string = req.body.from;
       const to_address: string = req.body.to;
       const coin_id: number = req.body.coin_id;
@@ -132,7 +132,7 @@ class TronController implements OnlyControllerInterface {
         let coin: any = await dbHelper.find_one_coins_table(
           [
             "coin_id",
-            "mainnet_token_address",
+            // "mainnet_token_address",
             "coin_name",
             "cmc_id",
             "is_on_cmc",
@@ -143,11 +143,11 @@ class TronController implements OnlyControllerInterface {
             "is_token",
             "token_type",
             "decimals",
-            "usd_price",
-            "withdraw_limit",
+            // "usd_price",
+            // "withdraw_limit",
             "token_abi",
             "token_address",
-            "uuid",
+            // "uuid",
             "for_swap",
             "added_by",
             "created_at",
@@ -214,14 +214,14 @@ class TronController implements OnlyControllerInterface {
               }
               await Models.TrnxHistoryModel.create({
                 user_id: user_id,
-                referral_upgrade_level: referral_upgrade_level,
+                // referral_upgrade_level: referral_upgrade_level,
                 from_adrs: from_address,
                 to_adrs: to_address,
                 coin_id: coin_id,
                 coin_family: config.STATIC_COIN_FAMILY.TRX,
                 amount: amount,
                 tx_id: txRes.data.txid,
-                is_maker: is_maker,
+                // is_maker: is_maker,
                 gas_price: null,
                 tx_raw: trnx_raw.txID,
                 type: trnx_type,
@@ -233,15 +233,15 @@ class TronController implements OnlyControllerInterface {
                 order_id: req.body.order_id,
                 merchant_id: null,
                 block_id: null,
-                block_hash: null,
-                speedup: null,
+                // block_hash: null,
+                // speedup: null,
                 nonce: null,
                 swap_fee: null,
                 gas_limit: null,
                 gas_reverted: null,
                 fiat_type: fiat_currency,
                 fiat_price: null,
-                country_code: null,
+                // country_code: null,
                 order_status: req.body.order_id
                   ? GlblBlockchainTxStatusEnum.PENDING
                   : null,
