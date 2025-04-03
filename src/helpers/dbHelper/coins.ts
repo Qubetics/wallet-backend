@@ -136,15 +136,16 @@ class CoinQueries {
                     }]
                 }],
                 order: [
-                    [Sequelize.literal(`
-                    CASE
-                    WHEN coins.coin_symbol ='bnb' THEN 1
-                    WHEN coins.coin_symbol ='eth' THEN 2
-                    WHEN coins.coin_symbol ='btc' THEN 3
-                    WHEN coins.coin_symbol ='trx' THEN 4
-                    ELSE 5
-                    END
-                    `), 'ASC']
+                    [
+                        Sequelize.fn('FIELD',
+                            Sequelize.col('coin_symbol'),
+                            'bnb',
+                            'eth',
+                            'btc',
+                            'trx'
+                        ),
+                        'ASC'
+                    ]
                 ],
                 logging: console.log
             })
@@ -175,15 +176,16 @@ class CoinQueries {
                     as: "wallet_data",
                 }],
                 order: [
-                    [Sequelize.literal(`
-                    CASE
-                    WHEN coins.coin_symbol ='bnb' THEN 1
-                    WHEN coins.coin_symbol ='eth' THEN 2
-                    WHEN coins.coin_symbol ='btc' THEN 3
-                    WHEN coins.coin_symbol ='trx' THEN 4
-                    ELSE 5
-                    END
-                    `), 'ASC']
+                    [
+                        Sequelize.fn('FIELD',
+                            Sequelize.col('coin_symbol'),
+                            'bnb',
+                            'eth',
+                            'btc',
+                            'trx'
+                        ),
+                        'ASC'
+                    ]
                 ],
                 logging: console.log
             })
@@ -216,15 +218,16 @@ class CoinQueries {
                     as: "wallet_data",
                 }],
                 order: [
-                    [Sequelize.literal(`
-                    CASE
-                    WHEN coins.coin_symbol ='bnb' THEN 1
-                    WHEN coins.coin_symbol ='eth' THEN 2
-                    WHEN coins.coin_symbol ='btc' THEN 3
-                    WHEN coins.coin_symbol ='trx' THEN 4
-                    ELSE 5
-                    END
-                    `), 'ASC']
+                    [
+                        Sequelize.fn('FIELD',
+                            Sequelize.col('coin_symbol'),
+                            'bnb',
+                            'eth',
+                            'btc',
+                            'trx'
+                        ),
+                        'ASC'
+                    ]
                 ],
                 logging: console.log
             })

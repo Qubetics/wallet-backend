@@ -81,6 +81,7 @@ export const config = {
   TICS_TESTNET_NODE: zookeeperConfig.config.TICS_TESTNET_NODE,
   JWT_SECRET: zookeeperConfig.config.JWT_SECRET,
   ENCRYPT_SECRET: zookeeperConfig.config.ENCRYPT_SECRET,
+  ENCRYPT_IV_SECRET: zookeeperConfig.config.ENCRYPT_IV_SECRET,
   REFRESH_SECRET: zookeeperConfig.config.REFRESH_SECRET,
   FCM_PUSH: zookeeperConfig.config.FCM_PUSH,
   RSA_PRIVATE_KEY_NAME: zookeeperConfig.config.RSA_PRIVATE_KEY_NAME,

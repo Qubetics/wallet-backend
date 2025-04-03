@@ -58,19 +58,20 @@ class AuthController implements OnlyControllerInterface {
                 await redisClient.delKey(config.ADMIN_TOKEN, (checkEmailExist.email).toUpperCase())
             }
 
-            let jwtToken: any = await jwtHelper.create_json_web_token(checkEmailExist.id);
+            const jwtToken: any = await jwtHelper.create_json_web_token(checkEmailExist.id);
 
             await adminQueries.adminUpdate(
-                { login_status: GlblBooleanEnum.true, jwt_token: jwtToken },
+                { login_status: GlblBooleanEnum.true },
                 { id: checkEmailExist.id });
 
-            await redisClient.set_hash_table(config.ADMIN_TOKEN, checkEmailExist.email, jwtToken)
+            //await redisClient.set_hash_table(config.ADMIN_TOKEN, checkEmailExist.email, jwtToken)
 
             let adminData: any = await adminQueries.adminFindOne(
-                ["id", "username", "email", "mobile_no", "google2fa_secret", "google2fa_status", "login_status", "jwt_token"],
+                ["id", "username", "email", "mobile_no", "google2fa_secret", "google2fa_status", "login_status"],
                 { id: checkEmailExist.id, active: 1 },
                 [['id', 'DESC']]);
 
+            adminData.token = jwtToken;
             return res.status(GlblCode.SUCCESS).send({
                 message: GlblMessages.SUCCESS,
                 status: true,
@@ -298,7 +299,7 @@ class AuthController implements OnlyControllerInterface {
 
             let data: any;
             let secretBase32: any = adminData.google2fa_secret;
-            var verified: any = speakeasy.totp.verify({
+            const verified: any = speakeasy.totp.verify({
                 secret: secretBase32,
                 encoding: 'base32',
                 token: token,
@@ -327,7 +328,8 @@ class AuthController implements OnlyControllerInterface {
                     data: {}
                 };
             } else if (verified == true) {
-                let jwt_token: string = await adminMiddleware.generateToken(adminData.id);
+                // let jwt_token: string = await adminMiddleware.generateToken(adminData.id);
+                const jwt_token: any = await jwtHelper.create_json_web_token(adminData.id);
                 let final_data = { id: adminData.id, user: adminData.username, email: adminData.email, token: jwt_token, google2fa_status: adminData.google2fa_status }
 
                 data = {

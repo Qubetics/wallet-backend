@@ -160,7 +160,7 @@ class WalletController implements OnlyControllerInterface {
     }
   }
   public async portfolio(req: Request, res: Response) {
-    let lang: any = req.headers["content-language"] || "en";
+    const lang: any = req.headers["content-language"] || "en";
     try {
       console.log("req body portfolio >>>", req.body);
       let {
@@ -173,20 +173,27 @@ class WalletController implements OnlyControllerInterface {
         req.body.fiat_type == undefined
           ? Fiat_Currency.USD
           : req.body.fiat_type;
-      let search: any =
+      const search: any =
         req.body.search == undefined
           ? (req.body.search = "%%")
           : (req.body.search = "%" + req.body.search + "%");
-      let pageNo: any = parseInt(page as string) || GlblBooleanEnum.true;
-      let limitNo: any = parseInt(limit as string) || 10;
+      const pageNo: any = parseInt(page as string) || GlblBooleanEnum.true;
+      const limitNo: any = parseInt(limit as string) || 10;
       let offset: number = GlblBooleanEnum.false;
       if (pageNo != GlblBooleanEnum.true) {
         offset = (pageNo - GlblBooleanEnum.true) * limitNo;
       }
       let user_id: number = req.userId;
       // let user_id: number = 5;
+      const customTokenCoinIds = await Models.CustomTokennModel.findAll({
+        attributes: ['coin_id'],
+        where: { user_id },
+        raw: true
+      });
 
-      let wallets: any = await Models.WalletModel.findAndCountAll({
+      const coinIds = customTokenCoinIds.map(token => token.coin_id);
+
+      const wallets: any = await Models.WalletModel.findAndCountAll({
         attributes: [
           "wallet_id",
           "wallet_name",
@@ -226,9 +233,28 @@ class WalletController implements OnlyControllerInterface {
                 { coin_name: { [Op.like]: search } },
                 { coin_symbol: { [Op.like]: search } },
               ],
-              [Op.and]: Sequelize.literal(
-                `(token_type is null or token_type NOT IN('BEP721', 'ERC721')) AND (IF(added_by='admin',1=1,coin.coin_id IN(select coin_id FROM custom_tokens WHERE user_id=${user_id})))`
-              ),
+              [Op.and]: [
+                {
+                  [Op.or]: [
+                    { token_type: null },
+                    {
+                      token_type: {
+                        [Op.notIn]: ['BEP721', 'ERC721']
+                      }
+                    }
+                  ]
+                },
+                {
+                  [Op.or]: [
+                    { added_by: 'admin' },
+                    {
+                      coin_id: {
+                        [Op.in]: coinIds
+                      }
+                    }
+                  ]
+                }
+              ],
             },
             include: [
               {
@@ -260,10 +286,22 @@ class WalletController implements OnlyControllerInterface {
             ],
           },
         ],
-        // order: [["sort_order", "ASC"]],
-        order: Sequelize.literal(
-          `(CASE WHEN (\`coin.fiat_price_data.value\` * wallets.balance) > 0 && sort_order IS NULL THEN (\`coin.fiat_price_data.value\` * wallets.balance) END) DESC,(CASE WHEN sort_order IS NULL THEN wallets.created_at END) ASC,(CASE WHEN sort_order IS NOT NULL THEN wallets.sort_order END) ASC`
-        ),
+        order: [
+          // First sort by sort_order if it exists
+          [Sequelize.col('sort_order'), 'ASC'],
+
+          // Then sort by wallet value (price * balance) for records with value
+          [Sequelize.fn('COALESCE',
+            Sequelize.fn('*',
+              Sequelize.col('coin.fiat_price_data.value'),
+              Sequelize.col('wallets.balance')
+            ),
+            0
+          ), 'DESC'],
+
+          // Finally sort by created_at
+          [Sequelize.col('wallets.created_at'), 'ASC']
+        ],
         limit: limitNo,
         offset: offset,
       });
@@ -430,6 +468,14 @@ class WalletController implements OnlyControllerInterface {
       if (pageNo != GlblBooleanEnum.true) {
         offset = (pageNo - GlblBooleanEnum.true) * limitNo;
       }
+      const customTokenCoinIds = await Models.CustomTokennModel.findAll({
+        attributes: ['coin_id'],
+        where: { user_id: req.userId },
+        raw: true
+      });
+
+      const coinIds = customTokenCoinIds.map(token => token.coin_id);
+
       let data: any = await Models.CoinsModel.findAndCountAll({
         attributes: [
           "coin_id",
@@ -449,16 +495,38 @@ class WalletController implements OnlyControllerInterface {
             { coin_name: { [Op.like]: search } },
             { coin_symbol: { [Op.like]: search } },
           ],
-          [Op.and]: Sequelize.literal(
-            `(coins.token_type IS NULL OR coins.token_type NOT IN('BEP721', 'ERC721')) AND (IF(added_by='admin',1=1,coins.coin_id IN(select coin_id FROM custom_tokens WHERE user_id=${req.userId})))`
-          ),
+          [Op.and]: [
+            {
+              [Op.or]: [
+                { token_type: null },
+                {
+                  token_type: {
+                    [Op.notIn]: ['BEP721', 'ERC721']
+                  }
+                }
+              ]
+            },
+            {
+              [Op.or]: [
+                { added_by: 'admin' },
+                {
+                  coin_id: {
+                    [Op.in]: coinIds
+                  }
+                }
+              ]
+            }
+          ],
         },
         include: [
           {
             model: Models.WalletModel,
             attributes: [
               "wallet_address",
-              [Sequelize.literal(`(IF (status= null,0,status))`), `status`],
+              [Sequelize.fn('COALESCE',
+                Sequelize.col('status'),
+                0
+              ), 'status']
             ],
             where: {
               wallet_address: { [Op.in]: addresses },
@@ -481,9 +549,10 @@ class WalletController implements OnlyControllerInterface {
           },
         ],
         order: [
-          Sequelize.literal(
-            "(CASE WHEN  wallet_data.status=1 THEN wallet_data.status END)  DESC, coins.coin_id ASC,(CASE WHEN  wallet_data.status=0 THEN coins.coin_id END)  ASC"
-          ),
+          // First prioritize active wallets (status = 1)
+          [Sequelize.col('wallet_data.status'), 'DESC'],
+          // Then sort by coin_id
+          [Sequelize.col('coins.coin_id'), 'ASC']
         ],
         limit: limitNo,
         offset: offset,
@@ -568,10 +637,12 @@ class WalletController implements OnlyControllerInterface {
             [Op.and]: [
               { to_adrs: { [Op.in]: address_list } },
               { to_user_id: userId },
-
-              Sequelize.literal(
-                `IF(merchant_id IS NOT null, 1 = 1, trnx_history.blockchain_status = "${GlblBlockchainTxStatusEnum.CONFIRMED}")`
-              ),
+              {
+                [Op.or]: [
+                  { merchant_id: { [Op.not]: null } },
+                  { blockchain_status: GlblBlockchainTxStatusEnum.CONFIRMED }
+                ]
+              }
             ],
           },
         ],
@@ -584,10 +655,18 @@ class WalletController implements OnlyControllerInterface {
       let attr: any = [
         "id",
         [
-          Sequelize.literal(
-            `IF(type ='withdraw' OR type = 'deposit',(IF(FIND_IN_SET(user_id, "${userId}"),'withdraw','deposit')),type)`
+          Sequelize.fn('CASE',
+            Sequelize.where(Sequelize.col('type'), {
+              [Op.in]: ['withdraw', 'deposit']
+            }),
+            Sequelize.fn('CASE',
+              Sequelize.where(Sequelize.col('user_id'), userId),
+              'withdraw',
+              'ELSE', 'deposit'
+            ),
+            'ELSE', Sequelize.col('type')
           ),
-          "type",
+          'type'
         ],
         "tx_fee",
         "tx_id",
@@ -617,10 +696,18 @@ class WalletController implements OnlyControllerInterface {
         attr = [
           "id",
           [
-            Sequelize.literal(
-              `IF(type ='withdraw' OR type = 'deposit',(IF(FIND_IN_SET(to_user_id, "${userId}"),'deposit','withdraw')),type)`
+            Sequelize.fn('CASE',
+              Sequelize.where(Sequelize.col('type'), {
+                [Op.in]: ['withdraw', 'deposit']
+              }),
+              Sequelize.fn('CASE',
+                Sequelize.where(Sequelize.col('to_user_id'), userId),
+                'deposit',
+                'ELSE', 'withdraw'
+              ),
+              'ELSE', Sequelize.col('type')
             ),
-            "type",
+            'type'
           ],
           "tx_fee",
           "tx_id",
@@ -778,7 +865,7 @@ class WalletController implements OnlyControllerInterface {
             model: Models.CoinsModel,
             attributes: ["coin_symbol", "coin_name"],
             as: "coin_data",
-            where: Sequelize.literal(coin_where),
+            where: coin_where || {},
             include: [
               {
                 model: Models.CoinPriceInFiatModel,
@@ -911,13 +998,30 @@ class WalletController implements OnlyControllerInterface {
       const addresses: [] = req.body.addrsListKeys;
       let fiat_type: string = req.body.fiat_type;
       const coin_id: number = req.body.coin_id || null;
+      const customTokenCoinIds = await Models.CustomTokennModel.findAll({
+        attributes: ['coin_id'],
+        where: { user_id: req.userId },
+        raw: true
+      });
+      const coinIds = customTokenCoinIds.map(token => token.coin_id);
+
       let where_clause: any = {
         for_swap: 1,
         coin_family: { [Op.in]: coin_family },
         coin_status: GlblBooleanEnum.true,
-        [Op.and]: Sequelize.literal(
-          `(IF((added_by='admin' OR added_by='swap'),1=1,coins.coin_id IN(select coin_id FROM custom_tokens WHERE user_id=${req.userId})))`
-        ),
+        [Op.and]: [
+          {
+            [Op.or]: [
+              { added_by: 'admin' },
+              { added_by: 'swap' },
+              {
+                coin_id: {
+                  [Op.in]: coinIds
+                }
+              }
+            ]
+          },
+        ]
       };
       if (coin_id) {
         where_clause.coin_id = coin_id;
@@ -1105,18 +1209,18 @@ class WalletController implements OnlyControllerInterface {
     let lang: any = req.headers["content-language"] || "en";
     try {
       console.log("req body getWatchlist >>>", req.body);
-      let user_id: any = req.userId;
+      const user_id: any = req.userId;
       const { page, limit }: { page: number | string; limit: number | string } =
         req.body;
       let is_fav: number = req.body.is_fav;
-      let fiat_type: string = req.body.fiat_type;
+      const fiat_type: string = req.body.fiat_type;
       let search: any =
         req.body.search == undefined
           ? (req.body.search = "%%")
           : (req.body.search = "%" + req.body.search + "%");
-      let wallet_address: string = req.body.wallet_address;
-      let pageNo: any = parseInt(page as string) || GlblBooleanEnum.true;
-      let limitNo: any = parseInt(limit as string) || 10;
+      const wallet_address: string = req.body.wallet_address;
+      const pageNo: any = parseInt(page as string) || GlblBooleanEnum.true;
+      const limitNo: any = parseInt(limit as string) || 10;
       let offset: number = GlblBooleanEnum.false;
       if (pageNo != GlblBooleanEnum.true) {
         offset = (pageNo - GlblBooleanEnum.true) * limitNo;
@@ -1129,6 +1233,14 @@ class WalletController implements OnlyControllerInterface {
         orderBy = `watchlist_data.created_at`;
         orderType = "DESC";
       }
+      const customTokenCoinIds = await Models.CustomTokennModel.findAll({
+        attributes: ['coin_id'],
+        where: { user_id: req.userId },
+        raw: true
+      });
+
+      const coinIds = customTokenCoinIds.map(token => token.coin_id);
+
       let result: any = await Models.CoinsModel.findAndCountAll({
         attributes: [
           "coin_id",
@@ -1142,9 +1254,28 @@ class WalletController implements OnlyControllerInterface {
         where: {
           coin_status: GlblBooleanEnum.true,
           coin_family: { [Op.in]: req.body.coin_family },
-          [Op.and]: Sequelize.literal(
-            `(coins.token_type IS NULL OR coins.token_type NOT IN('BEP721', 'ERC721')) AND (IF(added_by='admin',1=1,coins.coin_id IN(select coin_id FROM custom_tokens WHERE user_id=${req.userId})))`
-          ),
+          [Op.and]: [
+            {
+              [Op.or]: [
+                { token_type: null },
+                {
+                  token_type: {
+                    [Op.notIn]: ['BEP721', 'ERC721']
+                  }
+                }
+              ]
+            },
+            {
+              [Op.or]: [
+                { added_by: 'admin' },
+                {
+                  coin_id: {
+                    [Op.in]: coinIds
+                  }
+                }
+              ]
+            }
+          ],
           [Op.or]: [
             { coin_name: { [Op.like]: search } },
             { coin_symbol: { [Op.like]: search } },
@@ -1184,7 +1315,7 @@ class WalletController implements OnlyControllerInterface {
         //   [Sequelize.col('coins.created_at'), 'DESC']  // Correct ordering
         // ],
         // order: [[orderBy, orderType]],
-        order: [[Sequelize.literal(orderBy), orderType]],
+        order: [[Sequelize.col(orderBy), orderType]],
         offset: offset,
         limit: limitNo,
         // logging: true,
@@ -1730,12 +1861,29 @@ class WalletController implements OnlyControllerInterface {
 
       let atr: any = [
         [
-          Sequelize.literal(`IF(type ='withdraw' OR type = 'deposit',
-          (IF(FIND_IN_SET(user_id, "${userId}"),
-              CONCAT(UCASE(SUBSTRING('withdraw', 1, 1)), SUBSTRING('withdraw', 2)),
-              CONCAT(UCASE(SUBSTRING('deposit', 1, 1)), SUBSTRING('deposit', 2))
-          )),CONCAT(UCASE(SUBSTRING(type, 1, 1)), SUBSTRING(type, 2)))`),
-          "type",
+          Sequelize.fn('CASE',
+            Sequelize.where(Sequelize.col('type'), {
+              [Op.in]: ['withdraw', 'deposit']
+            }),
+            Sequelize.fn('CASE',
+              Sequelize.where(Sequelize.col('user_id'), userId),
+              Sequelize.fn('CONCAT',
+                Sequelize.fn('UPPER', Sequelize.fn('SUBSTRING', 'withdraw', 1, 1)),
+                Sequelize.fn('SUBSTRING', 'withdraw', 2)
+              ),
+              'ELSE',
+              Sequelize.fn('CONCAT',
+                Sequelize.fn('UPPER', Sequelize.fn('SUBSTRING', 'deposit', 1, 1)),
+                Sequelize.fn('SUBSTRING', 'deposit', 2)
+              )
+            ),
+            'ELSE',
+            Sequelize.fn('CONCAT',
+              Sequelize.fn('UPPER', Sequelize.fn('SUBSTRING', Sequelize.col('type'), 1, 1)),
+              Sequelize.fn('SUBSTRING', Sequelize.col('type'), 2)
+            )
+          ),
+          'type'
         ],
         "from_adrs",
         "to_adrs",
