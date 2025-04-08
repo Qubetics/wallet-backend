@@ -23,6 +23,7 @@ import {
 } from "../../helpers/dbHelper/index";
 import { config } from "../../config";
 import emojiRegex from "emoji-regex";
+import * as ethers from "ethers";
 // const emojiRegex = require('emoji-regex');
 class UserController implements OnlyControllerInterface {
   constructor() {
@@ -46,6 +47,8 @@ class UserController implements OnlyControllerInterface {
         device_token,
         device_id,
         referral_code,
+        signature,
+        message
       }: {
         wallet_address: string;
         addressList: any;
@@ -53,7 +56,36 @@ class UserController implements OnlyControllerInterface {
         device_token: string;
         device_id: string;
         referral_code: string;
+        signature: string;
+        message: string;
       } = req.body;
+
+      if (signature && typeof signature === "string") {
+        const currentUTCDate = new Date().toISOString().replace("T", " ").replace(/\..+/, "");
+        const timestamp = Date.parse(message);
+        const currentTimestamp = Date.parse(currentUTCDate);
+        
+        const timeDiff = (((currentTimestamp - timestamp) / 1000) / 60);
+        if (+timeDiff > 1) {
+          return res.status(400).json({
+            success: false,
+            message: "Unauthorized.",
+          });
+        } else if (+timeDiff < -0.1) {
+          return res.status(400).json({
+            success: false,
+            message: "Invalid signature.",
+          });
+        }
+
+        let verifiedAddress = ethers.verifyMessage(message, signature);
+        if (wallet_address !== verifiedAddress) {
+          return res.status(400).json({
+            success: false,
+            message: "Invalid signature.",
+          });
+        }
+      }
 
       // Check if the input contains emojis
       if (userController.validateEmojis(wallet_name)) {
@@ -276,6 +308,21 @@ class UserController implements OnlyControllerInterface {
         req.body.page == undefined ? (req.body.page = "1") : req.body.page
       );
       let offset: number = (page - 1) * per_page;
+
+      const checkAddress = await wallet_queries.wallet_find_one(
+        ["wallet_id", "user_id"],
+        { wallet_address: { [Op.in]: req.body.addrsListKeys } }
+        );
+
+        if (!checkAddress || checkAddress.user_id !== req.userId) {
+          return response.error(res, {
+            data: {
+              code: GlblCode.ERROR_CODE,
+              status: false,
+              message: language[lang].UNAUTHORIZED_ACCESS,
+            },
+          });
+        }
 
       let notifications_data =
         await notification_queries.notifications_joint_find_all_count_all(
@@ -637,6 +684,29 @@ class UserController implements OnlyControllerInterface {
       console.log("req body user deleteAddressBookWalletAddress>>>", req.body);
       const { id, address_book_id }: { id: number; address_book_id: number } =
         req.body;
+        const user_id = req.userId;
+
+        const addressBook = await address_book_queries.address_books_find_one(['user_id'],{ id: address_book_id });
+        if (!addressBook) {
+          return response.error(res, {
+            data: {
+              code: GlblCode.ERROR_CODE,
+              status: false,
+              message: language[lang].NO_ADDRESSBOOK_EXIST,
+            },
+          });
+        }
+  
+        if (addressBook.user_id != user_id) {
+          return response.error(res, {
+            data: {
+              code: GlblCode.ERROR_CODE,
+              status: false,
+              message: language[lang].UNAUTHORIZED_ACCESS,
+            },
+          });
+        }
+        
       let address_book_wallet: number =
         await address_book_wallet_queries.address_book_wallet_get_count({
           address_book_id: address_book_id,
@@ -693,6 +763,7 @@ class UserController implements OnlyControllerInterface {
     try {
       console.log("req body user deleteAddressBook>>>", req.body);
       const { id }: { id: number } = req.body;
+      const user_id = req.userId;
       let address_book: any = await address_book_queries.address_book_count({
         id: id,
       });
@@ -705,6 +776,28 @@ class UserController implements OnlyControllerInterface {
           },
         });
       }
+
+      const addressBook = await address_book_queries.address_books_find_one(['user_id'],{ id: id });
+      if (!addressBook) {
+        return response.error(res, {
+          data: {
+            code: GlblCode.ERROR_CODE,
+            status: false,
+            message: language[lang].NO_ADDRESSBOOK_EXIST,
+          },
+        });
+      }
+
+      if (addressBook.user_id != user_id) {
+        return response.error(res, {
+          data: {
+            code: GlblCode.ERROR_CODE,
+            status: false,
+            message: language[lang].UNAUTHORIZED_ACCESS,
+          },
+        });
+      }
+
       await address_book_queries.address_book_destroy({ id: id });
       let address_book_wallet_data: number =
         await address_book_wallet_queries.address_book_wallet_get_count({

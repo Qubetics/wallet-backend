@@ -6,17 +6,29 @@ export default class user_validator {
             wallet_address: Joi.string().required(),
             device_token: Joi.string().required(),
             wallet_name: Joi.string().required(),
-            addressList: Joi.array().required(),
+            addressList: Joi.array()
+                .items(
+                    Joi.object({
+                        symbol: Joi.string().required(),
+                        address: Joi.string().required(),
+                        coin_family: Joi.number().integer().required(),
+                    })
+                )
+                .required(),
             referral_code: Joi.string().allow(null, '').optional(),
             device_id: Joi.string().allow(null, '').optional(),
             fiat_currency: Joi.string().allow(null, '').optional(),
-            lang: Joi.string().allow(null, '').optional()
+            lang: Joi.string().allow(null, '').optional(),
+            signature: Joi.string().optional(),
+            message: Joi.string().allow(null, "").optional(),
         })
     }
     static logoutValidate = {
         body: Joi.object({
             deviceId: Joi.string().required(),
-            userIds: Joi.array().required(),
+            userIds: Joi.array()
+            .items(Joi.number().integer().required()
+            ).required(),
             type: Joi.string().required()
         })
     }
@@ -24,8 +36,12 @@ export default class user_validator {
         body: Joi.object({
             limit: Joi.number().optional(),
             page: Joi.number().optional(),
-            addrsListKeys: Joi.array().required(),
-            coin_family: Joi.array().required(),
+            addrsListKeys: Joi.array()
+            .items(Joi.string().required()
+            ).required(),
+            coin_family: Joi.array()
+            .items(Joi.number().integer().required()
+            ).required(),
         })
     }
     static addAddressBookValidate = {
@@ -41,8 +57,12 @@ export default class user_validator {
         body: Joi.object({
             limit: Joi.number().required(),
             page: Joi.number().required(),
-            address: Joi.array().required(),
-            coin_family: Joi.array().optional(),
+            address: Joi.array()
+            .items(Joi.string().required()
+            ).required(),
+            coin_family: Joi.array()
+            .items(Joi.number().integer().optional()
+            ).optional(),
             search: Joi.string().allow(null, '').optional(),
         })
     }
@@ -73,7 +93,9 @@ export default class user_validator {
     static announcementViewStatus = {
         body: Joi.object({
             key: Joi.number().required(),
-            addrsListKeys: Joi.array().required()
+            addrsListKeys: Joi.array()
+            .items(Joi.string().required()
+            ).required(),
         })
     }
 }

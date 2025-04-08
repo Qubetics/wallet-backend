@@ -17,6 +17,8 @@ import { encryptionMiddleware } from "./middlewares/encryption.middleware";
 import { ValidationError, Joi } from 'express-validation';
 import { GlblCode, GlblMessages, InfoMessages } from "./constants/global_enum";
 import ApiLimiter from "./middlewares/apiRateLimiter";
+import sanitizeHtml from "sanitize-html";
+
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 const basicAuth = require('express-basic-auth');
@@ -68,6 +70,26 @@ class Server implements ServerInterface {
     this.app.set('views', './views');
     this.app.use(encryptionMiddleware);
     this.app.use(ApiLimiter);
+
+    this.app.use((req: Request, res: Response, next: NextFunction) => {
+      if (req.body && typeof req.body === "object") {
+        const bodyString = JSON.stringify(req.body);
+        const sanitizedString = sanitizeHtml(bodyString, {
+          allowedTags: [],
+          allowedAttributes: {},
+        });
+        if (sanitizedString !== bodyString) {
+          return res.status(400).json({
+            status: false,
+            message: GlblMessages.INVALID_REQ_BODY,
+          });
+        }
+        req.body = JSON.parse(sanitizedString);
+      }
+
+      next();
+    });
+
     this.initializeControllers();
 
     // Basic authentication middleware for Swagger UI

@@ -33,6 +33,7 @@ class JWTVerify {
          if (!jwtHelper.verify(bearerToken)) {
             return response.error(res, {
                data: {
+                  code: 409,
                   message: language[lang].SESSION_EXPIRED,
                   data: {},
                },

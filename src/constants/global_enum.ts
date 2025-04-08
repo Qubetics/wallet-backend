@@ -125,7 +125,8 @@ export enum GlblMessages {
     OTP_VERIFIED = 'Otp verified successfully.',
     SESSION_TIMEOUT = 'Session Timeout',
     INVALID_NUMBER = 'Please Enter Valid Mobile Number.',
-    SAVED = 'Data Saved.'
+    SAVED = 'Data Saved.',
+    INVALID_REQ_BODY = "Invalid input: HTML tags detected in request body. Please remove any HTML content.",
 
 }
 export enum GlblStatus {

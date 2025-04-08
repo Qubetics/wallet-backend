@@ -20,9 +20,13 @@ export default class wallet_validator {
     body: Joi.object({
       page: Joi.number().optional(),
       limit: Joi.number().optional(),
-      coin_family: Joi.array().required(),
+      coin_family: Joi.array()
+        .items(Joi.number().integer().required()
+        ).required(),
       search: Joi.string().allow(null, "").optional(),
-      addressListKeys: Joi.array().required(),
+      addressListKeys: Joi.array()
+        .items(Joi.string().required()
+        ).required(),
       fiat_type: Joi.string().required(),
     }),
   };
@@ -37,15 +41,21 @@ export default class wallet_validator {
     body: Joi.object({
       page: Joi.number().optional(),
       limit: Joi.number().optional(),
-      coinFamilyKeys: Joi.array().required(),
+      coinFamilyKeys: Joi.array()
+      .items(Joi.number().integer().required()
+      ).required(),
       search: Joi.string().allow(null, "").optional(),
-      addrsListKeys: Joi.array().required(),
+      addrsListKeys: Joi.array()
+      .items(Joi.string().required()
+      ).required(),
       currency_code: Joi.string().required(),
     }),
   };
   static transactionListValidate = {
     body: Joi.object({
-      addrsListKeys: Joi.array().required(),
+      addrsListKeys: Joi.array()
+      .items(Joi.string().required()
+      ).required(),
       fiat_currency: Joi.string().allow(null, "").optional(),
       search: Joi.string().optional(),
       limit: Joi.number().optional(),
@@ -55,7 +65,9 @@ export default class wallet_validator {
       date_from: Joi.string().allow(null, "").optional(),
       date_to: Joi.string().allow(null, "").optional(),
       trnx_type: Joi.string().allow(null, "").optional(),
-      coin_family: Joi.array().required(),
+      coin_family: Joi.array()
+      .items(Joi.number().integer().required()
+      ).required(),
       ///////////////////////////////////
       coin_type: Joi.string().allow(null, "").optional(),
       from_date: Joi.string().allow(null, "").optional(),
@@ -70,8 +82,12 @@ export default class wallet_validator {
   };
   static swapListValidate = {
     body: Joi.object({
-      coin_family: Joi.array().required(),
-      addrsListKeys: Joi.array().required(),
+      coin_family: Joi.array()
+      .items(Joi.number().integer().required()
+      ).required(),
+      addrsListKeys: Joi.array()
+      .items(Joi.string().required()
+      ).required(),
       fiat_type: Joi.string().required(),
       coin_id: Joi.number().optional(),
     }),
@@ -89,7 +105,9 @@ export default class wallet_validator {
       limit: Joi.number().optional(),
       wallet_address: Joi.array().required(),
       is_fav: Joi.number().optional(),
-      coin_family: Joi.array().required(),
+      coin_family: Joi.array()
+        .items(Joi.number().integer().required()
+        ).required(),
     }),
   };
   static checkFiatBalance = {
@@ -130,7 +148,15 @@ export default class wallet_validator {
   };
   static nfts_from_moralis = {
     body: Joi.object({
-      address_list: Joi.array().required(),
+      address_list: Joi.array()
+      .items(
+          Joi.object({
+              coin_symbol: Joi.string().required(),
+              wallet_address: Joi.string().required(),
+              coin_family: Joi.number().integer().required(),
+          })
+      )
+      .required(),
     }),
   };
 }

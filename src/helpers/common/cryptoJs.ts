@@ -19,7 +19,7 @@ export class CryptoHelper {
             // Create cipher with AES-256-GCM
             const cipher = crypto.createCipheriv(
                 'aes-256-gcm',
-                Buffer.from(this.SECRET_KEY),
+                Buffer.from(this.SECRET_KEY,'base64'),
                 iv
             );
 
@@ -63,7 +63,7 @@ export class CryptoHelper {
             // Create decipher
             const decipher = crypto.createDecipheriv(
                 'aes-256-gcm',
-                Buffer.from(this.SECRET_KEY),
+                Buffer.from(this.SECRET_KEY,'base64'),
                 iv
             );
 

@@ -173,10 +173,7 @@ class WalletController implements OnlyControllerInterface {
         req.body.fiat_type == undefined
           ? Fiat_Currency.USD
           : req.body.fiat_type;
-      const search: any =
-        req.body.search == undefined
-          ? (req.body.search = "%%")
-          : (req.body.search = "%" + req.body.search + "%");
+      const search = req.body.search?.trim();
       const pageNo: any = parseInt(page as string) || GlblBooleanEnum.true;
       const limitNo: any = parseInt(limit as string) || 10;
       let offset: number = GlblBooleanEnum.false;
@@ -192,6 +189,40 @@ class WalletController implements OnlyControllerInterface {
       });
 
       const coinIds = customTokenCoinIds.map(token => token.coin_id);
+
+      const whereClause: any = {
+        coin_status: GlblBooleanEnum.true,
+        coin_family: { [Op.in]: req.body.coin_family },
+        [Op.and]: [
+          {
+            [Op.or]: [
+              { token_type: null },
+              {
+                token_type: {
+                  [Op.notIn]: ['BEP721', 'ERC721']
+                }
+              }
+            ]
+          },
+          {
+            [Op.or]: [
+              { added_by: 'admin' },
+              {
+                coin_id: {
+                  [Op.in]: coinIds
+                }
+              }
+            ]
+          }
+        ],
+      };
+      
+      if (search) {
+        whereClause[Op.or] = [
+          { coin_name: { [Op.like]: `%${search}%` } },
+          { coin_symbol: { [Op.like]: `%${search}%` } }
+        ];
+      }
 
       const wallets: any = await Models.WalletModel.findAndCountAll({
         attributes: [
@@ -226,36 +257,7 @@ class WalletController implements OnlyControllerInterface {
               "cmc_id",
             ],
             required: true,
-            where: {
-              coin_status: GlblBooleanEnum.true,
-              coin_family: { [Op.in]: req.body.coin_family },
-              [Op.or]: [
-                { coin_name: { [Op.like]: search } },
-                { coin_symbol: { [Op.like]: search } },
-              ],
-              [Op.and]: [
-                {
-                  [Op.or]: [
-                    { token_type: null },
-                    {
-                      token_type: {
-                        [Op.notIn]: ['BEP721', 'ERC721']
-                      }
-                    }
-                  ]
-                },
-                {
-                  [Op.or]: [
-                    { added_by: 'admin' },
-                    {
-                      coin_id: {
-                        [Op.in]: coinIds
-                      }
-                    }
-                  ]
-                }
-              ],
-            },
+            where: whereClause,
             include: [
               {
                 model: Models.CoinPriceInFiatModel,
@@ -291,19 +293,26 @@ class WalletController implements OnlyControllerInterface {
           [Sequelize.col('sort_order'), 'ASC'],
 
           // Then sort by wallet value (price * balance) for records with value
-          [Sequelize.fn('COALESCE',
-            Sequelize.fn('*',
-              Sequelize.col('coin.fiat_price_data.value'),
-              Sequelize.col('wallets.balance')
+          // [Sequelize.fn('COALESCE',
+          //   Sequelize.fn('*',
+          //     Sequelize.col('coin.fiat_price_data.value'),
+          //     Sequelize.col('wallets.balance')
+          //   ),
+          //   0
+          // ), 'DESC'],
+          [
+            Sequelize.fn('COALESCE',
+              Sequelize.literal("`coin->fiat_price_data`.`value` * `wallets`.`balance`"),
+              0
             ),
-            0
-          ), 'DESC'],
-
+            'DESC'
+          ],
           // Finally sort by created_at
           [Sequelize.col('wallets.created_at'), 'ASC']
         ],
         limit: limitNo,
         offset: offset,
+        logging: console.log
       });
       response.success(res, {
         data: {
@@ -343,6 +352,22 @@ class WalletController implements OnlyControllerInterface {
       }: { coinId: number; walletAddress: string; isActive: any } = req.body;
       let userId: number = req.userId;
       let message: string;
+
+      const checkAddress = await wallet_queries.wallet_find_one(
+        ["wallet_id", "wallet_name"],
+        { wallet_address: walletAddress }
+        );
+
+        if (!checkAddress || checkAddress.user_id !== req.userId) {
+          return response.error(res, {
+            data: {
+              code: GlblCode.ERROR_CODE,
+              status: false,
+              message: language[lang].UNAUTHORIZED_ACCESS,
+            },
+          });
+        }
+
       let coin_data: any = await coin_queries.coin_find_one([], {
         coin_id: coinId,
       });
@@ -458,10 +483,8 @@ class WalletController implements OnlyControllerInterface {
       } = req.body;
       const addresses: [] = req.body.addrsListKeys;
       const coinfamiles: [] = req.body.coinFamilyKeys;
-      let search: any =
-        req.body.search == undefined
-          ? (req.body.search = "%%")
-          : (req.body.search = "%" + req.body.search + "%");
+      const search = req.body.search?.trim();
+
       let pageNo: any = parseInt(page as string) || GlblBooleanEnum.true;
       let limitNo: any = parseInt(limit as string) || 10;
       let offset: number = GlblBooleanEnum.false;
@@ -475,7 +498,40 @@ class WalletController implements OnlyControllerInterface {
       });
 
       const coinIds = customTokenCoinIds.map(token => token.coin_id);
-
+      const whereClause: any = {
+        coin_status: GlblBooleanEnum.true,
+        coin_family: { [Op.in]: coinfamiles },
+        [Op.and]: [
+          {
+            [Op.or]: [
+              { token_type: null },
+              {
+                token_type: {
+                  [Op.notIn]: ['BEP721', 'ERC721']
+                }
+              }
+            ]
+          },
+          {
+            [Op.or]: [
+              { added_by: 'admin' },
+              {
+                coin_id: {
+                  [Op.in]: coinIds
+                }
+              }
+            ]
+          }
+        ]
+      };
+      
+      if (search) {
+        whereClause[Op.or] = [
+          { coin_name: { [Op.like]: `%${search}%` } },
+          { coin_symbol: { [Op.like]: `%${search}%` } }
+        ];
+      }
+      
       let data: any = await Models.CoinsModel.findAndCountAll({
         attributes: [
           "coin_id",
@@ -488,36 +544,7 @@ class WalletController implements OnlyControllerInterface {
           "token_type",
           "coin_status",
         ],
-        where: {
-          coin_status: GlblBooleanEnum.true,
-          coin_family: { [Op.in]: coinfamiles },
-          [Op.or]: [
-            { coin_name: { [Op.like]: search } },
-            { coin_symbol: { [Op.like]: search } },
-          ],
-          [Op.and]: [
-            {
-              [Op.or]: [
-                { token_type: null },
-                {
-                  token_type: {
-                    [Op.notIn]: ['BEP721', 'ERC721']
-                  }
-                }
-              ]
-            },
-            {
-              [Op.or]: [
-                { added_by: 'admin' },
-                {
-                  coin_id: {
-                    [Op.in]: coinIds
-                  }
-                }
-              ]
-            }
-          ],
-        },
+        where: whereClause,
         include: [
           {
             model: Models.WalletModel,
@@ -591,10 +618,7 @@ class WalletController implements OnlyControllerInterface {
       let fiat_currency: string = String(
         req.body.fiat_currency ? req.body.fiat_currency : Fiat_Currency.USD
       );
-      let search: any =
-        req.body.search == undefined
-          ? (req.body.search = "%%")
-          : (req.body.search = "%" + req.body.search + "%");
+      const search = req.body.search?.trim();
       let limit: number = Number(
         req.body.limit == undefined ? (req.body.limit = "25") : req.body.limit
       );
@@ -652,21 +676,18 @@ class WalletController implements OnlyControllerInterface {
       //   [Sequelize.literal(`IF(type ='withdraw' OR type = 'deposit',(IF(FIND_IN_SET(from_adrs, "${address_list.toString()}"),'withdraw','deposit')),type)`), 'type']
       //   , 'tx_fee', 'tx_id', 'user_id', 'req_type', 'from_adrs', 'to_adrs', 'coin_family', 'tx_raw', 'order_id', 'status', 'blockchain_status', 'coin_id', 'amount', 'fiat_price', 'fiat_type', 'created_at', 'updated_at', 'referral_upgrade_level'];
 
+      let replacements = {userId : userId}
       let attr: any = [
         "id",
         [
-          Sequelize.fn('CASE',
-            Sequelize.where(Sequelize.col('type'), {
-              [Op.in]: ['withdraw', 'deposit']
-            }),
-            Sequelize.fn('CASE',
-              Sequelize.where(Sequelize.col('user_id'), userId),
-              'withdraw',
-              'ELSE', 'deposit'
-            ),
-            'ELSE', Sequelize.col('type')
-          ),
-          'type'
+          Sequelize.literal(`(
+            CASE 
+              WHEN type IN ('withdraw', 'deposit') AND user_id = :userId THEN 'withdraw'
+              WHEN type IN ('withdraw', 'deposit') AND to_user_id = :userId THEN 'deposit'
+              ELSE type
+            END
+          )`),
+          "type",
         ],
         "tx_fee",
         "tx_id",
@@ -693,41 +714,41 @@ class WalletController implements OnlyControllerInterface {
         // [Sequelize.literal(`IF(type ='withdraw' OR type = 'deposit',(IF(FIND_IN_SET(to_adrs, "${address_list.toString()}"),'deposit','withdraw')),type)`), 'type']
         // , 'tx_fee', 'tx_id', 'user_id', 'req_type', 'from_adrs', 'to_adrs', 'coin_family', 'tx_raw', 'order_id', 'status', 'blockchain_status', 'coin_id', 'amount', 'fiat_price', 'fiat_type', 'created_at', 'updated_at', 'referral_upgrade_level'];
 
-        attr = [
-          "id",
-          [
-            Sequelize.fn('CASE',
-              Sequelize.where(Sequelize.col('type'), {
-                [Op.in]: ['withdraw', 'deposit']
-              }),
-              Sequelize.fn('CASE',
-                Sequelize.where(Sequelize.col('to_user_id'), userId),
-                'deposit',
-                'ELSE', 'withdraw'
-              ),
-              'ELSE', Sequelize.col('type')
-            ),
-            'type'
-          ],
-          "tx_fee",
-          "tx_id",
-          "user_id",
-          "req_type",
-          "from_adrs",
-          "to_adrs",
-          "coin_family",
-          "tx_raw",
-          "order_id",
-          "status",
-          "blockchain_status",
-          "coin_id",
-          "amount",
-          "fiat_price",
-          "fiat_type",
-          "created_at",
-          "updated_at",
-          // "referral_upgrade_level",
-        ];
+        // attr = [
+        //   "id",
+        //   [
+        //     Sequelize.fn('CASE',
+        //       Sequelize.where(Sequelize.col('type'), {
+        //         [Op.in]: ['withdraw', 'deposit']
+        //       }),
+        //       Sequelize.fn('CASE',
+        //         Sequelize.where(Sequelize.col('to_user_id'), userId),
+        //         'deposit',
+        //         'ELSE', 'withdraw'
+        //       ),
+        //       'ELSE', Sequelize.col('type')
+        //     ),
+        //     'type'
+        //   ],
+        //   "tx_fee",
+        //   "tx_id",
+        //   "user_id",
+        //   "req_type",
+        //   "from_adrs",
+        //   "to_adrs",
+        //   "coin_family",
+        //   "tx_raw",
+        //   "order_id",
+        //   "status",
+        //   "blockchain_status",
+        //   "coin_id",
+        //   "amount",
+        //   "fiat_price",
+        //   "fiat_type",
+        //   "created_at",
+        //   "updated_at",
+        //   // "referral_upgrade_level",
+        // ];
 
         where_clause = {
           to_adrs: {
@@ -848,10 +869,10 @@ class WalletController implements OnlyControllerInterface {
           [Op.and]: {
             [Op.or]: {
               coin_name: {
-                [Op.like]: search,
+                [Op.like]: { [Op.like]: `%${search}%` },
               },
               coin_symbol: {
-                [Op.like]: search,
+                [Op.like]: { [Op.like]: `%${search}%` },
               },
             },
           },
@@ -887,7 +908,7 @@ class WalletController implements OnlyControllerInterface {
         offset: offset,
       };
       let transaction_data: any = await Models.TrnxHistoryModel.findAndCountAll(
-        query
+        {...query,replacements, logging: console.log}
       );
       return response.success(res, {
         data: {
@@ -1214,10 +1235,8 @@ class WalletController implements OnlyControllerInterface {
         req.body;
       let is_fav: number = req.body.is_fav;
       const fiat_type: string = req.body.fiat_type;
-      let search: any =
-        req.body.search == undefined
-          ? (req.body.search = "%%")
-          : (req.body.search = "%" + req.body.search + "%");
+      const search = req.body.search?.trim();
+
       const wallet_address: string = req.body.wallet_address;
       const pageNo: any = parseInt(page as string) || GlblBooleanEnum.true;
       const limitNo: any = parseInt(limit as string) || 10;
@@ -1240,7 +1259,40 @@ class WalletController implements OnlyControllerInterface {
       });
 
       const coinIds = customTokenCoinIds.map(token => token.coin_id);
-
+      const whereClause: any = {
+        coin_status: GlblBooleanEnum.true,
+        coin_family: { [Op.in]: req.body.coin_family },
+        [Op.and]: [
+          {
+            [Op.or]: [
+              { token_type: null },
+              {
+                token_type: {
+                  [Op.notIn]: ['BEP721', 'ERC721']
+                }
+              }
+            ]
+          },
+          {
+            [Op.or]: [
+              { added_by: 'admin' },
+              {
+                coin_id: {
+                  [Op.in]: coinIds
+                }
+              }
+            ]
+          }
+        ]
+      };
+      
+      if (search) {
+        whereClause[Op.or] = [
+          { coin_name: { [Op.like]: `%${search.trim()}%` } },
+          { coin_symbol: { [Op.like]: `%${search.trim()}%` } },
+        ];
+      }
+      
       let result: any = await Models.CoinsModel.findAndCountAll({
         attributes: [
           "coin_id",
@@ -1251,36 +1303,7 @@ class WalletController implements OnlyControllerInterface {
           "is_token",
           "token_type",
         ],
-        where: {
-          coin_status: GlblBooleanEnum.true,
-          coin_family: { [Op.in]: req.body.coin_family },
-          [Op.and]: [
-            {
-              [Op.or]: [
-                { token_type: null },
-                {
-                  token_type: {
-                    [Op.notIn]: ['BEP721', 'ERC721']
-                  }
-                }
-              ]
-            },
-            {
-              [Op.or]: [
-                { added_by: 'admin' },
-                {
-                  coin_id: {
-                    [Op.in]: coinIds
-                  }
-                }
-              ]
-            }
-          ],
-          [Op.or]: [
-            { coin_name: { [Op.like]: search } },
-            { coin_symbol: { [Op.like]: search } },
-          ],
-        },
+        where: whereClause,
         include: [
           {
             model: Models.CoinPriceInFiatModel,
