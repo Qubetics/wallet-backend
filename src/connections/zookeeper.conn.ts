@@ -12,8 +12,6 @@ class ZookeeprProvider {
     }
     connectZookeeper = async () => {
         return new Promise((resolve, reject) => {
-            // console.debug(`connectZookeeper...`, process.env.ZOOKEEPER_HOST);
-            // console.debug(`process.env.ZOOKEEPER_PATH...`, process.env.ZOOKEEPER_PATH);
             client.once("connected", () => {
                 client.getData(
                     process.env.ZOOKEEPER_PATH || "/qubetics_wallet",
@@ -24,7 +22,6 @@ class ZookeeprProvider {
                         }
                         if (data) {
                             this.config = JSON.parse(data.toString("utf8"));
-                            // console.log(`Zookeeper connected...`, this.config);
                         }
                         resolve(this.config);
                     }

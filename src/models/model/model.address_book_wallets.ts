@@ -2,7 +2,6 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { AddressBookWalletInterface } from "../interface/interface.address_book_wallets";
 import db from "../../helpers/common/db";
 import AddressBookModel from "./model.address_book";
-// import { Coins } from "../../constants";
 import CoinsModel from "./model.coins";
 
 interface AddressBookCreationModel extends Optional<AddressBookWalletInterface, "id"> { }

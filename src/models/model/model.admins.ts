@@ -62,7 +62,6 @@ let dataObj: any = {
 
 const AdminModel = db.db_write.define<AdminInstance>("admins", dataObj);
 
-// AdminModel.sync({ alter: true });
 export default AdminModel;
 
 

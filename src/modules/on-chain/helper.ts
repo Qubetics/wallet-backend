@@ -26,10 +26,8 @@ class OnChainHelpers implements OnlyControllerInterface {
                     'accept': 'application/json',
                 }
             };
-            //  console.log("OneInchSwapApiconfig1--->", config);
             const resp = await axios(configUrl1);
             const protocols: any = resp.data.protocols;
-            // console.log("protocols ",protocols);
             let filteredIds = protocols.filter((protocol: any) => {
                 return !protocol.id.includes('ONE_INCH_LIMIT_ORDER')
             }).map((protocol: any) => {
@@ -53,7 +51,6 @@ class OnChainHelpers implements OnlyControllerInterface {
 
             if (response.data) {
                 const responseData: any = response.data;
-                // console.log("responseData=>", responseData);
                 return responseData;
             }
         } catch (error: any) {

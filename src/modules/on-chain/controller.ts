@@ -156,12 +156,6 @@ class onChainController implements OnlyControllerInterface {
                 }
                 onChainData = fetch_data;
             }
-            // let walletAddress = config.ON_CHAIN.COMMISSION_WALLET_ADDRESS; //"0xD6DDb06aB05af725A0A830b939113989a19Bfd9d";
-            // let amount = config.ON_CHAIN.COMMISSION_PERCENTAGE; //0.5
-            // let res_data = {
-            //     walletAddress: walletAddress,
-            //     percentage: amount
-            // }
             return response.success(res, {
                 data: {
                     status: true,

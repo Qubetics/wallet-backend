@@ -34,7 +34,6 @@ class CMCHelper {
                         method: "get",
                         url: url,
                         headers: header,
-                        // timeout: 5000,
                     });
                 }
             } else {

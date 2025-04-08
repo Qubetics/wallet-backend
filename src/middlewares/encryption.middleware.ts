@@ -12,9 +12,7 @@ export const encryptionMiddleware = async (req: Request, res: Response, next: Ne
     const method = req.method;
     console.log("\n\n🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀\n");
     console.log("req.originalUrl", method, "~~~", req.originalUrl);
-    // console.log("HEADER ip   ", req.ip);
     console.log("HEADER authorization >>>   ", req.headers.authorization);
-    // console.log("dataString:   ", req?.body?.dataString);
 
     if ((req.body.dataString && method == "PUT" || method == "PATCH" || method == "POST")) {
       if (req.body.dataString) {
@@ -46,11 +44,6 @@ export const encryptionMiddleware = async (req: Request, res: Response, next: Ne
       } else {
         console.log("To remove this else condition ")
         next();
-        // return response.error(res, {
-        //   data: {
-        //     message: language[lang].CATCH_MSG
-        //   }
-        // })
       }
     } else if (method == "GET") {
       next();

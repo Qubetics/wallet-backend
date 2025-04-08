@@ -15,14 +15,6 @@ let dataObj = {
     primaryKey: true,
     autoIncrement: true,
   },
-  // mainnet_token_address: {
-  //   type: DataTypes.STRING,
-  //   allowNull: true,
-  // },
-  // coin_market_id: {
-  //   type: DataTypes.INTEGER,
-  //   allowNull: true,
-  // },
   coin_name: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -31,10 +23,6 @@ let dataObj = {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  // coin_gicko_id: {
-  //   type: DataTypes.STRING,
-  //   allowNull: true,
-  // },
   is_on_cmc: {
     type: DataTypes.INTEGER,
     allowNull: true,
@@ -43,10 +31,6 @@ let dataObj = {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  // coin_gicko_alias: {
-  //   type: DataTypes.STRING,
-  //   allowNull: true,
-  // },
   coin_image: {
     type: DataTypes.STRING,
     allowNull: true,
@@ -71,14 +55,6 @@ let dataObj = {
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
-  // usd_price: {
-  //   type: DataTypes.FLOAT,
-  //   allowNull: true,
-  // },
-  // withdraw_limit: {
-  //   type: DataTypes.FLOAT,
-  //   allowNull: true,
-  // },
   token_abi: {
     type: DataTypes.STRING,
     allowNull: true,
@@ -87,26 +63,14 @@ let dataObj = {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  // uuid: {
-  //   type: DataTypes.STRING,
-  //   allowNull: true,
-  // },
   for_swap: {
     type: DataTypes.TINYINT,
     allowNull: true,
   },
-  // gasless: {
-  //   type: DataTypes.TINYINT,
-  //   allowNull: true,
-  // },
   added_by: {
     type: DataTypes.ENUM("admin", "user", "swap"),
     allowNull: true,
   },
-  // is_on_coin_gicko: {
-  //   type: DataTypes.TINYINT,
-  //   allowNull: true,
-  // },
   graph_source: {
     type: DataTypes.STRING,
     allowNull: true,
@@ -146,10 +110,6 @@ let dataObjIndex = {
       unique: false,
       fields: ["coin_symbol"],
     },
-    // {
-    //   unique: false,
-    //   fields: ["coin_gicko_alias"],
-    // },
     {
       unique: false,
       fields: ["coin_family"],

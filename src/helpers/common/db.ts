@@ -1,4 +1,3 @@
-// import Coin from "../../modules/coin/model.coin";
 import { DBInterface } from "../../interfaces/db.interface";
 import { Sequelize } from "sequelize";
 import { config } from "../../config";
@@ -10,18 +9,6 @@ class Database implements DBInterface {
   public connectionRead: string;
 
   constructor() {
-    // console.log(
-    //   "DB_USER",
-    //   config.DB.DB_USER,
-    //   "DB_PASSWORD",
-    //   config.DB.DB_PASSWORD,
-    //   "DB_HOST_WRITE",
-    //   config.DB.DB_HOST_WRITE,
-    //   "DB_DATABASE",
-    //   config.DB.DB_NAME,
-    //   "DB_HOST_READ",
-    //   config.DB.DB_HOST_READ
-    // );
 
     this.connectionWrite = `mysql://${config.DB.DB_USER}:${config.DB.DB_PASSWORD}@${config.DB.DB_HOST_WRITE}/${config.DB.DB_NAME}`;
 
@@ -60,7 +47,6 @@ class Database implements DBInterface {
         acquire: 20000,
       },
     });
-    // this.syncTables();
 
     this.db_read
       .authenticate()

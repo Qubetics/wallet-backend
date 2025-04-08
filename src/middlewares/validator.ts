@@ -308,18 +308,7 @@ export default class validator {
       token: Joi.string().required(),
     })
   }
-  // static submitCrossChain_validate = {
-  //   body: Joi.object({
-  //     certHash: Joi.string().required(),
-  //     fromChain: Joi.string().required(),
-  //     evmAddress: Joi.string().required(),
-  //     fromAddress: Joi.string().required(),
-  //     token: Joi.string().required(),
-  //     amount: Joi.number().required(),
-  //     toChain: Joi.string().required(),
-  //     toToken: Joi.string().required(),
-  //   })
-  // }
+
   static sendToken_validate = {
     body: Joi.object({
       certHash: Joi.string().required(),
@@ -395,18 +384,7 @@ export default class validator {
       docs_type: Joi.string().required()
     })
   }
-  // static lmnnal_create_Wallet = {
-  //   body: Joi.object({
-  //     coin: Joi.string().required()
-  //   })
-  // }
-  // static card_address_validation = {
-  //   body: Joi.object({
-  //     address: Joi.string().required(),
-  //     limit: Joi.number().optional(),
-  //     page: Joi.number().optional()
-  //   })
-  // }
+
   static shipping_data = {
     body: Joi.object({
       currency: Joi.string().required(),
@@ -449,11 +427,6 @@ export default class validator {
       emergency_contact: Joi.string().required(),
     }),
   }
-  // static physical_cardFeeData = {
-  //   body: Joi.object({
-  //     card_type: Joi.string().required()
-  //   })
-  // }
 
   static on_of_ramp_fiat_list = {
     body: Joi.object({

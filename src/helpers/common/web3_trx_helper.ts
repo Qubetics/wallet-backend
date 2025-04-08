@@ -30,7 +30,6 @@ class TrxWeb3 {
         try {
             await this.tronWeb.setAddress(trc20ContractAddress);
             let contract: any = await this.tronWeb.contract(config.TRON_ABI, trc20ContractAddress);
-            // let contract: any = await this.tronWeb.contract().at(trc20ContractAddress);
             let coin_name: string = await contract.name().call();
             let coin_symbol: string = await contract.symbol().call();
             let decimals: number = await contract.decimals().call();
@@ -80,7 +79,6 @@ class TrxWeb3 {
             let expToDecimal: string = exponentialToDecimal(toDecimal);
             let balance = bigNumberSafeMath(expToDecimal, '/', Math.pow(10, decimals))
             balance = is_string ? balance : Number(balance);
-            // let balance: number = Number(expToDecimal) / Math.pow(10, decimals);
             return balance;
         } catch (err: any) {
             console.error(`Tron_Helper TRC20_Token_Balance error >>`, err);
@@ -174,7 +172,6 @@ class TrxWeb3 {
         isBridge: number
     ) => {
         let energy = 0;
-        // let fee = 0;
         try {
             console.log('coininfo >>>', coininfo);
             let tronFee: any = {};
@@ -206,7 +203,6 @@ class TrxWeb3 {
                     if (fee >= 0) {
                         tronFee = { is_activate: 1, trx: 0.1, bandwidth: resData.tron_trc10_bandwidth };
                     } else {
-                        //let trxAmount = await trxWeb3.convertBandwidthIntoTRX(resData.tron_trc10_bandwidth);
                         tronFee = { is_activate: 1, trx: 0.1, bandwidth: getUserBandwidth };
                     }
                 }
@@ -319,274 +315,6 @@ class TrxWeb3 {
         }
     }
 
-    // private Estimation_Gas_Tron = async (
-    //     toAddress: string,
-    //     fromAddress: string,
-    //     resData: any,
-    //     coininfo: any,
-    //     amount: any,
-    //     isBridge: number
-    // ) => {
-    //     let energy = 0;
-    //     let fee = 0;
-    //     try {
-    //         let tronFee: any = {};
-    //         let delegateAmountForSwap: any = {};
-    //         let result: any = await trxWeb3.fetchAccountInfo(fromAddress, toAddress);
-    //         console.log("result  tron gasEstimation:>> ", result);
-
-    //         let getAccount = result[0];
-    //         let getFromAddressAccount = result[1];
-
-    //         let findUserAccountDetails = result[2];
-    //         let freeBandwidth =
-    //             (findUserAccountDetails?.freeNetLimit || 0) -
-    //             (findUserAccountDetails?.freeNetUsed || 0);
-
-    //         let getUserBandwidth =
-    //             (findUserAccountDetails?.NetLimit || 0) -
-    //             (findUserAccountDetails?.NetUsed || 0);
-    //         let requiredBandwidthForTrx = 0;
-
-    //         if (coininfo.token_type == "TRC10") {
-    //             requiredBandwidthForTrx = resData.tron_trc10_bandwidth;
-
-    //             if (getAccount) {
-    //                 let requiredBandwidth = Number(
-    //                     getUserBandwidth - resData.tron_trc10_bandwidth
-    //                 );
-    //                 if (requiredBandwidth >= 0) {
-    //                     tronFee = {
-    //                         is_activate: 0,
-    //                         trx: 0,
-    //                         bandwidth: resData.tron_trc10_bandwidth,
-    //                     };
-    //                 } else {
-    //                     let trxAmount = await trxWeb3.convertBandwidthIntoTRX(
-    //                         Math.abs(requiredBandwidth)
-    //                     );
-    //                     tronFee = {
-    //                         is_activate: 0,
-    //                         trx: trxAmount,
-    //                         bandwidth: getUserBandwidth,
-    //                     };
-    //                 }
-    //             } else {
-    //                 let fee = Number(getUserBandwidth - resData.tron_trc10_bandwidth);
-    //                 if (fee >= 0) {
-    //                     tronFee = {
-    //                         is_activate: 1,
-    //                         trx: 0.1,
-    //                         bandwidth: resData.tron_trc10_bandwidth,
-    //                     };
-    //                 } else {
-    //                     let trxAmount = await trxWeb3.convertBandwidthIntoTRX(
-    //                         resData.tron_trc10_bandwidth
-    //                     );
-    //                     tronFee = {
-    //                         is_activate: 1,
-    //                         trx: 0.1,
-    //                         bandwidth: getUserBandwidth,
-    //                     };
-    //                 }
-    //             }
-    //         } else if (coininfo.token_type == "TRC20" && coininfo.token_address) {
-    //             requiredBandwidthForTrx = resData.tron_trc20_bandwidth;
-
-    //             let requiredBandwidth = Number(
-    //                 getUserBandwidth - requiredBandwidthForTrx
-    //             );
-
-    //             // if (coininfo.token_address) {
-    //             let calculateEnergy: any = await trxWeb3.calculateEnergy(
-    //                 fromAddress,
-    //                 toAddress,
-    //                 coininfo.token_address,
-    //                 amount
-    //             );
-
-    //             console.log("calculateEnergy :>> ", calculateEnergy);
-
-    //             let requiredEnergy = calculateEnergy[0];
-    //             let tokenBalance = calculateEnergy[1];
-    //             energy = calculateEnergy[2];
-
-    //             if (requiredEnergy > 0) {
-    //                 console.log("tokenBalance :>> ", tokenBalance);
-    //                 if (isBridge == 1 || tokenBalance == 0) {
-    //                     requiredEnergy *= 2.2;
-    //                 } else {
-    //                     requiredEnergy = Number(requiredEnergy) * 1.2;
-    //                     requiredEnergy = parseInt(requiredEnergy);
-    //                 }
-    //             }
-
-    //             console.log("requiredEnergy ::>> ", requiredEnergy);
-
-    //             let remainEnergy = energy - requiredEnergy;
-
-    //             if (requiredEnergy == 0) {
-    //                 remainEnergy = -35500;
-    //                 remainEnergy *= 2.2;
-    //                 requiredEnergy = Math.abs(remainEnergy);
-    //             }
-
-    //             if (remainEnergy < 0) {
-    //                 let convertEnergyIntoTrx = await trxWeb3.convertEnergyIntoTrx(
-    //                     Math.abs(remainEnergy)
-    //                 );
-
-    //                 if (convertEnergyIntoTrx) {
-    //                     tronFee = {
-    //                         trx: convertEnergyIntoTrx,
-    //                         is_activate: 0,
-    //                         bandwidth: resData.tron_trc20_bandwidth,
-    //                         energy: Math.abs(remainEnergy),
-    //                     };
-    //                     // }
-    //                 }
-    //             } else {
-    //                 // if (getAccount) {
-    //                 if (
-    //                     freeBandwidth > requiredBandwidthForTrx ||
-    //                     getUserBandwidth > requiredBandwidthForTrx
-    //                 ) {
-    //                     tronFee = {
-    //                         trx: 0,
-    //                         is_activate: 0,
-    //                         bandwidth: 0,
-    //                         energy: 0,
-    //                     };
-    //                 } else {
-    //                     let trxAmount = await trxWeb3.convertBandwidthIntoTRX(
-    //                         Math.abs(requiredBandwidth)
-    //                     );
-
-    //                     tronFee = {
-    //                         trx: trxAmount,
-    //                         is_activate: 0,
-    //                         bandwidth: resData.tron_trc20_bandwidth,
-    //                         energy: 0,
-    //                     };
-    //                 }
-    //                 // } else {
-    //                 //   if (requiredBandwidth >= 0) {
-    //                 //     tronFee = {
-    //                 //       trx: 0,
-    //                 //       is_activate: 0,
-    //                 //       bandwidth: resData.tron_trc20_bandwidth,
-    //                 //       energy: 0,
-    //                 //     };
-    //                 //   } else {
-    //                 //     let trxAmount = await TRX.convertBandwidthIntoTRX(
-    //                 //       Math.abs(requiredBandwidth)
-    //                 //     );
-
-    //                 //     tronFee = {
-    //                 //       trx: trxAmount * 2.05,
-    //                 //       is_activate: 0,
-    //                 //       bandwidth: resData.tron_trc20_bandwidth,
-    //                 //       energy: 0,
-    //                 //     };
-    //                 //   }
-    //                 // }
-    //             }
-
-    //             let trxBalance = result[3];
-    //             if (trxBalance >= 150) {
-    //                 tronFee.fee_limit = 150;
-    //             } else if (trxBalance >= 100) {
-    //                 tronFee.fee_limit = 100;
-    //             } else if (trxBalance >= 50 || requiredEnergy > 50000) {
-    //                 tronFee.fee_limit = 50;
-    //             } else if (trxBalance >= 40) {
-    //                 tronFee.fee_limit = 40;
-    //             } else {
-    //                 tronFee.fee_limit = 30;
-    //             }
-
-    //             tronFee.fee_limit = parseInt(tronFee.fee_limit);
-    //         } else {
-    //             requiredBandwidthForTrx = resData.tron_bandwidth;
-    //             console.log("requiredBandwidthForTrx::", requiredBandwidthForTrx);
-
-    //             if (getAccount) {
-    //                 if (
-    //                     freeBandwidth > requiredBandwidthForTrx ||
-    //                     getUserBandwidth > requiredBandwidthForTrx
-    //                 ) {
-    //                     tronFee = {
-    //                         is_activate: 0,
-    //                         trx: 0,
-    //                         bandwidth: requiredBandwidthForTrx,
-    //                     };
-    //                 } else {
-    //                     let trxAmount = await trxWeb3.convertBandwidthIntoTRX(
-    //                         Math.abs(requiredBandwidthForTrx)
-    //                     );
-    //                     console.log("trxAmount::", trxAmount);
-
-    //                     tronFee = {
-    //                         is_activate: 0,
-    //                         trx: trxAmount,
-    //                         bandwidth: resData.tron_bandwidth,
-    //                     };
-    //                 }
-    //             } else {
-    //                 tronFee = {
-    //                     is_activate: 1,
-    //                     trx: 0.1,
-    //                     bandwidth: resData.tron_bandwidth,
-    //                 };
-    //             }
-    //         }
-
-    //         console.log("tronFee :>> ", tronFee);
-    //         tronFee.is_delegate = false;
-
-
-    //         if (
-    //             Object.keys(delegateAmountForSwap).length &&
-    //             delegateAmountForSwap.max_bandwidth > requiredBandwidthForTrx
-    //         ) {
-    //             requiredBandwidthForTrx = delegateAmountForSwap.max_bandwidth;
-    //             tronFee.bandwidth = delegateAmountForSwap.max_bandwidth;
-    //         } else {
-    //             requiredBandwidthForTrx = tronFee.bandwidth;
-    //         }
-
-
-    //         if (
-    //             Object.keys(delegateAmountForSwap).length &&
-    //             delegateAmountForSwap.max_energy
-    //         ) {
-    //             tronFee.energy = delegateAmountForSwap.max_energy;
-    //         }
-
-    //         if (tronFee.energy && getFromAddressAccount) {
-    //             if (energy < tronFee.energy) {
-    //                 let requiredDelegateEnergy = 0;
-    //                 if (Object.keys(delegateAmountForSwap).length == 0) {
-    //                     requiredDelegateEnergy = tronFee.energy - energy;
-    //                     tronFee.trx = await trxWeb3.convertEnergyIntoTrx(
-    //                         Math.abs(requiredDelegateEnergy)
-    //                     );
-    //                 } else {
-    //                     requiredDelegateEnergy = delegateAmountForSwap.max_energy - energy;
-    //                     tronFee.trx = await trxWeb3.convertEnergyIntoTrx(
-    //                         Math.abs(requiredDelegateEnergy)
-    //                     );
-    //                 }
-
-
-    //             }
-    //         }
-    //         return tronFee
-    //     } catch (error: any) {
-    //         return false
-    //     }
-    // }
-
     private async fetchAccountInfo(fromAddress: string, toAddress: string) {
         try {
             let result = await Promise.all([
@@ -624,7 +352,6 @@ class TrxWeb3 {
                 return true;
             }
         } catch (error) {
-            // console.log("::Error log:: getActiveAccountInfo :>> ", error);
             return false
         }
     }
@@ -637,7 +364,6 @@ class TrxWeb3 {
 
             return getAccountResources;
         } catch (error) {
-            // console.error("::Error log:: getAccountResources:", error);
 
         }
     }
@@ -649,11 +375,8 @@ class TrxWeb3 {
             let tronFee = await tronStationSDK.energy.burnedEnergy2Trx(energy);
 
             console.log("tronFee convertEnergyIntoTrx:>> ", tronFee);
-            // let remain = tronFee % 1;
 
-            // if (remain) {
             tronFee = Number(tronFee.toFixed(4));
-            // }
 
             return tronFee;
         } catch (error) {
@@ -690,7 +413,6 @@ class TrxWeb3 {
                 this.getUserEnergy(fromAddress),
             ])
                 .then((values) => {
-                    // console.log(values);
                     return values;
                 })
                 .catch((error) => {
@@ -784,15 +506,10 @@ class TrxWeb3 {
                 visible: true,
             });
 
-            // console.log(' getTransactionRequiredEnergy data :>> ', data);
-
             var configObj: any = {
                 method: "post",
                 maxBodyLength: Infinity,
                 url: this.TRX_FULLNODE + "/wallet/estimateenergy",
-                // headers: {
-                //   "Content-Type": "application/json",
-                // },
                 headers: {
                     "Content-Type": "application/json",
                     apikey: this.TRX_FULLNODE_KEY,
@@ -842,10 +559,6 @@ class TrxWeb3 {
                 let { type, value } = typesValues[i];
                 if (type == "address")
                     value = value.replace(ADDRESS_PREFIX_REGEX, "0x");
-                // else if (type == 'address[]')
-                //   value = value.map((v: any) =>
-                //     toHex(v).replace(ADDRESS_PREFIX_REGEX, '0x')
-                //   );
                 types.push(type);
                 values.push(value);
             }

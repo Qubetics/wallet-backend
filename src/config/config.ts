@@ -8,8 +8,6 @@ export const config = {
   KAFKA_BROKER: zookeeperConfig.config.KAFKA_BROKER,
   KAFKA_CLIENT_ID: zookeeperConfig.config.KAFKA_CLIENT_ID,
   ADMIN_TOKEN: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.ADMIN_TOKEN}`,
-  //GLOBAL_LIMIT_FOR_MATHCA: zookeeperConfig.config.GLOBAL_LIMIT_FOR_MATHCA,
-  // ALL_COINS: zookeeperConfig.config.ALL_COINS,
   DB: {
     DB_USER: zookeeperConfig.config.DB_USER,
     DB_PASSWORD: zookeeperConfig.config.DB_PASSWORD,
@@ -73,7 +71,6 @@ export const config = {
     },
     TICS: {
       ERC20: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE_TICS}`,
-      // ERC721: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE721_TICS}`,
     },
   },
   ETH_TESTNET_NODE: zookeeperConfig.config.ETH_TESTNET_NODE,
@@ -97,27 +94,10 @@ export const config = {
     POL_RPC_URL: zookeeperConfig.config.POL_RPC_URL,
     SOL_RPC_URL: zookeeperConfig.config.SOL_RPC_URL,
     TICS_RPC_URL: zookeeperConfig.config.TICS_RPC_URL,
-    // TICS_DAPP_RPC_URL: zookeeperConfig.config.TICS_DAPP_RPC_URL,
     ETH_DAPP_RPC_URL: zookeeperConfig.config.ETH_DAPP_RPC_URL,
   },
 
   MORALIS_TRADINGVIEW_TOPIC: "moralis_tradingview_topic",
-
-  // MATCHA_API_KEY: zookeeperConfig.config.MATCHA_API_KEY,
-  // PUSH_NOTIFICATION_QUEUE: zookeeperConfig.config.PUSH_NOTIFICATION_QUEUE,
-
-  // CHANGELLY: {
-  //   // CROSS CHAIN
-  //   CHANGELLY_CROSS_CHAIN_BASE_URL: zookeeperConfig.config.CHANGELLY_CROSS_CHAIN_BASE_URL,
-  //   CHANGELLY_CROSS_CHAIN_PUBLIC_API_KEY: zookeeperConfig.config.CHANGELLY_CROSS_CHAIN_PUBLIC_API_KEY,
-  //   CHANGELLY_CROSS_CHAIN_PRIVATE_KEY_NAME: zookeeperConfig.config.CHANGELLY_CROSS_CHAIN_PRIVATE_KEY_NAME,
-
-  //   // ON_OFF_RAMP
-  //   CHANGELLY_ON_OFF_RAMP_BASE_URL: zookeeperConfig.config.CHANGELLY_ON_OFF_RAMP_BASE_URL,
-  //   CHANGELLY_ON_OFF_RAMP_PUBLIC_API_KEY: zookeeperConfig.config.CHANGELLY_ON_OFF_RAMP_PUBLIC_API_KEY,
-  //   CHANGELLY_ON_OFF_RAMP_PRIVATE_KEY_NAME: zookeeperConfig.config.CHANGELLY_ON_OFF_RAMP_PRIVATE_KEY_NAME
-
-  // },
 
   CONTRACT_ABI: [
     {

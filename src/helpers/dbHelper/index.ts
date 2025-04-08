@@ -104,9 +104,7 @@ class DbHelper {
     address: string, coin_family: number
   ): Promise<{ device_token: Array<string> }> {
     let deviceTokensData: any = await Models.DeviceTokenModel.findAll({
-      // where: { user_id: userId, status: 1 },
       where: {
-        // user_id: user_id,
         address: {
           [Op.like]: address,
         },
@@ -190,8 +188,6 @@ class DbHelper {
         blockchain_status: req.body.blockchain_status || GlblBlockchainTxStatusEnum.PENDING,
         amount: req.body.amount,
         block_id: null,
-        // block_hash: null,
-        // speedup: req.body.is_speedup || null,
         nonce: req.body.nonce || null,
         tx_fee: req.body.gas_price || null,
         swap_fee: req.body.swap_fee || null,

@@ -51,10 +51,6 @@ let dataObj = {
         type: DataTypes.STRING,
         allowNull: true
     },
-    // is_maker: {
-    //     type: DataTypes.INTEGER,
-    //     allowNull: true
-    // },
     merchant_id: {
         type: DataTypes.STRING,
         allowNull: true
@@ -72,7 +68,6 @@ let dataObj = {
         allowNull: false
     },
     blockchain_status: {
-        // type: DataTypes.STRING,
         type: DataTypes.ENUM('pending', 'failed', 'confirmed'),
         allowNull: true
     },
@@ -84,14 +79,6 @@ let dataObj = {
         type: DataTypes.INTEGER,
         allowNull: true
     },
-    // block_hash: {
-    //     type: DataTypes.STRING,
-    //     allowNull: true
-    // },
-    // speedup: {
-    //     type: DataTypes.ENUM('slow', 'average', 'fast'),
-    //     allowNull: true
-    // },
     nonce: {
         type: DataTypes.INTEGER,
         allowNull: true
@@ -124,18 +111,10 @@ let dataObj = {
         type: DataTypes.STRING(191),
         allowNull: true
     },
-    // country_code: {
-    //     type: DataTypes.STRING(191),
-    //     allowNull: true
-    // },
     order_status: {
         type: DataTypes.ENUM('pending', 'processing', 'completed'),
         allowNull: true
     },
-    // referral_upgrade_level: {
-    //     type: DataTypes.STRING,
-    //     allowNull: true
-    // }
 };
 
 let dataObjIndex = {

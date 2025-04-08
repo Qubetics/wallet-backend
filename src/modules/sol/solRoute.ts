@@ -3,8 +3,6 @@ import { ControllerInterface } from "../../interfaces/controller.interface";
 import jwtVerification from "../../middlewares/verify.middleware";
 import { PolControllers } from "./controllers/solController"
 import SolMiddleware from "./middleware/solMiddleware"
-// import { validate } from "express-validation"
-// import validator from "./../../middlewares/validator"
 
 class EthRoute implements ControllerInterface {
     public path = "/solana";

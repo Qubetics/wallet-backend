@@ -3,8 +3,6 @@ import { ControllerInterface } from "../../interfaces/controller.interface";
 import BtcController from "./controllers/btcController";
 import BtcMiddleware from "./middleware/btcMiddleware";
 import jwtVerification from "../../middlewares/verify.middleware";
-// import { validate } from "express-validation"
-// import validator from "./../../middlewares/validator"
 
 class BtcRoute implements ControllerInterface {
   public path = "/bitcoin";

@@ -85,11 +85,6 @@ class TicsController implements OnlyControllerInterface {
           estimationRes = await TicsHelper.getTicsGasLimit(from, to, lang);
         }
         const gas_price = await TicsHelper.getGasPrice(true);
-        // let resultList: any = await Models.GasPriceModel.findOne({
-        //   where: {
-        //     coin_family: config.STATIC_COIN_FAMILY.TICS
-        //   }
-        // })
         return response.success(res, {
           data: {
             status: true,
@@ -271,7 +266,6 @@ class TicsController implements OnlyControllerInterface {
             }
 
             if (resultStatus.status && resultStatus.status == true) {
-              // if (req.body.approval == 1 && req.body.tx_type == 'Approve') {
               if (req.body.tx_type == 'Approve') {
 
                 return response.success(res, {
@@ -281,7 +275,6 @@ class TicsController implements OnlyControllerInterface {
                     tx_hash: txid,
                   },
                 });
-                // } else if (req.body.approval == 0 && req.body.tx_type == 'withdraw') {
               } else if (req.body.tx_type == 'withdraw') {
 
                 return response.success(res, {

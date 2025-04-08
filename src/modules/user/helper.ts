@@ -98,7 +98,6 @@ class userHelper {
       let obj: any = {
         user_name: user_name,
         request_rejected: 0,
-        // email: email,
         gp_referred: 0,
         pre_fran_referred: 0,
         fran_referred: 0,
@@ -149,13 +148,6 @@ class userHelper {
             `${language[lang].INVALID_ADDRESS} (${symbol.toUpperCase()})`
           );
 
-        // let token_data: any = null;
-
-        // Getting USDT token data default
-        // if (coin_family == config.STATIC_COIN_FAMILY.TRX) {
-        //     token_data = await coin_queries.coin_find_one(["coin_id", "coin_family", "coin_symbol", "is_token", "token_address"], { coin_family: coin_family, coin_symbol: "USDT" })
-        // }
-
         // Getting Coin data
         let coinData: any = await coin_queries.coin_find_one(
           [
@@ -178,13 +170,6 @@ class userHelper {
           if (balDetails.status) {
             balance = balDetails.balance;
           }
-          // let tokenBalance: any;
-
-          // balance of token
-          // if (coin_family == config.STATIC_COIN_FAMILY.TRX && token_data) {
-          //     tokenBalance = await global_helper.get_wallet_balance(token_data, address);
-          // }
-
           let ifWalletExists: any = await wallet_queries.wallet_find_one(
             ["wallet_id"],
             {
@@ -598,67 +583,6 @@ class userHelper {
       throw err;
     }
   }
-  // public async setting_token_in_db(device_token: string, userId: number, token: string, refreshToken: string) {
-  //     try {
-  //         let already_exist: any = await Models.JwtsModel.findOne({
-  //             attributes: ["user_id", "device_token"],
-  //             where: {
-  //                 device_token_id: `${device_token}_${userId}`
-  //             },
-  //             raw: true
-  //         })
-  //         if (already_exist) {
-  //             await Models.JwtsModel.update({ token: token, refresh: refreshToken }, { where: { device_token_id: `${device_token}_${userId}` } })
-  //         } else {
-  //             await Models.JwtsModel.create({
-  //                 user_id: userId,
-  //                 device_token: device_token,
-  //                 device_token_id: `${device_token}_${userId}`,
-  //                 token: token,
-  //                 refresh: refreshToken
-  //             })
-  //         }
-
-  //     } catch (err: any) {
-  //         console.error("Error in setting_token_in_db>>", err)
-  //         return err;
-  //     }
-  // }
-  // public async deleting_token_from_db(device_token_id: string) {
-  //     try {
-  //         let already_exist: any = await Models.JwtsModel.findOne({
-  //             attributes: ["user_id", "device_token"],
-  //             where: {
-  //                 device_token_id: device_token_id
-  //             },
-  //             raw: true
-  //         })
-  //         if (already_exist) {
-  //             await Models.JwtsModel.destroy({ where: { device_token_id: device_token_id } })
-  //         }
-  //     } catch (err: any) {
-  //         console.error("Error in deleting_token_from_db>>>", err)
-  //         return err;
-  //     }
-  // }
-  // public async getting_token_from_db(device_token_id: string) {
-  //     try {
-  //         let already_exist: any = await Models.JwtsModel.findOne({
-  //             attributes: ["token", "refresh"],
-  //             where: {
-  //                 device_token_id: device_token_id
-  //             },
-  //             raw: true
-  //         })
-  //         if (already_exist) {
-  //             return already_exist.token
-  //         }
-  //         return true;
-  //     } catch (err: any) {
-  //         console.error("Error in getting_token_from_db>>>", err)
-  //         return err;
-  //     }
-  // }
 }
 
 const userhelper = new userHelper();

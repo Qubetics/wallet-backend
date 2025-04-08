@@ -1,7 +1,6 @@
 import express from "express";
 import { ControllerInterface } from "../../interfaces/controller.interface";
 import { authController } from "./controller.auth";
-// import authVerification from "./verify.authMiddleware";
 
 class AuthRoute implements ControllerInterface {
   public path = "/auth";
@@ -13,7 +12,6 @@ class AuthRoute implements ControllerInterface {
 
   public initializeRoutes() {
     this.router.post(`${this.path}/authorisation`,
-    //  authVerification.verifyToken, 
      authController.generateNewTokens);
   }
 }

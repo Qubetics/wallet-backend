@@ -3,8 +3,6 @@ import { ControllerInterface } from "../../interfaces/controller.interface";
 import jwtVerification from "../../middlewares/verify.middleware";
 import { PolControllers } from "./controllers/polController"
 import PolMiddleware from "./middleware/polMiddleware"
-// import { validate } from "express-validation"
-// import validator from "./../../middlewares/validator"
 
 class PolRoute implements ControllerInterface {
   public path = "/polygon";

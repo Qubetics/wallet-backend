@@ -1,12 +1,7 @@
 import { Request, Response } from "express";
 import { OnlyControllerInterface } from "../../interfaces/controller.interface";
 import jwtHelper from "../../helpers/common/jwt";
-// import { config } from "../../config";
-// import CryptoJS from "react-native-crypto-js";
-// import redisClient from "../../helpers/common/redis";
 import { GlblBooleanEnum, GlblCode } from "../../constants/global_enum";
-// import userhelper from "../user/helper";
-// import * as Models from '../../models/model/index';
 import { language } from "../../constants";
 import commonHelper from "../../helpers/common/common.helpers";
 import { CryptoHelper } from "../../helpers/common/cryptoJs";

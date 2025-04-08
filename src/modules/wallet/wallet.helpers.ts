@@ -37,10 +37,6 @@ class WalletHelpers implements OnlyControllerInterface {
     userId: number
   ) {
     try {
-      // let swapData: any = await swapSettingQueries.swapSettingsFindOne(
-      //   ['id', 'address', 'percentage'],
-      //   { id: 1 },
-      //   [['id', 'ASC']])
       let swapSupported: number = 0;
 
       if (
@@ -74,13 +70,6 @@ class WalletHelpers implements OnlyControllerInterface {
       }
       console.log("coinZone>>>", image, "token_type>>", image);
 
-      // Get gasless status
-      // let gaslessStatus: any = null;
-
-      // if (coinFamily == 2) {
-      //   gaslessStatus = await global_helper.getGasLessStatus(tokenAddress, swapData);
-      // }
-
       let coinData: any = {
         coin_name: name,
         coin_symbol: symbol.toUpperCase(),
@@ -91,7 +80,6 @@ class WalletHelpers implements OnlyControllerInterface {
         is_token: GlblBooleanEnum.true,
         is_on_cmc: cmc_id ? GlblBooleanEnum.true : GlblBooleanEnum.false,
         for_swap: swapSupported,
-        // gasless: gaslessStatus,
         added_by: GlblAddedBy.USER,
         token_type: tokenType.toUpperCase(),
         decimals: Math.pow(10, parseInt(decimals)),
@@ -114,7 +102,6 @@ class WalletHelpers implements OnlyControllerInterface {
 
       if (cmc_id != null) {
         await WalletHelper.insert_graph_reset_data(cmc_id);
-        //await WalletHelper.update_fiat_coin_price(cmc_id, symbol, name, coinData.coin_family, coinData.token_address, coinData.coin_id);
       }
 
       return { coinData: coinData };
@@ -243,13 +230,6 @@ class WalletHelpers implements OnlyControllerInterface {
                 token_address: coin_data.token_address,
                 max_supply: result.data.data[cmc_id].max_supply,
                 latest_price: latest_price,
-                // roi: null,
-                // open: null,
-                // high: null,
-                // average: null,
-                // close: null,
-                // low: null,
-                // change_price: null,
               };
               await coin_price_in_fiat_queries.coin_price_in_fiat_create(
                 data_to_insert
@@ -291,7 +271,6 @@ class WalletHelpers implements OnlyControllerInterface {
                 cmc_id: cmc_id,
                 sparkline: latest_price_graph,
                 coin_type: coin_data.coin_symbol,
-                // volume_24h: result.data.data[cmc_id].quote[(fiatCurrency[i].currency_code).toUpperCase()].volume_24h,
                 type: types[0],
                 fiat_type: fiatCurrency[i].currency_code.toUpperCase(),
                 latest_price: latest_price_graph,
@@ -326,104 +305,6 @@ class WalletHelpers implements OnlyControllerInterface {
       throw err;
     }
   }
-  // public async update_fiat_coin_price(
-  //   coin_gicko_id: string,
-  //   coin_symbol: string,
-  //   coin_name: string,
-  //   coin_family: number,
-  //   token_address: any,
-  //   coin_id: number
-  // ) {
-  //   try {
-  //     let coin_data_update: any = {
-  //       coin_symbol: coin_symbol,
-  //       coin_name: coin_name,
-  //       coin_family: coin_family,
-  //       token_address: token_address,
-  //     };
-  //     let fiatCurrency: any =
-  //       await currency_fiat_queries.currency_fiat_find_all(
-  //         ["currency_code", "status"],
-  //         { status: 1 }
-  //       );
-
-  //     console.log("fiatCurrency.length", fiatCurrency.length);
-  //     if (fiatCurrency.length) {
-  //       // let codes: any = fiatCurrency.map((el: any) => el.currency_code);
-  //       for (let i: number = 0; i < fiatCurrency.length; i++) {
-  //         let data_exist: any =
-  //           await coin_price_in_fiat_queries.coin_price_in_fiat_find_one(
-  //             ["id"],
-  //             {
-  //               coin_gicko_id: coin_gicko_id,
-  //               fiat_type: fiatCurrency[i].currency_code.toLowerCase(),
-  //             }
-  //           );
-  //         if (!data_exist) {
-  //           let coin_data: any =
-  //             await global_helper.coinGecko_quotes_latest_api(
-  //               fiatCurrency[i].currency_code.toLowerCase(),
-  //               coin_gicko_id
-  //             );
-  //           if (coin_data) {
-  //             if (coin_data.data) {
-  //               let latest_price: any = {
-  //                 price: coin_data.data.current_price,
-  //                 timestamp: coin_data.data.last_updated,
-  //                 volume_24h: coin_data.data.total_volume,
-  //                 price_change_24h: coin_data.data.price_change_percentage_24h,
-  //               };
-  //               let data_to_insert: any = {
-  //                 coin_id: coin_id,
-  //                 coin_symbol: coin_data_update.coin_symbol,
-  //                 coin_name: coin_data_update.coin_name,
-  //                 coin_family: coin_data_update.coin_family,
-  //                 cmc_id: null,
-  //                 coin_gicko_id: coin_gicko_id,
-  //                 fiat_type: fiatCurrency[i].currency_code.toLowerCase(),
-  //                 value: coin_data.data.current_price,
-  //                 price_change_24h: coin_data.data.price_change_24h,
-  //                 price_change_percentage_24h:
-  //                   coin_data.data.price_change_percentage_24h,
-  //                 market_cap: coin_data.data.market_cap,
-  //                 circulating: coin_data.data.circulating_supply,
-  //                 total_supply: coin_data.data.total_supply,
-  //                 rank: coin_data.data.market_cap_rank,
-  //                 volume_24h: coin_data.data.total_volume,
-  //                 token_address: coin_data_update.token_address,
-  //                 max_supply: coin_data.data.max_supply,
-  //                 latest_price: latest_price,
-  //                 roi: null,
-  //                 open: null,
-  //                 high: null,
-  //                 average: null,
-  //                 close: null,
-  //                 low: null,
-  //                 change_price: null,
-  //               };
-
-  //               await coin_price_in_fiat_queries.coin_price_in_fiat_create(
-  //                 data_to_insert
-  //               );
-
-  //             } else {
-  //               console.log("no data in coingecko")
-  //             }
-  //           } else {
-  //             console.log("no coin data got ")
-  //           }
-  //         }
-  //       }
-  //     }
-  //     else {
-  //       console.log("no fiat currency");
-  //     }
-  //   } catch (err: any) {
-  //     console.error("Error in update_fiat_coin_price>>", err);
-  //     await commonHelper.save_error_logs("update_fiat_coin_price", err.message);
-  //     return null;
-  //   }
-  // }
   public async insert_entry_in_custom_token_table(
     coinId: number,
     userId: number
@@ -503,16 +384,6 @@ class WalletHelpers implements OnlyControllerInterface {
             wallet_address: walletAddress,
             queue_count: 0,
           });
-          // await userhelper.adding_coins_to_queue(config.BACKEND_WALLET_ADDRESSES,
-          //   {
-          //     coin_data: {
-          //       coin_id: coinId,
-          //       coin_family: coinFamily,
-          //       is_token: isToken,
-          //       token_address: tokenAddress,
-          //       token_type: tokenType
-          //     }, wallet_address: walletAddress, queue_count: 0
-          //   })
         }
       } else {
         if (wallet_data.status == 1) {
@@ -685,33 +556,6 @@ class WalletHelpers implements OnlyControllerInterface {
       return null;
     }
   }
-  // public async send_mail(email: string, text: string, subject: string) {
-  //   try {
-  //     console.log("email >>>>.", email)
-  //     const MAILGUN_API_KEY: string = ``;
-  //     const MAILGUN_DOMAIN: string = ``;
-  //     const MAILGUN_BASE_URL: string = ``;
-  //     const response: any = await axios({
-  //       method: 'post',
-  //       url: `${MAILGUN_BASE_URL}/messages`,
-  //       auth: {
-  //         username: 'api',
-  //         password: MAILGUN_API_KEY
-  //       },
-  //       params: {
-  //         from: "",
-  //         to: email,
-  //         subject: subject,
-  //         html: text
-  //       }
-  //     });
-  //     console.log("response>>", response)
-  //     return response;
-  //   } catch (err: any) {
-  //     console.error("send_mail", err)
-  //     throw err;
-  //   }
-  // }
 
   public async min_coin_balance(
     wallet_data: any,
@@ -795,9 +639,6 @@ class WalletHelpers implements OnlyControllerInterface {
     try {
       const now = Date.now(); // Current timestamp
       let timeRange: number = 0;
-      // console.log("elementsArray :>> ", elementsArray);
-      // elementsArray = JSON.parse(elementsArray);
-      // console.log("elementsArray after:>> ", elementsArray);
       // Define time ranges
       switch (range) {
         case "1d":

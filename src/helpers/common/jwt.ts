@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import { config } from "../../config";
 import commonHelper from "./common.helpers";
-// import CryptoJS from "crypto-js";
 import { CryptoHelper } from "./cryptoJs";
 
 class JWT {
@@ -13,9 +12,6 @@ class JWT {
         expiresIn: 60 * 60 * 2, // 2 Hrs 
       });
       const token: string = `JWT ${jwtToken}`;
-      // const encryptSecret = CryptoJS.enc.Utf8.parse(config.ENCRYPT_SECRET);
-      // const encryptIV = CryptoJS.enc.Utf8.parse(config.ENCRYPT_IV_SECRET);
-      // return CryptoJS.AES.encrypt(Token, encryptSecret, { iv: encryptIV, padding: CryptoJS.pad.Pkcs7, mode: CryptoJS.mode.CBC }).toString();
       return CryptoHelper.encrypt(token);
 
     } catch (err: any) {
@@ -29,7 +25,6 @@ class JWT {
     try {
       const options = {
         expiresIn: "365d",
-        // audience:userId
       };
       const jwtToken = jwt.sign(
         { userId, device_token },
@@ -37,7 +32,6 @@ class JWT {
         options
       );
       const token: string = `REFRESH ${jwtToken}`;
-      // return CryptoJS.AES.encrypt(Token, config.ENCRYPT_SECRET).toString();
       return CryptoHelper.encrypt(token);
     } catch (err: any) {
       console.error("Error in createJSONRefreshToken.", err)
@@ -49,7 +43,6 @@ class JWT {
     const userId: any = data;
     const jwtToken: string = jwt.sign(userId, config.JWT_SECRET);
     const token: any = `JWT ${jwtToken}`;
-    // return CryptoJS.AES.encrypt(Token, config.ENCRYPT_SECRET).toString();
     return CryptoHelper.encrypt(token);
   }
 

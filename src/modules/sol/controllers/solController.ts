@@ -21,7 +21,6 @@ class PolController implements OnlyControllerInterface {
             let resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
 
             if (resultStatus.status && resultStatus.status == true) {
-                // if (req.body.approval == 1 && req.body.tx_type == 'Approve') {
                 if (req.body.tx_type == 'withdraw') {
 
                     return response.success(res, {

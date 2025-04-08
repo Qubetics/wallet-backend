@@ -15,26 +15,14 @@ let dataObj = {
     primaryKey: true,
     autoIncrement: true,
   },
-  // coin_id: {
-  //   type: DataTypes.INTEGER,
-  //   allowNull: false,
-  // },
   cmc_id: {
     type: DataTypes.NUMBER,
     allowNull: true,
   },
-  // coin_type: {
-  //   type: DataTypes.STRING,
-  //   allowNull: false,
-  // },
   fiat_type: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  // value: {
-  //   type: DataTypes.DOUBLE,
-  //   allowNull: false,
-  // },
   sparkline: {
     type: DataTypes.JSON,
   },
@@ -42,22 +30,6 @@ let dataObj = {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  // price_change_24h: {
-  //   type: DataTypes.DOUBLE,
-  //   allowNull: true,
-  // },
-  // price_change_percentage_24h: {
-  //   type: DataTypes.DOUBLE,
-  //   allowNull: true,
-  // },
-  // created_at: {
-  //   type: DataTypes.DATE,
-  //   allowNull: true,
-  // },
-  // updated_at: {
-  //   type: DataTypes.DATE,
-  //   allowNull: true,
-  // },
   latest_price: {
     type: DataTypes.JSON,
     allowNull: true,

@@ -3,10 +3,7 @@ import { OnlyControllerInterface } from "../../interfaces/controller.interface";
 import * as Models from '../../models/model/index';
 import { GlblBlockchainTxStatusEnum, GlblCode, GlblMessages, GlblStatus } from "../../constants/global_enum";
 import { TYPE, TxReqTypesEnum } from "./enum";
-// import { OnOffRampHelpers } from "./helper";
-;
 import jwt from "jsonwebtoken";
-// import moment from "moment";
 import { language, NotificationTypes } from "../../constants";
 import commonHelper from "../../helpers/common/common.helpers";
 import { Op } from "sequelize";
@@ -103,7 +100,6 @@ class OnOffRampController implements OnlyControllerInterface {
                         { 'coin_family': 6, 'coin_symbol': "trx" }
                     ];
                     if (!txDetail && webhookData?.status == 'pending') {
-                        // let chain_data = chains.filter(chain => chain.coin_symbol == webhookData?.currency?.toLowerCase())[0];
                         const chain_data = chains.find(chain => chain.coin_symbol === webhookData?.currency?.toLowerCase());
                         if (chain_data) {
                             let wallet_data: any = await Models.WalletModel.findOne({

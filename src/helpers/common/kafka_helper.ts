@@ -27,7 +27,6 @@ class KafkaHelper {
 
     public async produceMessage(topic: string, messageData: any) {
         try {
-            // console.log('TX added in queue', topic, messageData);
             await this.producer.send({
                 topic: topic,
                 acks: 1,

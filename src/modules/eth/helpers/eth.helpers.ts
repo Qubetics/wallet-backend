@@ -8,17 +8,6 @@ import { language } from "../../../constants";
 import commonHelper from "../../../helpers/common/common.helpers";
 
 class EthHelpers implements HelpersInterface {
-  // public web3: Web3;
-  // public abi: AbiItem[] | string;
-  // public token_address: string | null | undefined;
-
-  // constructor(abi: AbiItem[] | string = "", contractAddress: string = "") {
-  //   var provider = new Web3.providers.HttpProvider(config.NODE.ETH_RPC_URL || "");
-  //   this.web3 = new Web3(provider);
-  //   this.abi = abi != "" ? abi : "";
-  //   this.token_address = !contractAddress ? contractAddress : "";
-  //   this.initialize();
-  // }
 
   public initialize() { }
 
@@ -42,7 +31,6 @@ class EthHelpers implements HelpersInterface {
   }
 
   public async getWalletNonce(wallet: string): Promise<number> {
-    // return await ethWeb3.web3.eth.getTransactionCount(wallet, "pending");
     return await ethWeb3.web3.eth.getTransactionCount(wallet);
   }
   async getErc20TokenTransferGasEstimationCost(
@@ -64,7 +52,6 @@ class EthHelpers implements HelpersInterface {
           .transfer(toAddress, tokenValue)
           .estimateGas({ from: fromAdress });
         gasLimit = gasLimit * 3;
-        // return gasLimit;
       }
       return {
         status: true,
@@ -106,7 +93,6 @@ class EthHelpers implements HelpersInterface {
         to: tokenAddress,
         data: data,
       });
-      // return Math.floor(gasLimit * 1.5);
       return {
         status: true,
         gas_estimate:
@@ -115,8 +101,6 @@ class EthHelpers implements HelpersInterface {
       };
     } catch (error) {
       console.error("🔥 ~ ~ getErc721TokenTransferGasEstimationCost node.eth.helper.ts error")
-      // throw error;
-      // return 120000;
       return {
         status: false,
         gas_estimate: 120000,
@@ -157,7 +141,6 @@ class EthHelpers implements HelpersInterface {
         to: tokenAddress,
         data: data,
       });
-      // return Math.floor(gasLimit * 2);
       return {
         status: true,
         gas_estimate:
@@ -166,8 +149,6 @@ class EthHelpers implements HelpersInterface {
       };
     } catch (error) {
       console.error("🔥 ~ ~ getErc1155TokenTransferGasEstimationCost node.eth.helper.ts error")
-      // throw error;
-      // return 120000;
       return {
         status: false,
         gas_estimate: 120000,
@@ -194,7 +175,6 @@ class EthHelpers implements HelpersInterface {
       };
     } catch (err: any) {
       console.error("error, for try catch", err);
-      // await commonHelper.save_error_logs("eth_getEthGasLimit", err.message);
       return {
         status: false,
         gas_estimate: 30000,
@@ -242,7 +222,6 @@ class EthHelpers implements HelpersInterface {
       }
     } catch (err: any) {
       console.error("Error, sendEthOrToken===>", err);
-      // await commonHelper.save_error_logs("eth_sendEthOrTokens", err.message);
 
     }
   }

@@ -54,7 +54,6 @@ class PolHelpers implements HelpersInterface {
           .transfer(toAddress, tokenValue)
           .estimateGas({ from: fromAdress });
         gasLimit = gasLimit * 3;
-        // return gasLimit;
       }
       return {
         status: true,
@@ -63,7 +62,6 @@ class PolHelpers implements HelpersInterface {
         message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('ETH')
       };
 
-      //return 0;
     } catch (err: any) {
       await commonHelper.save_error_logs("eth_getErc20TokenTransferGasEstimationCost", err.message);
       console.error("error, for try catch", err);
@@ -93,7 +91,6 @@ class PolHelpers implements HelpersInterface {
       };
     } catch (err: any) {
       console.error("error, for try catch", err);
-      // await commonHelper.save_error_logs("eth_getEthGasLimit", err.message);
       return {
         status: false,
         gas_estimate: 30000,
@@ -142,7 +139,6 @@ class PolHelpers implements HelpersInterface {
       }
     } catch (err: any) {
       console.error("Error, sendPolOrToken===>", err);
-      // await commonHelper.save_error_logs("pol_sendEthOrTokens", err.message);
     }
   }
 

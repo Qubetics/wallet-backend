@@ -328,7 +328,6 @@ class AuthController implements OnlyControllerInterface {
                     data: {}
                 };
             } else if (verified == true) {
-                // let jwt_token: string = await adminMiddleware.generateToken(adminData.id);
                 const jwt_token: any = await jwtHelper.create_json_web_token(adminData.id);
                 let final_data = { id: adminData.id, user: adminData.username, email: adminData.email, token: jwt_token, google2fa_status: adminData.google2fa_status }
 

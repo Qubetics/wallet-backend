@@ -1,7 +1,6 @@
 export interface UserInterface {
   user_id: number;
   user_name: string | null,
-  // email: string | null,
   referral_code: string;
   referral_count: number | 0;
   device_id: string | null;

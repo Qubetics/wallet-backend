@@ -3,8 +3,6 @@ import { ControllerInterface } from "../../interfaces/controller.interface";
 import jwtVerification from "../../middlewares/verify.middleware";
 import { TicsControllers } from "./controllers/ticsController"
 import TicsMiddleware from "./middleware/ticsMiddlewaver"
-// import { validate } from "express-validation"
-// import validator from "./../../middlewares/validator"
 
 class TicsRoute implements ControllerInterface {
   public path = "/qubetics";

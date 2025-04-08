@@ -84,10 +84,8 @@ class EthController implements OnlyControllerInterface {
               );
           } else if (token_type == TokenType.ERC721) {
             estimationRes = await EthHelper.getErc721TokenTransferGasEstimationCost(to, from, token_value, token_address, lang);
-            // balance = await EthHelper.getUserERC721TokenBalance(from_address, token_address);
           } else if (amount) {
             estimationRes = await EthHelper.getErc1155TokenTransferGasEstimationCost(to, from, token_value, token_address, amount, lang);
-            // balance = await EthHelper.getERC1155TokenBalance(token_value, token_address, from_address);
           }
         } else {
           estimationRes = await EthHelper.getEthGasLimit(from, to, lang);
@@ -278,7 +276,6 @@ class EthController implements OnlyControllerInterface {
             }
 
             if (resultStatus.status && resultStatus.status == true) {
-              // if (req.body.approval == 1 && req.body.tx_type == 'Approve') {
               if (req.body.tx_type == 'Approve') {
 
                 return response.success(res, {
@@ -288,7 +285,6 @@ class EthController implements OnlyControllerInterface {
                     tx_hash: txid,
                   },
                 });
-                // } else if (req.body.approval == 0 && req.body.tx_type == 'withdraw') {
               } else if (req.body.tx_type == 'withdraw') {
 
                 return response.success(res, {

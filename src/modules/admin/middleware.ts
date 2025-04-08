@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwtHelper from '../../helpers/common/jwt';
-// var CryptoJS = require("crypto-js");
 import { config } from "../../config";
-// import redisClient from "../../helpers/common/redis";
 import { GlblCode, GlblMessages } from './../../constants/global_enum';
 import { Messages } from "./auth/enum";
 import { adminQueries } from "../../helpers/dbHelper";
@@ -24,8 +22,6 @@ class AdminMiddleware {
                 });
             }
             const bearerHeader: string = CryptoHelper.decrypt(encryptedJWT);
-            // const Jwt = CryptoJS.AES.decrypt(encryptedJWT, config.ENCRYPT_SECRET);
-            // const bearerHeader = Jwt.toString(CryptoJS.enc.Utf8);
             const bearerToken = bearerHeader.split(" ")[1];
 
             if (!jwtHelper.verify(bearerToken)) {
@@ -65,12 +61,6 @@ class AdminMiddleware {
                 });
             }
 
-            // try {
-            //     await redisClient.getKeyValuePair(config.ADMIN_TOKEN, adminData.email.toUpperCase());
-            // } catch (redisError) {
-            //     console.error('Redis error:', redisError);
-            //     // Continue execution even if Redis fails
-            // }
             req.body.adminId = adminId;
             req.body.adminDetails = adminData;
             req.body.user_email = adminData.email;

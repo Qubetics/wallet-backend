@@ -9,7 +9,6 @@ export interface ITrnxHistoryInterface {
     from_adrs: string | null;
     to_adrs: string;
     tx_id: string | null;
-    // is_maker: number | null,
     merchant_id: string | null
     order_id: string | null;
     tx_raw: string | null;
@@ -17,8 +16,6 @@ export interface ITrnxHistoryInterface {
     blockchain_status: string | null;
     amount: number;
     block_id: number | null;
-    // block_hash: string | null;
-    // speedup: string | null;
     nonce: number | null;
     tx_fee: number | null;
     swap_fee: number | null;
@@ -27,8 +24,5 @@ export interface ITrnxHistoryInterface {
     gas_reverted: number | null;
     fiat_price: number | null,
     fiat_type: string | null,
-    // country_code: string | null,
     order_status: string | null;
-    // referral_upgrade_level: string | null
-    // address_book_name: string
 }

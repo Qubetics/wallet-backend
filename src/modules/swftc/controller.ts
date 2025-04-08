@@ -55,9 +55,6 @@ class SwftcController implements OnlyControllerInterface {
 
       await axios(configg)
         .then(async function (response) {
-          // for (let value of response?.data.data) {
-          //     arr.push(value)
-          // }
           for await (let value of response?.data.data) {
             if (networks.indexOf(value.mainNetwork) !== -1) {
               let coin_family: any = Object.keys(coinFamily).find(
@@ -95,15 +92,6 @@ class SwftcController implements OnlyControllerInterface {
               });
               if (!data_exist) {
                 let coinName = value.coinAllCode;
-                // if (token_address) {
-                //     let tokenDetails = await global_helper.return_decimals_name_symbol(
-                //         parseInt(coin_family),
-                //         token_address,
-                //         lang
-                //     );
-                //     console.log('tokenDetails >>', tokenDetails);
-                //     coinName = tokenDetails.name;
-                // }
                 let findCoin: any = await Models.CoinsModel.findOne({
                   attributes: ["coin_id", "coin_image"],
                   where: {
@@ -138,9 +126,6 @@ class SwftcController implements OnlyControllerInterface {
                     }
                   }
                   let swapSupported: number = 0;
-                  // if (token_address && coin_family == config.STATIC_COIN_FAMILY.ETH || coin_family == config.STATIC_COIN_FAMILY.BNB || coin_family == config.STATIC_COIN_FAMILY.POL) {
-                  //     swapSupported = await global_helper.oneInchSwapSupported(token_address, coinFamily)
-                  // }
 
                   let currentUTCDate: string = new Date()
                     .toISOString()
@@ -162,7 +147,6 @@ class SwftcController implements OnlyControllerInterface {
                     token_type: token_type,
                     decimals: Math.pow(10, parseInt(value.coinDecimal)),
                     token_address: token_address,
-                    // is_on_coin_gicko: 0,
                     graph_pair: graphPair,
                     graph_source: graphSource,
                     is_on_trading_view: graphSource ? 1 : 0,
@@ -443,10 +427,6 @@ class SwftcController implements OnlyControllerInterface {
 
     try {
       req.body.sourceFlag = "Qubetics";
-      // /** if receive coin amount not received then set here */
-      // if (req.body.receiveCoinAmt == undefined || req.body.receiveCoinAmt == null) {
-      //     req.body.receiveCoinAmt = GlblBooleanEnum.false;
-      // }
       const requestOptionsForListing = {
         method: "POST",
         uri: `${config.SWFTC.SWFTC_ACCOUNT_EXCHANGE}`,
