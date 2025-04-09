@@ -778,7 +778,7 @@ class WalletController implements OnlyControllerInterface {
       }
       let coin_where: any = "";
       if (coin_id > GlblBooleanEnum.false) {
-        coin_where = { id: coin_id };
+        coin_where = { coin_id: coin_id };
         where_clause = {
           ...where_clause,
           coin_id: coin_id,
