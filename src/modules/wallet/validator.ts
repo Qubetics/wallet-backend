@@ -158,4 +158,17 @@ export default class wallet_validator {
       .required(),
     }),
   };
+  static order_update = {
+    body: Joi.object({
+      wallets: Joi.array()
+      .items(
+          Joi.object({
+            coin_id: Joi.number().required(),
+            wallet_address: Joi.string().required(),
+            order: Joi.number().required(),
+          })
+      )
+      .required(),
+    }),
+  };
 }

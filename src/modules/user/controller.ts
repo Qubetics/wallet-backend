@@ -11,7 +11,7 @@ import {
   WalletName,
 } from "../../constants/global_enum";
 import { global_helper } from "../../helpers/common/global_helper";
-import { language } from "../../constants";
+import { ErrorMessages, language } from "../../constants";
 import commonHelper from "../../helpers/common/common.helpers";
 import {
   address_book_queries,
@@ -73,7 +73,7 @@ class UserController implements OnlyControllerInterface {
         } else if (+timeDiff < -0.1) {
           return res.status(400).json({
             success: false,
-            message: "Invalid signature.",
+            message: ErrorMessages.SOMETHING_WENT_WRONG,
           });
         }
 
@@ -81,7 +81,7 @@ class UserController implements OnlyControllerInterface {
         if (wallet_address !== verifiedAddress) {
           return res.status(400).json({
             success: false,
-            message: "Invalid signature.",
+            message: ErrorMessages.SOMETHING_WENT_WRONG,
           });
         }
       }

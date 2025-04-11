@@ -860,6 +860,22 @@ class WalletController implements OnlyControllerInterface {
     try {
       console.log("req body updateWalletOrder >>>", req.body);
       const { wallets }: any = req.body;
+      const walletAddress = wallets[0].wallet_address
+      const checkAddress = await wallet_queries.wallet_find_one(
+        ["wallet_id", "user_id"],
+        { wallet_address: walletAddress }
+        );
+
+        if (!checkAddress || checkAddress.user_id !== req.userId) {
+          return response.error(res, {
+            data: {
+              code: GlblCode.ERROR_CODE,
+              status: false,
+              message: language[lang].UNAUTHORIZED_ACCESS,
+            },
+          });
+        }
+
       for await (let wallet of wallets) {
         await wallet_queries.wallet_update(
           { sort_order: wallet.order },

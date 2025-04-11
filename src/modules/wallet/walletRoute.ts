@@ -44,6 +44,7 @@ class WalletRoute implements ControllerInterface {
     );
     this.router.post(
       `${this.path}/order/update`,
+      [validateExpress(wallet_validator.order_update)],
       jwtVerification.verifyToken,
       walletController.updateWalletOrder
     );
