@@ -341,7 +341,7 @@ class WalletController implements OnlyControllerInterface {
       let message: string;
 
       const checkAddress = await wallet_queries.wallet_find_one(
-        ["wallet_id", "wallet_name"],
+        ["wallet_id", "user_id"],
         { wallet_address: walletAddress }
         );
 
