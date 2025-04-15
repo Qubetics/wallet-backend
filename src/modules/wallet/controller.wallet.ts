@@ -1090,6 +1090,19 @@ class WalletController implements OnlyControllerInterface {
       let user_id: number = req.userId;
       let data: any = req.body.data;
       for (let i = GlblBooleanEnum.false; i < data.length; i++) {
+        const coin_family = (await coin_queries.coin_find_one(["coin_family"], { coin_id: data[i].coin_id }))?.coin_family;
+        const addressValidity: any = await global_helper.validate_address(
+          data[i].address,
+          coin_family
+        );
+        if (!addressValidity){
+          return res.status(GlblCode.ERROR_CODE).send({
+            status: false,
+            code: GlblCode.ERROR_CODE,
+            message: `${language[lang].INVALID_ADDRESS} Address: ${data[i].address}`,
+          });
+        }
+
         const result: any = await Models.WatchlistsModel.findOne({
           where: {
             user_id: user_id,
