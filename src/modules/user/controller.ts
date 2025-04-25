@@ -926,41 +926,41 @@ class UserController implements OnlyControllerInterface {
     }
   }
 
-  public async add_tokens_for_swap(req: Request, res: Response) {
-    try {
-      const tokens = req.body.tokens;
-      const coin_family = req.body.coin_family;
-      if (Object.keys(tokens).length > 0) {
-        let i = 0;
-        for (const address of Object.keys(tokens)) {
-          const token = tokens[address];
-          const data_exist: any = await Models.CoinsModel.findOne({
-            attributes: ["coin_id", "for_swap"],
-            where: { token_address: token.address, coin_family: coin_family },
-            raw: true,
-          });
-          if (data_exist && data_exist.for_swap == 0) {
-            const arrayObj: any = { for_swap: 1 };
-            await Models.CoinsModel.update(arrayObj, {
-              where: { coin_id: data_exist.coin_id },
-            });
-          }
-          console.log("tesddddddddddd2222");
+  // public async add_tokens_for_swap(req: Request, res: Response) {
+  //   try {
+  //     const tokens = req.body.tokens;
+  //     const coin_family = req.body.coin_family;
+  //     if (Object.keys(tokens).length > 0) {
+  //       let i = 0;
+  //       for (const address of Object.keys(tokens)) {
+  //         const token = tokens[address];
+  //         const data_exist: any = await Models.CoinsModel.findOne({
+  //           attributes: ["coin_id", "for_swap"],
+  //           where: { token_address: token.address, coin_family: coin_family },
+  //           raw: true,
+  //         });
+  //         if (data_exist && data_exist.for_swap == 0) {
+  //           const arrayObj: any = { for_swap: 1 };
+  //           await Models.CoinsModel.update(arrayObj, {
+  //             where: { coin_id: data_exist.coin_id },
+  //           });
+  //         }
+  //         console.log("tesddddddddddd2222");
 
-          i = i + 1;
-        }
-      }
-      return response.success(res, {
-        data: {
-          success: true,
-          message: "success",
-        },
-      });
-    } catch (err: any) {
-      console.error("ERROR in tokens > add_tokens_for_swap", err);
-      return response.error(res, { data: (err as Error).message });
-    }
-  }
+  //         i = i + 1;
+  //       }
+  //     }
+  //     return response.success(res, {
+  //       data: {
+  //         success: true,
+  //         message: "success",
+  //       },
+  //     });
+  //   } catch (err: any) {
+  //     console.error("ERROR in tokens > add_tokens_for_swap", err);
+  //     return response.error(res, { data: (err as Error).message });
+  //   }
+  // }
 }
 
 export const userController = new UserController();
