@@ -101,6 +101,7 @@ class WalletRoute implements ControllerInterface {
     this.router.post(
       `${this.path}/allBalances`,
       [validateExpress(wallet_validator.allBalances)],
+      jwtVerification.verifyToken,
       walletController.allBalances
     );
     this.router.post(
@@ -130,10 +131,10 @@ class WalletRoute implements ControllerInterface {
       walletController.nfts_from_moralis
     );
 
-    this.router.get(
-      `${this.path}/transaction/downloadcsv/:id`,
-      walletController.downloadCsv
-    );
+    // this.router.get(
+    //   `${this.path}/transaction/downloadcsv/:id`,
+    //   walletController.downloadCsv
+    // );
 
     this.router.post(
       `${this.path}/coin/graph/data`,

@@ -234,6 +234,7 @@ class WalletController implements OnlyControllerInterface {
           "sort_order",
         ],
         where: {
+          user_id: user_id ,
           wallet_address: { [Op.in]: req.body.addressListKeys },
           status: GlblBooleanEnum.true,
         },
@@ -528,6 +529,7 @@ class WalletController implements OnlyControllerInterface {
               ), 'status']
             ],
             where: {
+              user_id: req.userId,
               wallet_address: { [Op.in]: addresses },
             },
             required: false,
@@ -1667,6 +1669,7 @@ class WalletController implements OnlyControllerInterface {
       const coinWalletdata: any = await Models.WalletModel.findOne({
         attributes: ["balance"],
         where: {
+          user_id: req.userId,
           wallet_address: wallet_address,
           coin_id: coin_id,
         },
@@ -1735,208 +1738,208 @@ class WalletController implements OnlyControllerInterface {
     }
   }
 
-  public async downloadCsv(req: Request, res: Response) {
-    let lang: any = req.headers["content-language"] || "en";
-    try {
-      let userId: any = req.params.id;
-      console.log("req body downloadCsv >>>", req.params);
+  // public async downloadCsv(req: Request, res: Response) {
+  //   let lang: any = req.headers["content-language"] || "en";
+  //   try {
+  //     let userId: any = req.params.id;
+  //     console.log("req body downloadCsv >>>", req.params);
 
-      let last_month_date: any = moment()
-        .subtract(GlblBooleanEnum.true, "months")
-        .format("YYYY-MM-DD");
-      let wallet_addresses: any = await Models.WalletModel.findAll({
-        attributes: ["wallet_address"],
-        where: {
-          user_id: userId,
-        },
-        raw: true,
-        group: ["wallet_address"],
-      });
-      let addresses: string[] = [];
-      if (wallet_addresses) {
-        addresses = wallet_addresses.map(
-          (el: { wallet_address: string }) => el.wallet_address
-        );
-      }
-      if (addresses.length == GlblBooleanEnum.false) {
-        let data = {
-          code: GlblCode.ERROR_CODE,
-          status: false,
-          message: language[lang].NO_ADDRESS_FOUND,
-        };
-        return response.error(res, {
-          data: data,
-        });
-      }
-      let where_clause: any = {
-        [Op.and]: [
-          {
-            [Op.or]: [
-              {
-                [Op.and]: [
-                  { from_adrs: { [Op.in]: addresses } },
-                  { user_id: userId },
-                  {
-                    [Op.or]: [
-                      { blockchain_status: GlblBlockchainTxStatusEnum.PENDING },
-                      { blockchain_status: GlblBlockchainTxStatusEnum.FAILED },
-                      {
-                        blockchain_status: GlblBlockchainTxStatusEnum.CONFIRMED,
-                      },
-                      { blockchain_status: null },
-                    ],
-                  },
-                ],
-              },
-              {
-                [Op.and]: [
-                  { to_adrs: { [Op.in]: addresses } },
-                  { to_user_id: userId },
-                  { blockchain_status: GlblBlockchainTxStatusEnum.CONFIRMED },
-                ],
-              },
-            ],
-          },
-          {
-            created_at: {
-              [Op.gt]: last_month_date,
-            },
-          },
-        ],
-      };
+  //     let last_month_date: any = moment()
+  //       .subtract(GlblBooleanEnum.true, "months")
+  //       .format("YYYY-MM-DD");
+  //     let wallet_addresses: any = await Models.WalletModel.findAll({
+  //       attributes: ["wallet_address"],
+  //       where: {
+  //         user_id: userId,
+  //       },
+  //       raw: true,
+  //       group: ["wallet_address"],
+  //     });
+  //     let addresses: string[] = [];
+  //     if (wallet_addresses) {
+  //       addresses = wallet_addresses.map(
+  //         (el: { wallet_address: string }) => el.wallet_address
+  //       );
+  //     }
+  //     if (addresses.length == GlblBooleanEnum.false) {
+  //       let data = {
+  //         code: GlblCode.ERROR_CODE,
+  //         status: false,
+  //         message: language[lang].NO_ADDRESS_FOUND,
+  //       };
+  //       return response.error(res, {
+  //         data: data,
+  //       });
+  //     }
+  //     let where_clause: any = {
+  //       [Op.and]: [
+  //         {
+  //           [Op.or]: [
+  //             {
+  //               [Op.and]: [
+  //                 { from_adrs: { [Op.in]: addresses } },
+  //                 { user_id: userId },
+  //                 {
+  //                   [Op.or]: [
+  //                     { blockchain_status: GlblBlockchainTxStatusEnum.PENDING },
+  //                     { blockchain_status: GlblBlockchainTxStatusEnum.FAILED },
+  //                     {
+  //                       blockchain_status: GlblBlockchainTxStatusEnum.CONFIRMED,
+  //                     },
+  //                     { blockchain_status: null },
+  //                   ],
+  //                 },
+  //               ],
+  //             },
+  //             {
+  //               [Op.and]: [
+  //                 { to_adrs: { [Op.in]: addresses } },
+  //                 { to_user_id: userId },
+  //                 { blockchain_status: GlblBlockchainTxStatusEnum.CONFIRMED },
+  //               ],
+  //             },
+  //           ],
+  //         },
+  //         {
+  //           created_at: {
+  //             [Op.gt]: last_month_date,
+  //           },
+  //         },
+  //       ],
+  //     };
 
-      let atr: any = [
-        [
-          Sequelize.fn('CASE',
-            Sequelize.where(Sequelize.col('type'), {
-              [Op.in]: ['withdraw', 'deposit']
-            }),
-            Sequelize.fn('CASE',
-              Sequelize.where(Sequelize.col('user_id'), userId),
-              Sequelize.fn('CONCAT',
-                Sequelize.fn('UPPER', Sequelize.fn('SUBSTRING', 'withdraw', 1, 1)),
-                Sequelize.fn('SUBSTRING', 'withdraw', 2)
-              ),
-              'ELSE',
-              Sequelize.fn('CONCAT',
-                Sequelize.fn('UPPER', Sequelize.fn('SUBSTRING', 'deposit', 1, 1)),
-                Sequelize.fn('SUBSTRING', 'deposit', 2)
-              )
-            ),
-            'ELSE',
-            Sequelize.fn('CONCAT',
-              Sequelize.fn('UPPER', Sequelize.fn('SUBSTRING', Sequelize.col('type'), 1, 1)),
-              Sequelize.fn('SUBSTRING', Sequelize.col('type'), 2)
-            )
-          ),
-          'type'
-        ],
-        "from_adrs",
-        "to_adrs",
-        "tx_id",
-        "status",
-        "blockchain_status",
-        "amount",
-        "tx_fee",
-        "created_at",
-      ];
+  //     let atr: any = [
+  //       [
+  //         Sequelize.fn('CASE',
+  //           Sequelize.where(Sequelize.col('type'), {
+  //             [Op.in]: ['withdraw', 'deposit']
+  //           }),
+  //           Sequelize.fn('CASE',
+  //             Sequelize.where(Sequelize.col('user_id'), userId),
+  //             Sequelize.fn('CONCAT',
+  //               Sequelize.fn('UPPER', Sequelize.fn('SUBSTRING', 'withdraw', 1, 1)),
+  //               Sequelize.fn('SUBSTRING', 'withdraw', 2)
+  //             ),
+  //             'ELSE',
+  //             Sequelize.fn('CONCAT',
+  //               Sequelize.fn('UPPER', Sequelize.fn('SUBSTRING', 'deposit', 1, 1)),
+  //               Sequelize.fn('SUBSTRING', 'deposit', 2)
+  //             )
+  //           ),
+  //           'ELSE',
+  //           Sequelize.fn('CONCAT',
+  //             Sequelize.fn('UPPER', Sequelize.fn('SUBSTRING', Sequelize.col('type'), 1, 1)),
+  //             Sequelize.fn('SUBSTRING', Sequelize.col('type'), 2)
+  //           )
+  //         ),
+  //         'type'
+  //       ],
+  //       "from_adrs",
+  //       "to_adrs",
+  //       "tx_id",
+  //       "status",
+  //       "blockchain_status",
+  //       "amount",
+  //       "tx_fee",
+  //       "created_at",
+  //     ];
 
-      await Models.TrnxHistoryModel.findAll({
-        attributes: atr,
-        where: where_clause,
-        order: [["created_at", "DESC"]],
-      }).then((objs) => {
-        let data: any = [];
-        objs.forEach((obj) => {
-          obj.type =
-            obj.type == "Cross_chain"
-              ? language[lang].CROSS_CHAIN
-              : obj.type == "Dapp"
-                ? language[lang].DAPP
-                : obj.type == "Deposit"
-                  ? language[lang].DEPOSIT
-                  : obj.type == "Swap"
-                    ? language[lang].SWAP
-                    : obj.type == "Withdraw"
-                      ? language[lang].WITHDRAW
-                      : obj.type == "Approve"
-                        ? language[lang].APPROVE
-                        : obj.type == "Buy"
-                          ? language[lang].BUY
-                          : obj.type == "Card_fees"
-                            ? language[lang].CARD_FEES
-                            : obj.type == "Level_upgradation_fee"
-                              ? language[lang].LEVEL_UPGRADE
-                              : language[lang].CARD_RECHARGE;
-          obj.status =
-            obj.status == "completed"
-              ? language[lang].COMPLETED
-              : language[lang].FAILED_STATUS;
-          obj.blockchain_status =
-            obj.blockchain_status == "confirmed"
-              ? language[lang].CONFIRMED
-              : obj.blockchain_status == "failed"
-                ? language[lang].FAILED_STATUS
-                : language[lang].PENDING_STATUS;
-          const {
-            type,
-            from_adrs,
-            to_adrs,
-            tx_id,
-            status,
-            blockchain_status,
-            amount,
-            tx_fee,
-            created_at,
-          }: any = obj;
-          data.push({
-            type,
-            from_adrs,
-            to_adrs,
-            tx_id,
-            status,
-            blockchain_status,
-            amount,
-            tx_fee,
-            created_at,
-          });
-        });
-        const opts = {
-          fields: [
-            { label: `${language[lang].TYPE}`, value: "type" },
-            { label: `${language[lang].FROM_ADRS}`, value: "from_adrs" },
-            { label: `${language[lang].TO_ADRS}`, value: "to_adrs" },
-            { label: `${language[lang].TX_ID}`, value: "tx_id" },
-            { label: `${language[lang].STATUS}`, value: "status" },
-            {
-              label: `${language[lang].BLOCKCHAIN_STATUS}`,
-              value: "blockchain_status",
-            },
-            { label: `${language[lang].AMOUNT}`, value: "amount" },
-            { label: `${language[lang].TRNX_FEE}`, value: "tx_fee" },
-            { label: `${language[lang].CREATED}`, value: "created_at" },
-          ],
-        };
-        const parser = new Parser(opts);
-        const csvData = parser.parse(data);
-        res.setHeader("Content-Type", "text/csv");
-        res.setHeader(
-          "Content-Disposition",
-          "attachment; filename=transaction_history.csv"
-        );
-        res.status(GlblCode.SUCCESS).end(csvData);
-      });
-    } catch (err: any) {
-      console.error("Error in wallet > downloadCsv.", err);
-      await commonHelper.save_error_logs("wallet_downloadCsv", err.message);
-      let data = {
-        code: GlblCode.ERROR_CODE,
-        status: false,
-        message: language[lang].CATCH_MSG,
-      };
-      return res.status(data.code).send(data);
-    }
-  }
+  //     await Models.TrnxHistoryModel.findAll({
+  //       attributes: atr,
+  //       where: where_clause,
+  //       order: [["created_at", "DESC"]],
+  //     }).then((objs) => {
+  //       let data: any = [];
+  //       objs.forEach((obj) => {
+  //         obj.type =
+  //           obj.type == "Cross_chain"
+  //             ? language[lang].CROSS_CHAIN
+  //             : obj.type == "Dapp"
+  //               ? language[lang].DAPP
+  //               : obj.type == "Deposit"
+  //                 ? language[lang].DEPOSIT
+  //                 : obj.type == "Swap"
+  //                   ? language[lang].SWAP
+  //                   : obj.type == "Withdraw"
+  //                     ? language[lang].WITHDRAW
+  //                     : obj.type == "Approve"
+  //                       ? language[lang].APPROVE
+  //                       : obj.type == "Buy"
+  //                         ? language[lang].BUY
+  //                         : obj.type == "Card_fees"
+  //                           ? language[lang].CARD_FEES
+  //                           : obj.type == "Level_upgradation_fee"
+  //                             ? language[lang].LEVEL_UPGRADE
+  //                             : language[lang].CARD_RECHARGE;
+  //         obj.status =
+  //           obj.status == "completed"
+  //             ? language[lang].COMPLETED
+  //             : language[lang].FAILED_STATUS;
+  //         obj.blockchain_status =
+  //           obj.blockchain_status == "confirmed"
+  //             ? language[lang].CONFIRMED
+  //             : obj.blockchain_status == "failed"
+  //               ? language[lang].FAILED_STATUS
+  //               : language[lang].PENDING_STATUS;
+  //         const {
+  //           type,
+  //           from_adrs,
+  //           to_adrs,
+  //           tx_id,
+  //           status,
+  //           blockchain_status,
+  //           amount,
+  //           tx_fee,
+  //           created_at,
+  //         }: any = obj;
+  //         data.push({
+  //           type,
+  //           from_adrs,
+  //           to_adrs,
+  //           tx_id,
+  //           status,
+  //           blockchain_status,
+  //           amount,
+  //           tx_fee,
+  //           created_at,
+  //         });
+  //       });
+  //       const opts = {
+  //         fields: [
+  //           { label: `${language[lang].TYPE}`, value: "type" },
+  //           { label: `${language[lang].FROM_ADRS}`, value: "from_adrs" },
+  //           { label: `${language[lang].TO_ADRS}`, value: "to_adrs" },
+  //           { label: `${language[lang].TX_ID}`, value: "tx_id" },
+  //           { label: `${language[lang].STATUS}`, value: "status" },
+  //           {
+  //             label: `${language[lang].BLOCKCHAIN_STATUS}`,
+  //             value: "blockchain_status",
+  //           },
+  //           { label: `${language[lang].AMOUNT}`, value: "amount" },
+  //           { label: `${language[lang].TRNX_FEE}`, value: "tx_fee" },
+  //           { label: `${language[lang].CREATED}`, value: "created_at" },
+  //         ],
+  //       };
+  //       const parser = new Parser(opts);
+  //       const csvData = parser.parse(data);
+  //       res.setHeader("Content-Type", "text/csv");
+  //       res.setHeader(
+  //         "Content-Disposition",
+  //         "attachment; filename=transaction_history.csv"
+  //       );
+  //       res.status(GlblCode.SUCCESS).end(csvData);
+  //     });
+  //   } catch (err: any) {
+  //     console.error("Error in wallet > downloadCsv.", err);
+  //     await commonHelper.save_error_logs("wallet_downloadCsv", err.message);
+  //     let data = {
+  //       code: GlblCode.ERROR_CODE,
+  //       status: false,
+  //       message: language[lang].CATCH_MSG,
+  //     };
+  //     return res.status(data.code).send(data);
+  //   }
+  // }
 
   public async rpcBalance(req: Request, res: Response) {
     const lang: string = req.headers["content-language"] || "en";
