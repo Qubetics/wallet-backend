@@ -1,23 +1,26 @@
 import { Request } from "express";
-import { AbiItem } from "web3-utils";
+import { AbiItem } from "../../../interfaces/ether.interface";
 import { config } from "../../../config";
 import { exponentialToDecimal } from "../../../helpers/common/globalFunctions";
 import { HelpersInterface } from "../../../interfaces/helpers.interface";
-import { ticsWeb3 } from "../../../helpers/common/web3_tics_helpers";
+import { ticsWeb3 } from "../../../helpers/common/ether_tics_helpers";
 import { language } from "../../../constants";
 import commonHelper from "../../../helpers/common/common.helpers";
+import { ethers } from "ethers";
 
 class TicsHelpers implements HelpersInterface {
 
   public initialize() { }
 
-  public async getGasPrice(inTics: boolean): Promise<string | number> {
+  public async getGasPrice(inTics: boolean): Promise<string | bigint> {
     try {
-      let gasPrice = await ticsWeb3.web3.eth.getGasPrice();
-      if (inTics == true) {
-        gasPrice = ticsWeb3.web3.utils.fromWei(gasPrice, "gwei");
+      const feeData = await ticsWeb3.provider.getFeeData();
+      const gasPrice = feeData.gasPrice;
+      
+      if (inTics === true && gasPrice) {
+        return ethers.formatUnits(gasPrice, "gwei");
       }
-      return gasPrice;
+      return gasPrice || BigInt(0);
     } catch (error) {
       console.log('🔥 ~ ~ getGasPrice node.avax.helper.ts error', error);
       throw error;
@@ -26,11 +29,12 @@ class TicsHelpers implements HelpersInterface {
 
   public async searchToken(token_contract: string) {
     try {
-      let { Contract }: any = ticsWeb3.web3.eth;
-      let contract: any = new Contract(config.CONTRACT_ABI as AbiItem[], token_contract as string);
-      let decimals: number = await contract.methods.decimals().call();
-      let name: string = await contract.methods.name().call();
-      let symbol: string = await contract.methods.symbol().call();
+      const contract = new ethers.Contract(token_contract, config.CONTRACT_ABI, ticsWeb3.provider);
+            const [decimals, name, symbol] = await Promise.all([
+              contract.decimals(),
+              contract.name(),
+              contract.symbol()
+            ]);
       if (!decimals) {
         return { decimals: 0, name: "", symbol: "" };
       }
@@ -43,32 +47,50 @@ class TicsHelpers implements HelpersInterface {
   }
 
   public async getWalletNonce(wallet: string): Promise<number> {
-    return await ticsWeb3.web3.eth.getTransactionCount(wallet, "pending");
+    try {
+      return await ticsWeb3.provider.getTransactionCount(wallet, "pending");
+    } catch (err: any) {
+      console.error("getWalletNonce_eth", err);
+      throw err;
+    }
   }
   async getErc20TokenTransferGasEstimationCost(
     token_contract: string | null | undefined,
     token_abi: AbiItem[] | string,
-    fromAdress: string,
+    fromAddress: string,
     toAddress: string,
     lang: string
   ) {
-    try {
+ try {
+      let gasLimit = BigInt(0);
+      
       if (token_contract) {
-        let contract = new ticsWeb3.web3.eth.Contract(
-          token_abi as AbiItem[],
-          token_contract
+        const contract = new ethers.Contract(
+          token_contract,
+          token_abi,
+          ticsWeb3.provider
         );
-        var tokenValue = await contract.methods.balanceOf(fromAdress).call();
-        tokenValue = await exponentialToDecimal(tokenValue as number);
-        var gasLimit = await contract.methods
-          .transfer(toAddress, tokenValue)
-          .estimateGas({ from: fromAdress });
-        gasLimit = gasLimit * 3;
+        const tokenValue = await contract.balanceOf(fromAddress);
+        if (tokenValue == BigInt(0)) {
+          return {
+            status: false,
+            gas_estimate: 60000,
+            message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('ETH')
+          };
+        }
+        
+        gasLimit = await contract.getFunction("transfer").estimateGas(
+          toAddress, 
+          tokenValue,
+          { from: fromAddress }
+        );
+        
+        gasLimit = gasLimit * BigInt(3);
       }
       return {
         status: true,
         gas_estimate:
-          gasLimit == 0 ? 60000 : Math.floor(parseFloat(gasLimit.toString())),
+          gasLimit == BigInt(0) ? 60000 : Math.floor(parseFloat(gasLimit.toString())),
         message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('TICS')
       };
 
@@ -84,13 +106,12 @@ class TicsHelpers implements HelpersInterface {
   }
   async getTicsGasLimit(from: string, to: string, lang: string) {
     try {
-      var amount = await ticsWeb3.get_coin_balance(from, true);
-      var amountWei = await ticsWeb3.web3.utils.toWei(amount.toString(), "ether");
-      var amountHex = await ticsWeb3.web3.utils.toHex(amountWei);
-      var gasLimit = await ticsWeb3.web3.eth.estimateGas({
+      const amount = await ticsWeb3.get_coin_balance(from, true);
+      const amountWei = ethers.parseEther(amount);
+      const gasLimit = await ticsWeb3.provider.estimateGas({
         from: from,
         to: to,
-        value: amountHex,
+        value: amountWei,
       });
 
       return {
@@ -108,15 +129,18 @@ class TicsHelpers implements HelpersInterface {
     }
   }
   public async broadcastTicsRawTx(rawTx: string, cb: CallableFunction) {
-    var sendRawRes = await ticsWeb3.web3.eth
-      .sendSignedTransaction("0x" + rawTx)
-      .on("transactionHash", (txHash) => {
-        cb(null, txHash);
-      })
-      .on("error", (err) => {
-        console.error("err:: ", err);
-        cb(err, null);
-      });
+    try {
+      const prefixedRawTx = rawTx.startsWith('0x') ? rawTx : '0x' + rawTx;
+      const txResponse = await ticsWeb3.provider.broadcastTransaction(prefixedRawTx);
+      
+      cb(null, txResponse.hash);
+      return txResponse;
+    } catch (error) {
+      console.error("broadcastEthRawTx error:", error);
+      // Call callback with error
+      cb(error, null);
+      throw error;
+    }
   }
   public async sendTicsOrTokens(
     req: Request,
@@ -149,9 +173,14 @@ class TicsHelpers implements HelpersInterface {
 
     }
   }
-  public async convertWeiToTics(value: number): Promise<string> {
-    let valueInTics: any = await ticsWeb3.web3.utils.fromWei(value.toString(), "ether");
-    return valueInTics;
+  public async convertWeiToTics(value: number | bigint | string): Promise<string> {
+    try {
+      const valueAsString = value.toString();
+      return ethers.formatEther(valueAsString);;
+    } catch (error) {
+      console.error("convertWeiToEth error:", error);
+      throw error;
+    }
   }
 
 }

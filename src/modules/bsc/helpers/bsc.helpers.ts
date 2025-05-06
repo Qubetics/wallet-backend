@@ -1,11 +1,12 @@
 
 import { config } from "../../../config";
-import { AbiItem } from "web3-utils";
+import { AbiItem } from "../../../interfaces/ether.interface";
 import { TokenType } from "../../../constants/global_enum";
-import { bscWeb3 } from "../../../helpers/common/web3.bsc_helper";
+import { bscWeb3 } from "../../../helpers/common/ether_bsc_helpers";
 import commonHelper from "../../../helpers/common/common.helpers";
 import { bigNumberSafeMath } from "../../../helpers/common/globalFunctions";
 import { language } from "../../../constants";
+import { ethers } from "ethers";
 
 
 
@@ -37,45 +38,55 @@ class BscHelpers {
         }
 
     }
-    public async convertWeiToEth(value: number): Promise<string> {
-        var valueInEth = await bscWeb3.web3.utils.fromWei(value.toString(), "ether");
-        return valueInEth;
+  public async convertWeiToEth(value: number | bigint | string): Promise<string> {
+    try {
+      const valueAsString = value.toString();
+      return ethers.formatEther(valueAsString);;
+    } catch (error) {
+      console.error("convertWeiToEth error:", error);
+      throw error;
     }
+  }
     public async getUserBEP20TokenBalance(
         tokenAddress: string | null | undefined,
         tokenAbi: AbiItem[],
         walletAddress: string
     ): Promise<number> {
         try {
-            if (tokenAddress) {
-                let contract = await new bscWeb3.web3.eth.Contract(tokenAbi, tokenAddress);
-                var decimals = await contract.methods.decimals().call();
-                var balance = await contract.methods.balanceOf(walletAddress).call();
-                var tokenBalance = await bigNumberSafeMath(
-                    balance,
-                    "/",
-                    Math.pow(10, decimals)
-                );
-                return tokenBalance;
+            if (!tokenAddress) return 0;
+
+            const contract = new ethers.Contract(tokenAddress, tokenAbi, bscWeb3.provider);
+            const [decimals, balanceRaw] = await Promise.all([
+                contract.decimals(),
+                contract.balanceOf(walletAddress)
+            ]);
+
+            let tokenBalance: string;
+            if (Number(decimals) === 18) {
+              tokenBalance = ethers.formatUnits(balanceRaw, 18);
+            } else {
+              tokenBalance = (await bigNumberSafeMath(balanceRaw.toString(), "/", Math.pow(10, Number(decimals)))).toString();
             }
-            return 0;
+            return Number(tokenBalance);
         } catch (error) {
             console.log("getUserBEP20TokenBalance catch error: ", error);
             return 0;
         }
     }
     public async broadcastBscRawTx(rawTx: string, cb: CallableFunction) {
-        await bscWeb3.web3.eth
-            .sendSignedTransaction("0x" + rawTx)
-            .on("transactionHash", (txHash) => {
-                console.log("tx", txHash)
-                cb(null, txHash);
-            })
-            .on("error", (err) => {
-                console.error("err:: ", err);
-                cb(err, null);
-            });
+    try {
+      const prefixedRawTx = rawTx.startsWith('0x') ? rawTx : '0x' + rawTx;
+      const txResponse = await bscWeb3.provider.broadcastTransaction(prefixedRawTx);
+      
+      cb(null, txResponse.hash);
+      return txResponse;
+    } catch (error) {
+      console.error("broadcastEthRawTx error:", error);
+      // Call callback with error
+      cb(error, null);
+      throw error;
     }
+  }
     public async sendBscOrTokens(
         req: any,
         lang: string,

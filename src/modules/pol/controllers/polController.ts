@@ -10,7 +10,7 @@ import { AbiItem } from "web3-utils";
 import { RawDataInterface } from "../interfaces/interfaces.pol";
 import { language } from "../../../constants";
 import response from "../../../helpers/response/response.helpers";
-import { polWeb3 } from "../../../helpers/common/web3_pol_helpers";
+import { polWeb3 } from "../../../helpers/common/ether_pol_helpers";
 import commonHelper from "../../../helpers/common/common.helpers";
 
 class PolController implements OnlyControllerInterface {
@@ -58,8 +58,8 @@ class PolController implements OnlyControllerInterface {
 
       let estimationRes: {
         status: boolean;
-        gas_estimate: number;
-        message: string;
+        gas_estimate: any;
+        message: any;
       };
       //Gas estimation 0 for coins other than BSC/BEP20
       if (

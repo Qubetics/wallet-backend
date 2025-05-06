@@ -10,7 +10,8 @@ import { AbiItem } from "web3-utils";
 import { RawDataInterface } from "../interfaces/interfaces.eth";
 import { language } from "../../../constants";
 import response from "../../../helpers/response/response.helpers";
-import { ethWeb3 } from "../../../helpers/common/web3_eth_helpers";
+// import { ethWeb3 } from "../../../helpers/common/web3_eth_helpers";
+import { ethWeb3 } from "../../../helpers/common/ether_eth_helpers";
 import commonHelper from "../../../helpers/common/common.helpers";
 import { TokenType } from "../../../constants/global_enum";
 
@@ -67,8 +68,8 @@ class EthController implements OnlyControllerInterface {
       } else if (req.coininfo) {
         let estimationRes: {
           status: boolean;
-          gas_estimate: number;
-          message: string;
+          gas_estimate: any;
+          message: any;
         } = { status: true, gas_estimate: 0, message: '' }
         const { from, to, amount, token_value }: { from: string; to: string, amount: number, token_value: string } = req.body;
         const { token_address, token_abi, is_token, token_type } = req.coininfo;

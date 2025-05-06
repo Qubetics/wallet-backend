@@ -1,5 +1,5 @@
 declare namespace Express {
-  import { AbiItem } from "web3-utils";
+  import { AbiItem } from "../../interfaces/ether.interface";
   export interface Request {
     device_token: string;
     userId: number;

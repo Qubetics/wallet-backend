@@ -1,11 +1,10 @@
 import { Request } from "express";
-import { AbiItem } from "web3-utils";
 import { config } from "../../../config";
-import { exponentialToDecimal } from "../../../helpers/common/globalFunctions";
 import { HelpersInterface } from "../../../interfaces/helpers.interface";
-import { ethWeb3 } from "../../../helpers/common/web3_eth_helpers";
+import { ethWeb3 } from "../../../helpers/common/ether_eth_helpers";
 import { language } from "../../../constants";
 import commonHelper from "../../../helpers/common/common.helpers";
+import { ethers } from "ethers";
 
 class EthHelpers implements HelpersInterface {
 
@@ -14,11 +13,12 @@ class EthHelpers implements HelpersInterface {
 
   public async searchToken(token_contract: string) {
     try {
-      let { Contract }: any = ethWeb3.web3.eth;
-      let contract: any = new Contract(config.CONTRACT_ABI as AbiItem[], token_contract as string);
-      let decimals: number = await contract.methods.decimals().call();
-      let name: string = await contract.methods.name().call();
-      let symbol: string = await contract.methods.symbol().call();
+      const contract = new ethers.Contract(token_contract, config.CONTRACT_ABI, ethWeb3.provider);
+      const [decimals, name, symbol] = await Promise.all([
+        contract.decimals(),
+        contract.name(),
+        contract.symbol()
+      ]);
       if (!decimals) {
         return { decimals: 0, name: "", symbol: "" };
       }
@@ -31,39 +31,58 @@ class EthHelpers implements HelpersInterface {
   }
 
   public async getWalletNonce(wallet: string): Promise<number> {
-    return await ethWeb3.web3.eth.getTransactionCount(wallet);
+    try {
+      return await ethWeb3.provider.getTransactionCount(wallet, "pending");
+    } catch (err: any) {
+      console.error("getWalletNonce_eth", err);
+      throw err;
+    }
   }
+
   async getErc20TokenTransferGasEstimationCost(
     token_contract: string | null | undefined,
-    token_abi: AbiItem[] | string,
-    fromAdress: string,
+    token_abi: any,
+    fromAddress: string,
     toAddress: string,
     lang: string
   ) {
     try {
+      let gasLimit = BigInt(0);
+      
       if (token_contract) {
-        let contract = new ethWeb3.web3.eth.Contract(
-          token_abi as AbiItem[],
-          token_contract
+        const contract = new ethers.Contract(
+          token_contract,
+          token_abi,
+          ethWeb3.provider
         );
-        var tokenValue = await contract.methods.balanceOf(fromAdress).call();
-        tokenValue = await exponentialToDecimal(tokenValue as number);
-        var gasLimit = await contract.methods
-          .transfer(toAddress, tokenValue)
-          .estimateGas({ from: fromAdress });
-        gasLimit = gasLimit * 3;
+        const tokenValue = await contract.balanceOf(fromAddress);
+        if (tokenValue == BigInt(0)) {
+          return {
+            status: false,
+            gas_estimate: 60000,
+            message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('ETH')
+          };
+        }
+        
+        gasLimit = await contract.getFunction("transfer").estimateGas(
+          toAddress, 
+          tokenValue,
+          { from: fromAddress }
+        );
+        
+        gasLimit = gasLimit * BigInt(3);
       }
+      
       return {
         status: true,
-        gas_estimate:
-          gasLimit == 0 ? 60000 : Math.floor(parseFloat(gasLimit.toString())),
+        gas_estimate: 
+          gasLimit == BigInt(0) ? 60000 : Math.floor(Number(gasLimit)),
         message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('ETH')
       };
-
-      //return 0;
     } catch (err: any) {
       await commonHelper.save_error_logs("eth_getErc20TokenTransferGasEstimationCost", err.message);
       console.error("error, for try catch", err);
+      
       return {
         status: false,
         gas_estimate: 60000,
@@ -79,26 +98,30 @@ class EthHelpers implements HelpersInterface {
     lang: string
   ) {
     try {
-      let nonce = await ethWeb3.web3.eth.getTransactionCount(fromAddress, 'pending');
-      let contract = new ethWeb3.web3.eth.Contract(
-        config.ERC721ABI as AbiItem[],
-        tokenAddress
-      );
-      let data = await contract.methods
-        .transferFrom(fromAddress, toAddress, tokenValue)
-        .encodeABI();
-      let gasLimit = await ethWeb3.web3.eth.estimateGas({
-        from: fromAddress,
-        nonce: nonce,
-        to: tokenAddress,
-        data: data,
-      });
-      return {
-        status: true,
-        gas_estimate:
-          gasLimit == 0 ? 120000 : Math.floor(parseFloat(gasLimit.toString())),
-        message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('ETH')
-      };
+    const nonce = await ethWeb3.provider.getTransactionCount(fromAddress, 'pending');
+    
+    const contract = new ethers.Contract(
+      tokenAddress,
+      config.ERC721ABI,
+      ethWeb3.provider
+    );
+
+    const data = contract.interface.encodeFunctionData(
+      "transferFrom", 
+      [fromAddress, toAddress, tokenValue]
+    );
+    const gasLimit = await ethWeb3.provider.estimateGas({
+      from: fromAddress,
+      nonce: nonce,
+      to: tokenAddress,
+      data: data,
+    });
+    return {
+      status: true,
+      gas_estimate:
+        gasLimit == BigInt(0) ? 120000 : Math.floor(Number(gasLimit)),
+      message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('ETH')
+    };
     } catch (error) {
       console.error("🔥 ~ ~ getErc721TokenTransferGasEstimationCost node.eth.helper.ts error")
       return {
@@ -118,24 +141,20 @@ class EthHelpers implements HelpersInterface {
     lang: string
   ) {
     try {
-      let nonce = await ethWeb3.web3.eth.getTransactionCount(
-        fromAddress,
-        'pending'
+      const nonce = await ethWeb3.provider.getTransactionCount(fromAddress, 'pending');
+    
+      const contract = new ethers.Contract(
+        tokenAddress,
+        config.ERC1155ABI,
+        ethWeb3.provider
       );
-      let contract = new ethWeb3.web3.eth.Contract(
-        config.ERC1155ABI as AbiItem[],
-        tokenAddress
+      
+      const data = contract.interface.encodeFunctionData(
+        "safeTransferFrom", 
+        [fromAddress, toAddress, tokenValue, tokenAmount, '0x0']
       );
-      let data = await contract.methods
-        .safeTransferFrom(
-          fromAddress,
-          toAddress,
-          tokenValue,
-          tokenAmount,
-          '0x0'
-        )
-        .encodeABI();
-      let gasLimit = await ethWeb3.web3.eth.estimateGas({
+      
+      const gasLimit = await ethWeb3.provider.estimateGas({
         from: fromAddress,
         nonce: nonce,
         to: tokenAddress,
@@ -144,7 +163,7 @@ class EthHelpers implements HelpersInterface {
       return {
         status: true,
         gas_estimate:
-          gasLimit == 0 ? 120000 : Math.floor(parseFloat(gasLimit.toString())),
+          gasLimit == BigInt(0) ? 120000 : Math.floor(Number(gasLimit)),
         message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('ETH')
       };
     } catch (error) {
@@ -159,13 +178,12 @@ class EthHelpers implements HelpersInterface {
 
   async getEthGasLimit(from: string, to: string, lang: string) {
     try {
-      var amount = await ethWeb3.get_coin_balance(from, true);
-      var amountWei = await ethWeb3.web3.utils.toWei(amount.toString(), "ether");
-      var amountHex = await ethWeb3.web3.utils.toHex(amountWei);
-      var gasLimit = await ethWeb3.web3.eth.estimateGas({
+      const amount = await ethWeb3.get_coin_balance(from, true);
+      const amountWei = ethers.parseEther(amount);
+      const gasLimit = await ethWeb3.provider.estimateGas({
         from: from,
         to: to,
-        value: amountHex,
+        value: amountWei,
       });
 
       return {
@@ -184,15 +202,18 @@ class EthHelpers implements HelpersInterface {
   }
 
   public async broadcastEthRawTx(rawTx: string, cb: CallableFunction) {
-    var sendRawRes = await ethWeb3.web3.eth
-      .sendSignedTransaction("0x" + rawTx)
-      .on("transactionHash", (txHash) => {
-        cb(null, txHash);
-      })
-      .on("error", (err) => {
-        console.error("err:: ", err);
-        cb(err, null);
-      });
+    try {
+      const prefixedRawTx = rawTx.startsWith('0x') ? rawTx : '0x' + rawTx;
+      const txResponse = await ethWeb3.provider.broadcastTransaction(prefixedRawTx);
+      
+      cb(null, txResponse.hash);
+      return txResponse;
+    } catch (error) {
+      console.error("broadcastEthRawTx error:", error);
+      // Call callback with error
+      cb(error, null);
+      throw error;
+    }
   }
   public async sendEthOrTokens(
     req: Request,
@@ -225,9 +246,14 @@ class EthHelpers implements HelpersInterface {
 
     }
   }
-  public async convertWeiToEth(value: number): Promise<string> {
-    let valueInEth: any = await ethWeb3.web3.utils.fromWei(value.toString(), "ether");
-    return valueInEth;
+  public async convertWeiToEth(value: number | bigint | string): Promise<string> {
+    try {
+      const valueAsString = value.toString();
+      return ethers.formatEther(valueAsString);;
+    } catch (error) {
+      console.error("convertWeiToEth error:", error);
+      throw error;
+    }
   }
 
 }

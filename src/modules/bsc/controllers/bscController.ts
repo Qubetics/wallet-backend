@@ -7,7 +7,7 @@ import { config } from "../../../config";
 import { AbiItem } from "web3-utils";
 import dbHelper, { gas_prices_queries } from "../../../helpers/dbHelper/index";
 import { language } from "../../../constants";
-import { bscWeb3 } from "../../../helpers/common/web3.bsc_helper";
+import { bscWeb3 } from "../../../helpers/common/ether_bsc_helpers";
 import { BscHelper } from "../helpers/bsc.helpers";
 import { BlockChain, TokenType } from "../../../constants/global_enum";
 

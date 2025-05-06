@@ -1,10 +1,9 @@
 import { chainId_coinFamily, coinFamily_chainId } from "../../constants/global_enum";
 import { config } from "../../config";
-
-import { ethWeb3 } from "../../helpers/common/web3_eth_helpers";
 import { OnlyControllerInterface } from "../../interfaces/controller.interface";
 
 import axios from "axios";
+import { ethers } from "ethers";
 class OnChainHelpers implements OnlyControllerInterface {
     public on_chain_api_url: string;
     constructor() {
@@ -228,7 +227,7 @@ class OnChainHelpers implements OnlyControllerInterface {
             try {
 
                 if (datafecth.length > 0) {
-                    let tokenValidate = await ethWeb3.web3.utils.toChecksumAddress(netdata.address);
+                    let tokenValidate = ethers.getAddress(netdata.address);
                     let datafix: any = {
                         coin_symbol: netdata.symbol,
                         coin_name: netdata.name,

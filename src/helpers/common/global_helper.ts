@@ -1,20 +1,22 @@
 import axios from "axios";
 import { config } from "../../config";
-import { ethWeb3 } from "./web3_eth_helpers";
+// import { ethWeb3 } from "./web3_eth_helpers";
+import { ethWeb3 } from "./ether_eth_helpers";
 import { GlblCoins, GlblMessages, TradingSourceResponse } from "../../constants/global_enum";
 import { utxobtc } from "./web3_btc_helpers";
 import { trxWeb3 } from "./web3_trx_helper";
 import { CoinInterface, NotificationInterface } from "../../models";
-import { AbiItem } from "web3-utils";
+import { AbiItem } from "../../interfaces/ether.interface";
+// import { AbiItem } from "web3-utils";
 import { exponentialToDecimal } from "./globalFunctions";
 import * as Models from '../../models/model/index';
 import commonHelper from "./common.helpers";
-import { bscWeb3 } from "./web3.bsc_helper";
+import { bscWeb3 } from "./ether_bsc_helpers";
 import { URL as _URL, URLSearchParams as _URLSearchParams } from "url";
-import { polWeb3 } from "./web3_pol_helpers";
+import { polWeb3 } from "./ether_pol_helpers";
 import { SolanaHelper } from "./solana.helper";
 import cmcHelper from "./cmc.helpers";
-import { ticsWeb3 } from "./web3_tics_helpers";
+import { ticsWeb3 } from "./ether_tics_helpers";
 import firebaseAdmin from 'firebase-admin';
 import { fcmServiceAccount } from "../../constants/firebase.admin.key";
 

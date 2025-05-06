@@ -10,7 +10,7 @@ import { AbiItem } from "web3-utils";
 import { RawDataInterface } from "../interfaces/interfaces.tics";
 import { language } from "../../../constants";
 import response from "../../../helpers/response/response.helpers";
-import { ticsWeb3 } from "../../../helpers/common/web3_tics_helpers";
+import { ticsWeb3 } from "../../../helpers/common/ether_tics_helpers";
 import commonHelper from "../../../helpers/common/common.helpers";
 
 class TicsController implements OnlyControllerInterface {
@@ -58,8 +58,8 @@ class TicsController implements OnlyControllerInterface {
 
       var estimationRes: {
         status: boolean;
-        gas_estimate: number;
-        message: string;
+        gas_estimate: any;
+        message: any;
       };
       //Gas estimation 0 for coins other than BSC/BEP20
       if (
