@@ -3,7 +3,7 @@ import * as Models from '../../models/model/index';
 import { TokenStandard } from './enum';
 import commonHelper from '../../helpers/common/common.helpers';
 import { exponentialToDecimal } from '../../helpers/common/globalFunctions';
-import { trxWeb3 } from '../../helpers/common/ether_trx_helper';
+import { trxWeb3 } from '../../helpers/common/trx_helper';
 
 class TronHelper {
  
