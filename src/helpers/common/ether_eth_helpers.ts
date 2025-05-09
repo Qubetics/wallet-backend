@@ -148,21 +148,6 @@ class EthWeb3 {
     }
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   public async getWalletNonce(wallet: string): Promise<number> {
     try {
       return await this.provider.getTransactionCount(wallet, "pending");

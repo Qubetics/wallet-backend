@@ -91,7 +91,7 @@ class TrxWeb3 {
             let balance: number | any = 0;
             if (coin.is_token == GlblBooleanEnum.true) {
                 balance = await this.TRC20_Token_Balance(address, coin.token_address, isString)
-            } else {
+            } else { 
                 balance = await this.Coin_Fetch_Balance(address);
             }
             return balance;

@@ -146,22 +146,6 @@ class TicsWeb3 {
     }
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   public async getGasPrice(inTics: boolean): Promise<string | bigint> {
     try {
       const feeData = await this.provider.getFeeData();
