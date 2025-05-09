@@ -3,7 +3,7 @@ import { config } from "../../config";
 // import { ethWeb3 } from "./web3_eth_helpers";
 import { ethWeb3 } from "./ether_eth_helpers";
 import { GlblCoins, GlblMessages, TradingSourceResponse } from "../../constants/global_enum";
-import { utxobtc } from "./web3_btc_helpers";
+import { utxobtc } from "./ether_btc_helpers";
 import { trxWeb3 } from "./web3_trx_helper";
 import { CoinInterface, NotificationInterface } from "../../models";
 import { AbiItem } from "../../interfaces/ether.interface";

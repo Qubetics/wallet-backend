@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { EthHelper } from "../helpers";
 import { OnlyControllerInterface } from "../../../interfaces/controller.interface";
 import dbHelper from "../../../helpers/dbHelper";
 import { config } from "../../../config";
@@ -28,7 +27,7 @@ class EthController implements OnlyControllerInterface {
     var { wallet_address }: { wallet_address: string } = req.body;
     var nonce_val: number = 0;
     try {
-      var walletNonce = await EthHelper.getWalletNonce(wallet_address);
+      var walletNonce = await ethWeb3.getWalletNonce(wallet_address);
       nonce_val = walletNonce;
       return response.success(res, {
         data: {
@@ -76,7 +75,7 @@ class EthController implements OnlyControllerInterface {
         if (is_token && token_address) {
           if (token_type == TokenType.ERC20) {
             estimationRes =
-              await EthHelper.getErc20TokenTransferGasEstimationCost(
+              await ethWeb3.getErc20TokenTransferGasEstimationCost(
                 token_address,
                 token_abi,
                 from,
@@ -84,12 +83,12 @@ class EthController implements OnlyControllerInterface {
                 lang
               );
           } else if (token_type == TokenType.ERC721) {
-            estimationRes = await EthHelper.getErc721TokenTransferGasEstimationCost(to, from, token_value, token_address, lang);
+            estimationRes = await ethWeb3.getErc721TokenTransferGasEstimationCost(to, from, token_value, token_address, lang);
           } else if (amount) {
-            estimationRes = await EthHelper.getErc1155TokenTransferGasEstimationCost(to, from, token_value, token_address, amount, lang);
+            estimationRes = await ethWeb3.getErc1155TokenTransferGasEstimationCost(to, from, token_value, token_address, amount, lang);
           }
         } else {
-          estimationRes = await EthHelper.getEthGasLimit(from, to, lang);
+          estimationRes = await ethWeb3.getEthGasLimit(from, to, lang);
         }
         let resultList: any = await Models.GasPriceModel.findOne({
           where: {
@@ -189,7 +188,7 @@ class EthController implements OnlyControllerInterface {
       } = req.body;
 
       let maxGas = gas_price * gas_estimate;
-      var gasInETH = await EthHelper.convertWeiToEth(maxGas);
+      var gasInETH = await ethWeb3.convertWeiToEth(maxGas);
       gas_price = gasInETH;
       var gasInEthForErc = 0;
       // ETH only
@@ -247,7 +246,7 @@ class EthController implements OnlyControllerInterface {
           });
         }
       }
-      let transferData = await EthHelper.sendEthOrTokens(
+      let transferData = await ethWeb3.sendEthOrTokens(
         req,
         lang,
         tx_raw,

@@ -1,13 +1,12 @@
 import { Request, Response } from "express";
 import { OnlyControllerInterface } from "../../../interfaces/controller.interface";
 import { language } from "../../../constants";
-import { BtcHelper } from "../helpers/index"
 import response from "../../../helpers/response/response.helpers";
 import dbHelper from "../../../helpers/dbHelper";
 import { bigNumberSafeMath } from "../../../helpers/common/globalFunctions";
 import { config } from "../../../config";
 import { global_helper } from "../../../helpers/common/global_helper";
-import { utxobtc } from "../../../helpers/common/web3_btc_helpers";
+import { utxobtc } from "../../../helpers/common/ether_btc_helpers";
 import { GlblCode } from "../../../constants/global_enum";
 import commonHelper from "../../../helpers/common/common.helpers";
 import axios from "axios";
@@ -45,7 +44,7 @@ class BTCController implements OnlyControllerInterface {
         ? req.body.gas_estimate
         : 0;
       req.body.tx_status = "completed";
-      let dataFromBtc: any = await BtcHelper.sendRawTransaction(req.body.tx_raw);
+      let dataFromBtc: any = await utxobtc.sendRawTransaction(req.body.tx_raw);
       if (dataFromBtc.status == false) {
         return response.error(res, {
           data: {

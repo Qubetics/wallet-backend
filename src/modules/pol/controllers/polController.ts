@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { PolHelper } from "../helpers";
 import { OnlyControllerInterface } from "../../../interfaces/controller.interface";
 import dbHelper from "../../../helpers/dbHelper";
 import { config } from "../../../config";
@@ -26,7 +25,7 @@ class PolController implements OnlyControllerInterface {
     var { wallet_address }: { wallet_address: string } = req.body;
     var nonce_val: number = 0;
     try {
-      var walletNonce = await PolHelper.getWalletNonce(wallet_address);
+      var walletNonce = await polWeb3.getWalletNonce(wallet_address);
       nonce_val = walletNonce;
       return response.success(res, {
         data: {
@@ -74,7 +73,7 @@ class PolController implements OnlyControllerInterface {
         const { token_address, token_abi, is_token } = req.coininfo;
         if (is_token) {
           estimationRes =
-            await PolHelper.getErc20TokenTransferGasEstimationCost(
+            await polWeb3.getErc20TokenTransferGasEstimationCost(
               token_address,
               token_abi,
               from,
@@ -82,7 +81,7 @@ class PolController implements OnlyControllerInterface {
               lang
             );
         } else {
-          estimationRes = await PolHelper.getPolGasLimit(from, to, lang);
+          estimationRes = await polWeb3.getPolGasLimit(from, to, lang);
         }
         let resultList: any = await Models.GasPriceModel.findOne({
           where: {
@@ -181,7 +180,7 @@ class PolController implements OnlyControllerInterface {
 
       let maxGas = gas_price * gas_estimate;
       console.log('maxGas >>>', maxGas);
-      let gasInETH = await PolHelper.convertWeiToEth(maxGas);
+      let gasInETH = await polWeb3.convertWeiToEth(maxGas);
       console.log('gasInETH >>>', gasInETH);
       gas_price = gasInETH;
       let gasInEthForErc = 0;
@@ -241,7 +240,7 @@ class PolController implements OnlyControllerInterface {
         }
       }
       console.log('Raw >>>', gasInETH);
-      let transferData = await PolHelper.sendPolOrTokens(
+      let transferData = await polWeb3.sendPolOrTokens(
         req,
         lang,
         tx_raw,

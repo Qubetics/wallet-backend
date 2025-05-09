@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { TicsHelper } from "../helpers";
 import { OnlyControllerInterface } from "../../../interfaces/controller.interface";
 import dbHelper from "../../../helpers/dbHelper";
 import { config } from "../../../config";
@@ -26,7 +25,7 @@ class TicsController implements OnlyControllerInterface {
     var { wallet_address }: { wallet_address: string } = req.body;
     var nonce_val: number = 0;
     try {
-      var walletNonce = await TicsHelper.getWalletNonce(wallet_address);
+      var walletNonce = await ticsWeb3.getWalletNonce(wallet_address);
       nonce_val = walletNonce;
       return response.success(res, {
         data: {
@@ -74,7 +73,7 @@ class TicsController implements OnlyControllerInterface {
         const { token_address, token_abi, is_token } = req.coininfo;
         if (is_token) {
           estimationRes =
-            await TicsHelper.getErc20TokenTransferGasEstimationCost(
+            await ticsWeb3.getErc20TokenTransferGasEstimationCost(
               token_address,
               token_abi,
               from,
@@ -82,9 +81,9 @@ class TicsController implements OnlyControllerInterface {
               lang
             );
         } else {
-          estimationRes = await TicsHelper.getTicsGasLimit(from, to, lang);
+          estimationRes = await ticsWeb3.getTicsGasLimit(from, to, lang);
         }
-        const gas_price = await TicsHelper.getGasPrice(true);
+        const gas_price = await ticsWeb3.getGasPrice(true);
         return response.success(res, {
           data: {
             status: true,
@@ -178,7 +177,7 @@ class TicsController implements OnlyControllerInterface {
       } = req.body;
 
       let maxGas = gas_price * gas_estimate;
-      var gasInTICS = await TicsHelper.convertWeiToTics(maxGas);
+      var gasInTICS = await ticsWeb3.convertWeiToTics(maxGas);
       gas_price = gasInTICS;
       var gasInTicsForErc = 0;
       // TICS only
@@ -236,7 +235,7 @@ class TicsController implements OnlyControllerInterface {
           });
         }
       }
-      let transferData = await TicsHelper.sendTicsOrTokens(
+      let transferData = await ticsWeb3.sendTicsOrTokens(
         req,
         lang,
         tx_raw,

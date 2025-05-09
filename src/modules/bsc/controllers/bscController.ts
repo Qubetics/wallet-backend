@@ -8,7 +8,6 @@ import { AbiItem } from "web3-utils";
 import dbHelper, { gas_prices_queries } from "../../../helpers/dbHelper/index";
 import { language } from "../../../constants";
 import { bscWeb3 } from "../../../helpers/common/ether_bsc_helpers";
-import { BscHelper } from "../helpers/bsc.helpers";
 import { BlockChain, TokenType } from "../../../constants/global_enum";
 
 
@@ -24,7 +23,7 @@ class BNBController implements OnlyControllerInterface {
         try {
             console.log("req body bsc gas estimation >>>", req.body)
 
-            let fee_price_data: any = await BscHelper.get_fee_price(req.coininfo, req.body, lang);
+            let fee_price_data: any = await bscWeb3.get_fee_price(req.coininfo, req.body, lang);
             let resultList: any = await gas_prices_queries.gas_prices_find_one(['id', 'coin_family', 'safe_gas_price', 'propose_gas_price', 'fast_gas_price'], { coin_family: 1 })
 
             return response.success(res, {
@@ -52,7 +51,7 @@ class BNBController implements OnlyControllerInterface {
             let dapp_transaction: any = req.body.add_amount;
 
             let maxGas: number = gas_price * gas_estimate;
-            var gasInETH: any = await BscHelper.convertWeiToEth(maxGas);
+            var gasInETH: any = await bscWeb3.convertWeiToEth(maxGas);
             gas_price = gasInETH;
             if (req.coininfo.is_token == false && req.coininfo.coin_symbol == BlockChain.BNB) {
                 let withdrawAmount: any;
@@ -97,7 +96,7 @@ class BNBController implements OnlyControllerInterface {
                     });
                 }
             }
-            let transferData: any = await BscHelper.sendBscOrTokens(
+            let transferData: any = await bscWeb3.sendBscOrTokens(
                 req,
                 lang,
                 tx_raw,
