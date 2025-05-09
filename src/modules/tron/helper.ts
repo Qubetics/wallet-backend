@@ -3,7 +3,7 @@ import * as Models from '../../models/model/index';
 import { TokenStandard } from './enum';
 import commonHelper from '../../helpers/common/common.helpers';
 import { exponentialToDecimal } from '../../helpers/common/globalFunctions';
-import { trxWeb3 } from '../../helpers/common/trx_helper';
+import { trxHelper } from '../../helpers/common/trx_helper';
 
 class TronHelper {
  
@@ -54,7 +54,7 @@ class TronHelper {
             }
             let tronBurned = 0;
             if (energy > 0) {
-                const tronStationSDK = new TronStation(trxWeb3.tronWeb);
+                const tronStationSDK = new TronStation(trxHelper.tronWeb);
                 tronBurned = await tronStationSDK.energy.burnedEnergy2Trx(energy);
             }
             return {
@@ -78,7 +78,7 @@ class TronHelper {
         trnx_raw: any,
         clbk: CallableFunction
     ) => {
-        return await trxWeb3.tronWeb.trx.sendRawTransaction(trnx_raw).then(async (result: any) => {
+        return await trxHelper.tronWeb.trx.sendRawTransaction(trnx_raw).then(async (result: any) => {
             if (result.result == true && result.result != undefined) {
                 clbk(null, { result: true, data: result });
             } else {
@@ -93,7 +93,7 @@ class TronHelper {
     public getEstimationGas = async (data: { fromAddress: string, toAddress: string, amount: number, is_bridge: number, coinData: any }) => {
         try {
             console.log('getEstimationGas data >>', data);
-            return trxWeb3.getEstimationGas(data)
+            return trxHelper.getEstimationGas(data)
         } catch {
             return { status: false, data: {} }
         }
@@ -105,7 +105,7 @@ class TronHelper {
             const transaction: {
                 status: boolean;
                 data: { ret: [{ contractRet: string }] };
-            } = await trxWeb3.tronWeb.trx.getConfirmedTransaction(tx_hash).then((result: {}) => {
+            } = await trxHelper.tronWeb.trx.getConfirmedTransaction(tx_hash).then((result: {}) => {
                 console.log("trasacntion sytatus >>>>>>>>>true", result)
                 return { status: true, data: result };
             }).catch(async (error: {}) => {
@@ -121,7 +121,7 @@ class TronHelper {
     }
     public async GetTransactionInfo(tx_hash: string) {
         try {
-            return await trxWeb3.tronWeb.trx.getTransactionInfo(tx_hash).then(async (result: any) => {
+            return await trxHelper.tronWeb.trx.getTransactionInfo(tx_hash).then(async (result: any) => {
                 return { status: true, data: result };
             });
         } catch (err: any) {
@@ -135,17 +135,17 @@ class TronHelper {
         contract_address: string
     ) => {
         try {
-            await trxWeb3.tronWeb.setAddress(contract_address);
-            let contract = await trxWeb3.tronWeb.contract().at(contract_address);
+            await trxHelper.tronWeb.setAddress(contract_address);
+            let contract = await trxHelper.tronWeb.contract().at(contract_address);
             let decimals = await contract.decimals().call();
             if (decimals._hex != undefined) {
-                decimals = await trxWeb3.tronWeb.toDecimal(decimals._hex);
+                decimals = await trxHelper.tronWeb.toDecimal(decimals._hex);
             }
 
             let balanceOf = await contract.balanceOf(address).call();
-            let toDecimal = await trxWeb3.tronWeb.toDecimal(balanceOf._hex);
+            let toDecimal = await trxHelper.tronWeb.toDecimal(balanceOf._hex);
             if (balanceOf._hex == undefined) {
-                toDecimal = await trxWeb3.tronWeb.toDecimal(
+                toDecimal = await trxHelper.tronWeb.toDecimal(
                     balanceOf.balance._hex
                 );
             }
@@ -163,7 +163,7 @@ class TronHelper {
         contract_address: string
     ) => {
         try {
-            const assetBalance = await trxWeb3.tronWeb.trx.getAccount(address);
+            const assetBalance = await trxHelper.tronWeb.trx.getAccount(address);
 
             var balance: number = 0;
             if (
@@ -173,7 +173,7 @@ class TronHelper {
             ) {
                 for await (var i of assetBalance.assetV2) {
                     if (i.key == contract_address) {
-                        var assetDetails = await trxWeb3.tronWeb.trx.getTokenByID(
+                        var assetDetails = await trxHelper.tronWeb.trx.getTokenByID(
                             contract_address
                         );
                         var precison = Math.pow(10, assetDetails.precision);

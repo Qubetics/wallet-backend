@@ -7,7 +7,7 @@ import { language } from "../../constants";
 import commonHelper from "./common.helpers";
 import { AbiItem } from "../../interfaces/ether.interface";
 
-class PolWeb3 {
+class PolEther {
   public provider: ethers.JsonRpcProvider;
   public abi: AbiItem[] | string;
 
@@ -299,4 +299,4 @@ class PolWeb3 {
   }
 }
 
-export const polWeb3 = new PolWeb3();
+export const polEther = new PolEther();

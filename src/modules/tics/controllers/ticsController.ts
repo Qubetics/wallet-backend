@@ -9,7 +9,7 @@ import { AbiItem } from "web3-utils";
 import { RawDataInterface } from "../interfaces/interfaces.tics";
 import { language } from "../../../constants";
 import response from "../../../helpers/response/response.helpers";
-import { ticsWeb3 } from "../../../helpers/common/ether_tics_helpers";
+import { ticsEther } from "../../../helpers/common/ether_tics_helpers";
 import commonHelper from "../../../helpers/common/common.helpers";
 
 class TicsController implements OnlyControllerInterface {
@@ -25,7 +25,7 @@ class TicsController implements OnlyControllerInterface {
     var { wallet_address }: { wallet_address: string } = req.body;
     var nonce_val: number = 0;
     try {
-      var walletNonce = await ticsWeb3.getWalletNonce(wallet_address);
+      var walletNonce = await ticsEther.getWalletNonce(wallet_address);
       nonce_val = walletNonce;
       return response.success(res, {
         data: {
@@ -73,7 +73,7 @@ class TicsController implements OnlyControllerInterface {
         const { token_address, token_abi, is_token } = req.coininfo;
         if (is_token) {
           estimationRes =
-            await ticsWeb3.getErc20TokenTransferGasEstimationCost(
+            await ticsEther.getErc20TokenTransferGasEstimationCost(
               token_address,
               token_abi,
               from,
@@ -81,9 +81,9 @@ class TicsController implements OnlyControllerInterface {
               lang
             );
         } else {
-          estimationRes = await ticsWeb3.getTicsGasLimit(from, to, lang);
+          estimationRes = await ticsEther.getTicsGasLimit(from, to, lang);
         }
-        const gas_price = await ticsWeb3.getGasPrice(true);
+        const gas_price = await ticsEther.getGasPrice(true);
         return response.success(res, {
           data: {
             status: true,
@@ -177,7 +177,7 @@ class TicsController implements OnlyControllerInterface {
       } = req.body;
 
       let maxGas = gas_price * gas_estimate;
-      var gasInTICS = await ticsWeb3.convertWeiToTics(maxGas);
+      var gasInTICS = await ticsEther.convertWeiToTics(maxGas);
       gas_price = gasInTICS;
       var gasInTicsForErc = 0;
       // TICS only
@@ -188,7 +188,7 @@ class TicsController implements OnlyControllerInterface {
         } else {
           withdrawAmount = bigNumberSafeMath(amount, "+", gasInTICS);
         }
-        var ticsBalance = await ticsWeb3.get_coin_balance(from, true);
+        var ticsBalance = await ticsEther.get_coin_balance(from, true);
         if (Number(ticsBalance) < Number(withdrawAmount)) {
           return response.error(res, {
             data: { status: false, message: language[lang].INSUFFICIENT },
@@ -199,8 +199,8 @@ class TicsController implements OnlyControllerInterface {
         req.coininfo.is_token == true &&
         req.coininfo.token_type === "ERC20"
       ) {
-        var ticsBalance = await ticsWeb3.get_coin_balance(from, true);
-        var ERC20TokenBalance = await ticsWeb3.get_erc20_token_balance(
+        var ticsBalance = await ticsEther.get_coin_balance(from, true);
+        var ERC20TokenBalance = await ticsEther.get_erc20_token_balance(
           contractAddress,
           ABI as AbiItem[],
           req.body.from
@@ -225,7 +225,7 @@ class TicsController implements OnlyControllerInterface {
         req.coininfo.is_token == true &&
         req.coininfo.token_type === "ERC721"
       ) {
-        var ticsBalance = await ticsWeb3.get_coin_balance(from, true);
+        var ticsBalance = await ticsEther.get_coin_balance(from, true);
         if (Number(ticsBalance) < Number(gasInTICS)) {
           return response.error(res, {
             data: {
@@ -235,7 +235,7 @@ class TicsController implements OnlyControllerInterface {
           });
         }
       }
-      let transferData = await ticsWeb3.sendTicsOrTokens(
+      let transferData = await ticsEther.sendTicsOrTokens(
         req,
         lang,
         tx_raw,

@@ -7,7 +7,7 @@ import { ethers } from "ethers";
 import commonHelper from "./common.helpers";
 import { AbiItem } from "../../interfaces/ether.interface";
 
-class TicsWeb3 {
+class TicsEther {
   public provider: ethers.JsonRpcProvider;
   public abi: AbiItem[] | string;
 
@@ -299,4 +299,4 @@ class TicsWeb3 {
   }
 }
 
-export const ticsWeb3 = new TicsWeb3();
+export const ticsEther = new TicsEther();

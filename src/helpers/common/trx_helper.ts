@@ -13,7 +13,7 @@ import { isString } from 'lodash';
 
 
 
-class TrxWeb3 {
+class TrxHelper {
 
     public TRX_FULLNODE: string = config.NODE.TRX_RPC_URL
     public TRX_FULLNODE_KEY: string = config.NODE.TRX_API_KEY
@@ -133,7 +133,7 @@ class TrxWeb3 {
             }
 
             // Get the gas estimation for the transaction from the Tron Web API
-            const feeData = await trxWeb3.Estimation_Gas_Tron(
+            const feeData = await trxHelper.Estimation_Gas_Tron(
                 toAddress,
                 fromAddress,
                 resData,
@@ -176,7 +176,7 @@ class TrxWeb3 {
             console.log('coininfo >>>', coininfo);
             let tronFee: any = {};
             let delegateAmountForSwap: any = {};
-            let result: any = await trxWeb3.fetchAccountInfo(fromAddress, toAddress);
+            let result: any = await trxHelper.fetchAccountInfo(fromAddress, toAddress);
             console.log("result  tron gasEstimation:>> ", result);
 
             let getAccount = result[0];
@@ -195,7 +195,7 @@ class TrxWeb3 {
                     if (requiredBandwidth >= 0) {
                         tronFee = { is_activate: 0, trx: 0, bandwidth: resData.tron_trc10_bandwidth };
                     } else {
-                        let trxAmount = await trxWeb3.convertBandwidthIntoTRX(Math.abs(requiredBandwidth));
+                        let trxAmount = await trxHelper.convertBandwidthIntoTRX(Math.abs(requiredBandwidth));
                         tronFee = { is_activate: 0, trx: trxAmount, bandwidth: getUserBandwidth };
                     }
                 } else {
@@ -212,7 +212,7 @@ class TrxWeb3 {
                 requiredBandwidthForTrx = resData.tron_trc20_bandwidth;
 
                 let requiredBandwidth = getUserBandwidth - requiredBandwidthForTrx;
-                let calculateEnergy: any = await trxWeb3.calculateEnergy(fromAddress, toAddress, coininfo.token_address, amount);
+                let calculateEnergy: any = await trxHelper.calculateEnergy(fromAddress, toAddress, coininfo.token_address, amount);
                 console.log("calculateEnergy :>> ", calculateEnergy);
 
                 let requiredEnergy = calculateEnergy[0];
@@ -240,7 +240,7 @@ class TrxWeb3 {
                 }
 
                 if (remainEnergy < 0) {
-                    let convertEnergyIntoTrx = await trxWeb3.convertEnergyIntoTrx(Math.abs(remainEnergy));
+                    let convertEnergyIntoTrx = await trxHelper.convertEnergyIntoTrx(Math.abs(remainEnergy));
                     if (convertEnergyIntoTrx) {
                         tronFee = {
                             trx: convertEnergyIntoTrx,
@@ -253,7 +253,7 @@ class TrxWeb3 {
                     if (freeBandwidth > requiredBandwidthForTrx || getUserBandwidth > requiredBandwidthForTrx) {
                         tronFee = { trx: 0, is_activate: 0, bandwidth: 0, energy: 0 };
                     } else {
-                        let trxAmount = await trxWeb3.convertBandwidthIntoTRX(Math.abs(requiredBandwidth));
+                        let trxAmount = await trxHelper.convertBandwidthIntoTRX(Math.abs(requiredBandwidth));
                         tronFee = { trx: trxAmount, is_activate: 0, bandwidth: resData.tron_trc20_bandwidth, energy: 0 };
                     }
                 }
@@ -272,7 +272,7 @@ class TrxWeb3 {
                     if (freeBandwidth > requiredBandwidthForTrx || getUserBandwidth > requiredBandwidthForTrx) {
                         tronFee = { is_activate: 0, trx: 0, bandwidth: requiredBandwidthForTrx };
                     } else {
-                        let trxAmount = await trxWeb3.convertBandwidthIntoTRX(Math.abs(requiredBandwidthForTrx));
+                        let trxAmount = await trxHelper.convertBandwidthIntoTRX(Math.abs(requiredBandwidthForTrx));
                         console.log("trxAmount::", trxAmount);
                         tronFee = { is_activate: 0, trx: trxAmount, bandwidth: resData.tron_bandwidth };
                     }
@@ -299,10 +299,10 @@ class TrxWeb3 {
                     let requiredDelegateEnergy = 0;
                     if (Object.keys(delegateAmountForSwap).length == 0) {
                         requiredDelegateEnergy = tronFee.energy - energy;
-                        tronFee.trx = await trxWeb3.convertEnergyIntoTrx(Math.abs(requiredDelegateEnergy));
+                        tronFee.trx = await trxHelper.convertEnergyIntoTrx(Math.abs(requiredDelegateEnergy));
                     } else {
                         requiredDelegateEnergy = delegateAmountForSwap.max_energy - energy;
-                        tronFee.trx = await trxWeb3.convertEnergyIntoTrx(Math.abs(requiredDelegateEnergy));
+                        tronFee.trx = await trxHelper.convertEnergyIntoTrx(Math.abs(requiredDelegateEnergy));
                     }
                 }
             }
@@ -466,7 +466,7 @@ class TrxWeb3 {
             let parameters = await this.encodeParams(inputs);
 
             if (parameters) {
-                requiredEnergy = await trxWeb3.getTransactionRequiredEnergy(
+                requiredEnergy = await trxHelper.getTransactionRequiredEnergy(
                     fromAddress,
                     tokenAddress,
                     parameters
@@ -579,4 +579,4 @@ class TrxWeb3 {
 
 }
 
-export const trxWeb3 = new TrxWeb3();
+export const trxHelper = new TrxHelper();

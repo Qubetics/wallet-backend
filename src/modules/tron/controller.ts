@@ -3,7 +3,7 @@ import { OnlyControllerInterface } from "../../interfaces/controller.interface";
 import { Request, Response } from "express";
 import { Tron_Helper } from "./helper";
 import * as Models from "./../../models/model/index";
-import { trxWeb3 } from "../../helpers/common/trx_helper";
+import { trxHelper } from "../../helpers/common/trx_helper";
 import { config } from "../../config";
 import dbHelper from "../../helpers/dbHelper";
 import redisClient from "../../helpers/common/redis";
@@ -147,7 +147,7 @@ class TronController implements OnlyControllerInterface {
           };
           return response.error(res, { data: resMsg });
         }
-        const balance: string = await trxWeb3.Fetch_Balance(
+        const balance: string = await trxHelper.Fetch_Balance(
           from_address,
           coin,
           true

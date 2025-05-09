@@ -7,7 +7,7 @@ import { ethers } from "ethers";
 import commonHelper from "./common.helpers";
 import { TokenType } from "../../constants/global_enum";
 import { AbiItem } from "../../interfaces/ether.interface";
-class BSCWeb3 {
+class BSCEther {
   public provider: ethers.JsonRpcProvider;
   public abi: AbiItem[] | string;
 
@@ -223,7 +223,7 @@ class BSCWeb3 {
                   console.log("is_token can't be 0 ")
               }
           } else {
-              estimateGas = await bscWeb3.getBscGasLimit(from, to);
+              estimateGas = await bscEther.getBscGasLimit(from, to);
           }
 
           return {
@@ -252,7 +252,7 @@ public async convertWeiToEth(value: number | bigint | string): Promise<string> {
       try {
           if (!tokenAddress) return 0;
 
-          const contract = new ethers.Contract(tokenAddress, tokenAbi, bscWeb3.provider);
+          const contract = new ethers.Contract(tokenAddress, tokenAbi, bscEther.provider);
           const [decimals, balanceRaw] = await Promise.all([
               contract.decimals(),
               contract.balanceOf(walletAddress)
@@ -315,4 +315,4 @@ public async convertWeiToEth(value: number | bigint | string): Promise<string> {
   }
 }
 
-export const bscWeb3 = new BSCWeb3();
+export const bscEther = new BSCEther();

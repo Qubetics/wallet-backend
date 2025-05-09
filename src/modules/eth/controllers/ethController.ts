@@ -10,7 +10,7 @@ import { RawDataInterface } from "../interfaces/interfaces.eth";
 import { language } from "../../../constants";
 import response from "../../../helpers/response/response.helpers";
 // import { ethWeb3 } from "../../../helpers/common/web3_eth_helpers";
-import { ethWeb3 } from "../../../helpers/common/ether_eth_helpers";
+import { ethEther } from "../../../helpers/common/ether_eth_helpers";
 import commonHelper from "../../../helpers/common/common.helpers";
 import { TokenType } from "../../../constants/global_enum";
 
@@ -27,7 +27,7 @@ class EthController implements OnlyControllerInterface {
     var { wallet_address }: { wallet_address: string } = req.body;
     var nonce_val: number = 0;
     try {
-      var walletNonce = await ethWeb3.getWalletNonce(wallet_address);
+      var walletNonce = await ethEther.getWalletNonce(wallet_address);
       nonce_val = walletNonce;
       return response.success(res, {
         data: {
@@ -75,7 +75,7 @@ class EthController implements OnlyControllerInterface {
         if (is_token && token_address) {
           if (token_type == TokenType.ERC20) {
             estimationRes =
-              await ethWeb3.getErc20TokenTransferGasEstimationCost(
+              await ethEther.getErc20TokenTransferGasEstimationCost(
                 token_address,
                 token_abi,
                 from,
@@ -83,12 +83,12 @@ class EthController implements OnlyControllerInterface {
                 lang
               );
           } else if (token_type == TokenType.ERC721) {
-            estimationRes = await ethWeb3.getErc721TokenTransferGasEstimationCost(to, from, token_value, token_address, lang);
+            estimationRes = await ethEther.getErc721TokenTransferGasEstimationCost(to, from, token_value, token_address, lang);
           } else if (amount) {
-            estimationRes = await ethWeb3.getErc1155TokenTransferGasEstimationCost(to, from, token_value, token_address, amount, lang);
+            estimationRes = await ethEther.getErc1155TokenTransferGasEstimationCost(to, from, token_value, token_address, amount, lang);
           }
         } else {
-          estimationRes = await ethWeb3.getEthGasLimit(from, to, lang);
+          estimationRes = await ethEther.getEthGasLimit(from, to, lang);
         }
         let resultList: any = await Models.GasPriceModel.findOne({
           where: {
@@ -188,7 +188,7 @@ class EthController implements OnlyControllerInterface {
       } = req.body;
 
       let maxGas = gas_price * gas_estimate;
-      var gasInETH = await ethWeb3.convertWeiToEth(maxGas);
+      var gasInETH = await ethEther.convertWeiToEth(maxGas);
       gas_price = gasInETH;
       var gasInEthForErc = 0;
       // ETH only
@@ -199,7 +199,7 @@ class EthController implements OnlyControllerInterface {
         } else {
           withdrawAmount = bigNumberSafeMath(amount, "+", gasInETH);
         }
-        var ethBalance = await ethWeb3.get_coin_balance(from, true);
+        var ethBalance = await ethEther.get_coin_balance(from, true);
         if (Number(ethBalance) < Number(withdrawAmount)) {
           return response.error(res, {
             data: { status: false, message: language[lang].INSUFFICIENT },
@@ -210,8 +210,8 @@ class EthController implements OnlyControllerInterface {
         req.coininfo.is_token == true &&
         req.coininfo.token_type === "ERC20"
       ) {
-        var ethBalance = await ethWeb3.get_coin_balance(from, true);
-        var ERC20TokenBalance = await ethWeb3.get_erc20_token_balance(
+        var ethBalance = await ethEther.get_coin_balance(from, true);
+        var ERC20TokenBalance = await ethEther.get_erc20_token_balance(
           contractAddress,
           ABI as AbiItem[],
           req.body.from
@@ -236,7 +236,7 @@ class EthController implements OnlyControllerInterface {
         req.coininfo.is_token == true &&
         (req.coininfo.token_type === TokenType.ERC721 || req.coininfo.token_type === TokenType.ERC1155)
       ) {
-        var ethBalance = await ethWeb3.get_coin_balance(from, true);
+        var ethBalance = await ethEther.get_coin_balance(from, true);
         if (Number(ethBalance) < Number(gasInETH)) {
           return response.error(res, {
             data: {
@@ -246,7 +246,7 @@ class EthController implements OnlyControllerInterface {
           });
         }
       }
-      let transferData = await ethWeb3.sendEthOrTokens(
+      let transferData = await ethEther.sendEthOrTokens(
         req,
         lang,
         tx_raw,

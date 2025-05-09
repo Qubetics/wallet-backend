@@ -1,22 +1,22 @@
 import axios from "axios";
 import { config } from "../../config";
 // import { ethWeb3 } from "./web3_eth_helpers";
-import { ethWeb3 } from "./ether_eth_helpers";
+import { ethEther } from "./ether_eth_helpers";
 import { GlblCoins, GlblMessages, TradingSourceResponse } from "../../constants/global_enum";
 import { utxobtc } from "./btc_helpers";
-import { trxWeb3 } from "./trx_helper";
+import { trxHelper } from "./trx_helper";
 import { CoinInterface, NotificationInterface } from "../../models";
 import { AbiItem } from "../../interfaces/ether.interface";
 // import { AbiItem } from "web3-utils";
 import { exponentialToDecimal } from "./globalFunctions";
 import * as Models from '../../models/model/index';
 import commonHelper from "./common.helpers";
-import { bscWeb3 } from "./ether_bsc_helpers";
+import { bscEther } from "./ether_bsc_helpers";
 import { URL as _URL, URLSearchParams as _URLSearchParams } from "url";
-import { polWeb3 } from "./ether_pol_helpers";
+import { polEther } from "./ether_pol_helpers";
 import { SolanaHelper } from "./solana.helper";
 import cmcHelper from "./cmc.helpers";
-import { ticsWeb3 } from "./ether_tics_helpers";
+import { ticsEther } from "./ether_tics_helpers";
 import firebaseAdmin from 'firebase-admin';
 import { fcmServiceAccount } from "../../constants/firebase.admin.key";
 
@@ -113,19 +113,19 @@ class Global_helper {
             let tokenDetails: any = { decimals: 0, name: "", symbol: "" }
             switch (coin_family) {
                 case config.STATIC_COIN_FAMILY.BNB:
-                    tokenDetails = await bscWeb3.searchToken(token_address, lang);
+                    tokenDetails = await bscEther.searchToken(token_address, lang);
                     break;
                 case config.STATIC_COIN_FAMILY.ETH:
-                    tokenDetails = await ethWeb3.searchToken(token_address, lang);
+                    tokenDetails = await ethEther.searchToken(token_address, lang);
                     break;
                 case config.STATIC_COIN_FAMILY.TRX:
-                    tokenDetails = await trxWeb3.searchToken(token_address, lang);
+                    tokenDetails = await trxHelper.searchToken(token_address, lang);
                     break;
                 case config.STATIC_COIN_FAMILY.POL:
-                    tokenDetails = await polWeb3.searchToken(token_address, lang);
+                    tokenDetails = await polEther.searchToken(token_address, lang);
                     break;
                 case config.STATIC_COIN_FAMILY.TICS:
-                    tokenDetails = await ticsWeb3.searchToken(token_address, lang);
+                    tokenDetails = await ticsEther.searchToken(token_address, lang);
                     break;
                 case config.STATIC_COIN_FAMILY.SOL:
                     tokenDetails = await SolanaHelper.searchToken(token_address, lang);
@@ -143,17 +143,17 @@ class Global_helper {
         try {
             switch (coinFamily) {
                 case config.STATIC_COIN_FAMILY.BNB:
-                    return await bscWeb3.validate_bnb_address(walletAddress);
+                    return await bscEther.validate_bnb_address(walletAddress);
                 case config.STATIC_COIN_FAMILY.ETH:
-                    return await ethWeb3.validate_eth_address(walletAddress);
+                    return await ethEther.validate_eth_address(walletAddress);
                 case config.STATIC_COIN_FAMILY.BTC:
                     return await utxobtc.validate_btc_address(walletAddress);
                 case config.STATIC_COIN_FAMILY.POL:
-                    return await polWeb3.validate_pol_address(walletAddress);
+                    return await polEther.validate_pol_address(walletAddress);
                 case config.STATIC_COIN_FAMILY.TICS:
-                    return await ticsWeb3.validate_tics_address(walletAddress);
+                    return await ticsEther.validate_tics_address(walletAddress);
                 case config.STATIC_COIN_FAMILY.TRX:
-                    return await trxWeb3.validate_trx_address(walletAddress)
+                    return await trxHelper.validate_trx_address(walletAddress)
                 case config.STATIC_COIN_FAMILY.SOL:
                     return await SolanaHelper.validateSolAddress(walletAddress)
             }
@@ -170,23 +170,23 @@ class Global_helper {
             let userBalance: string = '';
             switch (coinFamily) {
                 case config.STATIC_COIN_FAMILY.BNB:
-                    tokenBalance = (await bscWeb3.get_bep20_token_balance(tokenAddress, config.CONTRACT_ABI as AbiItem[], walletAddress))?.toString();
+                    tokenBalance = (await bscEther.get_bep20_token_balance(tokenAddress, config.CONTRACT_ABI as AbiItem[], walletAddress))?.toString();
                     userBalance = exponentialToDecimal(Number(tokenBalance))
                     break;
                 case config.STATIC_COIN_FAMILY.ETH:
-                    tokenBalance = (await ethWeb3.get_erc20_token_balance(tokenAddress, config.CONTRACT_ABI as AbiItem[], walletAddress))?.toString();
+                    tokenBalance = (await ethEther.get_erc20_token_balance(tokenAddress, config.CONTRACT_ABI as AbiItem[], walletAddress))?.toString();
                     userBalance = exponentialToDecimal(Number(tokenBalance))
                     break;
                 case config.STATIC_COIN_FAMILY.POL:
-                    tokenBalance = (await polWeb3.get_erc20_token_balance(tokenAddress, config.CONTRACT_ABI as AbiItem[], walletAddress))?.toString();
+                    tokenBalance = (await polEther.get_erc20_token_balance(tokenAddress, config.CONTRACT_ABI as AbiItem[], walletAddress))?.toString();
                     userBalance = exponentialToDecimal(Number(tokenBalance))
                     break;
                 case config.STATIC_COIN_FAMILY.TICS:
-                    tokenBalance = (await ticsWeb3.get_erc20_token_balance(tokenAddress, config.CONTRACT_ABI as AbiItem[], walletAddress))?.toString();
+                    tokenBalance = (await ticsEther.get_erc20_token_balance(tokenAddress, config.CONTRACT_ABI as AbiItem[], walletAddress))?.toString();
                     userBalance = exponentialToDecimal(Number(tokenBalance))
                     break;
                 case config.STATIC_COIN_FAMILY.TRX:
-                    userBalance = (await trxWeb3.TRC20_Token_Balance(walletAddress, tokenAddress, false))?.toString()
+                    userBalance = (await trxHelper.TRC20_Token_Balance(walletAddress, tokenAddress, false))?.toString()
                     break;
                 case config.STATIC_COIN_FAMILY.SOL:
                     userBalance = (await SolanaHelper.getUserCRC20TokenBalance(tokenAddress, walletAddress, false))?.toString()
@@ -274,22 +274,22 @@ class Global_helper {
             let balance: string | any = '0';
             switch (coinData.coin_family) {
                 case config.STATIC_COIN_FAMILY.BNB:
-                    balance = (await bscWeb3.get_balance(coinData, wallet_address))?.toString()
+                    balance = (await bscEther.get_balance(coinData, wallet_address))?.toString()
                     break;
                 case config.STATIC_COIN_FAMILY.ETH:
-                    balance = (await ethWeb3.get_balance(coinData, wallet_address))?.toString()
+                    balance = (await ethEther.get_balance(coinData, wallet_address))?.toString()
                     break;
                 case config.STATIC_COIN_FAMILY.BTC:
                     balance = (await utxobtc.get_balance(wallet_address))?.toString()
                     break;
                 case config.STATIC_COIN_FAMILY.POL:
-                    balance = (await polWeb3.get_balance(coinData, wallet_address))?.toString()
+                    balance = (await polEther.get_balance(coinData, wallet_address))?.toString()
                     break;
                 case config.STATIC_COIN_FAMILY.TICS:
-                    balance = (await ticsWeb3.get_balance(coinData, wallet_address))?.toString()
+                    balance = (await ticsEther.get_balance(coinData, wallet_address))?.toString()
                     break;
                 case config.STATIC_COIN_FAMILY.TRX:
-                    balance = (await trxWeb3.Fetch_Balance(wallet_address, coinData, false))?.toString()
+                    balance = (await trxHelper.Fetch_Balance(wallet_address, coinData, false))?.toString()
                     break;
                 case config.STATIC_COIN_FAMILY.SOL:
                     balance = (await SolanaHelper.Fetch_Balance(wallet_address, coinData, false))?.toString()
@@ -308,22 +308,22 @@ class Global_helper {
             let balance: string | any = '0';
             switch (coinData.coin_family) {
                 case config.STATIC_COIN_FAMILY.BNB:
-                    balance = (await bscWeb3.getBalance(coinData, wallet_address))?.toString()
+                    balance = (await bscEther.getBalance(coinData, wallet_address))?.toString()
                     break;
                 case config.STATIC_COIN_FAMILY.ETH:
-                    balance = (await ethWeb3.getBalance(coinData, wallet_address))?.toString()
+                    balance = (await ethEther.getBalance(coinData, wallet_address))?.toString()
                     break;
                 case config.STATIC_COIN_FAMILY.BTC:
                     balance = (await utxobtc.get_balance(wallet_address))?.toString()
                     break;
                 case config.STATIC_COIN_FAMILY.POL:
-                    balance = (await polWeb3.getBalance(coinData, wallet_address))?.toString()
+                    balance = (await polEther.getBalance(coinData, wallet_address))?.toString()
                     break;
                 case config.STATIC_COIN_FAMILY.TICS:
-                    balance = (await ticsWeb3.getBalance(coinData, wallet_address))?.toString()
+                    balance = (await ticsEther.getBalance(coinData, wallet_address))?.toString()
                     break;
                 case config.STATIC_COIN_FAMILY.TRX:
-                    balance = (await trxWeb3.Fetch_Balance(wallet_address, coinData, true))?.toString()
+                    balance = (await trxHelper.Fetch_Balance(wallet_address, coinData, true))?.toString()
                     break;
                 case config.STATIC_COIN_FAMILY.SOL:
                     balance = (await SolanaHelper.Fetch_Balance(wallet_address, coinData, true))?.toString()

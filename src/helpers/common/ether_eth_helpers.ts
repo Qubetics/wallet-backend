@@ -6,7 +6,7 @@ import { language } from "../../constants";
 import { ethers } from "ethers";
 import commonHelper from "./common.helpers";
 import { AbiItem } from "../../interfaces/ether.interface";
-class EthWeb3 {
+class EthEther {
   public provider: ethers.JsonRpcProvider;
   public abi: AbiItem[] | string;
 
@@ -375,4 +375,4 @@ class EthWeb3 {
   }
 }
 
-export const ethWeb3 = new EthWeb3();
+export const ethEther = new EthEther();

@@ -1,111 +1,111 @@
 
-import { config } from "../../../config";
-import { AbiItem } from "web3-utils";
-import { TokenType } from "../../../constants/global_enum";
-import { bscWeb3 } from "../../../helpers/common/web3.bsc_helper";
-import commonHelper from "../../../helpers/common/common.helpers";
-import { bigNumberSafeMath } from "../../../helpers/common/globalFunctions";
-import { language } from "../../../constants";
+// import { config } from "../../../config";
+// import { AbiItem } from "web3-utils";
+// import { TokenType } from "../../../constants/global_enum";
+// import { bscWeb3 } from "../../../helpers/common/web3.bsc_helper";
+// import commonHelper from "../../../helpers/common/common.helpers";
+// import { bigNumberSafeMath } from "../../../helpers/common/globalFunctions";
+// import { language } from "../../../constants";
 
 
 
-class BscHelpers {
+// class BscHelpers {
 
-    public initialize() { }
+//     public initialize() { }
 
-    public async get_fee_price(coin_info: any, body: any, lang: string) {
-        try {
-            const { from, to }: { from: string; to: string } = body;
-            let estimateGas: any;
-            let set_token_type = coin_info.token_type !== undefined ? coin_info.token_type : TokenType.BEP20;
-            if (coin_info.is_token) {
-                if (set_token_type == TokenType.BEP20) {
-                    estimateGas = await bscWeb3.getBep20TokenTransferGasEstimationCost(coin_info.token_address, config.CONTRACT_ABI as AbiItem[], from, to, lang);
-                } else {
-                    console.log("is_token can't be 0 ")
-                }
-            } else {
-                estimateGas = await bscWeb3.getBscGasLimit(from, to);
-            }
+//     public async get_fee_price(coin_info: any, body: any, lang: string) {
+//         try {
+//             const { from, to }: { from: string; to: string } = body;
+//             let estimateGas: any;
+//             let set_token_type = coin_info.token_type !== undefined ? coin_info.token_type : TokenType.BEP20;
+//             if (coin_info.is_token) {
+//                 if (set_token_type == TokenType.BEP20) {
+//                     estimateGas = await bscWeb3.getBep20TokenTransferGasEstimationCost(coin_info.token_address, config.CONTRACT_ABI as AbiItem[], from, to, lang);
+//                 } else {
+//                     console.log("is_token can't be 0 ")
+//                 }
+//             } else {
+//                 estimateGas = await bscWeb3.getBscGasLimit(from, to);
+//             }
 
-            return {
-                gas_estimate: estimateGas,
-            }
-        } catch (err: any) {
-            await commonHelper.save_error_logs("bsc_send", err.message);
-            console.error("err", err as Error);
-        }
+//             return {
+//                 gas_estimate: estimateGas,
+//             }
+//         } catch (err: any) {
+//             await commonHelper.save_error_logs("bsc_send", err.message);
+//             console.error("err", err as Error);
+//         }
 
-    }
-    public async convertWeiToEth(value: number): Promise<string> {
-        var valueInEth = await bscWeb3.web3.utils.fromWei(value.toString(), "ether");
-        return valueInEth;
-    }
-    public async getUserBEP20TokenBalance(
-        tokenAddress: string | null | undefined,
-        tokenAbi: AbiItem[],
-        walletAddress: string
-    ): Promise<number> {
-        try {
-            if (tokenAddress) {
-                let contract = await new bscWeb3.web3.eth.Contract(tokenAbi, tokenAddress);
-                var decimals = await contract.methods.decimals().call();
-                var balance = await contract.methods.balanceOf(walletAddress).call();
-                var tokenBalance = await bigNumberSafeMath(
-                    balance,
-                    "/",
-                    Math.pow(10, decimals)
-                );
-                return tokenBalance;
-            }
-            return 0;
-        } catch (error) {
-            console.log("getUserBEP20TokenBalance catch error: ", error);
-            return 0;
-        }
-    }
-    public async broadcastBscRawTx(rawTx: string, cb: CallableFunction) {
-        await bscWeb3.web3.eth
-            .sendSignedTransaction("0x" + rawTx)
-            .on("transactionHash", (txHash) => {
-                console.log("tx", txHash)
-                cb(null, txHash);
-            })
-            .on("error", (err) => {
-                console.error("err:: ", err);
-                cb(err, null);
-            });
-    }
-    public async sendBscOrTokens(
-        req: any,
-        lang: string,
-        rawTrnx: string,
-        cb: CallableFunction
-    ) {
-        try {
-            if (req.coininfo) {
-                if (rawTrnx) {
-                    await this.broadcastBscRawTx(
-                        rawTrnx,
-                        async (error: Error, txid: string) => {
-                            if (error) {
-                                console.error("txid callback error ------ ", error);
-                                cb(error, null);
-                            } else {
-                                console.log("txid callback ------ ", txid);
-                                cb(null, txid);
-                            }
-                        }
-                    );
-                } else {
-                    cb(language[lang].TRNX_NOT_FOUND, null);
-                }
-            }
-        } catch (err: any) {
-            console.error("Error, sendBscOrToken===>", err);
-        }
-    }
+//     }
+//     public async convertWeiToEth(value: number): Promise<string> {
+//         var valueInEth = await bscWeb3.web3.utils.fromWei(value.toString(), "ether");
+//         return valueInEth;
+//     }
+//     public async getUserBEP20TokenBalance(
+//         tokenAddress: string | null | undefined,
+//         tokenAbi: AbiItem[],
+//         walletAddress: string
+//     ): Promise<number> {
+//         try {
+//             if (tokenAddress) {
+//                 let contract = await new bscWeb3.web3.eth.Contract(tokenAbi, tokenAddress);
+//                 var decimals = await contract.methods.decimals().call();
+//                 var balance = await contract.methods.balanceOf(walletAddress).call();
+//                 var tokenBalance = await bigNumberSafeMath(
+//                     balance,
+//                     "/",
+//                     Math.pow(10, decimals)
+//                 );
+//                 return tokenBalance;
+//             }
+//             return 0;
+//         } catch (error) {
+//             console.log("getUserBEP20TokenBalance catch error: ", error);
+//             return 0;
+//         }
+//     }
+//     public async broadcastBscRawTx(rawTx: string, cb: CallableFunction) {
+//         await bscWeb3.web3.eth
+//             .sendSignedTransaction("0x" + rawTx)
+//             .on("transactionHash", (txHash) => {
+//                 console.log("tx", txHash)
+//                 cb(null, txHash);
+//             })
+//             .on("error", (err) => {
+//                 console.error("err:: ", err);
+//                 cb(err, null);
+//             });
+//     }
+//     public async sendBscOrTokens(
+//         req: any,
+//         lang: string,
+//         rawTrnx: string,
+//         cb: CallableFunction
+//     ) {
+//         try {
+//             if (req.coininfo) {
+//                 if (rawTrnx) {
+//                     await this.broadcastBscRawTx(
+//                         rawTrnx,
+//                         async (error: Error, txid: string) => {
+//                             if (error) {
+//                                 console.error("txid callback error ------ ", error);
+//                                 cb(error, null);
+//                             } else {
+//                                 console.log("txid callback ------ ", txid);
+//                                 cb(null, txid);
+//                             }
+//                         }
+//                     );
+//                 } else {
+//                     cb(language[lang].TRNX_NOT_FOUND, null);
+//                 }
+//             }
+//         } catch (err: any) {
+//             console.error("Error, sendBscOrToken===>", err);
+//         }
+//     }
 
-};
+// };
 
-export const BscHelper = new BscHelpers();
+// export const BscHelper = new BscHelpers();

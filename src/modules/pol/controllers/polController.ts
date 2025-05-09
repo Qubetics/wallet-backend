@@ -9,7 +9,7 @@ import { AbiItem } from "web3-utils";
 import { RawDataInterface } from "../interfaces/interfaces.pol";
 import { language } from "../../../constants";
 import response from "../../../helpers/response/response.helpers";
-import { polWeb3 } from "../../../helpers/common/ether_pol_helpers";
+import { polEther } from "../../../helpers/common/ether_pol_helpers";
 import commonHelper from "../../../helpers/common/common.helpers";
 
 class PolController implements OnlyControllerInterface {
@@ -25,7 +25,7 @@ class PolController implements OnlyControllerInterface {
     var { wallet_address }: { wallet_address: string } = req.body;
     var nonce_val: number = 0;
     try {
-      var walletNonce = await polWeb3.getWalletNonce(wallet_address);
+      var walletNonce = await polEther.getWalletNonce(wallet_address);
       nonce_val = walletNonce;
       return response.success(res, {
         data: {
@@ -73,7 +73,7 @@ class PolController implements OnlyControllerInterface {
         const { token_address, token_abi, is_token } = req.coininfo;
         if (is_token) {
           estimationRes =
-            await polWeb3.getErc20TokenTransferGasEstimationCost(
+            await polEther.getErc20TokenTransferGasEstimationCost(
               token_address,
               token_abi,
               from,
@@ -81,7 +81,7 @@ class PolController implements OnlyControllerInterface {
               lang
             );
         } else {
-          estimationRes = await polWeb3.getPolGasLimit(from, to, lang);
+          estimationRes = await polEther.getPolGasLimit(from, to, lang);
         }
         let resultList: any = await Models.GasPriceModel.findOne({
           where: {
@@ -180,7 +180,7 @@ class PolController implements OnlyControllerInterface {
 
       let maxGas = gas_price * gas_estimate;
       console.log('maxGas >>>', maxGas);
-      let gasInETH = await polWeb3.convertWeiToEth(maxGas);
+      let gasInETH = await polEther.convertWeiToEth(maxGas);
       console.log('gasInETH >>>', gasInETH);
       gas_price = gasInETH;
       let gasInEthForErc = 0;
@@ -192,7 +192,7 @@ class PolController implements OnlyControllerInterface {
         } else {
           withdrawAmount = bigNumberSafeMath(amount, "+", gasInETH);
         }
-        let ethBalance = await polWeb3.get_coin_balance(from, true);
+        let ethBalance = await polEther.get_coin_balance(from, true);
         if (Number(ethBalance) < Number(withdrawAmount)) {
           return response.error(res, {
             data: { status: false, message: language[lang].INSUFFICIENT },
@@ -203,8 +203,8 @@ class PolController implements OnlyControllerInterface {
         req.coininfo.is_token == true &&
         req.coininfo.token_type === "ERC20"
       ) {
-        let ethBalance = await polWeb3.get_coin_balance(from, true);
-        let ERC20TokenBalance = await polWeb3.get_erc20_token_balance(
+        let ethBalance = await polEther.get_coin_balance(from, true);
+        let ERC20TokenBalance = await polEther.get_erc20_token_balance(
           contractAddress,
           ABI as AbiItem[],
           req.body.from
@@ -229,7 +229,7 @@ class PolController implements OnlyControllerInterface {
         req.coininfo.is_token == true &&
         req.coininfo.token_type === "ERC721"
       ) {
-        let ethBalance = await polWeb3.get_coin_balance(from, true);
+        let ethBalance = await polEther.get_coin_balance(from, true);
         if (Number(ethBalance) < Number(gasInETH)) {
           return response.error(res, {
             data: {
@@ -240,7 +240,7 @@ class PolController implements OnlyControllerInterface {
         }
       }
       console.log('Raw >>>', gasInETH);
-      let transferData = await polWeb3.sendPolOrTokens(
+      let transferData = await polEther.sendPolOrTokens(
         req,
         lang,
         tx_raw,
