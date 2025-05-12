@@ -229,7 +229,7 @@ class PolEther {
       
       return {
         status: true,
-        gas_estimate: gasLimit > 30000 ? gasLimit : 30000,
+        gas_estimate: gasLimit > BigInt(30000) ? Math.floor(Number(gasLimit)) : 30000,
         message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('POL')
       };
     } catch (err: any) {
