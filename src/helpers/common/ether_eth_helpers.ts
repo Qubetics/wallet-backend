@@ -16,7 +16,7 @@ class EthEther {
     this.initialize();
   }
 
-  public initialize() {}
+  public initialize() { }
 
   public async searchToken(token_contract: string, lang: string) {
     try {
@@ -27,12 +27,12 @@ class EthEther {
         contract.symbol()
       ]);
 
-      const data: TokenData = { 
-        decimals: Number(decimals), 
-        name, 
-        symbol 
+      const data: TokenData = {
+        decimals: Number(decimals),
+        name,
+        symbol
       };
-      
+
       if (!data) throw new Error(language[lang].ERC20_TOKEN_SEARCH);
       return data;
     } catch (err: any) {
@@ -166,7 +166,7 @@ class EthEther {
   ) {
     try {
       let gasLimit = BigInt(0);
-      
+
       if (token_contract) {
         const contract = new ethers.Contract(
           token_contract,
@@ -181,26 +181,26 @@ class EthEther {
             message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('ETH')
           };
         }
-        
-        gasLimit = await contract.getFunction("transfer").estimateGas(
-          toAddress, 
-          tokenValue,
-          { from: fromAddress }
-        );
-        
-        gasLimit = gasLimit * BigInt(3);
+        gasLimit = await contract.transfer.estimateGas(toAddress, tokenValue, { from: fromAddress })
+        // gasLimit = await contract.getFunction("transfer").estimateGas(
+        //   toAddress,
+        //   tokenValue,
+        //   { from: fromAddress }
+        // );
+        gasLimit = BigInt(gasLimit.toString()) * BigInt(300) / BigInt(100);
+        // gasLimit = gasLimit * BigInt(3);
       }
-      
+
       return {
         status: true,
-        gas_estimate: 
+        gas_estimate:
           gasLimit == BigInt(0) ? 60000 : Math.floor(Number(gasLimit)),
         message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('ETH')
       };
     } catch (err: any) {
       await commonHelper.save_error_logs("eth_getErc20TokenTransferGasEstimationCost", err.message);
       console.error("error, for try catch", err);
-      
+
       return {
         status: false,
         gas_estimate: 60000,
@@ -208,7 +208,7 @@ class EthEther {
       };
     }
   }
-  
+
   public async getErc721TokenTransferGasEstimationCost(
     toAddress: string,
     fromAddress: string,
@@ -217,30 +217,30 @@ class EthEther {
     lang: string
   ) {
     try {
-    const nonce = await this.provider.getTransactionCount(fromAddress, 'pending');
-    
-    const contract = new ethers.Contract(
-      tokenAddress,
-      config.ERC721ABI,
-      this.provider
-    );
+      const nonce = await this.provider.getTransactionCount(fromAddress, 'pending');
 
-    const data = contract.interface.encodeFunctionData(
-      "transferFrom", 
-      [fromAddress, toAddress, tokenValue]
-    );
-    const gasLimit = await this.provider.estimateGas({
-      from: fromAddress,
-      nonce: nonce,
-      to: tokenAddress,
-      data: data,
-    });
-    return {
-      status: true,
-      gas_estimate:
-        gasLimit == BigInt(0) ? 120000 : Math.floor(Number(gasLimit)),
-      message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('ETH')
-    };
+      const contract = new ethers.Contract(
+        tokenAddress,
+        config.ERC721ABI,
+        this.provider
+      );
+      const gasLimit = await contract.transferFrom.estimateGas(fromAddress, toAddress, tokenValue, { from: fromAddress });
+      // const data = contract.interface.encodeFunctionData(
+      //   "transferFrom",
+      //   [fromAddress, toAddress, tokenValue]
+      // );
+      // const gasLimit = await this.provider.estimateGas({
+      //   from: fromAddress,
+      //   nonce: nonce,
+      //   to: tokenAddress,
+      //   data: data,
+      // });
+      return {
+        status: true,
+        gas_estimate:
+          gasLimit == BigInt(0) ? 120000 : Math.floor(Number(gasLimit)),
+        message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('ETH')
+      };
     } catch (error) {
       console.error("🔥 ~ ~ getErc721TokenTransferGasEstimationCost node.eth.helper.ts error")
       return {
@@ -261,24 +261,24 @@ class EthEther {
   ) {
     try {
       const nonce = await this.provider.getTransactionCount(fromAddress, 'pending');
-    
+
       const contract = new ethers.Contract(
         tokenAddress,
         config.ERC1155ABI,
         this.provider
       );
-      
-      const data = contract.interface.encodeFunctionData(
-        "safeTransferFrom", 
-        [fromAddress, toAddress, tokenValue, tokenAmount, '0x0']
-      );
-      
-      const gasLimit = await this.provider.estimateGas({
-        from: fromAddress,
-        nonce: nonce,
-        to: tokenAddress,
-        data: data,
-      });
+      const gasLimit = await contract.safeTransferFrom.estimateGas(fromAddress, toAddress, tokenValue, tokenAmount, { from: fromAddress });
+      // const data = contract.interface.encodeFunctionData(
+      //   "safeTransferFrom",
+      //   [fromAddress, toAddress, tokenValue, tokenAmount, '0x0']
+      // );
+
+      // const gasLimit = await this.provider.estimateGas({
+      //   from: fromAddress,
+      //   nonce: nonce,
+      //   to: tokenAddress,
+      //   data: data,
+      // });
       return {
         status: true,
         gas_estimate:
@@ -324,7 +324,7 @@ class EthEther {
     try {
       const prefixedRawTx = rawTx.startsWith('0x') ? rawTx : '0x' + rawTx;
       const txResponse = await this.provider.broadcastTransaction(prefixedRawTx);
-      
+
       cb(null, txResponse.hash);
       return txResponse;
     } catch (error) {

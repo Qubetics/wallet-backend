@@ -17,7 +17,7 @@ class TicsEther {
     this.initialize();
   }
 
-  public initialize() {}
+  public initialize() { }
 
   public async searchToken(token_contract: string, lang: string) {
     try {
@@ -28,12 +28,12 @@ class TicsEther {
         contract.symbol()
       ]);
 
-      const data: TokenData = { 
-        decimals: Number(decimals), 
-        name, 
-        symbol 
+      const data: TokenData = {
+        decimals: Number(decimals),
+        name,
+        symbol
       };
-      
+
       if (!data) throw new Error(language[lang].ERC20_TOKEN_SEARCH);
       return data;
     } catch (err: any) {
@@ -150,7 +150,7 @@ class TicsEther {
     try {
       const feeData = await this.provider.getFeeData();
       const gasPrice = feeData.gasPrice;
-      
+
       if (inTics === true && gasPrice) {
         return ethers.formatUnits(gasPrice, "gwei");
       }
@@ -176,9 +176,9 @@ class TicsEther {
     toAddress: string,
     lang: string
   ) {
- try {
+    try {
       let gasLimit = BigInt(0);
-      
+
       if (token_contract) {
         const contract = new ethers.Contract(
           token_contract,
@@ -193,14 +193,15 @@ class TicsEther {
             message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('ETH')
           };
         }
-        
-        gasLimit = await contract.getFunction("transfer").estimateGas(
-          toAddress, 
-          tokenValue,
-          { from: fromAddress }
-        );
-        
-        gasLimit = gasLimit * BigInt(3);
+        gasLimit = await contract.transfer.estimateGas(toAddress, tokenValue, { from: fromAddress });
+        // gasLimit = await contract.getFunction("transfer").estimateGas(
+        //   toAddress, 
+        //   tokenValue,
+        //   { from: fromAddress }
+        // );
+        gasLimit = BigInt(gasLimit.toString()) * BigInt(300) / BigInt(100);
+
+        // gasLimit = gasLimit * BigInt(3);
       }
       return {
         status: true,
@@ -247,7 +248,7 @@ class TicsEther {
     try {
       const prefixedRawTx = rawTx.startsWith('0x') ? rawTx : '0x' + rawTx;
       const txResponse = await this.provider.broadcastTransaction(prefixedRawTx);
-      
+
       cb(null, txResponse.hash);
       return txResponse;
     } catch (error) {

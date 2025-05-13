@@ -17,7 +17,7 @@ class PolEther {
     this.initialize();
   }
 
-  public initialize() {}
+  public initialize() { }
 
   public async searchToken(
     token_contract: string,
@@ -29,19 +29,19 @@ class PolEther {
         config.CONTRACT_ABI,
         this.provider
       );
-      
+
       const [decimals, name, symbol] = await Promise.all([
         contract.decimals(),
         contract.name(),
         contract.symbol()
       ]);
-      
+
       const data: TokenData = {
         decimals: Number(decimals),
         name,
         symbol,
       };
-      
+
       if (!data) throw new Error(language[lang].ERC20_TOKEN_SEARCH);
       return data;
     } catch (err: any) {
@@ -75,7 +75,7 @@ class PolEther {
           contract.decimals(),
           contract.balanceOf(wallet_address)
         ]);
-        
+
         let tokenBalance: number | string = 0;
         if (Number(decimals) === 18) {
           tokenBalance = ethers.formatEther(balance);   // Convert Wei to Ether (assuming 18 decimals for most tokens)
@@ -173,39 +173,39 @@ class PolEther {
     lang: string
   ) {
     try {
-          let gasLimit = BigInt(0);
-          
-          if (token_contract) {
-            const contract = new ethers.Contract(
-              token_contract,
-              token_abi,
-              this.provider
-            );
-            const tokenValue = await contract.balanceOf(fromAddress);
-            if (tokenValue == BigInt(0)) {
-              return {
-                status: false,
-                gas_estimate: 60000,
-                message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('POL')
-              };
-            }
-            
-            gasLimit = await contract.getFunction("transfer").estimateGas(
-              toAddress, 
-              tokenValue,
-              { from: fromAddress }
-            );
-            
-            gasLimit = gasLimit * BigInt(3);
-          }
-          
+      let gasLimit = BigInt(0);
+
+      if (token_contract) {
+        const contract = new ethers.Contract(
+          token_contract,
+          token_abi,
+          this.provider
+        );
+        const tokenValue = await contract.balanceOf(fromAddress);
+        if (tokenValue == BigInt(0)) {
           return {
-            status: true,
-            gas_estimate: 
-              gasLimit == BigInt(0) ? 60000 : Math.floor(Number(gasLimit)),
+            status: false,
+            gas_estimate: 60000,
             message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('POL')
           };
-        } catch (err: any) {
+        }
+        gasLimit = await contract.transfer.estimateGas(toAddress, tokenValue, { from: fromAddress });
+        // gasLimit = await contract.getFunction("transfer").estimateGas(
+        //   toAddress, 
+        //   tokenValue,
+        //   { from: fromAddress }
+        // );
+        gasLimit = BigInt(gasLimit.toString()) * BigInt(300) / BigInt(100);
+        // gasLimit = gasLimit * BigInt(3);
+      }
+
+      return {
+        status: true,
+        gas_estimate:
+          gasLimit == BigInt(0) ? 60000 : Math.floor(Number(gasLimit)),
+        message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('POL')
+      };
+    } catch (err: any) {
       await commonHelper.save_error_logs("pol_getErc20TokenTransferGasEstimationCost", err.message);
       console.error("error, for try catch", err);
       return {
@@ -222,11 +222,11 @@ class PolEther {
       const amountWei = ethers.parseEther(amount);
 
       const gasLimit = await this.provider.estimateGas({
-              from: from,
-              to: to,
-              value: amountWei,
-            });
-      
+        from: from,
+        to: to,
+        value: amountWei,
+      });
+
       return {
         status: true,
         gas_estimate: gasLimit > BigInt(30000) ? Math.floor(Number(gasLimit)) : 30000,
@@ -246,7 +246,7 @@ class PolEther {
     try {
       const prefixedRawTx = rawTx.startsWith('0x') ? rawTx : '0x' + rawTx;
       const txResponse = await this.provider.broadcastTransaction(prefixedRawTx);
-      
+
       cb(null, txResponse.hash);
       return txResponse;
     } catch (error) {
