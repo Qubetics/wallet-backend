@@ -15,10 +15,10 @@ class PolController implements OnlyControllerInterface {
     public async send(req: Request, res: Response) {
         let lang: any = req.headers['content-language'] || 'en';
         try {
-            console.log("req body sol send >>>", req.body)
+            // console.log("req body sol send >>>", req.body)
             req.body.tx_hash = req.body.txid;
             req.body.tx_status = "completed";
-            let resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
+            const resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
 
             if (resultStatus.status && resultStatus.status == true) {
                 if (req.body.tx_type == 'withdraw') {

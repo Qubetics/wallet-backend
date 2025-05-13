@@ -3,9 +3,9 @@ import { Op, Sequelize } from "sequelize";
 import response from "../../helpers/response/response.helpers";
 import { OnlyControllerInterface } from "../../interfaces/controller.interface";
 import { config } from "../../config";
-import moment from "moment";
+// import moment from "moment";
 import { WalletHelper } from "./wallet.helpers";
-import { Parser } from "json2csv";
+// import { Parser } from "json2csv";
 import * as Models from "../../models/model/index";
 import * as Interfaces from "../../models/interface/index.interface";
 import {
@@ -15,19 +15,19 @@ import {
   Fiat_Currency,
   GlblBlockchainTxStatusEnum,
   TxTypesEnum,
-  Status,
+  // Status,
   TokenType,
 } from "../../constants/global_enum";
 import { global_helper } from "../../helpers/common/global_helper";
 import { language } from "../../constants";
 import commonHelper from "../../helpers/common/common.helpers";
 import { coin_queries, wallet_queries } from "../../helpers/dbHelper/index";
-const crypto = require("crypto");
+// const crypto = require("crypto");
 import userhelper from "../user/helper";
-import redisClient from "../../helpers/common/redis";
+// import redisClient from "../../helpers/common/redis";
 import kafka_helper from "../../helpers/common/kafka_helper";
-import { CoinInterface } from "../../models";
-import { SolanaHelper } from "../../helpers/common/solana.helper";
+// import { CoinInterface } from "../../models";
+// import { SolanaHelper } from "../../helpers/common/solana.helper";
 
 class WalletController implements OnlyControllerInterface {
   constructor() {
@@ -40,12 +40,12 @@ class WalletController implements OnlyControllerInterface {
     let lang: any = req.headers["content-language"] || "en";
     try {
       console.log("req body addToken >>>", req.body);
-      let currentUTCDate: string = new Date()
+      const currentUTCDate: string = new Date()
         .toISOString()
         .replace(/T/, " ")
         .replace(/\..+/, "");
 
-      let {
+      const {
         coin_family,
         token_type,
         token_address,
@@ -106,7 +106,7 @@ class WalletController implements OnlyControllerInterface {
           );
         }
       } else {
-        let response: any = await WalletHelper.add_coin_to_table(
+        const response: any = await WalletHelper.add_coin_to_table(
           token_address,
           symbol,
           name,
@@ -126,7 +126,7 @@ class WalletController implements OnlyControllerInterface {
         coin_family == config.STATIC_COIN_FAMILY.SOL ||
         coin_family == config.STATIC_COIN_FAMILY.POL
       ) {
-        let redis_token_data: any = {
+        const redis_token_data: any = {
           coin_family: coin_family,
           token_address: token_address,
         };
@@ -137,7 +137,7 @@ class WalletController implements OnlyControllerInterface {
         );
       }
 
-      let message: string = await WalletHelper.create_wallet_for_coin(
+      const message: string = await WalletHelper.create_wallet_for_coin(
         wallet_address,
         coinDataExist.coin_id,
         wallet_name,
@@ -153,6 +153,7 @@ class WalletController implements OnlyControllerInterface {
       return response.success(res, {
         data: { message: message },
       });
+
     } catch (err: any) {
       console.error("Error in wallet > addToken.", err);
       await commonHelper.save_error_logs("wallet_addToken", err.message);
@@ -162,17 +163,14 @@ class WalletController implements OnlyControllerInterface {
   public async portfolio(req: Request, res: Response) {
     const lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body portfolio >>>", req.body);
-      let {
+      // console.log("req body portfolio >>>", req.body);
+      const {
         page,
-        limit,
-        fiat_type,
-      }: { page: number | string; limit: number | string; fiat_type: string } =
-        req.body;
-      fiat_type =
-        req.body.fiat_type == undefined
-          ? Fiat_Currency.USD
-          : req.body.fiat_type;
+        limit
+      }: { page: number | string; limit: number | string } = req.body;
+
+      const fiat_type: string = req.body.fiat_type == undefined ? Fiat_Currency.USD : req.body.fiat_type;
+
       const search = req.body.search?.trim();
       const pageNo: any = parseInt(page as string) || GlblBooleanEnum.true;
       const limitNo: any = parseInt(limit as string) || 10;
@@ -180,7 +178,7 @@ class WalletController implements OnlyControllerInterface {
       if (pageNo != GlblBooleanEnum.true) {
         offset = (pageNo - GlblBooleanEnum.true) * limitNo;
       }
-      let user_id: number = req.userId;
+      const user_id: number = req.userId;
       const customTokenCoinIds = await Models.CustomTokennModel.findAll({
         attributes: ['coin_id'],
         where: { user_id },
@@ -215,7 +213,7 @@ class WalletController implements OnlyControllerInterface {
           }
         ],
       };
-      
+
       if (search) {
         whereClause[Op.or] = [
           { coin_name: { [Op.like]: `%${search}%` } },
@@ -234,7 +232,7 @@ class WalletController implements OnlyControllerInterface {
           "sort_order",
         ],
         where: {
-          user_id: user_id ,
+          user_id: user_id,
           wallet_address: { [Op.in]: req.body.addressListKeys },
           status: GlblBooleanEnum.true,
         },
@@ -325,61 +323,61 @@ class WalletController implements OnlyControllerInterface {
       });
     }
   }
+
   public async activeInactiveWallet(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body activeInactiveWallet >>>", req.body);
-      let currentUTCDate: string = new Date()
-        .toISOString()
-        .replace(/T/, " ")
-        .replace(/\..+/, "");
-      let {
+      // console.log("req body activeInactiveWallet >>>", req.body);
+      const currentUTCDate: string = new Date().toISOString().replace(/T/, " ").replace(/\..+/, "");
+
+      const {
         coinId,
         walletAddress,
         isActive,
       }: { coinId: number; walletAddress: string; isActive: any } = req.body;
-      let userId: number = req.userId;
+
+      const userId: number = req.userId;
       let message: string;
 
       const checkAddress = await wallet_queries.wallet_find_one(
         ["wallet_id", "user_id"],
         { wallet_address: walletAddress }
-        );
+      );
 
-        if (!checkAddress || checkAddress.user_id !== req.userId) {
-          return response.error(res, {
-            data: {
-              code: GlblCode.ERROR_CODE,
-              status: false,
-              message: language[lang].UNAUTHORIZED_ACCESS,
-            },
-          });
-        }
+      if (!checkAddress || checkAddress.user_id !== req.userId) {
+        return response.error(res, {
+          data: {
+            code: GlblCode.ERROR_CODE,
+            status: false,
+            message: language[lang].UNAUTHORIZED_ACCESS,
+          },
+        });
+      }
 
-      let coin_data: any = await coin_queries.coin_find_one([], {
+      const coin_data: any = await coin_queries.coin_find_one([], {
         coin_id: coinId,
       });
 
       if (!coin_data) {
-        let err: string = language[lang].COIN_NOT_FOUND;
+        const err: string = language[lang].COIN_NOT_FOUND;
         throw new Error(err);
       }
 
-      let balDetails: any = await global_helper.get_wallet_balance(
+      const balDetails: any = await global_helper.get_wallet_balance(
         coin_data,
         walletAddress
       );
-      let wallet_exist: any = await wallet_queries.wallet_find_one(
+      const wallet_exist: any = await wallet_queries.wallet_find_one(
         ["wallet_id"],
         { wallet_address: walletAddress, coin_id: coinId }
       );
       if (!wallet_exist) {
-        let wallet_data: any = await wallet_queries.wallet_find_one(
+        const wallet_data: any = await wallet_queries.wallet_find_one(
           ["wallet_id", "wallet_name"],
           { wallet_address: walletAddress }
         );
         console.log("wallet_name >>>", wallet_data);
-        let obj: any = {
+        const obj: any = {
           user_id: userId,
           coin_family: coin_data.coin_family,
           wallet_name: wallet_data?.wallet_name
@@ -395,7 +393,7 @@ class WalletController implements OnlyControllerInterface {
         };
         await wallet_queries.wallet_create(obj);
       } else {
-        let update_wallet_data: any = { status: isActive };
+        const update_wallet_data: any = { status: isActive };
         if (balDetails.status) {
           update_wallet_data.balance = balDetails.balance;
         }
@@ -441,10 +439,11 @@ class WalletController implements OnlyControllerInterface {
       });
     }
   }
+
   public async toggleCoinList(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body toggleCoinList >>>", req.body);
+      // console.log("req body toggleCoinList >>>", req.body);
       const {
         page,
         limit,
@@ -458,8 +457,8 @@ class WalletController implements OnlyControllerInterface {
       const coinfamiles: [] = req.body.coinFamilyKeys;
       const search = req.body.search?.trim();
 
-      let pageNo: any = parseInt(page as string) || GlblBooleanEnum.true;
-      let limitNo: any = parseInt(limit as string) || 10;
+      const pageNo: any = parseInt(page as string) || GlblBooleanEnum.true;
+      const limitNo: any = parseInt(limit as string) || 10;
       let offset: number = GlblBooleanEnum.false;
       if (pageNo != GlblBooleanEnum.true) {
         offset = (pageNo - GlblBooleanEnum.true) * limitNo;
@@ -497,15 +496,15 @@ class WalletController implements OnlyControllerInterface {
           }
         ]
       };
-      
+
       if (search) {
         whereClause[Op.or] = [
           { coin_name: { [Op.like]: `%${search}%` } },
           { coin_symbol: { [Op.like]: `%${search}%` } }
         ];
       }
-      
-      let data: any = await Models.CoinsModel.findAndCountAll({
+
+      const data: any = await Models.CoinsModel.findAndCountAll({
         attributes: [
           "coin_id",
           "coin_image",
@@ -558,7 +557,7 @@ class WalletController implements OnlyControllerInterface {
         limit: limitNo,
         offset: offset,
       });
-      let objData: any = {
+      const objData: any = {
         status: true,
         data: data.rows,
         meta: {
@@ -582,37 +581,30 @@ class WalletController implements OnlyControllerInterface {
       });
     }
   }
+
   public async transactions(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body transactions >>>", req.body);
-      let address_list: any = req.body.addrsListKeys
-        ? req.body.addrsListKeys
-        : [];
-      let fiat_currency: string = String(
+      // console.log("req body transactions >>>", req.body);
+      const address_list: any = req.body.addrsListKeys ? req.body.addrsListKeys : [];
+      const fiat_currency: string = String(
         req.body.fiat_currency ? req.body.fiat_currency : Fiat_Currency.USD
       );
       const search = req.body.search?.trim();
-      let limit: number = Number(
+      const limit: number = Number(
         req.body.limit == undefined ? (req.body.limit = "25") : req.body.limit
       );
-      let page: number = Number(
+      const page: number = Number(
         req.body.page == undefined ? (req.body.page = "1") : req.body.page
       );
-      let offset: number = (page - GlblBooleanEnum.true) * limit;
-      let coin_id: number =
-        req.body.coin_id == undefined
-          ? (req.body.coin_id = GlblBooleanEnum.false)
-          : req.body.coin_id;
-      let status: GlblBlockchainTxStatusEnum =
-        req.body.status == undefined
-          ? (req.body.status = null)
-          : req.body.status;
-      let date_from: number = req.body.date_from ? req.body.date_from : null;
-      let date_to: number = req.body.date_to ? req.body.date_to : null;
-      let type: any = req.body.trnx_type ? req.body.trnx_type : "all";
-      let coin_family: any = req.body.coin_family ? req.body.coin_family : [];
-      let userId: number = req.userId;
+      const offset: number = (page - GlblBooleanEnum.true) * limit;
+      const coin_id: number = req.body.coin_id == undefined ? (req.body.coin_id = GlblBooleanEnum.false) : req.body.coin_id;
+      const status: GlblBlockchainTxStatusEnum = req.body.status == undefined ? (req.body.status = null) : req.body.status;
+      const date_from: number = req.body.date_from ? req.body.date_from : null;
+      const date_to: number = req.body.date_to ? req.body.date_to : null;
+      const type: any = req.body.trnx_type ? req.body.trnx_type : "all";
+      const coin_family: any = req.body.coin_family ? req.body.coin_family : [];
+      const userId: number = req.userId;
 
       let where_clause: any = {
         [Op.or]: [
@@ -646,8 +638,8 @@ class WalletController implements OnlyControllerInterface {
         ],
       };
 
-      let replacements = {userId : userId}
-      let attr: any = [
+      const replacements = { userId: userId }
+      const attr: any = [
         "id",
         [
           Sequelize.literal(`(
@@ -714,7 +706,7 @@ class WalletController implements OnlyControllerInterface {
           user_id: userId,
         };
       } else if (type?.toUpperCase() == TxTypesEnum.SWAP?.toUpperCase()) {
-        console.log("dddddddddddddddddddddd", type);
+        // console.log("dddddddddddddddddddddd", type);
         where_clause = {
           [Op.or]: [
             { type: TxTypesEnum.APPROVE },
@@ -801,7 +793,7 @@ class WalletController implements OnlyControllerInterface {
           },
         };
       }
-      let query: any = {
+      const query: any = {
         attributes: attr,
         where: where_clause,
         include: [
@@ -830,8 +822,8 @@ class WalletController implements OnlyControllerInterface {
         limit: limit,
         offset: offset,
       };
-      let transaction_data: any = await Models.TrnxHistoryModel.findAndCountAll(
-        {...query,replacements, logging: console.log}
+      const transaction_data: any = await Models.TrnxHistoryModel.findAndCountAll(
+        { ...query, replacements, logging: console.log }
       );
       return response.success(res, {
         data: {
@@ -866,17 +858,17 @@ class WalletController implements OnlyControllerInterface {
       const checkAddress = await wallet_queries.wallet_find_one(
         ["wallet_id", "user_id"],
         { wallet_address: walletAddress }
-        );
+      );
 
-        if (!checkAddress || checkAddress.user_id !== req.userId) {
-          return response.error(res, {
-            data: {
-              code: GlblCode.ERROR_CODE,
-              status: false,
-              message: language[lang].UNAUTHORIZED_ACCESS,
-            },
-          });
-        }
+      if (!checkAddress || checkAddress.user_id !== req.userId) {
+        return response.error(res, {
+          data: {
+            code: GlblCode.ERROR_CODE,
+            status: false,
+            message: language[lang].UNAUTHORIZED_ACCESS,
+          },
+        });
+      }
 
       for await (let wallet of wallets) {
         await wallet_queries.wallet_update(
@@ -901,22 +893,21 @@ class WalletController implements OnlyControllerInterface {
     let lang: any = req.headers["content-language"] || "en";
     try {
       console.log("req body searchToken >>>", req.body);
-      let {
+      const {
         tokenAddress,
         coinFamily,
       }: { tokenAddress: string; coinFamily: number } = req.body;
       let tokenDetails: { decimals: any; name: any; symbol: any } = {
         decimals: "0",
-        name: "",
-        symbol: "",
+        name: "", symbol: ""
       };
-      console.log("Entered into searchToken request data", req.body);
+      // console.log("Entered into searchToken request data", req.body);
       tokenDetails = await global_helper.return_decimals_name_symbol(
         coinFamily,
         tokenAddress,
         lang
       );
-      console.log("tokenDetails >> tokenDetails ", tokenDetails);
+      // console.log("tokenDetails >> tokenDetails ", tokenDetails);
 
       if (!tokenDetails || tokenDetails == null) {
         return response.error(res, {
@@ -953,10 +944,10 @@ class WalletController implements OnlyControllerInterface {
   public async swapList(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body swapList >>>", req.body);
+      // console.log("req body swapList >>>", req.body);
       const coin_family: [] = req.body.coin_family;
       const addresses: [] = req.body.addrsListKeys;
-      let fiat_type: string = req.body.fiat_type;
+      const fiat_type: string = req.body.fiat_type;
       const coin_id: number = req.body.coin_id || null;
       const customTokenCoinIds = await Models.CustomTokennModel.findAll({
         attributes: ['coin_id'],
@@ -986,8 +977,8 @@ class WalletController implements OnlyControllerInterface {
       if (coin_id) {
         where_clause.coin_id = coin_id;
       }
-      let isFav = false;
-      let swap_list_data: any = await Models.CoinsModel.findAll({
+      const isFav = false;
+      const swap_list_data: any = await Models.CoinsModel.findAll({
         attributes: [
           "coin_id",
           "is_token",
@@ -1061,7 +1052,7 @@ class WalletController implements OnlyControllerInterface {
   public async getRpcUrl(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      let data: any = {
+      const data: any = {
         ETH_RPC_URL: config.NODE.ETH_RPC_URL,
         BTC_RPC_URL: config.NODE.BTC_RPC_URL,
         TRON_NODE: config.NODE.TRX_RPC_URL,
@@ -1077,7 +1068,7 @@ class WalletController implements OnlyControllerInterface {
     } catch (err: any) {
       console.error("Error in wallet > getRpcUrl.", err);
       await commonHelper.save_error_logs("wallet_getRpcUrl", err.message);
-      let data = {
+      const data = {
         code: GlblCode.ERROR_CODE,
         status: false,
         message: language[lang].CATCH_MSG,
@@ -1088,16 +1079,16 @@ class WalletController implements OnlyControllerInterface {
   public async updateWatchlist(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body updateWatchlist >>>", req.body);
-      let user_id: number = req.userId;
-      let data: any = req.body.data;
+      // console.log("req body updateWatchlist >>>", req.body);
+      const user_id: number = req.userId;
+      const data: any = req.body.data;
       for (let i = GlblBooleanEnum.false; i < data.length; i++) {
         const coin_family = (await coin_queries.coin_find_one(["coin_family"], { coin_id: data[i].coin_id }))?.coin_family;
         const addressValidity: any = await global_helper.validate_address(
           data[i].address,
           coin_family
         );
-        if (!addressValidity){
+        if (!addressValidity) {
           return res.status(GlblCode.ERROR_CODE).send({
             status: false,
             code: GlblCode.ERROR_CODE,
@@ -1174,10 +1165,11 @@ class WalletController implements OnlyControllerInterface {
       return res.status(data.code).send(data);
     }
   }
+
   public async getWatchlist(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body getWatchlist >>>", req.body);
+      // console.log("req body getWatchlist >>>", req.body);
       const user_id: any = req.userId;
       const { page, limit }: { page: number | string; limit: number | string } =
         req.body;
@@ -1233,15 +1225,15 @@ class WalletController implements OnlyControllerInterface {
           }
         ]
       };
-      
+
       if (search) {
         whereClause[Op.or] = [
           { coin_name: { [Op.like]: `%${search.trim()}%` } },
           { coin_symbol: { [Op.like]: `%${search.trim()}%` } },
         ];
       }
-      
-      let result: any = await Models.CoinsModel.findAndCountAll({
+
+      const result: any = await Models.CoinsModel.findAndCountAll({
         attributes: [
           "coin_id",
           "coin_name",
@@ -1287,6 +1279,7 @@ class WalletController implements OnlyControllerInterface {
         limit: limitNo,
         subQuery: false,
       });
+
       return res.status(GlblCode.SUCCESS).send({
         status: true,
         code: GlblCode.SUCCESS,
@@ -1309,10 +1302,11 @@ class WalletController implements OnlyControllerInterface {
       return res.status(data.code).send(data);
     }
   }
+
   public async getCurrencyFiat(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      let data: any = await Models.CurrencyFiatModel.findAll({
+      const data: any = await Models.CurrencyFiatModel.findAll({
         where: { status: GlblBooleanEnum.true },
         order: [["currency_name", "ASC"]],
       });
@@ -1327,6 +1321,7 @@ class WalletController implements OnlyControllerInterface {
       });
     }
   }
+
   public async getFee(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
@@ -1347,16 +1342,17 @@ class WalletController implements OnlyControllerInterface {
       return res.status(data.code).send(data);
     }
   }
+
   public async NativeCoinFiatPrice(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body NativeCoinFiatPrice >>>", req.body);
-      let {
+      // console.log("req body NativeCoinFiatPrice >>>", req.body);
+      const {
         coin_family,
         fiat_currency,
       }: { coin_family: number; fiat_currency: string } = req.body;
 
-      let nativeCoin: any = await Models.CoinsModel.findOne({
+      const nativeCoin: any = await Models.CoinsModel.findOne({
         attributes: ["cmc_id"],
         where: {
           coin_family: coin_family,
@@ -1368,12 +1364,12 @@ class WalletController implements OnlyControllerInterface {
 
       let fiatCoinPrice: any;
       if (nativeCoin) {
-        console.log(
-          "Entered into if of nativeCoin",
-          nativeCoin?.cmc_id,
-          ">>>>>",
-          fiat_currency
-        );
+        // console.log(
+        //   "Entered into if of nativeCoin",
+        //   nativeCoin?.cmc_id,
+        //   ">>>>>",
+        //   fiat_currency
+        // );
 
         fiatCoinPrice = await Models.CoinPriceInFiatModel.findOne({
           attributes: ["value"],
@@ -1410,6 +1406,7 @@ class WalletController implements OnlyControllerInterface {
       return res.status(data.code).send(data);
     }
   }
+
   public async fetchValue(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
@@ -1432,18 +1429,18 @@ class WalletController implements OnlyControllerInterface {
       });
     }
   }
+
   public async checkFiatBalance(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body checkFiatBalance >>>", req.body);
-      let {
+      // console.log("req body checkFiatBalance >>>", req.body);
+      const {
         coin_family,
         fiat_currency,
         coin_symbol,
-      }: { coin_family: number; fiat_currency: string; coin_symbol: string } =
-        req.body;
+      }: { coin_family: number; fiat_currency: string; coin_symbol: string } = req.body;
 
-      let wallet_data: any = await Models.WalletModel.findOne({
+      const wallet_data: any = await Models.WalletModel.findOne({
         attributes: ["coin_id", "balance"],
         where: { coin_family: coin_family, user_id: req.userId },
         include: [
@@ -1467,18 +1464,16 @@ class WalletController implements OnlyControllerInterface {
         ],
         order: [["wallet_id", "ASC"]],
       });
-      let usd_value: any =
-        wallet_data.coin.fiat_price_data.value == null
-          ? "0.00"
-          : wallet_data.coin.fiat_price_data.value;
+      const usd_value: any = wallet_data.coin.fiat_price_data.value == null
+        ? "0.00" : wallet_data.coin.fiat_price_data.value;
+
       let bal_in_usd: number = usd_value * wallet_data.balance;
-      bal_in_usd =
-        bal_in_usd < 0.000001
-          ? await WalletHelper.toFixedExp(bal_in_usd, 8)
-          : bal_in_usd < 0.0001
-            ? await WalletHelper.toFixedExp(bal_in_usd, 6)
-            : await WalletHelper.toFixedExp(bal_in_usd, 2);
-      console.log("bal_in_usd", bal_in_usd);
+      bal_in_usd = bal_in_usd < 0.000001
+        ? await WalletHelper.toFixedExp(bal_in_usd, 8)
+        : bal_in_usd < 0.0001
+          ? await WalletHelper.toFixedExp(bal_in_usd, 6)
+          : await WalletHelper.toFixedExp(bal_in_usd, 2);
+      // console.log("bal_in_usd", bal_in_usd);
       if (bal_in_usd >= 10) {
         return res.status(GlblCode.SUCCESS).send({
           status: true,
@@ -1486,28 +1481,15 @@ class WalletController implements OnlyControllerInterface {
           message: "Going Fine",
         });
       } else {
-        let min_balance = await WalletHelper.min_coin_balance(
+        const min_balance = await WalletHelper.min_coin_balance(
           wallet_data,
           fiat_currency,
           usd_value
         );
-        let coin: string =
-          coin_family == 2
-            ? "ETH"
-            : coin_family == 6
-              ? "TRON"
-              : coin_family == 1
-                ? "BNB"
-                : "null";
-        let token_type: string =
-          coin_family == 2
-            ? "ERC20"
-            : coin_family == 6
-              ? "TRC20"
-              : coin_family == 1
-                ? "BEP20"
-                : "null";
-        console.log("coin in wallet_checkFiatsBalance >>>", coin);
+        const coin: string = coin_family == 2 ? "ETH" : coin_family == 6 ? "TRON"
+          : coin_family == 1 ? "BNB" : "null";
+        const token_type: string = coin_family == 2 ? "ERC20" : coin_family == 6 ? "TRC20" : coin_family == 1 ? "BEP20" : "null";
+        // console.log("coin in wallet_checkFiatsBalance >>>", coin);
         return res.status(GlblCode.SUCCESS).send({
           status: true,
           code: GlblCode.SUCCESS,
@@ -1537,8 +1519,8 @@ class WalletController implements OnlyControllerInterface {
   public async allBalances(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body allBalances >>>", req.body);
-      let {
+      // console.log("req body allBalances >>>", req.body);
+      const {
         userIds,
         fiatType,
         fetchFrom,
@@ -1546,15 +1528,16 @@ class WalletController implements OnlyControllerInterface {
         req.body;
 
       let checkerWalletData: any = [];
-      let where: {
+      const where: {
         status: GlblBooleanEnum;
         coin_family?: { [Op.notIn]: number[] };
       } = { status: GlblBooleanEnum.true };
+
       if (fetchFrom !== undefined && fetchFrom === "extension") {
         where.coin_family = { [Op.notIn]: [config.STATIC_COIN_FAMILY.TRX] };
       }
 
-      let commonPart: any = [
+      const commonPart: any = [
         {
           model: Models.WalletModel,
           attributes: ["wallet_id", "balance", ["user_id", "checker_user_id"]],
@@ -1610,8 +1593,8 @@ class WalletController implements OnlyControllerInterface {
   public async nativeCoinBalance(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body updateBalance >>>", req.body);
-      let {
+      // console.log("req body updateBalance >>>", req.body);
+      const {
         wallet_address,
         coin_family,
       }: { wallet_address: string; coin_family: number } = req.body;
@@ -1652,7 +1635,7 @@ class WalletController implements OnlyControllerInterface {
   public async coinWalletDetail(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      let user_id: number = req.userId;
+      const user_id: number = req.userId;
       const {
         wallet_address,
         coin_id,
@@ -1967,7 +1950,7 @@ class WalletController implements OnlyControllerInterface {
         throw new Error(`${language[lang].INVALID_ADDRESS}`);
 
       // Get wallet balance from global helper
-      let balDetails: any = await global_helper.getWalletBalance(
+      const balDetails: any = await global_helper.getWalletBalance(
         coinData,
         wallet_address
       );
@@ -2011,21 +1994,21 @@ class WalletController implements OnlyControllerInterface {
    */
   public nfts_from_moralis = async (req: Request, res: Response) => {
     try {
-      let address_list = req.body.address_list ? req.body.address_list : [];
-      let chains = [{ chain: "ethereum", type: "eth", symbol: "eth" }];
+      const address_list = req.body.address_list ? req.body.address_list : [];
+      const chains = [{ chain: "ethereum", type: "eth", symbol: "eth" }];
       if (address_list?.length > 0) {
         let nfts: any = [];
         for await (let data of address_list) {
-          let symbol = data.coin_symbol;
-          let address = data.wallet_address;
-          let coin_family = data?.coin_family;
-          let chain_data = chains.filter((chain) => chain.symbol == symbol)[0];
+          const symbol = data.coin_symbol;
+          const address = data.wallet_address;
+          const coin_family = data?.coin_family;
+          const chain_data = chains.filter((chain) => chain.symbol == symbol)[0];
           if (symbol.toUpperCase() == "ETH") {
             try {
-              let method = "get";
-              let url = `https://deep-index.moralis.io/api/v2/${address}/nft?chain=${chain_data.type}&format=decimal&media_items=true`;
-              let headers = { "X-API-Key": config.KEYS.MORALIS };
-              let result: any = await global_helper.get_nft_data(
+              const method = "get";
+              const url = `https://deep-index.moralis.io/api/v2/${address}/nft?chain=${chain_data.type}&format=decimal&media_items=true`;
+              const headers = { "X-API-Key": config.KEYS.MORALIS };
+              const result: any = await global_helper.get_nft_data(
                 method,
                 url,
                 headers
@@ -2046,7 +2029,7 @@ class WalletController implements OnlyControllerInterface {
                       nft?.media?.media_collection?.medium?.url ||
                       nft?.media?.original_media_url;
                   }
-                  let nftObj: any = {
+                  const nftObj: any = {
                     token_address: nft.token_address,
                     token_type: nft.contract_type,
                     token_id: nft.token_id,
@@ -2083,7 +2066,7 @@ class WalletController implements OnlyControllerInterface {
                         ? metadata.attributes
                         : null,
                   };
-                  let findNft: any = await Models.NFTModelModel.findOne({
+                  const findNft: any = await Models.NFTModelModel.findOne({
                     attributes: ["image", "image_extension", "text_data"],
                     where: {
                       wallet_address: { [Op.like]: address },
@@ -2156,7 +2139,7 @@ class WalletController implements OnlyControllerInterface {
                     nftObj?.token_uri &&
                     findNft?.image_extension == null
                   ) {
-                    let token_uri_fetch: any =
+                    const token_uri_fetch: any =
                       await global_helper.check_nft_token_uri(
                         nftObj?.token_uri
                       );
@@ -2183,7 +2166,7 @@ class WalletController implements OnlyControllerInterface {
                     nftObj.text_data =
                       findNft && findNft?.text_data ? findNft?.text_data : null;
                   }
-                  let findCoin = await Models.CoinsModel.findOne({
+                  const findCoin = await Models.CoinsModel.findOne({
                     attributes: ["coin_id", "coin_symbol", "coin_name"],
                     where: {
                       token_address: { [Op.like]: nftObj.token_address },
@@ -2194,7 +2177,7 @@ class WalletController implements OnlyControllerInterface {
                   let coin_data: any = {};
                   /** save token if not exist */
                   if (!findCoin) {
-                    let save_coin_data = await Models.CoinsModel.create({
+                    const save_coin_data = await Models.CoinsModel.create({
                       coin_name: nftObj.name,
                       coin_symbol: nftObj.symbol
                         ? nftObj.symbol.toLowerCase()
@@ -2231,7 +2214,7 @@ class WalletController implements OnlyControllerInterface {
 
                   /** save nft if not exist in wallet */
                   if (!findNft) {
-                    let user_id = req.userId;
+                    const user_id = req.userId;
                     const nftTokenData: Interfaces.NFTInterface = {
                       user_id: user_id,
                       wallet_address: address,
@@ -2258,7 +2241,7 @@ class WalletController implements OnlyControllerInterface {
                     await Models.NFTModelModel.create(nftTokenData);
                   } else {
                     /** update nft if not exist */
-                    let nftTokenData: any = {
+                    const nftTokenData: any = {
                       description: nftObj.description,
                       attributes: nftObj.attributes,
                       token_uri: nftObj.token_uri,
@@ -2357,7 +2340,7 @@ class WalletController implements OnlyControllerInterface {
     try {
       let lang: string = req.headers["content-language"] || "en";
 
-      let {
+      const {
         addressList,
         device_token,
         device_id,
@@ -2368,7 +2351,7 @@ class WalletController implements OnlyControllerInterface {
       } = req.body;
 
       if (!addressList && !addressList.length) {
-        let data = {
+        const data = {
           code: GlblCode.ERROR_CODE,
           status: false,
         };

@@ -2,15 +2,16 @@ import { Request, Response } from "express";
 import { OnlyControllerInterface } from "../../../interfaces/controller.interface";
 import dbHelper from "../../../helpers/dbHelper";
 import { config } from "../../../config";
-import { bigNumberSafeMath, exponentialToDecimal } from "../../../helpers/common/globalFunctions";
-import Web3 from "web3";
+import { bigNumberSafeMath } from "../../../helpers/common/globalFunctions";
+// import Web3 from "web3";
 import * as Models from '../../../models/model/index';
-import { AbiItem } from "web3-utils";
-import { RawDataInterface } from "../interfaces/interfaces.pol";
+// import { AbiItem } from "web3-utils";
+// import { RawDataInterface } from "../interfaces/interfaces.pol";
 import { language } from "../../../constants";
 import response from "../../../helpers/response/response.helpers";
 import { polEther } from "../../../helpers/common/ether_pol_helpers";
 import commonHelper from "../../../helpers/common/common.helpers";
+import { AbiItem } from "../../../interfaces/ether.interface";
 
 class PolController implements OnlyControllerInterface {
   constructor() {
@@ -21,16 +22,16 @@ class PolController implements OnlyControllerInterface {
 
   public async getNonce(req: Request, res: Response): Promise<Response> {
     let lang: any = req.headers['content-language'] || 'en';
-    console.log("req body pol nonce >>>", req.body)
-    var { wallet_address }: { wallet_address: string } = req.body;
-    var nonce_val: number = 0;
+    // console.log("req body pol nonce >>>", req.body)
+    const { wallet_address }: { wallet_address: string } = req.body;
+    // var nonce_val: number = 0;
     try {
-      var walletNonce = await polEther.getWalletNonce(wallet_address);
-      nonce_val = walletNonce;
+      const walletNonce = await polEther.getWalletNonce(wallet_address);
+      // nonce_val = walletNonce;
       return response.success(res, {
         data: {
           data: {
-            nonce: nonce_val,
+            nonce: walletNonce,
           },
           message: language[lang].GET_NONCE,
         },
@@ -47,13 +48,14 @@ class PolController implements OnlyControllerInterface {
       });
     }
   }
+
   public async getEstimationGas(
     req: Request,
     res: Response
   ): Promise<Response | undefined> {
     let lang: any = req.headers['content-language'] || 'en';
     try {
-      console.log("req body eth getEstimationGas >>>", req.body)
+      // console.log("req body eth getEstimationGas >>>", req.body)
 
       let estimationRes: {
         status: boolean;
@@ -83,7 +85,7 @@ class PolController implements OnlyControllerInterface {
         } else {
           estimationRes = await polEther.getPolGasLimit(from, to, lang);
         }
-        let resultList: any = await Models.GasPriceModel.findOne({
+        const resultList: any = await Models.GasPriceModel.findOne({
           where: {
             coin_family: config.STATIC_COIN_FAMILY.POL
           }
@@ -103,87 +105,84 @@ class PolController implements OnlyControllerInterface {
       });
     }
   }
-  public async rawDataString(req: Request, res: Response): Promise<Response> {
-    let lang: any = req.headers['content-language'] || 'en';
-    try {
-      console.log("req body pol rawDataString >>>", req.body)
 
-      let { my_address, dest_address, amount, coin_type }: RawDataInterface = req.body;
-      const web3: Web3 = new Web3(
-        Web3.givenProvider || config.NODE.ETH_RPC_URL + ""
-      );
-      let minABI: AbiItem[] = [
-        // transfer
-        {
-          constant: false,
-          inputs: [
-            {
-              name: "_to",
-              type: "address",
-            },
-            {
-              name: "_value",
-              type: "uint256",
-            },
-          ],
-          name: "transfer",
-          outputs: [
-            {
-              name: "success",
-              type: "bool",
-            },
-          ],
-          payable: false,
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-      ];
-      // If your token is divisible to 8 decimal places, 42 = 0.00000042 of your token
-      let transferAmount = await exponentialToDecimal(amount);
+  // public async rawDataString(req: Request, res: Response): Promise<Response> {
+  //   let lang: any = req.headers['content-language'] || 'en';
+  //   try {
+  //     console.log("req body pol rawDataString >>>", req.body)
 
-      // Determine the nonce
-      let contract = new web3.eth.Contract(
-        minABI,
-        req.coininfo.token_address || "",
-        { from: my_address }
-      );
-      return response.success(res, {
-        data: {
-          status: true,
-          message: language[lang].SUCCESS,
-          data: contract.methods
-            .transfer(dest_address, transferAmount)
-            .encodeABI(),
-        },
-      });
-    } catch (err: any) {
-      console.error("rawDataString error: ==>  ", err);
-      await commonHelper.save_error_logs("eth_rawDataString", err.message);
-      return response.error(res, {
-        data: { status: true, message: language[lang].SUCCESS, data: [] },
-      });
-    }
-  }
+  //     const { my_address, dest_address, amount }: RawDataInterface = req.body;
+  //     const web3: Web3 = new Web3(
+  //       Web3.givenProvider || config.NODE.ETH_RPC_URL + ""
+  //     );
+  //     let minABI: AbiItem[] = [
+  //       // transfer
+  //       {
+  //         constant: false,
+  //         inputs: [
+  //           {
+  //             name: "_to",
+  //             type: "address",
+  //           },
+  //           {
+  //             name: "_value",
+  //             type: "uint256",
+  //           },
+  //         ],
+  //         name: "transfer",
+  //         outputs: [
+  //           {
+  //             name: "success",
+  //             type: "bool",
+  //           },
+  //         ],
+  //         payable: false,
+  //         stateMutability: "nonpayable",
+  //         type: "function",
+  //       },
+  //     ];
+  //     // If your token is divisible to 8 decimal places, 42 = 0.00000042 of your token
+  //     let transferAmount = await exponentialToDecimal(amount);
+
+  //     // Determine the nonce
+  //     let contract = new web3.eth.Contract(
+  //       minABI,
+  //       req.coininfo.token_address || "",
+  //       { from: my_address }
+  //     );
+  //     return response.success(res, {
+  //       data: {
+  //         status: true,
+  //         message: language[lang].SUCCESS,
+  //         data: contract.methods
+  //           .transfer(dest_address, transferAmount)
+  //           .encodeABI(),
+  //       },
+  //     });
+  //   } catch (err: any) {
+  //     console.error("rawDataString error: ==>  ", err);
+  //     await commonHelper.save_error_logs("eth_rawDataString", err.message);
+  //     return response.error(res, {
+  //       data: { status: true, message: language[lang].SUCCESS, data: [] },
+  //     });
+  //   }
+  // }
+
   public async send(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
-      console.log("req body eth send >>>", req.body)
+      // console.log("req body eth send >>>", req.body)
       const { token_address: contractAddress, token_abi: ABI } = req.coininfo;
-      let dapp_transaction: any = req.body.add_amount;
-      var {
-        gas_estimate,
-        amount,
-        gas_price,
-        from,
-        tx_raw,
-      } = req.body;
+      const dapp_transaction: any = req.body.add_amount;
 
-      let maxGas = gas_price * gas_estimate;
-      console.log('maxGas >>>', maxGas);
-      let gasInETH = await polEther.convertWeiToEth(maxGas);
-      console.log('gasInETH >>>', gasInETH);
-      gas_price = gasInETH;
-      let gasInEthForErc = 0;
+      const { gas_estimate, amount, gas_price, from, tx_raw } = req.body;
+
+      const maxGas = gas_price * gas_estimate;
+      // console.log('maxGas >>>', maxGas);
+      const gasInETH = await polEther.convertWeiToEth(maxGas);
+      // console.log('gasInETH >>>', gasInETH);
+      // gas_price = gasInETH;
+      // let gasInEthForErc = 0;
       // ETH only
       if (req.coininfo.is_token == false && req.coininfo.coin_symbol == "eth") {
         let withdrawAmount;
@@ -192,7 +191,7 @@ class PolController implements OnlyControllerInterface {
         } else {
           withdrawAmount = bigNumberSafeMath(amount, "+", gasInETH);
         }
-        let ethBalance = await polEther.get_coin_balance(from, true);
+        const ethBalance = await polEther.get_coin_balance(from, true);
         if (Number(ethBalance) < Number(withdrawAmount)) {
           return response.error(res, {
             data: { status: false, message: language[lang].INSUFFICIENT },
@@ -203,8 +202,8 @@ class PolController implements OnlyControllerInterface {
         req.coininfo.is_token == true &&
         req.coininfo.token_type === "ERC20"
       ) {
-        let ethBalance = await polEther.get_coin_balance(from, true);
-        let ERC20TokenBalance = await polEther.get_erc20_token_balance(
+        const ethBalance = await polEther.get_coin_balance(from, true);
+        const ERC20TokenBalance = await polEther.get_erc20_token_balance(
           contractAddress,
           ABI as AbiItem[],
           req.body.from
@@ -229,17 +228,19 @@ class PolController implements OnlyControllerInterface {
         req.coininfo.is_token == true &&
         req.coininfo.token_type === "ERC721"
       ) {
-        let ethBalance = await polEther.get_coin_balance(from, true);
+        const ethBalance = await polEther.get_coin_balance(from, true);
         if (Number(ethBalance) < Number(gasInETH)) {
           return response.error(res, {
             data: {
               status: false,
-              message: language[lang].ETH_GAS(gasInEthForErc, 'POL')
+              message: language[lang].ETH_GAS(gasInETH, 'POL')
             },
           });
         }
       }
-      console.log('Raw >>>', gasInETH);
+
+      // console.log('Raw >>>', gasInETH);
+
       let transferData = await polEther.sendPolOrTokens(
         req,
         lang,
@@ -255,7 +256,9 @@ class PolController implements OnlyControllerInterface {
           } else {
             req.body.tx_hash = txid;
             req.body.tx_status = "completed";
-            let resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
+            req.body.tx_fee = gasInETH;
+
+            const resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
 
             if (
               req.coininfo.is_token == true &&
@@ -318,45 +321,44 @@ class PolController implements OnlyControllerInterface {
       });
     }
   }
-  public async sendSwapTrnx(req: Request, res: Response) {
-    let lang: any = req.headers['content-language'] || 'en';
-    try {
-      console.log("req body eth sendSwapTrnx >>>", req.body)
 
-      console.log("Entered into sendSwapTransaction")
-      let { tx_hash, amount }:
-        { tx_hash: string, amount: number }
-        = req.body;
+  // public async sendSwapTrnx(req: Request, res: Response) {
+  //   let lang: any = req.headers['content-language'] || 'en';
+  //   try {
+  //     // console.log("req body eth sendSwapTrnx >>>", req.body)
 
-      req.body.tx_status = 'completed';
-      let resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
+  //     // console.log("Entered into sendSwapTransaction")
+  //     const { tx_hash, amount }: { tx_hash: string, amount: number } = req.body;
 
-      if (resultStatus.status && resultStatus.status == true) {
-        return response.success(res, {
-          data: {
-            status: true,
-            message: language[lang].SWAP_REQUEST_ETH(amount, req.coininfo.coin_symbol),
-            tx_hash: tx_hash
-          },
-        });
-      } else {
-        return response.error(res, {
-          data: {
-            status: false,
-            message: language[lang].TRANSACTION_REQUEST
-          },
-        });
-      }
-    } catch (err: any) {
-      console.error("Error in ETHEREUM sendSwapTrnx API >>>>>", err)
-      await commonHelper.save_error_logs("eth_sendSwapTrnx", err.message);
-      return response.error(res, {
-        data: {
-          message: language[lang].CATCH_MSG
-        },
-      });
-    }
-  }
+  //     req.body.tx_status = 'completed';
+  //     const resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
+
+  //     if (resultStatus.status && resultStatus.status == true) {
+  //       return response.success(res, {
+  //         data: {
+  //           status: true,
+  //           message: language[lang].SWAP_REQUEST_ETH(amount, req.coininfo.coin_symbol),
+  //           tx_hash: tx_hash
+  //         },
+  //       });
+  //     } else {
+  //       return response.error(res, {
+  //         data: {
+  //           status: false,
+  //           message: language[lang].TRANSACTION_REQUEST
+  //         },
+  //       });
+  //     }
+  //   } catch (err: any) {
+  //     console.error("Error in ETHEREUM sendSwapTrnx API >>>>>", err)
+  //     await commonHelper.save_error_logs("eth_sendSwapTrnx", err.message);
+  //     return response.error(res, {
+  //       data: {
+  //         message: language[lang].CATCH_MSG
+  //       },
+  //     });
+  //   }
+  // }
 }
 
 export const PolControllers = new PolController();

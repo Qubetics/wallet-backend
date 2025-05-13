@@ -5,11 +5,11 @@ import { Tron_Helper } from "./helper";
 import * as Models from "./../../models/model/index";
 import { trxHelper } from "../../helpers/common/trx_helper";
 import { config } from "../../config";
-import dbHelper from "../../helpers/dbHelper";
+// import dbHelper from "../../helpers/dbHelper";
 import redisClient from "../../helpers/common/redis";
 import {
   GlblBlockchainTxStatusEnum,
-  GlblCode,
+  // GlblCode,
   GlblStatus,
   TxTypesEnum,
   TxReqTypesEnum,
@@ -138,7 +138,7 @@ class TronController implements OnlyControllerInterface {
         //   ],
         //   { coin_id: coin_id }
         // );
-        const coin : any = req.coininfo
+        const coin: any = req.coininfo
         if (!coin) {
           console.error(`coin not found >>>`);
           let resMsg = {

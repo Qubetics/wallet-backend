@@ -28,7 +28,7 @@ class UserController implements OnlyControllerInterface {
   constructor() {
     this.initialize();
   }
-  public initialize() {}
+  public initialize() { }
 
   private validateEmojis = (inputText: string): boolean => {
     const regex = emojiRegex();
@@ -38,7 +38,7 @@ class UserController implements OnlyControllerInterface {
   public async createWallet(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body user createWallet>>>", req.body);
+      // console.log("req body user createWallet>>>", req.body);
       let {
         wallet_address,
         addressList,
@@ -63,7 +63,7 @@ class UserController implements OnlyControllerInterface {
         const currentUTCDate = new Date().toISOString().replace("T", " ").replace(/\..+/, "");
         const timestamp = Date.parse(message);
         const currentTimestamp = Date.parse(currentUTCDate);
-        
+
         const timeDiff = (((currentTimestamp - timestamp) / 1000) / 60);
         if (+timeDiff > 1) {
           return res.status(400).json({
@@ -233,9 +233,9 @@ class UserController implements OnlyControllerInterface {
           );
         }
 
-        console.log("users >>>", users);
+        // console.log("users >>>", users);
         if (users.length > 0) {
-          console.log("in users >>>", users);
+          // console.log("in users >>>", users);
           const updates = await users
             .map((user: any) => {
               const { user_id, device_id } = user;
@@ -252,7 +252,7 @@ class UserController implements OnlyControllerInterface {
               return null;
             })
             .filter((update: any) => update !== null);
-          console.log("updates >>>", updates);
+          // console.log("updates >>>", updates);
           for (const update of updates) {
             await user_queries.user_update(
               { device_id: update.device_id !== "" ? update.device_id : null },
@@ -287,30 +287,30 @@ class UserController implements OnlyControllerInterface {
     let lang: any = req.headers["content-language"] || "en";
     try {
       console.log("req body user notificationList>>>", req.body);
-      let per_page: number = Number(
+      const per_page: number = Number(
         req.body?.limit == undefined ? (req.body.limit = "10") : req.body.limit
       );
-      let page: number = Number(
+      const page: number = Number(
         req.body.page == undefined ? (req.body.page = "1") : req.body.page
       );
-      let offset: number = (page - 1) * per_page;
+      const offset: number = (page - 1) * per_page;
 
       const checkAddress = await wallet_queries.wallet_find_one(
         ["wallet_id", "user_id"],
         { wallet_address: { [Op.in]: req.body.addrsListKeys } }
-        );
+      );
 
-        if (!checkAddress || checkAddress.user_id !== req.userId) {
-          return response.error(res, {
-            data: {
-              code: GlblCode.ERROR_CODE,
-              status: false,
-              message: language[lang].UNAUTHORIZED_ACCESS,
-            },
-          });
-        }
+      if (!checkAddress || checkAddress.user_id !== req.userId) {
+        return response.error(res, {
+          data: {
+            code: GlblCode.ERROR_CODE,
+            status: false,
+            message: language[lang].UNAUTHORIZED_ACCESS,
+          },
+        });
+      }
 
-      let notifications_data =
+      const notifications_data =
         await notification_queries.notifications_joint_find_all_count_all(
           [
             "wallet_address",
@@ -355,12 +355,12 @@ class UserController implements OnlyControllerInterface {
   public async addAddressBook(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body user addAddressBook>>>", req.body);
-      let user_id: number = req.userId;
-      let { wallet_address, contact_name, address, coin_family, wallet_name } =
-        req.body;
+      // console.log("req body user addAddressBook>>>", req.body);
+      const user_id: number = req.userId;
+      const { wallet_address, contact_name, address, coin_family } = req.body;
+      let wallet_name = req.body.wallet_name;
 
-      let wallet_address_exist: any =
+      const wallet_address_exist: any =
         await address_book_wallet_queries.address_book_wallets_with_address_book(
           ["address_book_id"],
           ["id"],
@@ -394,7 +394,7 @@ class UserController implements OnlyControllerInterface {
       }
       let address_book_id = address_book?.id;
 
-      let wallet_name_exist: number =
+      const wallet_name_exist: number =
         await address_book_wallet_queries.address_book_wallet_get_count({
           address_book_id: address_book_id,
           name: wallet_name,
@@ -426,7 +426,8 @@ class UserController implements OnlyControllerInterface {
       );
       if (!addressValidity)
         throw new Error(`${language[lang].INVALID_ADDRESS} (${coin_family})`);
-      let total_wallets: any =
+
+      const total_wallets: any =
         await address_book_wallet_queries.address_book_wallets_find_all(
           ["name"],
           { address_book_id: address_book_id }
@@ -440,6 +441,7 @@ class UserController implements OnlyControllerInterface {
           },
         });
       }
+
       await address_book_wallet_queries.address_book_wallet_create({
         address_book_id: address_book_id,
         name: wallet_name,
@@ -469,31 +471,22 @@ class UserController implements OnlyControllerInterface {
   public async addressBook(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body user addressBook>>>", req.body);
-      let per_page: number = Number(
+      // console.log("req body user addressBook>>>", req.body);
+      const per_page: number = Number(
         req.body?.limit == undefined ? (req.body.limit = "10") : req.body.limit
       );
-      let page: number = Number(
+      const page: number = Number(
         req.body.page == undefined ? (req.body.page = "1") : req.body.page
       );
-      let offset: number = (page - 1) * per_page;
-      let search: any =
-        req.body.search == undefined
-          ? (req.body.search = "%%")
-          : (req.body.search = "%" + req.body.search + "%");
-      let set_order_by: string =
-        req.body?.order_by == undefined || req.body?.order_by == "undefined"
-          ? "name"
-          : (req.body?.order_by as string);
-      let set_order_type: string =
-        req.body?.order_type == "undefined" || req.body?.order_type == undefined
-          ? "ASC"
-          : (req.body?.order_type as string);
-      let { address, coin_family }: { address: string; coin_family: number } =
+      const offset: number = (page - 1) * per_page;
+      const search: any = req.body.search == undefined ? (req.body.search = "%%") : (req.body.search = "%" + req.body.search + "%");
+      const set_order_by: string = req.body?.order_by == undefined || req.body?.order_by == "undefined" ? "name" : (req.body?.order_by as string);
+      const set_order_type: string = req.body?.order_type == "undefined" || req.body?.order_type == undefined ? "ASC" : (req.body?.order_type as string);
+      const { address, coin_family }: { address: string; coin_family: number } =
         req.body;
-      let user_id: number = req.userId;
+      const user_id: number = req.userId;
 
-      let address_book_data: any =
+      const address_book_data: any =
         await address_book_queries.address_book_with_address_book_wallet_coins_joint(
           ["id", "name", "address", "created_at"],
           [
@@ -520,7 +513,7 @@ class UserController implements OnlyControllerInterface {
           set_order_type
         );
 
-      let address_book_data_number: any =
+      const address_book_data_number: any =
         await address_book_queries.address_book_count({
           name: { [Op.like]: search },
           address: address,
@@ -558,21 +551,21 @@ class UserController implements OnlyControllerInterface {
   public async getWalletName(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body user getWalletName>>>", req.body);
-      let {
+      // console.log("req body user getWalletName>>>", req.body);
+      const {
         contact_name,
         coin_family,
-        wallet_name,
         address,
       }: {
         contact_name: string;
         coin_family: number;
-        wallet_name: string;
         address: string;
       } = req.body;
-      let user_id: number = req.userId;
 
-      let address_book: any = await address_book_queries.address_books_find_one(
+      let wallet_name: string = req.body.wallet_name;
+      const user_id: number = req.userId;
+
+      const address_book: any = await address_book_queries.address_books_find_one(
         ["id", "name", "address"],
         { address: address, user_id: user_id, name: contact_name }
       );
@@ -626,11 +619,8 @@ class UserController implements OnlyControllerInterface {
     let lang: any = req.headers["content-language"] || "en";
     try {
       console.log("req body user search>>>", req.body);
-      let user_id: number = req.userId;
-      let search: any =
-        req.body.search == undefined
-          ? (req.body.search = "%%")
-          : (req.body.search = "%" + req.body.search + "%");
+      const user_id: number = req.userId;
+      const search: any = req.body.search == undefined ? (req.body.search = "%%") : (req.body.search = "%" + req.body.search + "%");
 
       let address_book: any = await address_book_queries.address_books_find_all(
         ["name"],
@@ -640,6 +630,7 @@ class UserController implements OnlyControllerInterface {
       if (!address_book) {
         address_book = null;
       }
+
       return response.success(res, {
         data: {
           code: GlblCode.SUCCESS,
@@ -663,32 +654,33 @@ class UserController implements OnlyControllerInterface {
   public async deleteAddressBookWalletAddress(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      console.log("req body user deleteAddressBookWalletAddress>>>", req.body);
+      // console.log("req body user deleteAddressBookWalletAddress>>>", req.body);
       const { id, address_book_id }: { id: number; address_book_id: number } =
         req.body;
-        const user_id = req.userId;
+      const user_id = req.userId;
 
-        const addressBook = await address_book_queries.address_books_find_one(['user_id'],{ id: address_book_id });
-        if (!addressBook) {
-          return response.error(res, {
-            data: {
-              code: GlblCode.ERROR_CODE,
-              status: false,
-              message: language[lang].NO_ADDRESSBOOK_EXIST,
-            },
-          });
-        }
-  
-        if (addressBook.user_id != user_id) {
-          return response.error(res, {
-            data: {
-              code: GlblCode.ERROR_CODE,
-              status: false,
-              message: language[lang].UNAUTHORIZED_ACCESS,
-            },
-          });
-        }
-        
+      const addressBook = await address_book_queries.address_books_find_one(['user_id'], { id: address_book_id });
+
+      if (!addressBook) {
+        return response.error(res, {
+          data: {
+            code: GlblCode.ERROR_CODE,
+            status: false,
+            message: language[lang].NO_ADDRESSBOOK_EXIST,
+          },
+        });
+      }
+
+      if (addressBook.user_id != user_id) {
+        return response.error(res, {
+          data: {
+            code: GlblCode.ERROR_CODE,
+            status: false,
+            message: language[lang].UNAUTHORIZED_ACCESS,
+          },
+        });
+      }
+
       let address_book_wallet: number =
         await address_book_wallet_queries.address_book_wallet_get_count({
           address_book_id: address_book_id,
@@ -759,7 +751,7 @@ class UserController implements OnlyControllerInterface {
         });
       }
 
-      const addressBook = await address_book_queries.address_books_find_one(['user_id'],{ id: id });
+      const addressBook = await address_book_queries.address_books_find_one(['user_id'], { id: id });
       if (!addressBook) {
         return response.error(res, {
           data: {
@@ -816,7 +808,7 @@ class UserController implements OnlyControllerInterface {
   public async announcementViewStatus(req: Request, res: Response) {
     try {
       console.log("req body user announcementViewStatus>>>", req.body);
-      let key: number = req.body.key; // 0 or 1
+      const key: number = req.body.key; // 0 or 1
       let data: any;
       let view_status: any;
       if (key == GlblBooleanEnum.true) {
@@ -904,7 +896,7 @@ class UserController implements OnlyControllerInterface {
   public async appLanguage(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      let data: any = await Models.AppLanguagesModel.findAll({
+      const data: any = await Models.AppLanguagesModel.findAll({
         attributes: ["name", "code", "image"],
         where: { status: "1" },
       });

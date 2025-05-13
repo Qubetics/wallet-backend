@@ -4,11 +4,12 @@ import response from "../../../helpers/response/response.helpers";
 import commonHelper from "../../../helpers/common/common.helpers";
 import { bigNumberSafeMath } from "../../../helpers/common/globalFunctions";
 import { config } from "../../../config";
-import { AbiItem } from "web3-utils";
+// import { AbiItem } from "web3-utils";
 import dbHelper, { gas_prices_queries } from "../../../helpers/dbHelper/index";
 import { language } from "../../../constants";
 import { bscEther } from "../../../helpers/common/ether_bsc_helpers";
 import { BlockChain, TokenType } from "../../../constants/global_enum";
+import { AbiItem } from "../../../interfaces/ether.interface";
 
 
 
@@ -21,10 +22,10 @@ class BNBController implements OnlyControllerInterface {
     public async gasEstimation(req: Request, res: Response) {
         let lang: any = req.headers['content-language'] || 'en';
         try {
-            console.log("req body bsc gas estimation >>>", req.body)
+            // console.log("req body bsc gas estimation >>>", req.body)
 
-            let fee_price_data: any = await bscEther.get_fee_price(req.coininfo, req.body, lang);
-            let resultList: any = await gas_prices_queries.gas_prices_find_one(['id', 'coin_family', 'safe_gas_price', 'propose_gas_price', 'fast_gas_price'], { coin_family: 1 })
+            const fee_price_data: any = await bscEther.get_fee_price(req.coininfo, req.body, lang);
+            const resultList: any = await gas_prices_queries.gas_prices_find_one(['id', 'coin_family', 'safe_gas_price', 'propose_gas_price', 'fast_gas_price'], { coin_family: 1 })
 
             return response.success(res, {
                 data: {
@@ -41,18 +42,19 @@ class BNBController implements OnlyControllerInterface {
             });
         }
     }
+
     public async send(req: Request, res: Response) {
         let lang: any = req.headers['content-language'] || 'en';
         try {
-            console.log("req body bsc send >>>", req.body)
-            let { tx_raw, from, amount, gas_estimate, gas_price }: { nonce: number, tx_raw: string, from: string, to: string, amount: string, gas_estimate: number, gas_price: number } = req.body;
+            // console.log("req body bsc send >>>", req.body)
+            const { tx_raw, from, amount, gas_estimate, gas_price }: { nonce: number, tx_raw: string, from: string, to: string, amount: string, gas_estimate: number, gas_price: number } = req.body;
 
             const { token_address: contractAddress, token_abi: ABI } = req.coininfo;
-            let dapp_transaction: any = req.body.add_amount;
+            const dapp_transaction: any = req.body.add_amount;
 
-            let maxGas: number = gas_price * gas_estimate;
-            var gasInETH: any = await bscEther.convertWeiToEth(maxGas);
-            gas_price = gasInETH;
+            const maxGas: number = gas_price * gas_estimate;
+            const gasInETH: any = await bscEther.convertWeiToEth(maxGas);
+            // gas_price = gasInETH;
             if (req.coininfo.is_token == false && req.coininfo.coin_symbol == BlockChain.BNB) {
                 let withdrawAmount: any;
                 if (dapp_transaction == 1) {
@@ -60,7 +62,7 @@ class BNBController implements OnlyControllerInterface {
                 } else {
                     withdrawAmount = bigNumberSafeMath(amount, "+", gasInETH);
                 }
-                let bscBalance: any = await bscEther.get_coin_balance(from, true);
+                const bscBalance: any = await bscEther.get_coin_balance(from, true);
 
                 if (Number(bscBalance) < Number(withdrawAmount)) {
                     return response.error(res, {
@@ -73,8 +75,8 @@ class BNBController implements OnlyControllerInterface {
                 req.coininfo.token_type === TokenType.BEP20
 
             ) {
-                let bscBalance: any = await bscEther.get_coin_balance(from, true);
-                let BEP20TokenBalance: any = await bscEther.get_bep20_token_balance(
+                const bscBalance: any = await bscEther.get_coin_balance(from, true);
+                const BEP20TokenBalance: any = await bscEther.get_bep20_token_balance(
                     contractAddress,
                     ABI as AbiItem[],
                     req.body.from
@@ -112,7 +114,8 @@ class BNBController implements OnlyControllerInterface {
                     } else {
                         req.body.tx_hash = txid;
                         req.body.tx_status = "completed";
-                        let resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
+                        req.body.tx_fee = gasInETH;
+                        const resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
 
                         if (resultStatus.status && resultStatus.status == true) {
                             if (req.body.tx_type == 'Approve') {
@@ -161,14 +164,14 @@ class BNBController implements OnlyControllerInterface {
             });
         }
     }
+
     public async getNonce(req: Request, res: Response) {
         let lang: any = req.headers['content-language'] || 'en';
         try {
-            console.log("req body bsc nonce >>>", req.body)
-
-            let { wallet_address }: { wallet_address: string } = req.body;
+            // console.log("req body bsc nonce >>>", req.body)
+            const { wallet_address }: { wallet_address: string } = req.body;
             let nonce_val: number = 0;
-            var walletNonce = await bscEther.getWalletNonce(wallet_address);
+            const walletNonce = await bscEther.getWalletNonce(wallet_address);
             nonce_val = walletNonce;
             return response.success(res, {
                 data: {

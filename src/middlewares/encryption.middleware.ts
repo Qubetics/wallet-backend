@@ -25,6 +25,7 @@ export const encryptionMiddleware = async (req: Request, res: Response, next: Ne
         if (dataFields) {
           dataFields = JSON.parse(dataFields);
           req.body = dataFields;
+          console.log('req.body >>', req.body);
           next();
         } else {
           return response.error(res, {
@@ -42,7 +43,8 @@ export const encryptionMiddleware = async (req: Request, res: Response, next: Ne
         console.log("get into special hooks i.e Webhook")
         next();
       } else {
-        console.log("To remove this else condition ")
+        console.log("To remove this else condition ");
+        console.log('without encryption req.body >>', req.body);
         next();
       }
     } else if (method == "GET") {

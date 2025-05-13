@@ -25,10 +25,10 @@ class EthRoute implements ControllerInterface {
       EthMiddleware.requestInfo,
       EthControllers.send);
 
-    this.router.post(`${this.path}/:coin/sendSwapTrnx`,
-      jwtVerification.verifyToken,
-      EthMiddleware.requestInfo,
-      EthControllers.sendSwapTrnx);
+    // this.router.post(`${this.path}/:coin/sendSwapTrnx`,
+    //   jwtVerification.verifyToken,
+    //   EthMiddleware.requestInfo,
+    //   EthControllers.sendSwapTrnx);
 
     /** Not used */
     this.router.post(`${this.path}/:coin/nonce`,
@@ -36,10 +36,10 @@ class EthRoute implements ControllerInterface {
       EthMiddleware.requestInfo,
       EthControllers.getNonce);
 
-    this.router.post(`${this.path}/:coin/get_raw_data_string`,
-      jwtVerification.verifyToken,
-      EthMiddleware.requestInfo,
-      EthControllers.rawDataString);
+    // this.router.post(`${this.path}/:coin/get_raw_data_string`,
+    //   jwtVerification.verifyToken,
+    //   EthMiddleware.requestInfo,
+    //   EthControllers.rawDataString);
   }
 
 }

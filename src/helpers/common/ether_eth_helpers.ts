@@ -208,6 +208,7 @@ class EthEther {
       };
     }
   }
+  
   public async getErc721TokenTransferGasEstimationCost(
     toAddress: string,
     fromAddress: string,

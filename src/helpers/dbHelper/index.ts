@@ -189,7 +189,7 @@ class DbHelper {
         amount: req.body.amount,
         block_id: null,
         nonce: req.body.nonce || null,
-        tx_fee: req.body.gas_price || null,
+        tx_fee: req.body.tx_fee || null,
         swap_fee: req.body.swap_fee || null,
         gas_limit: req.body.gas_estimate || null,
         gas_price: req.body.gas_price || null,

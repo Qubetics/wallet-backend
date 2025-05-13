@@ -92,8 +92,6 @@
     "swagger-ui-express": "^5.0.1",
     "tronstation": "^1.0.0",
     "tronweb": "^4.0.0",
-    "url": "^0.11.1",
-    "web3": "^1.4.0",
-    "web3-utils": "^1.4.0"
+    "url": "^0.11.1"
   }
 }

@@ -25,10 +25,10 @@ class PolRoute implements ControllerInterface {
       PolMiddleware.requestInfo,
       PolControllers.send);
 
-    this.router.post(`${this.path}/:coin/sendSwapTrnx`,
-      jwtVerification.verifyToken,
-      PolMiddleware.requestInfo,
-      PolControllers.sendSwapTrnx);
+    // this.router.post(`${this.path}/:coin/sendSwapTrnx`,
+    //   jwtVerification.verifyToken,
+    //   PolMiddleware.requestInfo,
+    //   PolControllers.sendSwapTrnx);
 
     /** Not used */
     this.router.post(`${this.path}/:coin/nonce`,
@@ -36,10 +36,10 @@ class PolRoute implements ControllerInterface {
       PolMiddleware.requestInfo,
       PolControllers.getNonce);
 
-    this.router.post(`${this.path}/:coin/get_raw_data_string`,
-      jwtVerification.verifyToken,
-      PolMiddleware.requestInfo,
-      PolControllers.rawDataString);
+    // this.router.post(`${this.path}/:coin/get_raw_data_string`,
+    //   jwtVerification.verifyToken,
+    //   PolMiddleware.requestInfo,
+    //   PolControllers.rawDataString);
   }
 
 }

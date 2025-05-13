@@ -17,7 +17,7 @@ class DappController implements OnlyControllerInterface {
     let lang: any = req.headers['content-language'] || 'en';
     try {
 
-      let dappGroupList: any = await Models.DappGroupModel.findAll({
+      const dappGroupList: any = await Models.DappGroupModel.findAll({
         attributes: ["id", "name", "image"],
         include: [{
           model: Models.DappModel,

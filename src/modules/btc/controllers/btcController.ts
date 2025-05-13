@@ -16,6 +16,7 @@ class BTCController implements OnlyControllerInterface {
     this.initialize();
   }
   public initialize() { }
+  
   public async send(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
@@ -44,7 +45,7 @@ class BTCController implements OnlyControllerInterface {
         ? req.body.gas_estimate
         : 0;
       req.body.tx_status = "completed";
-      let dataFromBtc: any = await utxobtc.sendRawTransaction(req.body.tx_raw);
+      const dataFromBtc: any = await utxobtc.sendRawTransaction(req.body.tx_raw);
       if (dataFromBtc.status == false) {
         return response.error(res, {
           data: {
@@ -88,12 +89,12 @@ class BTCController implements OnlyControllerInterface {
           'Content-Type': 'application/json',
         }
       };
-      let result: any = await axios(btc_config);
+      const result: any = await axios(btc_config);
       let res_data: any = [];
       if (result && result.data.length > 0) {
-        let i = 0;
+        const i = 0;
         for await (let data of result.data) {
-          let unspent_data: any = {
+          const unspent_data: any = {
             txid: data.txid,
             block_height: data.height,
             vout: data.vout,
@@ -101,7 +102,7 @@ class BTCController implements OnlyControllerInterface {
             confirmations: data.confirmations
           }
           if (i == 0) {
-            let btc_config1 = {
+            const btc_config1 = {
               method: 'get',
               url: `${config.NODE.BTC_RPC_URL}/api/v2/tx-specific/${data.txid}`,
               headers: {
@@ -109,11 +110,11 @@ class BTCController implements OnlyControllerInterface {
                 'Content-Type': 'application/json',
               }
             };
-            let result: any = await axios(btc_config1);
-            let transaction_data: any = result.data;
+            const result: any = await axios(btc_config1);
+            const transaction_data: any = result.data;
             if (transaction_data && transaction_data.vout !== undefined && transaction_data.vout.length > 0) {
               unspent_data.tx_raw = transaction_data.hex
-              let unspent_vout = await transaction_data.vout.filter((vout: any) => vout.n == data.vout);
+              const unspent_vout = await transaction_data.vout.filter((vout: any) => vout.n == data.vout);
               if (unspent_vout.length > 0) {
                 unspent_data.scriptPubKey = unspent_vout[0].scriptPubKey.hex;
                 unspent_data.address = unspent_vout[0].scriptPubKey.address

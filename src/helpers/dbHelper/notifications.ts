@@ -43,7 +43,7 @@ class NotificationQueries {
     // Joints
     public async notifications_joint_find_all_count_all(attr1: any, attr2: any, attr3: any, where1: any, where2: any, per_page: number, offset: number) {
         try {
-            let data: any = await Models.NotificationModel.findAndCountAll({
+            const data: any = await Models.NotificationModel.findAndCountAll({
                 attributes: attr1,
                 include: [{
                     model: Models.CoinsModel,
