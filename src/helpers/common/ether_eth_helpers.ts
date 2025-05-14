@@ -347,6 +347,16 @@ class EthEther {
       throw error;
     }
   }
+
+  public async convertGweiToWei(value: number): Promise<string> {
+    try {
+      let valueInWei = ethers.parseUnits(value.toString(), 9);
+      return valueInWei.toString();
+    } catch (error) {
+      console.log('🔥 ~ ~ convertGweiToWei node.bsc.helper.ts error');
+      throw error;
+    }
+  }
 }
 
 export const ethEther = new EthEther();

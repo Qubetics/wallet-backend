@@ -48,14 +48,17 @@ class BNBController implements OnlyControllerInterface {
             const { token_address: contractAddress, token_abi: ABI } = req.coininfo;
             const dapp_transaction: any = req.body.add_amount;
 
-            const maxGas: number = gas_price * gas_estimate;
-            const gasInETH: any = await bscEther.convertWeiToEth(maxGas);
+            // const maxGas: number = gas_price * gas_estimate;
+            const gasPriceInWei = await bscEther.convertGweiToWei(gas_price);
+            const maxGas = await bigNumberSafeMath(gasPriceInWei, '*', gas_estimate);
+            const gasInBSC: any = await bscEther.convertWeiToEth(maxGas);
+
             if (req.coininfo.is_token == false && req.coininfo.coin_symbol == BlockChain.BNB) {
                 let withdrawAmount: any;
                 if (dapp_transaction == 1) {
-                    withdrawAmount = bigNumberSafeMath('0', "+", gasInETH);
+                    withdrawAmount = bigNumberSafeMath('0', "+", gasInBSC);
                 } else {
-                    withdrawAmount = bigNumberSafeMath(amount, "+", gasInETH);
+                    withdrawAmount = bigNumberSafeMath(amount, "+", gasInBSC);
                 }
                 const bscBalance: any = await bscEther.get_coin_balance(from, true);
 
@@ -77,7 +80,7 @@ class BNBController implements OnlyControllerInterface {
                     req.body.from
                 );
 
-                if (Number(bscBalance) < Number(gasInETH)) {
+                if (Number(bscBalance) < Number(gasInBSC)) {
                     return response.error(res, {
                         data: {
                             status: false,
@@ -109,7 +112,7 @@ class BNBController implements OnlyControllerInterface {
                     } else {
                         req.body.tx_hash = txid;
                         req.body.tx_status = "completed";
-                        req.body.tx_fee = gasInETH;
+                        req.body.tx_fee = gasInBSC;
                         const resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
 
                         if (resultStatus.status && resultStatus.status == true) {

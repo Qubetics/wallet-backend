@@ -106,16 +106,17 @@ class TicsController implements OnlyControllerInterface {
         from,
         tx_raw,
       } = req.body;
-
-      const maxGas = gas_price * gas_estimate;
-      const gasInTICS = await ticsEther.convertWeiToTics(maxGas);
+      const gasPriceInWei = await ticsEther.convertGweiToWei(gas_price);
+      const maxGas = await bigNumberSafeMath(gasPriceInWei, '*', gas_estimate);
+      // const maxGas = gas_price * gas_estimate;
+      const gasInTics = await ticsEther.convertWeiToTics(maxGas);
       // TICS only
       if (req.coininfo.is_token == false && req.coininfo.coin_symbol == "tics") {
         let withdrawAmount;
         if (dapp_transaction == 1) {
-          withdrawAmount = bigNumberSafeMath('0', "+", gasInTICS);
+          withdrawAmount = bigNumberSafeMath('0', "+", gasInTics);
         } else {
-          withdrawAmount = bigNumberSafeMath(amount, "+", gasInTICS);
+          withdrawAmount = bigNumberSafeMath(amount, "+", gasInTics);
         }
         const ticsBalance = await ticsEther.get_coin_balance(from, true);
         if (Number(ticsBalance) < Number(withdrawAmount)) {
@@ -134,7 +135,7 @@ class TicsController implements OnlyControllerInterface {
           ABI as AbiItem[],
           req.body.from
         );
-        if (Number(ticsBalance) < Number(gasInTICS)) {
+        if (Number(ticsBalance) < Number(gasInTics)) {
           return response.error(res, {
             data: {
               status: false,
@@ -155,11 +156,11 @@ class TicsController implements OnlyControllerInterface {
         req.coininfo.token_type === "ERC721"
       ) {
         const ticsBalance = await ticsEther.get_coin_balance(from, true);
-        if (Number(ticsBalance) < Number(gasInTICS)) {
+        if (Number(ticsBalance) < Number(gasInTics)) {
           return response.error(res, {
             data: {
               status: false,
-              message: language[lang].ETH_GAS(gasInTICS, 'TICS')
+              message: language[lang].ETH_GAS(gasInTics, 'TICS')
             },
           });
         }
@@ -179,7 +180,7 @@ class TicsController implements OnlyControllerInterface {
           } else {
             req.body.tx_hash = txid;
             req.body.tx_status = "completed";
-            req.body.tx_fee = gasInTICS;
+            req.body.tx_fee = gasInTics;
             const resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
 
             if (
