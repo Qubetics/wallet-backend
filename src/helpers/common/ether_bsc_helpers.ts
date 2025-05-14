@@ -166,15 +166,9 @@ class BSCEther {
             message: language[lang].BSC_UNABLE_TO_ESTIMATE,
           };
         }
-        // const signer = await this.provider.getSigner(fromAdress);
-        // const contractWithSigner = contract.connect(signer);
         const gasLimit = await contract.transfer.estimateGas(toAddress, tokenValue, { from: fromAdress })
-        // console.log('gasLimit >>>', gasLimit);
-        //const gasLimit = await contract.getFunction("transfer").estimateGas(toAddress, tokenValue);
         const adjustedGasLimit = BigInt(gasLimit.toString()) * BigInt(200) / BigInt(100);
 
-        // return Number(gasLimit);
-        // const adjustedGasLimit = gasLimit * BigInt(2);
         return adjustedGasLimit === BigInt(0) ? 60000 : Number(adjustedGasLimit);
       }
       return 60000;

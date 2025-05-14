@@ -213,7 +213,6 @@ class SwftcController implements OnlyControllerInterface {
       const per_page: number = Number(req.body?.per_page || 500);
       const offset: number = (page - 1) * per_page;
       let where: any = { status: 1 };
-      //const total = await Models.SWFTCCoinsDataModel.count({ where: where });
       if (req.body?.search) {
         let search: any =
           req.body.search == undefined

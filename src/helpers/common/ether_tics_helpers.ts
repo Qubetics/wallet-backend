@@ -194,14 +194,7 @@ class TicsEther {
           };
         }
         gasLimit = await contract.transfer.estimateGas(toAddress, tokenValue, { from: fromAddress });
-        // gasLimit = await contract.getFunction("transfer").estimateGas(
-        //   toAddress, 
-        //   tokenValue,
-        //   { from: fromAddress }
-        // );
         gasLimit = BigInt(gasLimit.toString()) * BigInt(300) / BigInt(100);
-
-        // gasLimit = gasLimit * BigInt(3);
       }
       return {
         status: true,

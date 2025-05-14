@@ -38,7 +38,6 @@ class UserController implements OnlyControllerInterface {
   public async createWallet(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      // console.log("req body user createWallet>>>", req.body);
       let {
         wallet_address,
         addressList,
@@ -233,9 +232,7 @@ class UserController implements OnlyControllerInterface {
           );
         }
 
-        // console.log("users >>>", users);
         if (users.length > 0) {
-          // console.log("in users >>>", users);
           const updates = await users
             .map((user: any) => {
               const { user_id, device_id } = user;
@@ -252,7 +249,6 @@ class UserController implements OnlyControllerInterface {
               return null;
             })
             .filter((update: any) => update !== null);
-          // console.log("updates >>>", updates);
           for (const update of updates) {
             await user_queries.user_update(
               { device_id: update.device_id !== "" ? update.device_id : null },
@@ -355,7 +351,6 @@ class UserController implements OnlyControllerInterface {
   public async addAddressBook(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      // console.log("req body user addAddressBook>>>", req.body);
       const user_id: number = req.userId;
       const { wallet_address, contact_name, address, coin_family } = req.body;
       let wallet_name = req.body.wallet_name;
@@ -471,7 +466,6 @@ class UserController implements OnlyControllerInterface {
   public async addressBook(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      // console.log("req body user addressBook>>>", req.body);
       const per_page: number = Number(
         req.body?.limit == undefined ? (req.body.limit = "10") : req.body.limit
       );
@@ -551,7 +545,6 @@ class UserController implements OnlyControllerInterface {
   public async getWalletName(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      // console.log("req body user getWalletName>>>", req.body);
       const {
         contact_name,
         coin_family,
@@ -654,7 +647,6 @@ class UserController implements OnlyControllerInterface {
   public async deleteAddressBookWalletAddress(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      // console.log("req body user deleteAddressBookWalletAddress>>>", req.body);
       const { id, address_book_id }: { id: number; address_book_id: number } =
         req.body;
       const user_id = req.userId;
@@ -917,42 +909,6 @@ class UserController implements OnlyControllerInterface {
       });
     }
   }
-
-  // public async add_tokens_for_swap(req: Request, res: Response) {
-  //   try {
-  //     const tokens = req.body.tokens;
-  //     const coin_family = req.body.coin_family;
-  //     if (Object.keys(tokens).length > 0) {
-  //       let i = 0;
-  //       for (const address of Object.keys(tokens)) {
-  //         const token = tokens[address];
-  //         const data_exist: any = await Models.CoinsModel.findOne({
-  //           attributes: ["coin_id", "for_swap"],
-  //           where: { token_address: token.address, coin_family: coin_family },
-  //           raw: true,
-  //         });
-  //         if (data_exist && data_exist.for_swap == 0) {
-  //           const arrayObj: any = { for_swap: 1 };
-  //           await Models.CoinsModel.update(arrayObj, {
-  //             where: { coin_id: data_exist.coin_id },
-  //           });
-  //         }
-  //         console.log("tesddddddddddd2222");
-
-  //         i = i + 1;
-  //       }
-  //     }
-  //     return response.success(res, {
-  //       data: {
-  //         success: true,
-  //         message: "success",
-  //       },
-  //     });
-  //   } catch (err: any) {
-  //     console.error("ERROR in tokens > add_tokens_for_swap", err);
-  //     return response.error(res, { data: (err as Error).message });
-  //   }
-  // }
 }
 
 export const userController = new UserController();

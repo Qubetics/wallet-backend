@@ -3,13 +3,9 @@ import { OnlyControllerInterface } from "../../../interfaces/controller.interfac
 import dbHelper from "../../../helpers/dbHelper";
 import { config } from "../../../config";
 import { bigNumberSafeMath, exponentialToDecimal } from "../../../helpers/common/globalFunctions";
-// import Web3 from "web3";
 import * as Models from '../../../models/model/index';
-// import { AbiItem } from "web3-utils";
-// import { RawDataInterface } from "../interfaces/interfaces.eth";
 import { language } from "../../../constants";
 import response from "../../../helpers/response/response.helpers";
-// import { ethWeb3 } from "../../../helpers/common/web3_eth_helpers";
 import { ethEther } from "../../../helpers/common/ether_eth_helpers";
 import commonHelper from "../../../helpers/common/common.helpers";
 import { TokenType } from "../../../constants/global_enum";
@@ -24,9 +20,7 @@ class EthController implements OnlyControllerInterface {
 
   public async getNonce(req: Request, res: Response): Promise<Response> {
     let lang: any = req.headers['content-language'] || 'en';
-    // console.log("req body eth nonce >>>", req.body)
     const { wallet_address }: { wallet_address: string } = req.body;
-    // let nonce_val: number = 0;
     try {
       const walletNonce = await ethEther.getWalletNonce(wallet_address);
       const nonce_val: number = walletNonce;
@@ -56,7 +50,6 @@ class EthController implements OnlyControllerInterface {
   ): Promise<Response | undefined> {
     let lang: any = req.headers['content-language'] || 'en';
     try {
-      // console.log("req body eth getEstimationGas >>>", req.body)
       //Gas estimation 0 for coins other than BSC/BEP20
       if (
         req.coininfo &&
@@ -112,74 +105,9 @@ class EthController implements OnlyControllerInterface {
     }
   }
 
-  // public async rawDataString(req: Request, res: Response): Promise<Response> {
-  //   let lang: any = req.headers['content-language'] || 'en';
-  //   try {
-  //     // console.log("req body eth rawDataString >>>", req.body)
-
-  //     const { my_address, dest_address, amount, coin_type }: RawDataInterface =
-  //       req.body;
-  //     const web3: Web3 = new Web3(
-  //       Web3.givenProvider || config.NODE.ETH_RPC_URL + ""
-  //     );
-  //     const minABI: AbiItem[] = [
-  //       // transfer
-  //       {
-  //         constant: false,
-  //         inputs: [
-  //           {
-  //             name: "_to",
-  //             type: "address",
-  //           },
-  //           {
-  //             name: "_value",
-  //             type: "uint256",
-  //           },
-  //         ],
-  //         name: "transfer",
-  //         outputs: [
-  //           {
-  //             name: "success",
-  //             type: "bool",
-  //           },
-  //         ],
-  //         payable: false,
-  //         stateMutability: "nonpayable",
-  //         type: "function",
-  //       },
-  //     ];
-  //     // If your token is divisible to 8 decimal places, 42 = 0.00000042 of your token
-  //     const transferAmount = await exponentialToDecimal(amount);
-
-  //     // Determine the nonce
-  //     const count = await web3.eth.getTransactionCount(my_address);
-  //     const contract = new web3.eth.Contract(
-  //       minABI,
-  //       req.coininfo.token_address || "",
-  //       { from: my_address }
-  //     );
-  //     return response.success(res, {
-  //       data: {
-  //         status: true,
-  //         message: language[lang].SUCCESS,
-  //         data: contract.methods
-  //           .transfer(dest_address, transferAmount)
-  //           .encodeABI(),
-  //       },
-  //     });
-  //   } catch (err: any) {
-  //     console.error("rawDataString error: ==>  ", err);
-  //     await commonHelper.save_error_logs("eth_rawDataString", err.message);
-  //     return response.error(res, {
-  //       data: { status: true, message: language[lang].SUCCESS, data: [] },
-  //     });
-  //   }
-  // }
-
   public async send(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
-      // console.log("req body eth send >>>", req.body)
       const { token_address: contractAddress, token_abi: ABI } = req.coininfo;
       const dapp_transaction: any = req.body.add_amount;
       const {
@@ -192,8 +120,6 @@ class EthController implements OnlyControllerInterface {
 
       const maxGas = gas_price * gas_estimate;
       const gasInETH = await ethEther.convertWeiToEth(maxGas);
-      // gas_price = gasInETH;
-      // var gasInEthForErc = 0;
       // ETH only
       if (req.coininfo.is_token == false && req.coininfo.coin_symbol == "eth") {
         let withdrawAmount;
@@ -327,45 +253,6 @@ class EthController implements OnlyControllerInterface {
       });
     }
   }
-
-  // public async sendSwapTrnx(req: Request, res: Response) {
-  //   let lang: any = req.headers['content-language'] || 'en';
-  //   try {
-  //     // console.log("req body eth sendSwapTrnx >>>", req.body)
-
-  //     // console.log("Entered into sendSwapTransaction")
-  //     const { tx_hash, amount }: { tx_hash: string, amount: number } = req.body;
-
-  //     req.body.tx_status = 'completed';
-  //     const resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
-
-  //     if (resultStatus.status && resultStatus.status == true) {
-  //       return response.success(res, {
-  //         data: {
-  //           status: true,
-  //           message: language[lang].SWAP_REQUEST_ETH(amount, req.coininfo.coin_symbol),
-  //           tx_hash: tx_hash
-  //         },
-  //       });
-  //     } else {
-  //       return response.error(res, {
-  //         data: {
-  //           status: false,
-  //           message: language[lang].TRANSACTION_REQUEST
-  //         },
-  //       });
-  //     }
-
-  //   } catch (err: any) {
-  //     console.error("Error in ETHEREUM sendSwapTrnx API >>>>>", err)
-  //     await commonHelper.save_error_logs("eth_sendSwapTrnx", err.message);
-  //     return response.error(res, {
-  //       data: {
-  //         message: language[lang].CATCH_MSG
-  //       },
-  //     });
-  //   }
-  // }
 }
 
 export const EthControllers = new EthController();

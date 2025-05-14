@@ -40,9 +40,4 @@ router.post(`/changePassword`,
     adminMiddleware.checkLogin,
     authController.changePassword);
 
-// Testing
-
-// router.post(`/encryptPassowrd`,
-//     authController.encryptPassowrd);
-
 export default router;

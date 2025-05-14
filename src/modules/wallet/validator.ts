@@ -68,7 +68,6 @@ export default class wallet_validator {
       coin_family: Joi.array()
       .items(Joi.number().integer().required()
       ).required(),
-      ///////////////////////////////////
       coin_type: Joi.string().allow(null, "").optional(),
       from_date: Joi.string().allow(null, "").optional(),
       to_date: Joi.string().allow(null, "").optional(),

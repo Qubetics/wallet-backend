@@ -5,11 +5,9 @@ import { Tron_Helper } from "./helper";
 import * as Models from "./../../models/model/index";
 import { trxHelper } from "../../helpers/common/trx_helper";
 import { config } from "../../config";
-// import dbHelper from "../../helpers/dbHelper";
 import redisClient from "../../helpers/common/redis";
 import {
   GlblBlockchainTxStatusEnum,
-  // GlblCode,
   GlblStatus,
   TxTypesEnum,
   TxReqTypesEnum,
@@ -70,13 +68,9 @@ class TronController implements OnlyControllerInterface {
     try {
       console.log("req body tron send>>>", req.body);
       const user_id = req.userId;
-      // let card_id: any = req.body.card_id;
       const trnx_type: any = req.body.tx_type
         ? req.body.tx_type
         : TxTypesEnum.WITHDRAW;
-      // if (trnx_type == "card_fees") {
-      //   card_id = card_id ? card_id : 1;
-      // }
       const from_address: string = req.body.from;
       const to_address: string = req.body.to;
       const coin_id: number = req.body.coin_id;
@@ -87,27 +81,7 @@ class TronController implements OnlyControllerInterface {
         : 0; /// gas_estimate
       const trnx_raw: any = req.body.tx_raw;
       const fiat_currency: string = "USD";
-      // if (
-      //   (trnx_type == "card_fees" && card_id == 1) ||
-      //   (trnx_type == "card_fees" && card_id == 3)
-      // ) {
-      //   return res.status(GlblCode.ERROR_CODE).send({
-      //     status: false,
-      //     code: GlblCode.ERROR_CODE,
-      //     message: language[lang].CARDS_MAINTENANCE_MODE,
-      //   });
-      // } else if (
-      //   (trnx_type == "card_recharge" && card_id == 1) ||
-      //   (trnx_type == "card_recharge" && card_id == 3)
-      // ) {
-      //   return res.status(GlblCode.ERROR_CODE).send({
-      //     status: false,
-      //     code: GlblCode.ERROR_CODE,
-      //     message: language[lang].CARD_NOT_SUPPORT_RECHARGING,
-      //   });
-      // } else {
-      //   console.log(" no card fee or card recharge check", trnx_type, card_id);
-      // }
+     
       if (from_address == to_address) {
         let resMsg = {
           status: false,
@@ -116,28 +90,6 @@ class TronController implements OnlyControllerInterface {
         return response.error(res, { data: resMsg });
       }
       if (trnx_raw) {
-        // let coin: any = await dbHelper.find_one_coins_table(
-        //   [
-        //     "coin_id",
-        //     "coin_name",
-        //     "cmc_id",
-        //     "is_on_cmc",
-        //     "coin_symbol",
-        //     "coin_image",
-        //     "coin_family",
-        //     "coin_status",
-        //     "is_token",
-        //     "token_type",
-        //     "decimals",
-        //     "token_abi",
-        //     "token_address",
-        //     "for_swap",
-        //     "added_by",
-        //     "created_at",
-        //     "updated_at",
-        //   ],
-        //   { coin_id: coin_id }
-        // );
         const coin: any = req.coininfo
         if (!coin) {
           console.error(`coin not found >>>`);

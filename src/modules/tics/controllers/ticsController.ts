@@ -3,10 +3,7 @@ import { OnlyControllerInterface } from "../../../interfaces/controller.interfac
 import dbHelper from "../../../helpers/dbHelper";
 import { config } from "../../../config";
 import { bigNumberSafeMath } from "../../../helpers/common/globalFunctions";
-// import Web3 from "web3";
 import * as Models from '../../../models/model/index';
-// import { AbiItem } from "web3-utils";
-// import { RawDataInterface } from "../interfaces/interfaces.tics";
 import { language } from "../../../constants";
 import response from "../../../helpers/response/response.helpers";
 import { ticsEther } from "../../../helpers/common/ether_tics_helpers";
@@ -24,10 +21,8 @@ class TicsController implements OnlyControllerInterface {
     let lang: any = req.headers['content-language'] || 'en';
     console.log("req body tics nonce >>>", req.body)
     const { wallet_address }: { wallet_address: string } = req.body;
-    // var nonce_val: number = 0;
     try {
       const walletNonce = await ticsEther.getWalletNonce(wallet_address);
-      // nonce_val = walletNonce;
       return response.success(res, {
         data: {
           data: {
@@ -54,8 +49,6 @@ class TicsController implements OnlyControllerInterface {
   ): Promise<Response | undefined> {
     let lang: any = req.headers['content-language'] || 'en';
     try {
-      // console.log("req body tics getEstimationGas >>>", req.body)
-
       let estimationRes: {
         status: boolean;
         gas_estimate: any;
@@ -101,74 +94,9 @@ class TicsController implements OnlyControllerInterface {
     }
   }
 
-  // public async rawDataString(req: Request, res: Response): Promise<Response> {
-  //   let lang: any = req.headers['content-language'] || 'en';
-  //   try {
-  //     // console.log("req body tics rawDataString >>>", req.body)
-
-  //     var { my_address, dest_address, amount, coin_type }: RawDataInterface =
-  //       req.body;
-  //     const web3: Web3 = new Web3(
-  //       Web3.givenProvider || config.NODE.TICS_RPC_URL + ""
-  //     );
-  //     let minABI: AbiItem[] = [
-  //       // transfer
-  //       {
-  //         constant: false,
-  //         inputs: [
-  //           {
-  //             name: "_to",
-  //             type: "address",
-  //           },
-  //           {
-  //             name: "_value",
-  //             type: "uint256",
-  //           },
-  //         ],
-  //         name: "transfer",
-  //         outputs: [
-  //           {
-  //             name: "success",
-  //             type: "bool",
-  //           },
-  //         ],
-  //         payable: false,
-  //         stateMutability: "nonpayable",
-  //         type: "function",
-  //       },
-  //     ];
-  //     // If your token is divisible to 8 decimal places, 42 = 0.00000042 of your token
-  //     var transferAmount = await exponentialToDecimal(amount);
-
-  //     // Determine the nonce
-  //     var count = await web3.eth.getTransactionCount(my_address);
-  //     var contract = new web3.eth.Contract(
-  //       minABI,
-  //       req.coininfo.token_address || "",
-  //       { from: my_address }
-  //     );
-  //     return response.success(res, {
-  //       data: {
-  //         status: true,
-  //         message: language[lang].SUCCESS,
-  //         data: contract.methods
-  //           .transfer(dest_address, transferAmount)
-  //           .encodeABI(),
-  //       },
-  //     });
-  //   } catch (err: any) {
-  //     console.error("rawDataString error: ==>  ", err);
-  //     await commonHelper.save_error_logs("tics rawDataString", err.message);
-  //     return response.error(res, {
-  //       data: { status: true, message: language[lang].SUCCESS, data: [] },
-  //     });
-  //   }
-  // }
-
   public async send(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
-      // console.log("req body tics send >>>", req.body)
       const { token_address: contractAddress, token_abi: ABI } = req.coininfo;
       const dapp_transaction: any = req.body.add_amount;
       const {
@@ -181,8 +109,6 @@ class TicsController implements OnlyControllerInterface {
 
       const maxGas = gas_price * gas_estimate;
       const gasInTICS = await ticsEther.convertWeiToTics(maxGas);
-      // gas_price = gasInTICS;
-      // var gasInTicsForErc = 0;
       // TICS only
       if (req.coininfo.is_token == false && req.coininfo.coin_symbol == "tics") {
         let withdrawAmount;
@@ -317,46 +243,6 @@ class TicsController implements OnlyControllerInterface {
       });
     }
   }
-
-  // public async sendSwapTrnx(req: Request, res: Response) {
-  //   let lang: any = req.headers['content-language'] || 'en';
-  //   try {
-  //     console.log("req body tics sendSwapTrnx >>>", req.body)
-
-  //     console.log("Entered into sendSwapTransaction")
-  //     let { tx_hash, amount }:
-  //       { tx_hash: string, amount: number }
-  //       = req.body;
-
-  //     req.body.tx_status = 'completed';
-  //     let resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
-
-  //     if (resultStatus.status && resultStatus.status == true) {
-  //       return response.success(res, {
-  //         data: {
-  //           status: true,
-  //           message: language[lang].SWAP_REQUEST_ETH(amount, req.coininfo.coin_symbol),
-  //           tx_hash: tx_hash
-  //         },
-  //       });
-  //     } else {
-  //       return response.error(res, {
-  //         data: {
-  //           status: false,
-  //           message: language[lang].TRANSACTION_REQUEST
-  //         },
-  //       });
-  //     }
-  //   } catch (err: any) {
-  //     console.error("Error in QUBETICS sendSwapTrnx API >>>>>", err)
-  //     await commonHelper.save_error_logs("tics_sendSwapTrnx", err.message);
-  //     return response.error(res, {
-  //       data: {
-  //         message: language[lang].CATCH_MSG
-  //       },
-  //     });
-  //   }
-  // }
 }
 
 export const TicsControllers = new TicsController();

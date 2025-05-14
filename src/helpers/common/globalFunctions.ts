@@ -69,7 +69,6 @@ export const bigNumberSafeMath = function (
       rtn = a.dividedBy(b);
       break;
     default:
-      //operator = operation;
       break;
   }
   return rtn;

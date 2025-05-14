@@ -3,9 +3,7 @@ import { Op, Sequelize } from "sequelize";
 import response from "../../helpers/response/response.helpers";
 import { OnlyControllerInterface } from "../../interfaces/controller.interface";
 import { config } from "../../config";
-// import moment from "moment";
 import { WalletHelper } from "./wallet.helpers";
-// import { Parser } from "json2csv";
 import * as Models from "../../models/model/index";
 import * as Interfaces from "../../models/interface/index.interface";
 import {
@@ -15,19 +13,14 @@ import {
   Fiat_Currency,
   GlblBlockchainTxStatusEnum,
   TxTypesEnum,
-  // Status,
   TokenType,
 } from "../../constants/global_enum";
 import { global_helper } from "../../helpers/common/global_helper";
 import { language } from "../../constants";
 import commonHelper from "../../helpers/common/common.helpers";
 import { coin_queries, wallet_queries } from "../../helpers/dbHelper/index";
-// const crypto = require("crypto");
 import userhelper from "../user/helper";
-// import redisClient from "../../helpers/common/redis";
 import kafka_helper from "../../helpers/common/kafka_helper";
-// import { CoinInterface } from "../../models";
-// import { SolanaHelper } from "../../helpers/common/solana.helper";
 
 class WalletController implements OnlyControllerInterface {
   constructor() {
@@ -163,7 +156,6 @@ class WalletController implements OnlyControllerInterface {
   public async portfolio(req: Request, res: Response) {
     const lang: any = req.headers["content-language"] || "en";
     try {
-      // console.log("req body portfolio >>>", req.body);
       const {
         page,
         limit
@@ -327,7 +319,6 @@ class WalletController implements OnlyControllerInterface {
   public async activeInactiveWallet(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      // console.log("req body activeInactiveWallet >>>", req.body);
       const currentUTCDate: string = new Date().toISOString().replace(/T/, " ").replace(/\..+/, "");
 
       const {
@@ -443,7 +434,6 @@ class WalletController implements OnlyControllerInterface {
   public async toggleCoinList(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      // console.log("req body toggleCoinList >>>", req.body);
       const {
         page,
         limit,
@@ -585,7 +575,6 @@ class WalletController implements OnlyControllerInterface {
   public async transactions(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      // console.log("req body transactions >>>", req.body);
       const address_list: any = req.body.addrsListKeys ? req.body.addrsListKeys : [];
       const fiat_currency: string = String(
         req.body.fiat_currency ? req.body.fiat_currency : Fiat_Currency.USD
@@ -706,7 +695,6 @@ class WalletController implements OnlyControllerInterface {
           user_id: userId,
         };
       } else if (type?.toUpperCase() == TxTypesEnum.SWAP?.toUpperCase()) {
-        // console.log("dddddddddddddddddddddd", type);
         where_clause = {
           [Op.or]: [
             { type: TxTypesEnum.APPROVE },
@@ -901,13 +889,11 @@ class WalletController implements OnlyControllerInterface {
         decimals: "0",
         name: "", symbol: ""
       };
-      // console.log("Entered into searchToken request data", req.body);
       tokenDetails = await global_helper.return_decimals_name_symbol(
         coinFamily,
         tokenAddress,
         lang
       );
-      // console.log("tokenDetails >> tokenDetails ", tokenDetails);
 
       if (!tokenDetails || tokenDetails == null) {
         return response.error(res, {
@@ -944,7 +930,6 @@ class WalletController implements OnlyControllerInterface {
   public async swapList(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      // console.log("req body swapList >>>", req.body);
       const coin_family: [] = req.body.coin_family;
       const addresses: [] = req.body.addrsListKeys;
       const fiat_type: string = req.body.fiat_type;
@@ -1079,7 +1064,6 @@ class WalletController implements OnlyControllerInterface {
   public async updateWatchlist(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      // console.log("req body updateWatchlist >>>", req.body);
       const user_id: number = req.userId;
       const data: any = req.body.data;
       for (let i = GlblBooleanEnum.false; i < data.length; i++) {
@@ -1169,7 +1153,6 @@ class WalletController implements OnlyControllerInterface {
   public async getWatchlist(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      // console.log("req body getWatchlist >>>", req.body);
       const user_id: any = req.userId;
       const { page, limit }: { page: number | string; limit: number | string } =
         req.body;
@@ -1346,7 +1329,6 @@ class WalletController implements OnlyControllerInterface {
   public async NativeCoinFiatPrice(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      // console.log("req body NativeCoinFiatPrice >>>", req.body);
       const {
         coin_family,
         fiat_currency,
@@ -1364,13 +1346,6 @@ class WalletController implements OnlyControllerInterface {
 
       let fiatCoinPrice: any;
       if (nativeCoin) {
-        // console.log(
-        //   "Entered into if of nativeCoin",
-        //   nativeCoin?.cmc_id,
-        //   ">>>>>",
-        //   fiat_currency
-        // );
-
         fiatCoinPrice = await Models.CoinPriceInFiatModel.findOne({
           attributes: ["value"],
           where: {
@@ -1433,7 +1408,6 @@ class WalletController implements OnlyControllerInterface {
   public async checkFiatBalance(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      // console.log("req body checkFiatBalance >>>", req.body);
       const {
         coin_family,
         fiat_currency,
@@ -1473,7 +1447,6 @@ class WalletController implements OnlyControllerInterface {
         : bal_in_usd < 0.0001
           ? await WalletHelper.toFixedExp(bal_in_usd, 6)
           : await WalletHelper.toFixedExp(bal_in_usd, 2);
-      // console.log("bal_in_usd", bal_in_usd);
       if (bal_in_usd >= 10) {
         return res.status(GlblCode.SUCCESS).send({
           status: true,
@@ -1489,7 +1462,6 @@ class WalletController implements OnlyControllerInterface {
         const coin: string = coin_family == 2 ? "ETH" : coin_family == 6 ? "TRON"
           : coin_family == 1 ? "BNB" : "null";
         const token_type: string = coin_family == 2 ? "ERC20" : coin_family == 6 ? "TRC20" : coin_family == 1 ? "BEP20" : "null";
-        // console.log("coin in wallet_checkFiatsBalance >>>", coin);
         return res.status(GlblCode.SUCCESS).send({
           status: true,
           code: GlblCode.SUCCESS,
@@ -1519,7 +1491,6 @@ class WalletController implements OnlyControllerInterface {
   public async allBalances(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      // console.log("req body allBalances >>>", req.body);
       const {
         userIds,
         fiatType,
@@ -1593,7 +1564,6 @@ class WalletController implements OnlyControllerInterface {
   public async nativeCoinBalance(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      // console.log("req body updateBalance >>>", req.body);
       const {
         wallet_address,
         coin_family,
@@ -1720,209 +1690,6 @@ class WalletController implements OnlyControllerInterface {
       return res.status(data.code).send(data);
     }
   }
-
-  // public async downloadCsv(req: Request, res: Response) {
-  //   let lang: any = req.headers["content-language"] || "en";
-  //   try {
-  //     let userId: any = req.params.id;
-  //     console.log("req body downloadCsv >>>", req.params);
-
-  //     let last_month_date: any = moment()
-  //       .subtract(GlblBooleanEnum.true, "months")
-  //       .format("YYYY-MM-DD");
-  //     let wallet_addresses: any = await Models.WalletModel.findAll({
-  //       attributes: ["wallet_address"],
-  //       where: {
-  //         user_id: userId,
-  //       },
-  //       raw: true,
-  //       group: ["wallet_address"],
-  //     });
-  //     let addresses: string[] = [];
-  //     if (wallet_addresses) {
-  //       addresses = wallet_addresses.map(
-  //         (el: { wallet_address: string }) => el.wallet_address
-  //       );
-  //     }
-  //     if (addresses.length == GlblBooleanEnum.false) {
-  //       let data = {
-  //         code: GlblCode.ERROR_CODE,
-  //         status: false,
-  //         message: language[lang].NO_ADDRESS_FOUND,
-  //       };
-  //       return response.error(res, {
-  //         data: data,
-  //       });
-  //     }
-  //     let where_clause: any = {
-  //       [Op.and]: [
-  //         {
-  //           [Op.or]: [
-  //             {
-  //               [Op.and]: [
-  //                 { from_adrs: { [Op.in]: addresses } },
-  //                 { user_id: userId },
-  //                 {
-  //                   [Op.or]: [
-  //                     { blockchain_status: GlblBlockchainTxStatusEnum.PENDING },
-  //                     { blockchain_status: GlblBlockchainTxStatusEnum.FAILED },
-  //                     {
-  //                       blockchain_status: GlblBlockchainTxStatusEnum.CONFIRMED,
-  //                     },
-  //                     { blockchain_status: null },
-  //                   ],
-  //                 },
-  //               ],
-  //             },
-  //             {
-  //               [Op.and]: [
-  //                 { to_adrs: { [Op.in]: addresses } },
-  //                 { to_user_id: userId },
-  //                 { blockchain_status: GlblBlockchainTxStatusEnum.CONFIRMED },
-  //               ],
-  //             },
-  //           ],
-  //         },
-  //         {
-  //           created_at: {
-  //             [Op.gt]: last_month_date,
-  //           },
-  //         },
-  //       ],
-  //     };
-
-  //     let atr: any = [
-  //       [
-  //         Sequelize.fn('CASE',
-  //           Sequelize.where(Sequelize.col('type'), {
-  //             [Op.in]: ['withdraw', 'deposit']
-  //           }),
-  //           Sequelize.fn('CASE',
-  //             Sequelize.where(Sequelize.col('user_id'), userId),
-  //             Sequelize.fn('CONCAT',
-  //               Sequelize.fn('UPPER', Sequelize.fn('SUBSTRING', 'withdraw', 1, 1)),
-  //               Sequelize.fn('SUBSTRING', 'withdraw', 2)
-  //             ),
-  //             'ELSE',
-  //             Sequelize.fn('CONCAT',
-  //               Sequelize.fn('UPPER', Sequelize.fn('SUBSTRING', 'deposit', 1, 1)),
-  //               Sequelize.fn('SUBSTRING', 'deposit', 2)
-  //             )
-  //           ),
-  //           'ELSE',
-  //           Sequelize.fn('CONCAT',
-  //             Sequelize.fn('UPPER', Sequelize.fn('SUBSTRING', Sequelize.col('type'), 1, 1)),
-  //             Sequelize.fn('SUBSTRING', Sequelize.col('type'), 2)
-  //           )
-  //         ),
-  //         'type'
-  //       ],
-  //       "from_adrs",
-  //       "to_adrs",
-  //       "tx_id",
-  //       "status",
-  //       "blockchain_status",
-  //       "amount",
-  //       "tx_fee",
-  //       "created_at",
-  //     ];
-
-  //     await Models.TrnxHistoryModel.findAll({
-  //       attributes: atr,
-  //       where: where_clause,
-  //       order: [["created_at", "DESC"]],
-  //     }).then((objs) => {
-  //       let data: any = [];
-  //       objs.forEach((obj) => {
-  //         obj.type =
-  //           obj.type == "Cross_chain"
-  //             ? language[lang].CROSS_CHAIN
-  //             : obj.type == "Dapp"
-  //               ? language[lang].DAPP
-  //               : obj.type == "Deposit"
-  //                 ? language[lang].DEPOSIT
-  //                 : obj.type == "Swap"
-  //                   ? language[lang].SWAP
-  //                   : obj.type == "Withdraw"
-  //                     ? language[lang].WITHDRAW
-  //                     : obj.type == "Approve"
-  //                       ? language[lang].APPROVE
-  //                       : obj.type == "Buy"
-  //                         ? language[lang].BUY
-  //                         : obj.type == "Card_fees"
-  //                           ? language[lang].CARD_FEES
-  //                           : obj.type == "Level_upgradation_fee"
-  //                             ? language[lang].LEVEL_UPGRADE
-  //                             : language[lang].CARD_RECHARGE;
-  //         obj.status =
-  //           obj.status == "completed"
-  //             ? language[lang].COMPLETED
-  //             : language[lang].FAILED_STATUS;
-  //         obj.blockchain_status =
-  //           obj.blockchain_status == "confirmed"
-  //             ? language[lang].CONFIRMED
-  //             : obj.blockchain_status == "failed"
-  //               ? language[lang].FAILED_STATUS
-  //               : language[lang].PENDING_STATUS;
-  //         const {
-  //           type,
-  //           from_adrs,
-  //           to_adrs,
-  //           tx_id,
-  //           status,
-  //           blockchain_status,
-  //           amount,
-  //           tx_fee,
-  //           created_at,
-  //         }: any = obj;
-  //         data.push({
-  //           type,
-  //           from_adrs,
-  //           to_adrs,
-  //           tx_id,
-  //           status,
-  //           blockchain_status,
-  //           amount,
-  //           tx_fee,
-  //           created_at,
-  //         });
-  //       });
-  //       const opts = {
-  //         fields: [
-  //           { label: `${language[lang].TYPE}`, value: "type" },
-  //           { label: `${language[lang].FROM_ADRS}`, value: "from_adrs" },
-  //           { label: `${language[lang].TO_ADRS}`, value: "to_adrs" },
-  //           { label: `${language[lang].TX_ID}`, value: "tx_id" },
-  //           { label: `${language[lang].STATUS}`, value: "status" },
-  //           {
-  //             label: `${language[lang].BLOCKCHAIN_STATUS}`,
-  //             value: "blockchain_status",
-  //           },
-  //           { label: `${language[lang].AMOUNT}`, value: "amount" },
-  //           { label: `${language[lang].TRNX_FEE}`, value: "tx_fee" },
-  //           { label: `${language[lang].CREATED}`, value: "created_at" },
-  //         ],
-  //       };
-  //       const parser = new Parser(opts);
-  //       const csvData = parser.parse(data);
-  //       res.setHeader("Content-Type", "text/csv");
-  //       res.setHeader(
-  //         "Content-Disposition",
-  //         "attachment; filename=transaction_history.csv"
-  //       );
-  //       res.status(GlblCode.SUCCESS).end(csvData);
-  //     });
-  //   } catch (err: any) {
-  //     console.error("Error in wallet > downloadCsv.", err);
-  //     await commonHelper.save_error_logs("wallet_downloadCsv", err.message);
-  //     let data = {
-  //       code: GlblCode.ERROR_CODE,
-  //       status: false,
-  //       message: language[lang].CATCH_MSG,
-  //     };
-  //     return res.status(data.code).send(data);
-  //   }
-  // }
 
   public async rpcBalance(req: Request, res: Response) {
     const lang: string = req.headers["content-language"] || "en";

@@ -131,11 +131,6 @@ class WalletRoute implements ControllerInterface {
       walletController.nfts_from_moralis
     );
 
-    // this.router.get(
-    //   `${this.path}/transaction/downloadcsv/:id`,
-    //   walletController.downloadCsv
-    // );
-
     this.router.post(
       `${this.path}/coin/graph/data`,
       jwtVerification.verifyToken,

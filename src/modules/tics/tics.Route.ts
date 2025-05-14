@@ -25,21 +25,12 @@ class TicsRoute implements ControllerInterface {
       TicsMiddleware.requestInfo,
       TicsControllers.send);
 
-    // this.router.post(`${this.path}/:coin/sendSwapTrnx`,
-    //   jwtVerification.verifyToken,
-    //   TicsMiddleware.requestInfo,
-    //   TicsControllers.sendSwapTrnx);
-
     /** Not used */
     this.router.post(`${this.path}/:coin/nonce`,
       jwtVerification.verifyToken,
       TicsMiddleware.requestInfo,
       TicsControllers.getNonce);
 
-    // this.router.post(`${this.path}/:coin/get_raw_data_string`,
-    //   jwtVerification.verifyToken,
-    //   TicsMiddleware.requestInfo,
-    //   TicsControllers.rawDataString);
   }
 
 }

@@ -182,13 +182,7 @@ class EthEther {
           };
         }
         gasLimit = await contract.transfer.estimateGas(toAddress, tokenValue, { from: fromAddress })
-        // gasLimit = await contract.getFunction("transfer").estimateGas(
-        //   toAddress,
-        //   tokenValue,
-        //   { from: fromAddress }
-        // );
         gasLimit = BigInt(gasLimit.toString()) * BigInt(300) / BigInt(100);
-        // gasLimit = gasLimit * BigInt(3);
       }
 
       return {
@@ -225,16 +219,6 @@ class EthEther {
         this.provider
       );
       const gasLimit = await contract.transferFrom.estimateGas(fromAddress, toAddress, tokenValue, { from: fromAddress });
-      // const data = contract.interface.encodeFunctionData(
-      //   "transferFrom",
-      //   [fromAddress, toAddress, tokenValue]
-      // );
-      // const gasLimit = await this.provider.estimateGas({
-      //   from: fromAddress,
-      //   nonce: nonce,
-      //   to: tokenAddress,
-      //   data: data,
-      // });
       return {
         status: true,
         gas_estimate:
@@ -268,17 +252,6 @@ class EthEther {
         this.provider
       );
       const gasLimit = await contract.safeTransferFrom.estimateGas(fromAddress, toAddress, tokenValue, tokenAmount, { from: fromAddress });
-      // const data = contract.interface.encodeFunctionData(
-      //   "safeTransferFrom",
-      //   [fromAddress, toAddress, tokenValue, tokenAmount, '0x0']
-      // );
-
-      // const gasLimit = await this.provider.estimateGas({
-      //   from: fromAddress,
-      //   nonce: nonce,
-      //   to: tokenAddress,
-      //   data: data,
-      // });
       return {
         status: true,
         gas_estimate:
