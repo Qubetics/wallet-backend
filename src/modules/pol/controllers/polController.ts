@@ -107,14 +107,17 @@ class PolController implements OnlyControllerInterface {
 
       const { gas_estimate, amount, gas_price, from, tx_raw } = req.body;
 
-      const maxGas = gas_price * gas_estimate;
-      const gasInETH = await polEther.convertWeiToEth(maxGas);
+      const gasPriceInWei = await polEther.convertGweiToWei(gas_price);
+      const maxGas = await bigNumberSafeMath(gasPriceInWei, '*', gas_estimate)
+      // const maxGas = gas_price * gas_estimate;
+      const gasInPol = await polEther.convertWeiToEth(maxGas);
+      console.log('gasInPol >>>', gasInPol);
       if (req.coininfo.is_token == false && req.coininfo.coin_symbol == "eth") {
         let withdrawAmount;
         if (dapp_transaction == 1) {
-          withdrawAmount = bigNumberSafeMath('0', "+", gasInETH);
+          withdrawAmount = bigNumberSafeMath('0', "+", gasInPol);
         } else {
-          withdrawAmount = bigNumberSafeMath(amount, "+", gasInETH);
+          withdrawAmount = bigNumberSafeMath(amount, "+", gasInPol);
         }
         const ethBalance = await polEther.get_coin_balance(from, true);
         if (Number(ethBalance) < Number(withdrawAmount)) {
@@ -133,7 +136,7 @@ class PolController implements OnlyControllerInterface {
           ABI as AbiItem[],
           req.body.from
         );
-        if (Number(ethBalance) < Number(gasInETH)) {
+        if (Number(ethBalance) < Number(gasInPol)) {
           return response.error(res, {
             data: {
               status: false,
@@ -154,11 +157,11 @@ class PolController implements OnlyControllerInterface {
         req.coininfo.token_type === "ERC721"
       ) {
         const ethBalance = await polEther.get_coin_balance(from, true);
-        if (Number(ethBalance) < Number(gasInETH)) {
+        if (Number(ethBalance) < Number(gasInPol)) {
           return response.error(res, {
             data: {
               status: false,
-              message: language[lang].ETH_GAS(gasInETH, 'POL')
+              message: language[lang].ETH_GAS(gasInPol, 'POL')
             },
           });
         }
@@ -179,7 +182,7 @@ class PolController implements OnlyControllerInterface {
           } else {
             req.body.tx_hash = txid;
             req.body.tx_status = "completed";
-            req.body.tx_fee = gasInETH;
+            req.body.tx_fee = gasInPol;
 
             const resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
 
