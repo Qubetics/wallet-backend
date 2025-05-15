@@ -345,7 +345,7 @@ class WalletController implements OnlyControllerInterface {
         });
       }
 
-      const coin_data: any = await coin_queries.coin_find_one([], {
+      const coin_data: any = await coin_queries.coin_find_one(["coin_id", "coin_family", "is_token", "token_address", "token_type"], {
         coin_id: coinId,
       });
 
@@ -353,11 +353,13 @@ class WalletController implements OnlyControllerInterface {
         const err: string = language[lang].COIN_NOT_FOUND;
         throw new Error(err);
       }
-
-      const balDetails: any = await global_helper.get_wallet_balance(
-        coin_data,
-        walletAddress
-      );
+      let balDetails: any = { status: false, balance: 0 };
+      if (isActive == GlblBooleanEnum.true) {
+        balDetails = await global_helper.get_wallet_balance(
+          coin_data,
+          walletAddress
+        );
+      }
       const wallet_exist: any = await wallet_queries.wallet_find_one(
         ["wallet_id"],
         { wallet_address: walletAddress, coin_id: coinId }
@@ -385,7 +387,7 @@ class WalletController implements OnlyControllerInterface {
         await wallet_queries.wallet_create(obj);
       } else {
         const update_wallet_data: any = { status: isActive };
-        if (balDetails.status) {
+        if (isActive == GlblBooleanEnum.true && balDetails.status) {
           update_wallet_data.balance = balDetails.balance;
         }
         await wallet_queries.wallet_update(update_wallet_data, {
@@ -399,7 +401,7 @@ class WalletController implements OnlyControllerInterface {
       } else {
         message = language[lang].TOKEN_WALLET_INACTIVE;
       }
-      if (balDetails.status == false) {
+      if (isActive == GlblBooleanEnum.true && balDetails.status == false) {
         console.log("bal is not updated");
         // adding_coins_to_queue
         await kafka_helper.produceMessage(config.BACKEND_WALLET_ADDRESSES, {
