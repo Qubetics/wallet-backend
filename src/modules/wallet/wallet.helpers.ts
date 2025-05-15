@@ -93,8 +93,19 @@ class WalletHelpers implements OnlyControllerInterface {
       let response: any = await coin_queries.coin_create(coinData);
 
       coinData.coin_id = response.coin_id;
-
-      await WalletHelper.update_token_in_redis(coinData, 0);
+      const redisCoinData = {
+        coin_id: coinData.coin_id,
+        is_token: coinData.is_token,
+        token_address: coinData.token_address,
+        coin_family: coinData.coin_family,
+        decimals: coinData.decimals,
+        token_type: coinData.token_type,
+        coin_symbol: coinData.coin_symbol,
+        added_by: coinData.added_by,
+        for_swap: coinData.for_swap
+      }
+      // await WalletHelper.update_token_in_redis(coinData, 0);
+      await WalletHelper.update_token_in_redis_hash(redisCoinData)
       await custom_token_queries.custom_token_create({
         coin_id: coinData.coin_id,
         user_id: userId,
@@ -555,6 +566,61 @@ class WalletHelpers implements OnlyControllerInterface {
       await commonHelper.save_error_logs("update_token_in_redis", err.message);
       return null;
     }
+  }
+
+  public async update_token_in_redis_hash(coin_data: any) {
+    try {
+      switch (coin_data.coin_family) {
+        case config.STATIC_COIN_FAMILY.BNB:
+          await redisHelper.set_hash_table(
+            config.TOKENLIST.BSC.BEP20,
+            coin_data.token_address,
+            JSON.stringify(coin_data)
+          );
+          break;
+        case config.STATIC_COIN_FAMILY.POL:
+          await redisHelper.set_hash_table(
+            config.TOKENLIST.ETH.ERC20,
+            coin_data.token_address,
+            JSON.stringify(coin_data)
+          );
+        case config.STATIC_COIN_FAMILY.TICS:
+          await redisHelper.set_hash_table(
+            config.TOKENLIST.TICS.ERC20,
+            coin_data.token_address,
+            JSON.stringify(coin_data)
+          );
+        case config.STATIC_COIN_FAMILY.SOL:
+          await redisHelper.set_hash_table(
+            config.TOKENLIST.SOL.SPL,
+            coin_data.token_address,
+            JSON.stringify(coin_data)
+          );
+          break;
+        case config.STATIC_COIN_FAMILY.TRX:
+          await redisHelper.set_hash_table(
+            config.TOKENLIST.BSC.BEP20,
+            coin_data.token_address,
+            JSON.stringify(coin_data)
+          );
+          break;
+        default:
+          await redisHelper.set_hash_table(
+            config.TOKENLIST.TRON.TRX20,
+            coin_data.token_address,
+            JSON.stringify(coin_data)
+          );
+          break;
+      }
+    } catch (err: any) {
+      console.error("Error in update_token_in_redis_hash.", err);
+      await commonHelper.save_error_logs(
+        "update_token_in_redis_hash",
+        err.message
+      );
+      return null;
+    }
+
   }
 
   public async min_coin_balance(
