@@ -5,12 +5,12 @@ export default class wallet_validator {
     body: Joi.object({
       name: Joi.string().required(),
       symbol: Joi.string().required(),
-      coin_gicko_alias: Joi.string().optional(),
+      // coin_gicko_alias: Joi.string().optional(),
       decimals: Joi.string().required(),
       token_address: Joi.string().required(),
       coin_family: Joi.number().required(),
       wallet_address: Joi.string().required(),
-      coin_gicko_id: Joi.string().allow(null, "").optional(),
+      // coin_gicko_id: Joi.string().allow(null, "").optional(),
       wallet_name: Joi.string().allow(null, "").optional(),
       isSwapList: Joi.bool().optional(),
       token_type: Joi.string().required(),
@@ -42,20 +42,20 @@ export default class wallet_validator {
       page: Joi.number().optional(),
       limit: Joi.number().optional(),
       coinFamilyKeys: Joi.array()
-      .items(Joi.number().integer().required()
-      ).required(),
+        .items(Joi.number().integer().required()
+        ).required(),
       search: Joi.string().allow(null, "").optional(),
       addrsListKeys: Joi.array()
-      .items(Joi.string().required()
-      ).required(),
+        .items(Joi.string().required()
+        ).required(),
       currency_code: Joi.string().required(),
     }),
   };
   static transactionListValidate = {
     body: Joi.object({
       addrsListKeys: Joi.array()
-      .items(Joi.string().required()
-      ).required(),
+        .items(Joi.string().required()
+        ).required(),
       fiat_currency: Joi.string().allow(null, "").optional(),
       search: Joi.string().optional(),
       limit: Joi.number().optional(),
@@ -66,8 +66,8 @@ export default class wallet_validator {
       date_to: Joi.string().allow(null, "").optional(),
       trnx_type: Joi.string().allow(null, "").optional(),
       coin_family: Joi.array()
-      .items(Joi.number().integer().required()
-      ).required(),
+        .items(Joi.number().integer().required()
+        ).required(),
       coin_type: Joi.string().allow(null, "").optional(),
       from_date: Joi.string().allow(null, "").optional(),
       to_date: Joi.string().allow(null, "").optional(),
@@ -82,11 +82,11 @@ export default class wallet_validator {
   static swapListValidate = {
     body: Joi.object({
       coin_family: Joi.array()
-      .items(Joi.number().integer().required()
-      ).required(),
+        .items(Joi.number().integer().required()
+        ).required(),
       addrsListKeys: Joi.array()
-      .items(Joi.string().required()
-      ).required(),
+        .items(Joi.string().required()
+        ).required(),
       fiat_type: Joi.string().required(),
       coin_id: Joi.number().optional(),
     }),
@@ -147,27 +147,27 @@ export default class wallet_validator {
   static nfts_from_moralis = {
     body: Joi.object({
       address_list: Joi.array()
-      .items(
+        .items(
           Joi.object({
-              coin_symbol: Joi.string().required(),
-              wallet_address: Joi.string().required(),
-              coin_family: Joi.number().integer().required(),
+            coin_symbol: Joi.string().required(),
+            wallet_address: Joi.string().required(),
+            coin_family: Joi.number().integer().required(),
           })
-      )
-      .required(),
+        )
+        .required(),
     }),
   };
   static order_update = {
     body: Joi.object({
       wallets: Joi.array()
-      .items(
+        .items(
           Joi.object({
             coin_id: Joi.number().required(),
             wallet_address: Joi.string().required(),
             order: Joi.number().required(),
           })
-      )
-      .required(),
+        )
+        .required(),
     }),
   };
 }

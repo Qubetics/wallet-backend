@@ -49,8 +49,8 @@ class BNBController implements OnlyControllerInterface {
             const dapp_transaction: any = req.body.add_amount;
 
             // const maxGas: number = gas_price * gas_estimate;
-            const gasPriceInWei = await bscEther.convertGweiToWei(gas_price);
-            const maxGas = await bigNumberSafeMath(gasPriceInWei, '*', gas_estimate);
+            // const gasPriceInWei = await bscEther.convertGweiToWei(gas_price);
+            const maxGas = await bigNumberSafeMath(gas_price.toString(), '*', gas_estimate);
             const gasInBSC: any = await bscEther.convertWeiToEth(maxGas);
 
             if (req.coininfo.is_token == false && req.coininfo.coin_symbol == BlockChain.BNB) {
