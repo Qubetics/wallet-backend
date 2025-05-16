@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { OnlyControllerInterface } from "../../../interfaces/controller.interface";
 import dbHelper from "../../../helpers/dbHelper";
 import { config } from "../../../config";
-import { bigNumberSafeMath, exponentialToDecimal } from "../../../helpers/common/globalFunctions";
+import { bigNumberSafeMath, exponentialToDecimal, handleErrorMessage } from "../../../helpers/common/globalFunctions";
 import * as Models from '../../../models/model/index';
 import { language } from "../../../constants";
 import response from "../../../helpers/response/response.helpers";
@@ -182,10 +182,12 @@ class EthController implements OnlyControllerInterface {
         tx_raw,
         async (err: Error, txid: string) => {
           if (err) {
+            const filteredMessage = await handleErrorMessage(err)
+
             return response.error(res, {
               data: {
                 status: false,
-                message: err.message.replace(/^Returned error:+/i, ""),
+                message: filteredMessage
               },
             });
           } else {

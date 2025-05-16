@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { OnlyControllerInterface } from "../../../interfaces/controller.interface";
 import dbHelper from "../../../helpers/dbHelper";
 import { config } from "../../../config";
-import { bigNumberSafeMath } from "../../../helpers/common/globalFunctions";
+import { bigNumberSafeMath, handleErrorMessage } from "../../../helpers/common/globalFunctions";
 import * as Models from '../../../models/model/index';
 import { language } from "../../../constants";
 import response from "../../../helpers/response/response.helpers";
@@ -106,8 +106,8 @@ class TicsController implements OnlyControllerInterface {
         from,
         tx_raw,
       } = req.body;
-      const gasPriceInWei = await ticsEther.convertGweiToWei(gas_price);
-      const maxGas = await bigNumberSafeMath(gasPriceInWei, '*', gas_estimate);
+      // const gasPriceInWei = await ticsEther.convertGweiToWei(gas_price);
+      const maxGas = await bigNumberSafeMath(gas_price, '*', gas_estimate);
       // const maxGas = gas_price * gas_estimate;
       const gasInTics = await ticsEther.convertWeiToTics(maxGas);
       // TICS only
@@ -171,10 +171,12 @@ class TicsController implements OnlyControllerInterface {
         tx_raw,
         async (err: Error, txid: string) => {
           if (err) {
+            const filteredMessage = await handleErrorMessage(err)
+
             return response.error(res, {
               data: {
                 status: false,
-                message: err.message.replace(/^Returned error:+/i, ""),
+                message: filteredMessage
               },
             });
           } else {

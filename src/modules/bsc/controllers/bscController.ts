@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { OnlyControllerInterface } from "../../../interfaces/controller.interface";
 import response from "../../../helpers/response/response.helpers";
 import commonHelper from "../../../helpers/common/common.helpers";
-import { bigNumberSafeMath } from "../../../helpers/common/globalFunctions";
+import { bigNumberSafeMath, handleErrorMessage } from "../../../helpers/common/globalFunctions";
 import { config } from "../../../config";
 import dbHelper, { gas_prices_queries } from "../../../helpers/dbHelper/index";
 import { language } from "../../../constants";
@@ -49,8 +49,8 @@ class BNBController implements OnlyControllerInterface {
             const dapp_transaction: any = req.body.add_amount;
 
             // const maxGas: number = gas_price * gas_estimate;
-            const gasPriceInWei = await bscEther.convertGweiToWei(gas_price);
-            const maxGas = await bigNumberSafeMath(gasPriceInWei, '*', gas_estimate);
+            // const gasPriceInWei = await bscEther.convertGweiToWei(gas_price);
+            const maxGas = await bigNumberSafeMath(gas_price.toString(), '*', gas_estimate);
             const gasInBSC: any = await bscEther.convertWeiToEth(maxGas);
 
             if (req.coininfo.is_token == false && req.coininfo.coin_symbol == BlockChain.BNB) {
@@ -103,11 +103,13 @@ class BNBController implements OnlyControllerInterface {
                 async (err: Error, txid: string) => {
                     if (err) {
                         console.log("--------- sendBscOrTokens:", err);
+                        const filteredMessage = await handleErrorMessage(err)
+
                         return response.error(res, {
-                            data: {
-                                status: false,
-                                message: err.message.replace(/^Returned error:+/i, ""),
-                            },
+                        data: {
+                            status: false,
+                            message: filteredMessage
+                        },
                         });
                     } else {
                         req.body.tx_hash = txid;

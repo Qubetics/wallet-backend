@@ -79,3 +79,34 @@ export const bigNumberSafeConversion = function (val: number): number {
   var value = new BigNumber(amount);
   return value.toFixed();
 };
+
+export const handleErrorMessage = async function (error:any) {
+  try {
+    let message = "Something went wrong";
+
+    if (error !== undefined) {
+      const errorMsg = typeof error === 'string' ? error
+        : typeof error?.message === 'string' ? error.message
+            : typeof error?.error === 'string' ? error.error
+                : '';
+
+    if (errorMsg.includes("Returned error: insufficient funds for gas * price + value")) {
+        message = "Insufficient funds.";
+    } else if (error?.response?.data?.errorCode === "TOKEN_NOT_TRADABLE") {
+        message = "The specified token is not tradable.";
+    } else if (errorMsg.includes("You have insufficient BSC balance to perform this transaction")) {
+        message = "You have insufficient BSC balance to perform this transaction";
+    } else if (errorMsg.includes("nonce has already been used")) {
+      message = "Invalid nonce.";
+    } else if (errorMsg.includes("transaction underpriced")) {
+      message = "Transaction underpriced.";
+    }else {
+      message = error?.message.replace(/^Returned error:+/i, "") || "Something went wrong"
+    }
+    return message;
+  }
+  }catch(err : any){
+    console.log("handleErrorMessage")
+    return "Something went wrong";
+  }
+}
