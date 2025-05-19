@@ -51,10 +51,38 @@ class CoinQueries {
     }
     public async coin_create(obj: any) {
         try {
-            let data: any = await Models.CoinsModel.create(obj)
+            let data: any = await Models.CoinsModel.create(obj);
             return data;
         } catch (err: any) {
-            console.error("Error in coin_create>>", err)
+            console.error("Error in coin_create>>", err);
+    
+            const uniqueConstraint =
+                err.name === 'SequelizeUniqueConstraintError' &&
+                err.errors?.some(
+                    (e: any) => e.path === 'unique_coinfamily_tokenaddress' || e.message?.includes('unique_coinfamily_tokenaddress')
+                );
+    
+            if (uniqueConstraint) {
+                const tokenAddress = obj.token_address;
+                const coinFamily = obj.coin_family;
+    
+                try {
+                    const existing = await Models.CoinsModel.findOne({
+                        where: {
+                            token_address: tokenAddress,
+                            coin_family: coinFamily,
+                        }
+                    });
+    
+                    if (existing) {
+                        return existing;
+                    }
+                } catch (findErr) {
+                    console.error("Error finding existing coin>>", findErr);
+                    await commonHelper.save_error_logs("coin_create_find_existing", (findErr as any).message);
+                }
+            }
+    
             await commonHelper.save_error_logs("coin_create", err.message);
             return null;
         }
