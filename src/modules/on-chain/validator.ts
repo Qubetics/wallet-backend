@@ -12,7 +12,8 @@ export default class user_validator {
             fee: Joi.number().allow().optional(),
             referrer: Joi.string().allow().optional(),
             mainRouteParts: Joi.number().allow().optional(),
-            parts: Joi.number().allow().optional()
+            parts: Joi.number().allow().optional(),
+            coin_family: Joi.number().allow().optional()
         })
     }
     static quote = {

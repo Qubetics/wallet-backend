@@ -7,6 +7,8 @@ import { OnChainHelper } from "./helper";
 import { config } from "../../config";
 import redisHelper from "../../helpers/common/redis";
 import * as Models from "../../models/model"
+import { global_helper } from "../../helpers/common/global_helper";
+import { bigNumberSafeMath } from "../../helpers/common/globalFunctions";
 
 class onChainController implements OnlyControllerInterface {
 
@@ -17,8 +19,8 @@ class onChainController implements OnlyControllerInterface {
     public initialize() { }
     public OneinchSwapApi = async (req: Request, res: Response) => {
         let lang: any = req.headers['content-language'] || 'en';
+        const { chain_id, src, dst, amount, from, slippage, fee, referrer, mainRouteParts, parts, coin_family } = req.body
         try {
-            const { chain_id, src, dst, amount, from, slippage, fee, referrer, mainRouteParts, parts } = req.body
             let responseAPI = await OnChainHelper.OneInchSwapApi(chain_id, src, dst, amount, from, slippage, fee, referrer, mainRouteParts, parts);
 
             return response.success(res, {
@@ -30,7 +32,29 @@ class onChainController implements OnlyControllerInterface {
         } catch (error: any) {
             console.error("Error in on-chain > OneinchSwapApi.", error.response.data);
             await commonHelper.save_error_logs("OneinchSwapApi", error.message);
-            let message = (error?.response?.data?.statusCode !== 200 && error?.response?.data?.description !== '') ? error?.response?.data?.description : language[lang].CATCH_MSG;
+            let description = error?.response?.data?.description || '';
+            let message = (error?.response?.data?.statusCode !== 200 && description !== '') 
+                ? description 
+                : language[lang].CATCH_MSG;
+            
+                const match = description.match(/Not enough (0x[a-fA-F0-9]{40}) balance\. Amount:\s*(\d+)\.?\s*Balance:\s*(\d+)/);
+
+                if (match) {
+                    const address = match[1];
+                    let amount = match[2];
+                    let balance = match[3];
+                    const token = await global_helper.return_decimals_name_symbol(
+                        coin_family,
+                        address,
+                        lang
+                    );
+                    const decimal = 10 ** token.decimals
+                    amount = bigNumberSafeMath(amount,'/' ,decimal)
+                    balance = bigNumberSafeMath(balance,'/' ,decimal)
+                    return response.error(res, {
+                        data: { message: `Not enough ${token.name} balance. Amount: ${amount}. Balance: ${balance}`, data: {}}
+                    }); 
+                }
             return response.error(res, {
                 data: { message: message, data: {} },
             });
