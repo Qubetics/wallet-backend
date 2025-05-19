@@ -61,19 +61,8 @@ class WalletController implements OnlyControllerInterface {
       let coinDataExist: any = await coin_queries.coin_find_one(
         [
           "coin_id",
-          "coin_name",
-          "coin_symbol",
-          "coin_image",
-          "cmc_id",
-          "coin_family",
           "coin_status",
-          "is_token",
-          "is_on_cmc",
-          "for_swap",
           "added_by",
-          "token_type",
-          "decimals",
-          "token_address"
         ],
         { coin_family: coin_family, token_address: token_address }
       );

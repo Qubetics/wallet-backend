@@ -580,7 +580,7 @@ class WalletHelpers implements OnlyControllerInterface {
           break;
         case config.STATIC_COIN_FAMILY.POL:
           await redisHelper.set_hash_table(
-            config.TOKENLIST.ETH.ERC20,
+            config.TOKENLIST.POL.ERC20,
             coin_data.token_address,
             JSON.stringify(coin_data)
           );
@@ -599,14 +599,14 @@ class WalletHelpers implements OnlyControllerInterface {
           break;
         case config.STATIC_COIN_FAMILY.TRX:
           await redisHelper.set_hash_table(
-            config.TOKENLIST.BSC.BEP20,
+            config.TOKENLIST.TRON.TRX20,
             coin_data.token_address,
             JSON.stringify(coin_data)
           );
           break;
         default:
           await redisHelper.set_hash_table(
-            config.TOKENLIST.TRON.TRX20,
+            config.TOKENLIST.ETH.ERC20,
             coin_data.token_address,
             JSON.stringify(coin_data)
           );
