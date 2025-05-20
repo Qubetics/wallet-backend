@@ -74,6 +74,7 @@ class CoinQueries {
                         },
                         raw: true
                     });
+                    console.log("🚀 ~ CoinQueries ~ coin_create ~ existing:", existing)
     
                     if (existing) {
                         return existing;

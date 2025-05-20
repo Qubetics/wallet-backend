@@ -898,6 +898,10 @@ class WalletController implements OnlyControllerInterface {
         Object.keys(tokenDetails).length !== GlblBooleanEnum.false &&
         tokenDetails.constructor === Object
       ) {
+        console.log("SEARCH RESPONSE ::: ", {
+          message: language[lang].TOKENS_SEARCH,
+          data: tokenDetails,
+        })
         return response.success(res, {
           data: {
             message: language[lang].TOKENS_SEARCH,
@@ -905,6 +909,10 @@ class WalletController implements OnlyControllerInterface {
           },
         });
       }
+      console.log("SEARCH RESPONSE ::: ", {
+        message: language[lang].TOKENS_NOT_FOUND,
+        data: tokenDetails,
+      })
       return response.error(res, {
         data: { message: language[lang].TOKENS_NOT_FOUND, data: {} },
       });

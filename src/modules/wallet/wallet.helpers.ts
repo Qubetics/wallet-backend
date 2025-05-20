@@ -91,6 +91,7 @@ class WalletHelpers implements OnlyControllerInterface {
         is_on_trading_view: graphSource ? 1 : 0,
       };
       let response: any = await coin_queries.coin_create(coinData);
+      console.log("🚀 ~ WalletHelpers ~ response:", response)
 
       coinData.coin_id = response.coin_id;
       const redisCoinData = {
