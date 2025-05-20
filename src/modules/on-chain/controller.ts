@@ -52,11 +52,11 @@ class onChainController implements OnlyControllerInterface {
                     amount = bigNumberSafeMath(amount,'/' ,decimal)
                     balance = bigNumberSafeMath(balance,'/' ,decimal)
                     return response.error(res, {
-                        data: { message: `Not enough ${token.name} balance. Amount: ${amount}. Balance: ${balance}`, data: {}}
+                        data: { status: false, message: `Not enough ${token.name} balance. Amount: ${amount}. Balance: ${balance}`, data: {}}
                     }); 
                 }
             return response.error(res, {
-                data: { message: message, data: {} },
+                data: {status: false, message: message, data: {} },
             });
         }
     }
