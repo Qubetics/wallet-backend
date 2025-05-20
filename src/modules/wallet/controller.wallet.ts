@@ -21,6 +21,7 @@ import commonHelper from "../../helpers/common/common.helpers";
 import { coin_queries, wallet_queries } from "../../helpers/dbHelper/index";
 import userhelper from "../user/helper";
 import kafka_helper from "../../helpers/common/kafka_helper";
+import redisClient from "../../helpers/common/redis";
 
 class WalletController implements OnlyControllerInterface {
   constructor() {
@@ -869,39 +870,56 @@ class WalletController implements OnlyControllerInterface {
     }
   }
   public async searchToken(req: Request, res: Response) {
-    let lang: any = req.headers["content-language"] || "en";
+    const lang: string = (req.headers["content-language"] as string) || "en";
+  
     try {
       console.log("req body searchToken >>>", req.body);
+  
       const {
         tokenAddress,
         coinFamily,
       }: { tokenAddress: string; coinFamily: number } = req.body;
-      let tokenDetails: { decimals: any; name: any; symbol: any } = {
-        decimals: "0",
-        name: "", symbol: ""
-      };
-      tokenDetails = await global_helper.return_decimals_name_symbol(
-        coinFamily,
-        tokenAddress,
-        lang
-      );
-
-      if (!tokenDetails || tokenDetails == null) {
+  
+      if (!tokenAddress || !coinFamily) {
         return response.error(res, {
           data: { message: language[lang].INVALID_TOKEN, data: {} },
         });
       }
-
-      tokenDetails.decimals = tokenDetails.decimals.toString();
-
+  
+      const redisKey = `tokenDetails:${coinFamily}`;
+      let tokenDetailsStr = await redisClient.getKeyValuePair(config.SEARCH_TOKEN, tokenAddress.toUpperCase(  ));
+  
+      let tokenDetails: { decimals: string; name: string; symbol: string };
+  
+      if (tokenDetailsStr) {
+        console.log("Using cached token details from Redis.");
+        tokenDetails = JSON.parse(tokenDetailsStr);
+      } else {
+        tokenDetails = await global_helper.return_decimals_name_symbol(
+          coinFamily,
+          tokenAddress,
+          lang
+        );
+  
+        if (!tokenDetails) {
+          return response.error(res, {
+            data: { message: language[lang].INVALID_TOKEN, data: {} },
+          });
+        }
+  
+        tokenDetails.decimals = tokenDetails.decimals.toString();
+        await redisClient.set_hash_table(config.SEARCH_TOKEN, tokenAddress, JSON.stringify(tokenDetails));
+      }
+  
       if (
-        Object.keys(tokenDetails).length !== GlblBooleanEnum.false &&
+        Object.keys(tokenDetails).length !== 0 &&
         tokenDetails.constructor === Object
       ) {
         console.log("SEARCH RESPONSE ::: ", {
           message: language[lang].TOKENS_SEARCH,
           data: tokenDetails,
-        })
+        });
+  
         return response.success(res, {
           data: {
             message: language[lang].TOKENS_SEARCH,
@@ -909,10 +927,12 @@ class WalletController implements OnlyControllerInterface {
           },
         });
       }
+  
       console.log("SEARCH RESPONSE ::: ", {
         message: language[lang].TOKENS_NOT_FOUND,
-        data: tokenDetails,
-      })
+        data: {},
+      });
+  
       return response.error(res, {
         data: { message: language[lang].TOKENS_NOT_FOUND, data: {} },
       });
@@ -926,6 +946,7 @@ class WalletController implements OnlyControllerInterface {
       });
     }
   }
+  
   public async swapList(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {

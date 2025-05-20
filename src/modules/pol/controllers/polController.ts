@@ -131,11 +131,13 @@ class PolController implements OnlyControllerInterface {
         req.coininfo.token_type === "ERC20"
       ) {
         const ethBalance = await polEther.get_coin_balance(from, true);
+        console.log("🚀 ~ PolController ~ send ~ ethBalance:", ethBalance)
         const ERC20TokenBalance = await polEther.get_erc20_token_balance(
           contractAddress,
           ABI as AbiItem[],
           req.body.from
         );
+        console.log("🚀 ~ PolController ~ send ~ ERC20TokenBalance:", ERC20TokenBalance)
         if (Number(ethBalance) < Number(gasInPol)) {
           return response.error(res, {
             data: {
