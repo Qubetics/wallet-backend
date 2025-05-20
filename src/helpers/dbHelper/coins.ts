@@ -71,7 +71,8 @@ class CoinQueries {
                         where: {
                             token_address: tokenAddress,
                             coin_family: coinFamily,
-                        }
+                        },
+                        raw: true
                     });
     
                     if (existing) {
