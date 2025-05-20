@@ -17,6 +17,7 @@ import cmcHelper from "./cmc.helpers";
 import { ticsEther } from "./ether_tics_helpers";
 import firebaseAdmin from 'firebase-admin';
 import { fcmServiceAccount } from "../../constants/firebase.admin.key";
+import { error } from "console";
 
 
 class Global_helper {
@@ -52,6 +53,9 @@ class Global_helper {
                 if (response.data.length > 0) {
                     return 1;
                 }
+                return 0;
+            }).catch((error)=>{
+                console.error("Error swapping tokens 222:", error);
                 return 0;
             });
         } catch (error) {
