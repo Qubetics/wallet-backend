@@ -51,14 +51,14 @@ class TronController implements OnlyControllerInterface {
       } else {
         console.error("fee_data", fee_data);
         return response.error(res, {
-          data: { message: language[lang].CATCH_MSG },
+          data: { status: false, message: language[lang].CATCH_MSG },
         });
       }
     } catch (err: any) {
       console.error("Error: in tron gas_estimation ", err);
       await commonHelper.save_error_logs("tron_gas_estimation", err.message);
       return response.error(res, {
-        data: { message: language[lang].CATCH_MSG },
+        data: { status: false, message: language[lang].CATCH_MSG },
       });
     }
   }

@@ -25,6 +25,7 @@ class TicsController implements OnlyControllerInterface {
       const walletNonce = await ticsEther.getWalletNonce(wallet_address);
       return response.success(res, {
         data: {
+          status: true,
           data: {
             nonce: walletNonce,
           },
@@ -37,6 +38,7 @@ class TicsController implements OnlyControllerInterface {
       await commonHelper.save_error_logs("tics_getNonce", err.message);
       return response.error(res, {
         data: {
+          status: false,
           message: language[lang].CATCH_MSG,
           data: {},
         },
@@ -89,7 +91,7 @@ class TicsController implements OnlyControllerInterface {
     } catch (err: any) {
       await commonHelper.save_error_logs("tics_getEstimationGas", err.message);
       return response.error(res, {
-        data: { message: language[lang].CATCH_MSG + err },
+        data: { status: false, message: language[lang].CATCH_MSG + err },
       });
     }
   }
@@ -241,6 +243,7 @@ class TicsController implements OnlyControllerInterface {
       await commonHelper.save_error_logs("tics_send", err.message);
       return response.error(res, {
         data: {
+          status: false,
           message: language[lang].CATCH_MSG
         },
       });

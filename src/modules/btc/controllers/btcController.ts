@@ -49,6 +49,7 @@ class BTCController implements OnlyControllerInterface {
       if (dataFromBtc.status == false) {
         return response.error(res, {
           data: {
+            status: false,
             message: dataFromBtc.custom_err_msg || language[lang].CATCH_MSG
           },
         });
@@ -61,6 +62,7 @@ class BTCController implements OnlyControllerInterface {
       if (resultStatus.status && resultStatus.status == true) {
         return response.success(res, {
           data: {
+            status: true,
             message: language[lang].TRANSACTION_BROADCAST_SUCCESSFULLY,
             data: dataFromBtc.data.result,
           },
@@ -68,6 +70,7 @@ class BTCController implements OnlyControllerInterface {
       } else {
         return response.error(res, {
           data: {
+            status: false,
             message: language[lang].TRANSACTION_BROADCAST_FAILED,
             data: {},
           },

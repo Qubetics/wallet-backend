@@ -30,6 +30,7 @@ export const encryptionMiddleware = async (req: Request, res: Response, next: Ne
         } else {
           return response.error(res, {
             data: {
+              status: false,
               message: language[lang].CATCH_MSG
             }
           })
@@ -53,6 +54,7 @@ export const encryptionMiddleware = async (req: Request, res: Response, next: Ne
       console.log("Entered into LAST ELSE condition")
       return response.error(res, {
         data: {
+          status: false,
           message: language[lang].CATCH_MSG
         }
       })
@@ -61,6 +63,7 @@ export const encryptionMiddleware = async (req: Request, res: Response, next: Ne
     console.error("\n\n error >", err);
     return response.error(res, {
       data: {
+        status: false,
         message: language[lang].CATCH_MSG
       }
     });

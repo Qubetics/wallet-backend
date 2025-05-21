@@ -134,7 +134,7 @@ class WalletController implements OnlyControllerInterface {
       );
 
       return response.success(res, {
-        data: { message: message },
+        data: { status: true, message: message },
       });
 
     } catch (err: any) {
@@ -408,6 +408,7 @@ class WalletController implements OnlyControllerInterface {
       }
       return response.success(res, {
         data: {
+          status: true,
           message: message,
         },
       });
@@ -418,7 +419,7 @@ class WalletController implements OnlyControllerInterface {
         err.message
       );
       response.error(res, {
-        data: { message: language[lang].CATCH_MSG, data: {} },
+        data: { status: false, message: language[lang].CATCH_MSG, data: {} },
       });
     }
   }
@@ -882,7 +883,7 @@ class WalletController implements OnlyControllerInterface {
   
       if (!tokenAddress || !coinFamily) {
         return response.error(res, {
-          data: { message: language[lang].INVALID_TOKEN, data: {} },
+          data: { status: false, message: language[lang].INVALID_TOKEN, data: {} },
         });
       }
   
@@ -903,7 +904,7 @@ class WalletController implements OnlyControllerInterface {
   
         if (!tokenDetails) {
           return response.error(res, {
-            data: { message: language[lang].INVALID_TOKEN, data: {} },
+            data: { status: false, message: language[lang].INVALID_TOKEN, data: {} },
           });
         }
   
@@ -922,6 +923,7 @@ class WalletController implements OnlyControllerInterface {
   
         return response.success(res, {
           data: {
+            status: true,
             message: language[lang].TOKENS_SEARCH,
             data: tokenDetails,
           },
@@ -934,13 +936,14 @@ class WalletController implements OnlyControllerInterface {
       });
   
       return response.error(res, {
-        data: { message: language[lang].TOKENS_NOT_FOUND, data: {} },
+        data: { status: false, message: language[lang].TOKENS_NOT_FOUND, data: {} },
       });
     } catch (err: any) {
       console.error("Error in wallet > searchToken.", err);
       await commonHelper.save_error_logs("wallet_searchToken", err.message);
       return response.error(res, {
         data: {
+          status: false,
           data: { message: language[lang].CATCH_MSG, data: {} },
         },
       });
@@ -1314,13 +1317,13 @@ class WalletController implements OnlyControllerInterface {
         order: [["currency_name", "ASC"]],
       });
       response.success(res, {
-        data: { message: language[lang].SUCCESS, data: data },
+        data: { status: true, message: language[lang].SUCCESS, data: data },
       });
     } catch (err: any) {
       console.error("Error in wallet > getCurrencyFiat.", err);
       await commonHelper.save_error_logs("wallet_getCurrencyFiat", err.message);
       response.error(res, {
-        data: { message: language[lang].CATCH_MSG },
+        data: { status: false, message: language[lang].CATCH_MSG },
       });
     }
   }

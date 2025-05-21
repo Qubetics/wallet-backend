@@ -77,7 +77,7 @@ class onChainController implements OnlyControllerInterface {
             console.error("Error in on-chain > OneinchQuotesApi.", error);
             await commonHelper.save_error_logs("OneinchQuotesApi", error.message);
             return response.error(res, {
-                data: { message: language[lang].CATCH_MSG, data: {} },
+                data: { status: false, message: language[lang].CATCH_MSG, data: {} },
             });
         }
     }
@@ -96,7 +96,7 @@ class onChainController implements OnlyControllerInterface {
             console.error("Error in on-chain > OneinchTokenApproval.", error);
             await commonHelper.save_error_logs("OneinchTokenApproval", error.message);
             return response.error(res, {
-                data: { message: language[lang].CATCH_MSG, data: {} },
+                data: { status: false, message: language[lang].CATCH_MSG, data: {} },
             });
         }
     }
@@ -115,7 +115,7 @@ class onChainController implements OnlyControllerInterface {
             console.error("Error in on-chain > OneinchSpenderInfo.", error);
             await commonHelper.save_error_logs("OneinchSpenderInfo", error.message);
             return response.error(res, {
-                data: { message: language[lang].CATCH_MSG, data: {} },
+                data: { status: false, message: language[lang].CATCH_MSG, data: {} },
             });
         }
     }
@@ -135,7 +135,7 @@ class onChainController implements OnlyControllerInterface {
             console.error("Error in on-chain > OneinchAllowanceCheck.", error);
             await commonHelper.save_error_logs("OneinchAllowanceCheck", error.message);
             return response.error(res, {
-                data: { message: language[lang].CATCH_MSG, data: {} },
+                data: { status: false, message: language[lang].CATCH_MSG, data: {} },
             });
         }
     }
@@ -154,7 +154,7 @@ class onChainController implements OnlyControllerInterface {
             console.error("Error in on-chain > OneinchTokensApi.", error);
             await commonHelper.save_error_logs("OneinchTokensApi", error.message);
             return response.error(res, {
-                data: { message: language[lang].CATCH_MSG, data: {} },
+                data: { status: false, message: language[lang].CATCH_MSG, data: {} },
             });
         }
     }
@@ -191,7 +191,7 @@ class onChainController implements OnlyControllerInterface {
             console.error("Error in on-chain > commisionData.", error);
             await commonHelper.save_error_logs("commisionData", error.message);
             return response.error(res, {
-                data: { message: language[lang].CATCH_MSG, data: {} },
+                data: { status: false, message: language[lang].CATCH_MSG, data: {} },
             });
         }
     }

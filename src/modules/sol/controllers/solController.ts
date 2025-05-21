@@ -53,6 +53,7 @@ class PolController implements OnlyControllerInterface {
             await commonHelper.save_error_logs("eth_send", err.message);
             return response.error(res, {
                 data: {
+                    status: false,
                     message: language[lang].CATCH_MSG
                 },
             });

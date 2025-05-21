@@ -35,7 +35,7 @@ class BNBController implements OnlyControllerInterface {
             console.error("Error in gas_estimation_bsc", err)
             await commonHelper.save_error_logs("gas_estimation_bsc_error", err);
             return response.error(res, {
-                data: { message: language[lang].CATCH_MSG },
+                data: { status: false, message: language[lang].CATCH_MSG },
             });
         }
     }
@@ -159,6 +159,7 @@ class BNBController implements OnlyControllerInterface {
             await commonHelper.save_error_logs("bnb_send", err.message);
             return response.error(res, {
                 data: {
+                    status: false,
                     message: language[lang].CATCH_MSG
                 },
             });
@@ -174,6 +175,7 @@ class BNBController implements OnlyControllerInterface {
             nonce_val = walletNonce;
             return response.success(res, {
                 data: {
+                    status: true,
                     data: {
                         nonce: nonce_val
                     },
@@ -185,6 +187,7 @@ class BNBController implements OnlyControllerInterface {
             await commonHelper.save_error_logs("getNonce_error", err);
             return response.error(res, {
                 data: {
+                    status: false,
                     message: language[lang].CATCH_MSG,
                     data: {}
                 },

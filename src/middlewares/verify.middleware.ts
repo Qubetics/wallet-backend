@@ -17,6 +17,7 @@ class JWTVerify {
          if (!encryptedJWT) {
             return response.error(res, {
                data: {
+                  status: false,
                   message: language[lang].NO_TOKEN,
                   data: {},
                },
@@ -30,6 +31,7 @@ class JWTVerify {
          if (!jwtHelper.verify(bearerToken)) {
             return response.error(res, {
                data: {
+                  status: false,
                   code: 409,
                   message: language[lang].SESSION_EXPIRED,
                   data: {},
@@ -44,6 +46,7 @@ class JWTVerify {
          if (decodedData?.exp < currentTimestamp) {
             return response.error(res, {
                data: {
+                  status: false,
                   code: 409,
                   message: language[lang].SESSION_EXPIRED,
                   data: {},
@@ -54,6 +57,7 @@ class JWTVerify {
          if (!decodedData?.userId) {
             return response.error(res, {
                data: {
+                  status: false,
                   message: language[lang].UNAUTHORIZED_ACCESS,
                   data: {},
                },
@@ -68,6 +72,7 @@ class JWTVerify {
          console.error("ERROR IN JWT VERIFY:", err);
          return response.error(res, {
             data: {
+               status: false,
                message: language[lang].UNAUTHORIZED_ACCESS,
                data: err,
             },

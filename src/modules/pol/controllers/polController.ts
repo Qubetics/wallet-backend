@@ -24,6 +24,7 @@ class PolController implements OnlyControllerInterface {
       const walletNonce = await polEther.getWalletNonce(wallet_address);
       return response.success(res, {
         data: {
+          status: true,
           data: {
             nonce: walletNonce,
           },
@@ -36,6 +37,7 @@ class PolController implements OnlyControllerInterface {
       await commonHelper.save_error_logs("pol_getNonce", err.message);
       return response.error(res, {
         data: {
+          status: false,
           message: language[lang].CATCH_MSG,
           data: {},
         },
@@ -94,7 +96,7 @@ class PolController implements OnlyControllerInterface {
     } catch (err: any) {
       await commonHelper.save_error_logs("pol_getEstimationGas", err.message);
       return response.error(res, {
-        data: { message: language[lang].CATCH_MSG + err },
+        data: { status: false, message: language[lang].CATCH_MSG + err },
       });
     }
   }
@@ -246,6 +248,7 @@ class PolController implements OnlyControllerInterface {
       await commonHelper.save_error_logs("eth_send", err.message);
       return response.error(res, {
         data: {
+          status: false,
           message: language[lang].CATCH_MSG
         },
       });

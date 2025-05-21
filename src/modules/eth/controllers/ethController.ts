@@ -26,6 +26,7 @@ class EthController implements OnlyControllerInterface {
       const nonce_val: number = walletNonce;
       return response.success(res, {
         data: {
+          status: true,
           data: {
             nonce: nonce_val,
           },
@@ -38,6 +39,7 @@ class EthController implements OnlyControllerInterface {
       await commonHelper.save_error_logs("eth_getNonce", err.message);
       return response.error(res, {
         data: {
+          status: false,
           message: language[lang].CATCH_MSG,
           data: {},
         },
@@ -100,7 +102,7 @@ class EthController implements OnlyControllerInterface {
     } catch (err: any) {
       await commonHelper.save_error_logs("eth_getEstimationGas", err.message);
       return response.error(res, {
-        data: { message: language[lang].CATCH_MSG + err },
+        data: { status: false, message: language[lang].CATCH_MSG + err },
       });
     }
   }
@@ -251,6 +253,7 @@ class EthController implements OnlyControllerInterface {
       await commonHelper.save_error_logs("eth_send", err.message);
       return response.error(res, {
         data: {
+          status: false,
           message: language[lang].CATCH_MSG
         },
       });

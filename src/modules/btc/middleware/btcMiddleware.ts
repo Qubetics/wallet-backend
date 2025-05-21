@@ -42,6 +42,7 @@ var transactionMiddleware = {
       } else {
         return response.error(res, {
           data: {
+            status: false,
             message: language[lang].INVALID_COIN_SYMBOL,
           },
         });
@@ -50,6 +51,7 @@ var transactionMiddleware = {
       await commonHelper.save_error_logs("btc_middleware", err.message);
       return response.error(res, {
         data: {
+          status: false,
           message: language[lang].CATCH_MSG,
           data: { message: language[lang].CATCH_MSG },
         },

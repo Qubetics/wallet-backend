@@ -190,7 +190,7 @@ class UserController implements OnlyControllerInterface {
     } catch (err: any) {
       console.error("Error in user > create wallet (2).", err);
       await commonHelper.save_error_logs("users_createWallet", err.message);
-      return response.error(res, { data: {} });
+      return response.error(res, { data: { status: false } });
     }
   }
 
@@ -344,7 +344,7 @@ class UserController implements OnlyControllerInterface {
     } catch (err: any) {
       console.error("Error in user > notificationList.", err);
       await commonHelper.save_error_logs("users_notificationList", err.message);
-      return response.error(res, { data: {} });
+      return response.error(res, { data: { status: false } });
     }
   }
 
@@ -876,11 +876,12 @@ class UserController implements OnlyControllerInterface {
           new_notifications: 0,
         };
       }
+      data.status = true;
       response.success(res, { data: data });
     } catch (err: any) {
       console.error("Error in announcement_view_status API", err);
       await commonHelper.save_error_logs("users_announcements", err.message);
-      return response.error(res, { data: {} });
+      return response.error(res, { data: { status: false } });
     }
   }
 
