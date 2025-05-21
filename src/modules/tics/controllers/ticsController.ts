@@ -110,8 +110,10 @@ class TicsController implements OnlyControllerInterface {
       } = req.body;
       // const gasPriceInWei = await ticsEther.convertGweiToWei(gas_price);
       const maxGas = await bigNumberSafeMath(gas_price, '*', gas_estimate);
+      console.log("🚀 ~ TicsController ~ send ~ maxGas:", maxGas)
       // const maxGas = gas_price * gas_estimate;
       const gasInTics = await ticsEther.convertWeiToTics(maxGas);
+      console.log("🚀 ~ TicsController ~ send ~ gasInTics:", gasInTics)
       // TICS only
       if (req.coininfo.is_token == false && req.coininfo.coin_symbol == "tics") {
         let withdrawAmount;
@@ -121,6 +123,8 @@ class TicsController implements OnlyControllerInterface {
           withdrawAmount = bigNumberSafeMath(amount, "+", gasInTics);
         }
         const ticsBalance = await ticsEther.get_coin_balance(from, true);
+        console.log("🚀 ~ TicsController ~ send ~ ticsBalance:", ticsBalance)
+        console.log("🚀 ~ TicsController ~ send ~ withdrawAmount:", withdrawAmount)
         if (Number(ticsBalance) < Number(withdrawAmount)) {
           return response.error(res, {
             data: { status: false, message: language[lang].INSUFFICIENT },
