@@ -110,10 +110,8 @@ class TicsController implements OnlyControllerInterface {
       } = req.body;
       // const gasPriceInWei = await ticsEther.convertGweiToWei(gas_price);
       const maxGas = await bigNumberSafeMath(gas_price, '*', gas_estimate);
-      console.log("🚀 ~ TicsController ~ send ~ maxGas:", maxGas)
       // const maxGas = gas_price * gas_estimate;
       const gasInTics = await ticsEther.convertWeiToTics(maxGas);
-      console.log("🚀 ~ TicsController ~ send ~ gasInTics:", gasInTics)
       // TICS only
       if (req.coininfo.is_token == false && req.coininfo.coin_symbol == "tics") {
         let withdrawAmount;

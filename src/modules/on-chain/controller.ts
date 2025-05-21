@@ -76,8 +76,13 @@ class onChainController implements OnlyControllerInterface {
         } catch (error: any) {
             console.error("Error in on-chain > OneinchQuotesApi.", error);
             await commonHelper.save_error_logs("OneinchQuotesApi", error.message);
+            const description = error?.response?.data?.description || '';
+            let message = language[lang].CATCH_MSG;
+            if (description.toLowerCase().includes('insufficient liquidity')) {
+                message = 'Swap failed due to insufficient liquidity.';
+            } 
             return response.error(res, {
-                data: { status: false, message: language[lang].CATCH_MSG, data: {} },
+                data: { status: false, message: message, data: {} },
             });
         }
     }

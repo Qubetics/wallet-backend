@@ -916,10 +916,6 @@ class WalletController implements OnlyControllerInterface {
         Object.keys(tokenDetails).length !== 0 &&
         tokenDetails.constructor === Object
       ) {
-        console.log("SEARCH RESPONSE ::: ", {
-          message: language[lang].TOKENS_SEARCH,
-          data: tokenDetails,
-        });
   
         return response.success(res, {
           data: {
@@ -929,11 +925,6 @@ class WalletController implements OnlyControllerInterface {
           },
         });
       }
-  
-      console.log("SEARCH RESPONSE ::: ", {
-        message: language[lang].TOKENS_NOT_FOUND,
-        data: {},
-      });
   
       return response.error(res, {
         data: { status: false, message: language[lang].TOKENS_NOT_FOUND, data: {} },
