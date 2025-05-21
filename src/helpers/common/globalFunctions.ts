@@ -100,8 +100,15 @@ export const handleErrorMessage = async function (error: any) {
         message = "Invalid nonce.";
       } else if (errorMsg.includes("transaction underpriced")) {
         message = "Transaction underpriced.";
-      } else {
-        message = error?.message.replace(/^Returned error:+/i, "") || "Something went wrong"
+      } else if (
+        errorMsg.includes("replacement fee too low") ||
+        errorMsg.includes("replacement transaction underpriced") ||
+        error?.info?.error?.message?.includes("replacement transaction underpriced")
+      ) {
+        message = "Replacement transaction underpriced. Increase the gas fee and try again.";
+      }else {
+        // message = error?.message.replace(/^Returned error:+/i, "") || "Something went wrong"
+        message = "Something went wrong"
       }
       return message;
     }
