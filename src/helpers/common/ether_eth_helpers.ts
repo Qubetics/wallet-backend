@@ -108,7 +108,7 @@ class EthEther {
 
   public async getBalance(coinData: CoinInterface, address: string) {
     try {
-      let balance = "0";
+      let balance: string = "0";
 
       if (coinData.is_token) {
         balance = (
@@ -123,7 +123,7 @@ class EthEther {
       }
 
       if (typeof balance !== "boolean" && balance !== "false") {
-        balance = exponentialToDecimal(Number(balance));
+        balance = exponentialToDecimal(balance);
       }
 
       return balance;

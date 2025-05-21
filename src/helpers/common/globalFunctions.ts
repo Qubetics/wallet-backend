@@ -1,6 +1,6 @@
 const BigNumber = require('bignumber.js');
 
-export const exponentialToDecimal = function (exponential: number) {
+export const exponentialToDecimal = function (exponential: number | string) {
   let decimal: string = exponential.toString().toLowerCase();
   if (decimal.includes('e+')) {
     const exponentialSplitted: any = decimal.split('e+');
@@ -80,32 +80,32 @@ export const bigNumberSafeConversion = function (val: number): number {
   return value.toFixed();
 };
 
-export const handleErrorMessage = async function (error:any) {
+export const handleErrorMessage = async function (error: any) {
   try {
     let message = "Something went wrong";
 
     if (error !== undefined) {
       const errorMsg = typeof error === 'string' ? error
         : typeof error?.message === 'string' ? error.message
-            : typeof error?.error === 'string' ? error.error
-                : '';
+          : typeof error?.error === 'string' ? error.error
+            : '';
 
-    if (errorMsg.includes("Returned error: insufficient funds for gas * price + value")) {
+      if (errorMsg.includes("Returned error: insufficient funds for gas * price + value")) {
         message = "Insufficient funds.";
-    } else if (error?.response?.data?.errorCode === "TOKEN_NOT_TRADABLE") {
+      } else if (error?.response?.data?.errorCode === "TOKEN_NOT_TRADABLE") {
         message = "The specified token is not tradable.";
-    } else if (errorMsg.includes("You have insufficient BSC balance to perform this transaction")) {
+      } else if (errorMsg.includes("You have insufficient BSC balance to perform this transaction")) {
         message = "You have insufficient BSC balance to perform this transaction";
-    } else if (errorMsg.includes("nonce has already been used")) {
-      message = "Invalid nonce.";
-    } else if (errorMsg.includes("transaction underpriced")) {
-      message = "Transaction underpriced.";
-    }else {
-      message = error?.message.replace(/^Returned error:+/i, "") || "Something went wrong"
+      } else if (errorMsg.includes("nonce has already been used")) {
+        message = "Invalid nonce.";
+      } else if (errorMsg.includes("transaction underpriced")) {
+        message = "Transaction underpriced.";
+      } else {
+        message = error?.message.replace(/^Returned error:+/i, "") || "Something went wrong"
+      }
+      return message;
     }
-    return message;
-  }
-  }catch(err : any){
+  } catch (err: any) {
     console.log("handleErrorMessage")
     return "Something went wrong";
   }

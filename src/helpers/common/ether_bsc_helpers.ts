@@ -109,7 +109,7 @@ class BSCEther {
 
   public async getBalance(coinData: CoinInterface, address: string) {
     try {
-      let balance = "0";
+      let balance: string = "0";
 
       if (coinData.is_token) {
         balance = (
@@ -123,7 +123,7 @@ class BSCEther {
         balance = (await this.get_coin_balance(address, true)).toString();
       }
 
-      balance = exponentialToDecimal(Number(balance));
+      balance = exponentialToDecimal(balance);
       return balance;
     } catch (err: any) {
       console.error("Error in getBalance of bnb", err)

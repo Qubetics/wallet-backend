@@ -133,7 +133,7 @@ class PolEther {
       } else {
         balance = (await this.get_coin_balance(address, true)).toString();
       }
-      balance = exponentialToDecimal(Number(balance));
+      balance = exponentialToDecimal(balance);
       return balance;
     } catch (err: any) {
       console.error("Error in getBalance of pol", err)
