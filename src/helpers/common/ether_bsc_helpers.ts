@@ -74,7 +74,7 @@ class BSCEther {
         tokenBalance = (await bigNumberSafeMath(balanceRaw.toString(), "/", Math.pow(10, Number(decimals)))).toString();
       }
 
-      return Number(tokenBalance);
+      return tokenBalance;
     } catch (err: any) {
       console.error("Error in get_bep20_token_balance of bsc.", err)
       await commonHelper.save_error_logs("get_bep20_token_balance_bsc", err.message);
