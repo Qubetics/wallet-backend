@@ -55,6 +55,13 @@ class onChainController implements OnlyControllerInterface {
                         data: { status: false, message: `Not enough ${token.name} balance. Amount: ${amount}. Balance: ${balance}`, data: {}}
                     }); 
                 }
+                
+                const check = description.includes("cannot estimate")
+                if (check) {
+                    return response.error(res, {
+                        data: { status: false, message: "Insufficient gas limit, please select custom slippage amount.", data: {}}
+                    }); 
+                }
             return response.error(res, {
                 data: {status: false, message: message, data: {} },
             });
