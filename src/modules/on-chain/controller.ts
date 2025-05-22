@@ -59,7 +59,7 @@ class onChainController implements OnlyControllerInterface {
                 const check = description.includes("cannot estimate")
                 if (check) {
                     return response.error(res, {
-                        data: { status: false, message: "Insufficient gas limit, please select custom slippage amount.", data: {}}
+                        data: { status: false, message: 'Unknown Error: "execution reverted". Try increasing your slippage tolerance', data: {}}
                     }); 
                 }
             return response.error(res, {
