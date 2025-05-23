@@ -887,15 +887,14 @@ class WalletController implements OnlyControllerInterface {
         });
       }
   
-      // const redisKey = `tokenDetails:${coinFamily}`;
-      // let tokenDetailsStr = await redisClient.getKeyValuePair(config.SEARCH_TOKEN, tokenAddress.toUpperCase(  ));
+      const redisKey = `${config.SEARCH_TOKEN}_${coinFamily}`;
+      const tokenDetailsStr = await redisClient.getKeyValuePair(redisKey, tokenAddress.toUpperCase());
   
       let tokenDetails: { decimals: string; name: string; symbol: string };
   
-      // if (tokenDetailsStr) {
-      //   console.log("Using cached token details from Redis.");
-      //   tokenDetails = JSON.parse(tokenDetailsStr);
-      // } else {
+      if (tokenDetailsStr) {
+        tokenDetails = JSON.parse(tokenDetailsStr);
+      } else {
         tokenDetails = await global_helper.return_decimals_name_symbol(
           coinFamily,
           tokenAddress,
@@ -908,9 +907,9 @@ class WalletController implements OnlyControllerInterface {
           });
         }
   
-      //   tokenDetails.decimals = tokenDetails.decimals.toString();
-      //   await redisClient.set_hash_table(config.SEARCH_TOKEN, tokenAddress, JSON.stringify(tokenDetails));
-      // }
+        tokenDetails.decimals = tokenDetails.decimals.toString();
+        await redisClient.set_hash_table(redisKey, tokenAddress, JSON.stringify(tokenDetails),3600);
+      }
   
       if (
         Object.keys(tokenDetails).length !== 0 &&

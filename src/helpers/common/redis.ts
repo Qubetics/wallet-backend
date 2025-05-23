@@ -66,13 +66,16 @@ class RedisServer {
     }
   }
 
-  public async set_hash_table(key: string, field: any, value: any) {
+  public async set_hash_table(key: string, field: any, value: any, expiryInSeconds?: number) {
     try {
       await this.client_write.HSET(key, field.toUpperCase(), value, (err: any, reply: any) => {
         if (err) {
           console.error('redis set string data error...', err)
         }
       });
+      if (expiryInSeconds) {
+        await this.client_write.EXPIRE(key, expiryInSeconds);
+      }
     } catch (err: any) {
       console.error('💥 ~ ~ set_hash_table error');
       throw err;
