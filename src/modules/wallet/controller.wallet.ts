@@ -280,7 +280,7 @@ class WalletController implements OnlyControllerInterface {
         ],
         limit: limitNo,
         offset: offset,
-        logging: console.log
+        // logging: console.log
       });
       response.success(res, {
         data: {
@@ -2090,7 +2090,7 @@ class WalletController implements OnlyControllerInterface {
           type: duration,
         },
         raw: true,
-        logging: console.log,
+        // logging: console.log,
       });
 
       if (graphData) {

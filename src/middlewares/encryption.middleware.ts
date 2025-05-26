@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import response from "../helpers/response/response.helpers";
 import commonHelper from "../helpers/common/common.helpers";
-import { config } from "../config/config";
-import { GlblMessages } from "../constants/global_enum";
+// import { config } from "../config/config";
+// import { GlblMessages } from "../constants/global_enum";
 import { language } from "../constants";
 
 export const encryptionMiddleware = async (req: Request, res: Response, next: NextFunction) => {
