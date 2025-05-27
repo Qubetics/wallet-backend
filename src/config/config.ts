@@ -99,7 +99,7 @@ export const config = {
     ETH_DAPP_RPC_URL: zookeeperConfig.config.ETH_DAPP_RPC_URL,
   },
 
-  MORALIS_TRADINGVIEW_TOPIC: "moralis_tradingview_topic",
+  MORALIS_TRADINGVIEW_TOPIC: zookeeperConfig.config.MORALIS_TRADING_VIEW_TOPIC,
 
   CONTRACT_ABI: [
     {
