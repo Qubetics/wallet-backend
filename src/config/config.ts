@@ -3,8 +3,7 @@ const name = "qubetics";
 
 export const config = {
   SERVER: zookeeperConfig.config.SERVER,
-  // PORT: zookeeperConfig.config.PORT,
-  PORT: 443,
+  PORT: zookeeperConfig.config.PORT,
   REDIS_CONN: zookeeperConfig.config.REDIS_CONN,
   KAFKA_BROKER: zookeeperConfig.config.KAFKA_BROKER,
   KAFKA_CLIENT_ID: zookeeperConfig.config.KAFKA_CLIENT_ID,
