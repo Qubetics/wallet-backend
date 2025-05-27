@@ -26,7 +26,6 @@ class Server implements ServerInterface {
   public sslCert: Buffer;
 
   constructor() {
-
     this.sslKey = fs.readFileSync(path.join(__dirname, './cert/key.pem'));
     this.sslCert = fs.readFileSync(path.join(__dirname, './cert/cert.pem'));
 
@@ -34,7 +33,7 @@ class Server implements ServerInterface {
 
     this.app.use(expressFileUploader());
     this.httpServer = createServer({ key: this.sslKey, cert: this.sslCert, passphrase: 'bunnies' }, this.app);
-    this.httpServer = createServer(this.app);
+    // this.httpServer = createServer(this.app);
 
     this.app.use(helmet());
     this.app.use(helmet.contentSecurityPolicy({
