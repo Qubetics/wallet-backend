@@ -27,12 +27,18 @@ class Server implements ServerInterface {
 
   constructor() {
     this.sslKey = fs.readFileSync(path.join(__dirname, './cert/key.pem'));
+    console.log('this.sslKey  >>', this.sslKey);
+    console.log('this.sslKey string >>', this.sslKey.toString());
     this.sslCert = fs.readFileSync(path.join(__dirname, './cert/cert.pem'));
+    console.log('this.sslCert  >>', this.sslCert);
+    console.log('this.sslCert string >>', this.sslCert.toString());
+
 
     this.app = express();
 
     this.app.use(expressFileUploader());
     this.httpServer = createServer({ key: this.sslKey, cert: this.sslCert, passphrase: 'bunnies' }, this.app);
+    console.log('this.httpServer >>>', this.httpServer);
     // this.httpServer = createServer(this.app);
 
     this.app.use(helmet());
@@ -130,6 +136,7 @@ class Server implements ServerInterface {
 
   public startServer() {
     this.httpServer.listen(config.PORT, () => {
+      console.log('server listen on port:', config.PORT);
     });
     this.app.get("/", (req: Request, res: Response) => {
       res.send(InfoMessages.APP_INFO).status(GlblCode.SUCCESS);
