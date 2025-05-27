@@ -1,4 +1,4 @@
-import { Server as HTTPServer, createServer } from "https";
+import { Server as HTTPServer, createServer } from "http";
 import express, { NextFunction, Request, Response } from "express";
 import { ServerInterface } from "./interfaces/server.interface";
 import controllers from "./modules/controllers.index";
