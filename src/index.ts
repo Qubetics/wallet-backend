@@ -22,18 +22,19 @@ import fs from 'fs';
 class Server implements ServerInterface {
   public app: express.Application;
   public httpServer: HTTPServer;
-  public sslKey: Buffer;
-  public sslCert: Buffer;
+  // public sslKey: Buffer;
+  // public sslCert: Buffer;
 
   constructor() {
 
-    this.sslKey = fs.readFileSync(path.join(__dirname, './cert/key.pem'));
-    this.sslCert = fs.readFileSync(path.join(__dirname, './cert/cert.pem'));
+    // this.sslKey = fs.readFileSync(path.join(__dirname, './cert/key.pem'));
+    // this.sslCert = fs.readFileSync(path.join(__dirname, './cert/cert.pem'));
 
     this.app = express();
 
     this.app.use(expressFileUploader());
-    this.httpServer = createServer({ key: this.sslKey, cert: this.sslCert, passphrase: 'bunnies' }, this.app);
+    // this.httpServer = createServer({ key: this.sslKey, cert: this.sslCert, passphrase: 'bunnies' }, this.app);
+    this.httpServer = createServer(this.app);
 
     this.app.use(helmet());
     this.app.use(helmet.contentSecurityPolicy({
