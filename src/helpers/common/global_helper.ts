@@ -54,7 +54,7 @@ class Global_helper {
                     return 1;
                 }
                 return 0;
-            }).catch((error)=>{
+            }).catch((error) => {
                 console.error("Error swapping tokens 222:", error);
                 return 0;
             });
@@ -212,19 +212,19 @@ class Global_helper {
     public async UpdateCmcImgUrl(image_url: string) {
         try {
             console.log('image_url >>>', image_url);
-            if (image_url.includes("img/coins/16x16/")) {
+            if (image_url?.includes("img/coins/16x16/")) {
                 image_url = image_url.replace('16x16', '200x200');
-            } else if (image_url.includes("img/coins/32x32/")) {
+            } else if (image_url?.includes("img/coins/32x32/")) {
                 image_url = image_url.replace('32x32', '200x200');
-            } else if (image_url.includes("img/coins/64x64/")) {
+            } else if (image_url?.includes("img/coins/64x64/")) {
                 image_url = image_url.replace('64x64', '200x200');
-            } else if (image_url.includes("img/coins/128x128/")) {
+            } else if (image_url?.includes("img/coins/128x128/")) {
                 image_url = image_url.replace('128x128', '200x200');
             }
             return image_url;
         } catch (err: any) {
             console.error(`UpdateCmcImgUrl error>>> `, err)
-            return 'null';
+            return null;
         }
     }
 
@@ -388,7 +388,7 @@ class Global_helper {
             let result: any = await cmcHelper.cmcApi(params);
 
             let id: any = null;
-            let imageUrl: any = '';
+            let imageUrl: any = null;
             if (result.data) {
                 let image: any;
                 if (data.id) {
