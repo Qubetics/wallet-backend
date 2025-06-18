@@ -4,7 +4,8 @@ export default class adminValidator {
     static login = {
         body: Joi.object({
             email: Joi.string().required(),
-            password: Joi.string().required()
+            password: Joi.string().required(),
+            token: Joi.number().optional()
         })
     }
     static googleAuthEnabledisable = {

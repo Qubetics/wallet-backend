@@ -11,6 +11,8 @@ import jwtHelper from "../../../helpers/common/jwt";
 import speakeasy from 'speakeasy';
 import QRCode from "qrcode";
 import adminMiddleware from "../middleware";
+import { MenuListsModel, PermissionsModel } from "../../../models";
+import permissionsQueries from "../../../helpers/dbHelper/permissions";
 
 class AuthController implements OnlyControllerInterface {
     constructor() {
@@ -26,7 +28,7 @@ class AuthController implements OnlyControllerInterface {
             let { email, password }: { email: string, password: string } = req.body;
 
             let checkEmailExist: any = await adminQueries.adminFindOne(
-                ["id", "email", "password", "login_status"],
+                ["id", "email", "password", "login_status", "google2fa_status", "google2fa_secret"],
                 { email: email, active: 1 },
                 [['id', 'DESC']]);
 
@@ -53,6 +55,37 @@ class AuthController implements OnlyControllerInterface {
                     data: {}
                 });
             }
+             //if google2fa_status is 1 then check if token is required
+            if(checkEmailExist.google2fa_status == 1  ){
+
+                if(req.body.token == null || req.body.token == undefined || req.body.token == ""){
+                    return res.status(GlblCode.SUCCESS).send({
+                        message: Messages.TOKEN_REQUIRED,
+                        status: true,
+                        code: GlblCode.SUCCESS,
+                        data: {token: null, google_2fa: GlblBooleanEnum.true}
+                    });
+                }
+
+                const verified: any = speakeasy.totp.verify({
+                    secret: checkEmailExist.google2fa_secret,
+                    encoding: 'base32',
+                    token: req.body.token,
+                    window: 2,
+                    algorithm: "sha1"
+                });
+
+                if(verified == false){
+                    return res.status(GlblCode.ERROR_CODE).send({
+                        message: Messages.INVALID_2FA,
+                        status: false,
+                        code: GlblCode.ERROR_CODE,
+                        data: {}
+                    });
+                }
+
+            }
+
             if (checkEmailExist.login_status == 1) {
                 console.log("delete old login token")
                 await redisClient.delKey(config.ADMIN_TOKEN, (checkEmailExist.email).toUpperCase())
@@ -69,7 +102,22 @@ class AuthController implements OnlyControllerInterface {
                 { id: checkEmailExist.id, active: 1 },
                 [['id', 'DESC']]);
 
-            adminData.token = jwtToken;
+            //get admin permissions
+            const permissions_data: any = await permissionsQueries.getAdminPermissions({
+                admin_id: adminData.id,
+                attributes: ["id", "permission_status", "permission_type", "menu_list_data.id", "menu_list_data.name", "menu_list_data.slug"],
+                include: [{ model: MenuListsModel, as: "menu_list_data", attributes: ["id", "name", "slug"] }]
+            });
+
+            adminData = {
+                ...adminData,
+                token : jwtToken,
+                permissions_data : permissions_data
+            }
+
+            //set jwt token in redis for 1 hour
+            await redisClient.set_hash_table(config.ADMIN_TOKEN, checkEmailExist.email, jwtToken, 60 * 60);
+
             return res.status(GlblCode.SUCCESS).send({
                 message: GlblMessages.SUCCESS,
                 status: true,
@@ -165,6 +213,8 @@ class AuthController implements OnlyControllerInterface {
             if (req.body.adminDetails.google2fa_secret != null) {
                 secretKey = req.body.adminDetails.google2fa_secret;
             } else {
+
+                console.log("inside generate secret key")
                 let secret: any = speakeasy.generateSecret({ length: 20 });
                 secretKey = secret.base32;
                 await adminQueries.adminUpdate(
@@ -361,6 +411,7 @@ class AuthController implements OnlyControllerInterface {
         try {
             const { oldPassword, newPassword, confirmPassword }: { oldPassword: string, newPassword: string, confirmPassword: string } = req.body;
 
+            //check if new password and confirm password are same
             if (newPassword != confirmPassword) {
                 return res.status(GlblCode.ERROR_CODE).send({
                     message: Messages.INVALID_OLD_PASS,
@@ -369,6 +420,17 @@ class AuthController implements OnlyControllerInterface {
                     data: {}
                 });
             }
+
+            //check if new password is same as old password
+            if(newPassword == oldPassword){
+                return res.status(GlblCode.ERROR_CODE).send({
+                    message: Messages.NEW_PASS_SAME_AS_OLD_PASS,
+                    status: false,
+                    code: GlblCode.ERROR_CODE,
+                    data: {}
+                });
+            }
+
             const adminId: number = req.body.adminId;
             const encryptedPassword: string = await bcrypt.hash(newPassword, 10);
             let adminPassword: any = await adminQueries.adminFindOne(

@@ -25,7 +25,12 @@ let dataObj: any = {
     title: {
         type: DataTypes.STRING,
         allowNull: false,
-    }
+    },
+    status: {
+        type: DataTypes.ENUM('pending','sent'),
+        allowNull: false,
+        defaultValue: 'pending',
+    },
 };
 
 const AnnouncementModel = db.db_write.define<AnnouncementInstance>("announcements", dataObj);

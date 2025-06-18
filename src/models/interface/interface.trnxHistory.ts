@@ -25,4 +25,6 @@ export interface ITrnxHistoryInterface {
     fiat_price: number | null,
     fiat_type: string | null,
     order_status: string | null;
+    created_at?: string;
+    updated_at?: string;
 }

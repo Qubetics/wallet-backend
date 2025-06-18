@@ -101,6 +101,13 @@ export const config = {
 
   MORALIS_TRADINGVIEW_TOPIC: zookeeperConfig.config.MORALIS_TRADING_VIEW_TOPIC,
 
+  HUAWEI_OBS:{
+    ACCESS_KEY : zookeeperConfig.config.HUAWEI_OBS_ACCESS_KEY,
+    SECRET_KEY : zookeeperConfig.config.HUAWEI_OBS_SECRET_KEY,
+    SERVER_URL : zookeeperConfig.config.HUAWEI_OBS_SERVER_URL,
+    BUCKET : zookeeperConfig.config.HUAWEI_OBS_BUCKET,
+  },
+
   CONTRACT_ABI: [
     {
       constant: true,

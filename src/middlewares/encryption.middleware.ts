@@ -14,7 +14,7 @@ export const encryptionMiddleware = async (req: Request, res: Response, next: Ne
     console.log("req.originalUrl", method, "~~~", req.originalUrl);
     console.log("HEADER authorization >>>   ", req.headers.authorization);
 
-    if ((req.body.dataString && method == "PUT" || method == "PATCH" || method == "POST")) {
+    if ((req.body.dataString && method == "PUT" || method == "PATCH" || method == "POST" || method == "DELETE" || method == "PUT")) {
       if (req.body.dataString) {
         let dataFields: any;
         if (req.originalUrl.includes('admin')) {

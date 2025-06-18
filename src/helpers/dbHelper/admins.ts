@@ -19,7 +19,8 @@ class AdminQueries {
             let data: any = await this.adminModal.findOne({
                 attributes: attr,
                 where: where,
-                order: order
+                order: order,
+                raw : true
             })
             return data;
         } catch (err: any) {

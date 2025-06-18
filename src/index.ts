@@ -1,4 +1,5 @@
-import { Server as HTTPServer, createServer } from "https";
+import { Server as HTTPServer, createServer as createHttpsServer } from "https";
+import { Server as HttpServer, createServer as createHttpServer } from "http";
 import express, { NextFunction, Request, Response } from "express";
 import { ServerInterface } from "./interfaces/server.interface";
 import controllers from "./modules/controllers.index";
@@ -21,7 +22,8 @@ import fs from 'fs';
 
 class Server implements ServerInterface {
   public app: express.Application;
-  public httpServer: HTTPServer;
+  public httpServer: HttpServer;
+  public httpsServer: HTTPServer;
   public sslKey: Buffer;
   public sslCert: Buffer;
 
@@ -29,11 +31,17 @@ class Server implements ServerInterface {
     this.sslKey = fs.readFileSync(path.join(__dirname, './cert/key.pem'));
     this.sslCert = fs.readFileSync(path.join(__dirname, './cert/cert.pem'));
 
-
     this.app = express();
 
     this.app.use(expressFileUploader());
-    this.httpServer = createServer({ key: this.sslKey, cert: this.sslCert, passphrase: config.SSL_PASS_PHRASE }, this.app);
+    
+    // Create both HTTP and HTTPS servers
+    this.httpServer = createHttpServer(this.app);
+    this.httpsServer = createHttpsServer({ 
+      key: this.sslKey, 
+      cert: this.sslCert, 
+      passphrase: config.SSL_PASS_PHRASE 
+    }, this.app);
 
     this.app.use(helmet());
     this.app.use(helmet.contentSecurityPolicy({
@@ -129,9 +137,15 @@ class Server implements ServerInterface {
   }
 
   public startServer() {
-    this.httpServer.listen(config.PORT, () => {
-      console.log('server listen on port:', config.PORT);
+    // Start both HTTP and HTTPS servers
+    this.httpServer.listen(5001, () => {
+      console.log('HTTP server listening on port 5001');
     });
+
+    this.httpsServer.listen(config.PORT, () => {
+      console.log('HTTPS server listening on port:', config.PORT);
+    });
+
     this.app.get("/", (req: Request, res: Response) => {
       res.send(InfoMessages.APP_INFO).status(GlblCode.SUCCESS);
     });
