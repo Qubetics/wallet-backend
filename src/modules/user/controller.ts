@@ -24,6 +24,7 @@ import {
 import { config } from "../../config";
 import emojiRegex from "emoji-regex";
 import * as ethers from "ethers";
+import { NotificationHelper } from "../admin/notification/notification.helper";
 class UserController implements OnlyControllerInterface {
   constructor() {
     this.initialize();
@@ -902,6 +903,58 @@ class UserController implements OnlyControllerInterface {
     } catch (err: any) {
       console.error("Error in user > app_language", err);
       await commonHelper.save_error_logs("user_app_language", err.message);
+      response.error(res, {
+        data: {
+          status: false,
+          message: language[lang].CATCH_MSG,
+        },
+      });
+    }
+  }
+
+  public async getAnnouncementList(req: Request, res: Response) {
+    let lang: any = req.headers['content-language'] || 'en';
+    try {
+
+        const per_page: number = Number(
+            req.body?.limit == undefined ? (req.body.limit = "10") : req.body.limit
+          );
+          const page: number = Number(
+            req.body.page == undefined ? (req.body.page = "1") : req.body.page
+          );
+          const offset: number = (page - 1) * per_page;
+       
+          const search: string = req.body?.search == undefined ? null : req.body.search;
+
+           //object for get token list
+           let obj: any = {
+            where: {},
+            order: [['id', 'DESC']],
+            limit: per_page,
+            offset: offset,
+            page: page,
+        }
+
+        //search by title, message
+        if (search) {
+            obj.where[Op.or] = [
+            { title: { [Op.like]: `%${search}%` } },
+            { message: { [Op.like]: `%${search}%` } }
+            ];
+        }
+
+        const get_notification_list: any = await NotificationHelper.getNotificationList(obj);
+
+        return res.status(GlblCode.SUCCESS).send({
+            message: language[lang].SUCCESS,
+            status: true,
+            code: GlblCode.SUCCESS,
+            data: get_notification_list
+        });
+
+    } catch (err: any) {
+      console.error("Error in user > getAnnouncementList", err);
+      await commonHelper.save_error_logs("user_getAnnouncementList", err.message);
       response.error(res, {
         data: {
           status: false,

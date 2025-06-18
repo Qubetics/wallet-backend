@@ -33,12 +33,12 @@ class NotificationController implements OnlyControllerInterface {
 
                //object for get token list
                let obj: any = {
-                where: {},
+                where: { type: 'announcement'},
                 order: [['id', 'DESC']],
                 limit: per_page,
                 offset: offset,
                 page: page,
-                attributes : [ "id", "title", "message", "created_at", "status"]
+                attributes : [ "id", "title", "message", "created_at", "status", "type"]
             }
 
             //search by title, message

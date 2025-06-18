@@ -35,7 +35,7 @@ class NotificationHelpers {
             //announce to all users
             const user_id : string = "admin";
 
-            const create_notification: any = await AnnouncementModel.create({ title, message, status: "pending", user_id: user_id });
+            const create_notification: any = await AnnouncementModel.create({ title, message });
             return {
                 status: true,
                 message: "Notification created successfully",
