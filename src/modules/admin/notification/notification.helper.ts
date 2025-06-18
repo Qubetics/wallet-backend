@@ -43,8 +43,13 @@ class NotificationHelpers {
             };
         } catch (err: any) {
             console.error("Error in createNotification", err)
+            return {
+                status: false,
+                message: err.message,
+                data: {}
+            };
         }
-    }
+    }   
 
     public async updateNotification(id: string, message: string, title: string){
         try {
@@ -56,6 +61,11 @@ class NotificationHelpers {
             };
         } catch (err: any) {
             console.error("Error in updateNotification", err)
+            return {
+                status: false,
+                message: err.message,
+                data: {}
+            };
         }
     }
 

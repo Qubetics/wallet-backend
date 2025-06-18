@@ -90,11 +90,11 @@ class AdminMiddleware {
         }
     }
 
-    public uploadImageToHuawei = async (req: Request, res: Response, next: NextFunction) => {
+    public uploadImageToHuawei = async (req: Request, res: Response, next: NextFunction, folder : any = 'Banner') => {
         try {
           if (req.files && req.files.image) {
             const file = Array.isArray(req.files.image) ? req.files.image[0] : req.files.image;
-            const uploadedUrl = await s3Helper.uploadToHuaweiS3(file);
+            const uploadedUrl = await s3Helper.uploadToHuaweiS3(file, folder);
             req.body.imagePath = uploadedUrl;
           }
           next();

@@ -89,7 +89,7 @@ class NotificationController implements OnlyControllerInterface {
                 message: GlblMessages.SUCCESS,
                 status: true,
                 code: GlblCode.SUCCESS,
-                data: create_notification
+                data: create_notification.message
             });
 
         } catch (err: any) {
@@ -131,7 +131,7 @@ class NotificationController implements OnlyControllerInterface {
                 message: GlblMessages.SUCCESS,
                 status: true,
                 code: GlblCode.SUCCESS,
-                data: update_notification
+                data: update_notification.message
             });
 
         } catch (err: any) {
@@ -173,7 +173,7 @@ class NotificationController implements OnlyControllerInterface {
                 message: GlblMessages.SUCCESS,
                 status: true,
                 code: GlblCode.SUCCESS,
-                data: delete_notification
+                data: delete_notification.message
             });
 
         } catch (err: any) {

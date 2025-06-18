@@ -26,7 +26,6 @@ class AdminRoute {
         this.router.use(`${this.path}/notification`, NotificationRoute)
         this.router.use(`${this.path}/banner`, BannerRoute)
 
-
     }
 }
 

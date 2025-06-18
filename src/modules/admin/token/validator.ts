@@ -27,5 +27,9 @@ export default class tokenValidate {
         })
     }
 
-
+    static updateTokenLogoValidate = {
+        body: Joi.object({
+            id: Joi.number().required()
+        })
+    }
 }

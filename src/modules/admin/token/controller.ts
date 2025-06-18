@@ -14,6 +14,7 @@ import {WalletHelper as userWalletHelper} from "../../wallet/wallet.helpers"
 import { config } from "../../../config";
 import kafka_helper from "../../../helpers/common/kafka_helper";
 import commonHelper from "../../../helpers/common/common.helpers";
+import s3Helper from "../../../helpers/common/s3.helpers";
 
 
 
@@ -542,16 +543,37 @@ class TokenController implements OnlyControllerInterface {
     public async updateTokenLogo(req: Request, res: Response) {
         let lang: any = req.headers['content-language'] || 'en';
         try {
-            const {id , coin_image_url} : {id: number , coin_image_url: string}  = req.body; 
+            const {id} : {id: number}  = req.body; 
+            let coin_image_url: string = "";
 
-            if(!id || !coin_image_url) {
+            //check if image is present
+            if(!req.files || !req.files.image) {
                 return res.status(GlblCode.ERROR_CODE).send({
                     code: GlblCode.ERROR_CODE,
                     status: false,
-                    message: "Id and coin_image_url are required"
+                    message: "Image is required"
                 });
             }
 
+            if (req.files && req.files.image) {
+                const file = Array.isArray(req.files.image) ? req.files.image[0] : req.files.image;
+                const uploadedUrl = await s3Helper.uploadToHuaweiS3(file, 'TokenLogo');
+                coin_image_url = uploadedUrl;
+              }
+
+            const imagePath = coin_image_url || "";
+            const imageUrl = imagePath ? `${config.HUAWEI_OBS.PUBLIC_BASE_URL}/${imagePath}` : "";
+
+            //check if id and imageUrl are present
+            if(!id || !imageUrl) {
+                return res.status(GlblCode.ERROR_CODE).send({
+                    code: GlblCode.ERROR_CODE,
+                    status: false,
+                    message: "Id and imageUrl are required"
+                });
+            }
+
+            //check if token exists
             const exist_token: any = await CoinsModel.findOne({ where: { coin_id: id } });
             if(!exist_token) {
                 return res.status(GlblCode.ERROR_CODE).send({
@@ -561,7 +583,8 @@ class TokenController implements OnlyControllerInterface {
                 });
             }
 
-            await CoinsModel.update({ coin_image: coin_image_url }, { where: { coin_id: id } });
+            //update token logo
+            await CoinsModel.update({ coin_image: imageUrl }, { where: { coin_id: id } });
 
             return res.status(GlblCode.SUCCESS).send({
                 message: GlblMessages.SUCCESS,
