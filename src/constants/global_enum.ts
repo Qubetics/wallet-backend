@@ -78,6 +78,7 @@ export enum GlblCode {
 export enum GlblMessages {
     INFORMATIION_IN_REVIEW = 'Information in Review.',
     FILE_UPLOADED = 'File uploaded successfully.',
+    FILE_UPLOAD_ERROR = 'Error in File upload.',
     NO_FILE_SELECTED = 'No file is selected.',
     SUCCESS = 'SUCCESS',
     INITIATE_TXN_CREATED = "Transaction created successfully.",

@@ -6,6 +6,7 @@ import { Messages } from "./auth/enum";
 import { adminQueries } from "../../helpers/dbHelper";
 import jwt from 'jsonwebtoken';
 import commonHelper from "../../helpers/common/common.helpers";
+import s3Helper from "../../helpers/common/s3.helpers";
 import { CryptoHelper } from "../../helpers/common/cryptoJs";
 
 
@@ -88,6 +89,25 @@ class AdminMiddleware {
             throw err;
         }
     }
+
+    public uploadImageToHuawei = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+          if (req.files && req.files.image) {
+            const file = Array.isArray(req.files.image) ? req.files.image[0] : req.files.image;
+            const uploadedUrl = await s3Helper.uploadToHuaweiS3(file);
+            req.body.imagePath = uploadedUrl;
+          }
+          next();
+        } catch (error: any) {
+          console.error("❌ Image Upload Middleware Error:", error.message);
+          return res.status(GlblCode.ERROR_CODE).json({
+            message: GlblMessages.FILE_UPLOAD_ERROR,
+            status: false,
+            code: GlblCode.ERROR_CODE,
+            data: {},
+        });
+        }
+      };
 
 }
 
