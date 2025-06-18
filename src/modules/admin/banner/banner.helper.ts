@@ -1,4 +1,4 @@
-import BannerModel from "../../../models/model/model.banner";
+import AnnouncementModel from "../../../models/model/model.announcement";
 
 
 class BannerHelpers {
@@ -9,7 +9,7 @@ class BannerHelpers {
     
     public async get_banner_list(obj: any){
         try {
-            const banner_list : any = await BannerModel.findAndCountAll({
+            const banner_list : any = await AnnouncementModel.findAndCountAll({
                 where: obj.where,
                 attributes : obj.attributes,
                 order: obj.order,

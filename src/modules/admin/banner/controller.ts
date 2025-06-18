@@ -3,7 +3,7 @@ import { OnlyControllerInterface } from "../../../interfaces/controller.interfac
 import { GlblBooleanEnum, GlblCode, GlblMessages } from "../../../constants/global_enum";
 import { language } from "../../../constants";
 import { adminErrQueries } from "../../../helpers/dbHelper";
-import BannerModel from "../../../models/model/model.banner";
+import AnnouncementModel from "../../../models/model/model.announcement";
 import s3Helper from "../../../helpers/common/s3.helpers";
 import { Op } from "sequelize";
 import { BannerHelper } from "./banner.helper";
@@ -30,12 +30,12 @@ class BannerController implements OnlyControllerInterface {
       const search: string = req.body?.search == undefined ? null : req.body.search;
 
       let obj: any = {
-        where: {},
+        where: { type: 'banner'},
         order: [['id', 'DESC']],
         limit: per_page,
         offset: offset,
         page: page,
-        attributes : [ "id","message","image_path","created_at"],
+        attributes : [ "id", "title", "message", "created_at", "status", "type"]
     }
 
     //search by message
@@ -70,7 +70,7 @@ class BannerController implements OnlyControllerInterface {
     try {
         const { message } = req.body;
         const imagePath = req.body.imagePath || "";
-      const newBanner = await BannerModel.create({ message, imagePath });
+      const newBanner = await AnnouncementModel.create({ message, imagePath, type:'banner' });
       return res.status(GlblCode.SUCCESS).send({
         message: GlblMessages.SUCCESS,
         status: true,
@@ -93,7 +93,7 @@ class BannerController implements OnlyControllerInterface {
   
     try {
       const { id } = req.params;
-      const banner = await BannerModel.findOne({ where: { id } });
+      const banner = await AnnouncementModel.findOne({ where: { id } });
       if (!banner) {
         return res.status(404).send({
           message: language[lang]?.NOT_FOUND || "Banner not found",
@@ -108,7 +108,7 @@ class BannerController implements OnlyControllerInterface {
           console.warn("⚠️ Failed to delete image from OBS", obsErr);
         }
       }
-      await BannerModel.destroy({ where: { id } });
+      await AnnouncementModel.destroy({ where: { id } });
   
       return res.status(GlblCode.SUCCESS).send({
         message: GlblMessages.SUCCESS,

@@ -88,6 +88,13 @@ class UserRoute implements ControllerInterface {
       jwtVerification.verifyToken,
       userController.appLanguage
     );
+
+    this.router.post(
+      `${this.path}/announcements`,
+      [validate(validator.announcementValidate)],
+      jwtVerification.verifyToken,
+      userController.getAnnouncementList
+    );
   }
 }
 
