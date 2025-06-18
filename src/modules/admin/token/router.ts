@@ -23,6 +23,7 @@ router.post('/addToken',
 router.put('/updateTokenLogo',
     // [validateExpress(tokenValidate.updateTokenLogoValidate)],
     adminMiddleware.checkLogin,
+    adminMiddleware.uploadImageToHuawei,
     tokenController.updateTokenLogo);
 
 //toogle swap

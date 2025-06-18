@@ -6,7 +6,7 @@ import adminMiddleware from "../middleware";
 
 const router = Router();
 
-router.get(
+router.post(
   "/getBannerList",
   adminMiddleware.checkLogin,
   bannerController.getBannerList

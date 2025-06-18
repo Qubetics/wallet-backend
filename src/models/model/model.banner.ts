@@ -25,5 +25,5 @@ let dataObj: any = {
 };
 
 const BannerModel = db.db_write.define<BannerInstance>("banners", dataObj);
-BannerModel.sync({alter:true})
+
 export default BannerModel;

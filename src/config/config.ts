@@ -108,14 +108,7 @@ export const config = {
     REGION: zookeeperConfig.config.HUAWEI_OBS.REGION,
     PUBLIC_BASE_URL: zookeeperConfig.config.HUAWEI_OBS.PUBLIC_BASE_URL
   },
-
-  HUAWEI_OBS:{
-    ACCESS_KEY : zookeeperConfig.config.HUAWEI_OBS_ACCESS_KEY,
-    SECRET_KEY : zookeeperConfig.config.HUAWEI_OBS_SECRET_KEY,
-    SERVER_URL : zookeeperConfig.config.HUAWEI_OBS_SERVER_URL,
-    BUCKET : zookeeperConfig.config.HUAWEI_OBS_BUCKET,
-  },
-
+  
   CONTRACT_ABI: [
     {
       constant: true,

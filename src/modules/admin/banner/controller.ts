@@ -5,6 +5,8 @@ import { language } from "../../../constants";
 import { adminErrQueries } from "../../../helpers/dbHelper";
 import BannerModel from "../../../models/model/model.banner";
 import s3Helper from "../../../helpers/common/s3.helpers";
+import { Op } from "sequelize";
+import { BannerHelper } from "./banner.helper";
 
 class BannerController implements OnlyControllerInterface {
   constructor() {
@@ -16,12 +18,41 @@ class BannerController implements OnlyControllerInterface {
   public async getBannerList(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
-      const list = await BannerModel.findAll();
+
+      const per_page: number = Number(
+        req.body?.limit == undefined ? (req.body.limit = "10") : req.body.limit
+      );
+      const page: number = Number(
+        req.body.page == undefined ? (req.body.page = "1") : req.body.page
+      );
+      const offset: number = (page - 1) * per_page;
+
+      const search: string = req.body?.search == undefined ? null : req.body.search;
+
+      let obj: any = {
+        where: {},
+        order: [['id', 'DESC']],
+        limit: per_page,
+        offset: offset,
+        page: page,
+        attributes : [ "id","message","image_path","created_at"],
+    }
+
+    //search by message
+    if (search) {
+        obj.where[Op.or] = [
+        { message: { [Op.like]: `%${search}%` } }
+        ];
+    }
+
+    //get banner list
+    const get_banner_list: any = await BannerHelper.get_banner_list(obj);
+
       return res.status(GlblCode.SUCCESS).send({
         message: GlblMessages.SUCCESS,
         status: true,
         code: GlblCode.SUCCESS,
-        data: { list },
+        data: get_banner_list,
       });
     } catch (err: any) {
       console.error("Error in getBannerList API", err);
