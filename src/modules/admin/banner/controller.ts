@@ -35,7 +35,7 @@ class BannerController implements OnlyControllerInterface {
         limit: per_page,
         offset: offset,
         page: page,
-        attributes : [ "id", "title", "message", "created_at", "status", "type"]
+        attributes : [ "id", "title", "message", "created_at", "image_path", "status", "type"]
     }
 
     //search by message
