@@ -5,6 +5,9 @@ import CommissionRoute from './commission/router';
 import WalletRoute from './wallet/router';
 import TokenRoute from './token/router'
 import NotificationRoute from './notification/router'
+import BannerRoute from './banner/router';
+
+
 
 class AdminRoute {
     public path = '/admin';
@@ -21,6 +24,8 @@ class AdminRoute {
         this.router.use(`${this.path}/wallet`, WalletRoute)
         this.router.use(`${this.path}/token`, TokenRoute)
         this.router.use(`${this.path}/notification`, NotificationRoute)
+        this.router.use(`${this.path}/banner`, BannerRoute)
+
 
     }
 }
