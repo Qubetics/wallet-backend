@@ -15,13 +15,23 @@ router.post(
   "/createBanner",
   validateExpress(BannerValidator.createBanner),
   adminMiddleware.checkLogin,
+  adminMiddleware.checkActiveBanners,
   adminMiddleware.uploadImageToHuawei,
   bannerController.createBanner
 );
-router.post(
+router.delete(
   "/deleteBanner/:id",
   adminMiddleware.checkLogin,
   bannerController.deleteBanner
 );
+
+router.post(
+  "/updateBanner",
+  validateExpress(BannerValidator.updateBanner),
+  adminMiddleware.checkLogin,
+  bannerController.updateBanner
+);
+
+
 
 export default router;

@@ -8,6 +8,7 @@ import jwt from 'jsonwebtoken';
 import commonHelper from "../../helpers/common/common.helpers";
 import s3Helper from "../../helpers/common/s3.helpers";
 import { CryptoHelper } from "../../helpers/common/cryptoJs";
+import BannerModel from "../../models/model/model.banner";
 
 
 class AdminMiddleware {
@@ -108,6 +109,18 @@ class AdminMiddleware {
         });
         }
       };
+
+    public checkActiveBanners = async (req: Request, res: Response, next: NextFunction) => {
+        const activeBanners : any = await BannerModel.count({ where: { status: '1' } });
+        if (activeBanners >= 5) {
+            return res.status(GlblCode.ERROR_CODE).send({
+                code: GlblCode.ERROR_CODE,
+                status: false,
+                message: "Only 5 active banners are allowed at a time"
+            });
+        }
+        next();
+    }
 
 }
 

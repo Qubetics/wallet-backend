@@ -46,6 +46,7 @@ class TokenController implements OnlyControllerInterface {
               const search: string = req.body?.search == undefined ? null : req.body.search;
               const from_date: string = req.body?.from_date == undefined ? null : req.body.from_date;
               const to_date: string = req.body?.to_date == undefined ? null : req.body.to_date;
+              const coin_family = req.body?.coin_family == undefined ? null : req.body.coin_family;
               const added_by: number = req.body?.added_by == undefined ? null : 
                   typeof req.body.added_by === 'string' && TokenController.addedByMap[req.body.added_by] ? 
                   TokenController.addedByMap[req.body.added_by] : 
@@ -119,6 +120,11 @@ class TokenController implements OnlyControllerInterface {
               //search by added_by
               if (added_by !== null) {
                 obj.where.added_by = added_by;
+              }
+
+              //search by coin_family
+              if (coin_family !== null) {
+                obj.where.coin_family = coin_family;
               }
 
   

@@ -38,7 +38,7 @@ class NotificationController implements OnlyControllerInterface {
                 limit: per_page,
                 offset: offset,
                 page: page,
-                attributes : [ "id", "title", "message", "created_at", "status", "type"]
+                attributes : [ "id", "title", "message", "created_at", "status"]
             }
 
             //search by title, message

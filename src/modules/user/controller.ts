@@ -25,6 +25,7 @@ import { config } from "../../config";
 import emojiRegex from "emoji-regex";
 import * as ethers from "ethers";
 import { NotificationHelper } from "../admin/notification/notification.helper";
+import BannerModel from "../../models/model/model.banner";
 class UserController implements OnlyControllerInterface {
   constructor() {
     this.initialize();
@@ -928,7 +929,8 @@ class UserController implements OnlyControllerInterface {
 
            //object for get token list
            let obj: any = {
-            where: {},
+            where: { status: 'sent' },
+            attributes: [ "id", "title", "message", "created_at", "status"],
             order: [['id', 'DESC']],
             limit: per_page,
             offset: offset,
@@ -963,6 +965,34 @@ class UserController implements OnlyControllerInterface {
       });
     }
   }
+
+  public async getBannerList(req: Request, res: Response) {
+    let lang: any = req.headers['content-language'] || 'en';
+    try {
+        const getBannerList: any = await BannerModel.findAll({
+          where: { status: '1'},
+          attributes: [ "id", "link", "image_path", "created_at"]
+        })
+
+        return res.status(GlblCode.SUCCESS).send({
+            message: language[lang].SUCCESS,
+            status: true,
+            code: GlblCode.SUCCESS,
+            data: getBannerList
+        });
+
+    } catch (err: any) {
+      console.error("Error in user > getAnnouncementList", err);
+      await commonHelper.save_error_logs("user_getAnnouncementList", err.message);
+      response.error(res, {
+        data: {
+          status: false,
+          message: language[lang].CATCH_MSG,
+        },
+      });
+    }
+  }
+
 }
 
 export const userController = new UserController();

@@ -3,7 +3,14 @@ import { Joi } from 'express-validation';
 export default class BannerValidator {
   static createBanner = {
     body: Joi.object({
-      message: Joi.string().required(),
+      link: Joi.string().required()
     }),
-  }
+  };
+  
+  static updateBanner = {
+    body: Joi.object({
+      id: Joi.number().required(),
+      status: Joi.string().valid('0', '1').required(),
+    }),
+  };
 }

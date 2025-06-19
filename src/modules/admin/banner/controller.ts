@@ -3,10 +3,10 @@ import { OnlyControllerInterface } from "../../../interfaces/controller.interfac
 import { GlblBooleanEnum, GlblCode, GlblMessages } from "../../../constants/global_enum";
 import { language } from "../../../constants";
 import { adminErrQueries } from "../../../helpers/dbHelper";
-import AnnouncementModel from "../../../models/model/model.announcement";
 import s3Helper from "../../../helpers/common/s3.helpers";
 import { Op } from "sequelize";
 import { BannerHelper } from "./banner.helper";
+import BannerModel from "../../../models/model/model.banner";
 
 class BannerController implements OnlyControllerInterface {
   constructor() {
@@ -30,12 +30,12 @@ class BannerController implements OnlyControllerInterface {
       const search: string = req.body?.search == undefined ? null : req.body.search;
 
       let obj: any = {
-        where: { type: 'banner'},
+        where: {},
         order: [['id', 'DESC']],
         limit: per_page,
         offset: offset,
         page: page,
-        attributes : [ "id", "title", "message", "created_at", "image_path", "status", "type"]
+        attributes : [ "id", "status", "link", "image_path", "created_at"]
     }
 
     //search by message
@@ -68,9 +68,10 @@ class BannerController implements OnlyControllerInterface {
   public async createBanner(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
-        const { message } = req.body;
+        const { link } = req.body;
         const imagePath = req.body.imagePath || "";
-      const newBanner = await AnnouncementModel.create({ message, imagePath, type:'banner' });
+
+      const newBanner = await BannerModel.create({ imagePath, link});
       return res.status(GlblCode.SUCCESS).send({
         message: GlblMessages.SUCCESS,
         status: true,
@@ -93,7 +94,7 @@ class BannerController implements OnlyControllerInterface {
   
     try {
       const { id } = req.params;
-      const banner = await AnnouncementModel.findOne({ where: { id } });
+      const banner = await BannerModel.findOne({ where: { id } });
       if (!banner) {
         return res.status(404).send({
           message: language[lang]?.NOT_FOUND || "Banner not found",
@@ -108,7 +109,7 @@ class BannerController implements OnlyControllerInterface {
           console.warn("⚠️ Failed to delete image from OBS", obsErr);
         }
       }
-      await AnnouncementModel.destroy({ where: { id } });
+      await BannerModel.destroy({ where: { id } });
   
       return res.status(GlblCode.SUCCESS).send({
         message: GlblMessages.SUCCESS,
@@ -128,6 +129,47 @@ class BannerController implements OnlyControllerInterface {
     }
   }
   
+  public async updateBanner(req: Request, res: Response) {
+    let lang: any = req.headers['content-language'] || 'en';
+    try {
+      const { id, status } : {id: number, status: string} = req.body;
+      const banner = await BannerModel.findOne({ where: { id } });
+      if (!banner) {
+        return res.status(404).send({
+          message: language[lang]?.NOT_FOUND || "Banner not found",
+          status: false,
+          code: 404,
+        });
+      }
+
+      //at a  time only 5  can be  active
+      if(status == '1'){
+      const activeBanners : any = await BannerModel.count({ where: { status: '1' } });
+      if (activeBanners >= 5 ) {
+        return res.status(GlblCode.ERROR_CODE).send({
+          code: GlblCode.ERROR_CODE,
+          status: false,
+          message: "Only 5 active banners are allowed at a time"
+        });
+      }
+      }
+      //update banner status
+      await BannerModel.update({ status }, { where: { id } });
+      return res.status(GlblCode.SUCCESS).send({
+        message: GlblMessages.SUCCESS,
+        status: true,
+        code: GlblCode.SUCCESS,
+      });
+    } catch (err: any) {
+      console.error("Error in updateBanner API", err);
+      await adminErrQueries.adminErrLogsCreate({ fx_name: "updateBanner", error_msg: err.message || {} });
+      return res.status(GlblCode.ERROR_CODE).send({
+        code: GlblCode.ERROR_CODE,
+        status: false,
+        message: language[lang].CATCH_MSG,
+      });
+    }
+  }
 }
 
 export const bannerController = new BannerController();
