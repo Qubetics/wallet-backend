@@ -13,7 +13,7 @@ class BannerController implements OnlyControllerInterface {
     this.initialize();
   }
 
-  public initialize() {}
+  public initialize() { }
 
   public async getBannerList(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
@@ -35,18 +35,18 @@ class BannerController implements OnlyControllerInterface {
         limit: per_page,
         offset: offset,
         page: page,
-        attributes : [ "id", "status", "link", "image_path", "created_at"]
-    }
+        attributes: ["id", "status", "link", "image_path", "created_at"]
+      }
 
-    //search by message
-    if (search) {
+      //search by message
+      if (search) {
         obj.where[Op.or] = [
-        { message: { [Op.like]: `%${search}%` } }
+          { message: { [Op.like]: `%${search}%` } }
         ];
-    }
+      }
 
-    //get banner list
-    const get_banner_list: any = await BannerHelper.get_banner_list(obj);
+      //get banner list
+      const get_banner_list: any = await BannerHelper.get_banner_list(obj);
 
       return res.status(GlblCode.SUCCESS).send({
         message: GlblMessages.SUCCESS,
@@ -68,10 +68,10 @@ class BannerController implements OnlyControllerInterface {
   public async createBanner(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
-        const { link } = req.body;
-        const imagePath = req.body.imagePath || "";
+      const { link } = req.body;
+      const imagePath = req.body.imagePath || "";
 
-      const newBanner = await BannerModel.create({ imagePath, link});
+      const newBanner = await BannerModel.create({ imagePath, link });
       return res.status(GlblCode.SUCCESS).send({
         message: GlblMessages.SUCCESS,
         status: true,
@@ -91,7 +91,7 @@ class BannerController implements OnlyControllerInterface {
 
   public async deleteBanner(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
-  
+
     try {
       const { id } = req.params;
       const banner = await BannerModel.findOne({ where: { id } });
@@ -110,17 +110,17 @@ class BannerController implements OnlyControllerInterface {
         }
       }
       await BannerModel.destroy({ where: { id } });
-  
+
       return res.status(GlblCode.SUCCESS).send({
         message: GlblMessages.SUCCESS,
         status: true,
         code: GlblCode.SUCCESS,
       });
-  
+
     } catch (err: any) {
       console.error("Error in deleteBanner API", err);
       await adminErrQueries.adminErrLogsCreate({ fx_name: "deleteBanner", error_msg: err.message || {} });
-  
+
       return res.status(GlblCode.ERROR_CODE).send({
         code: GlblCode.ERROR_CODE,
         status: false,
@@ -128,11 +128,11 @@ class BannerController implements OnlyControllerInterface {
       });
     }
   }
-  
+
   public async updateBanner(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
-      const { id, status } : {id: number, status: string} = req.body;
+      const { id, status }: { id: number, status: string } = req.body;
       const banner = await BannerModel.findOne({ where: { id } });
       if (!banner) {
         return res.status(404).send({
@@ -143,15 +143,15 @@ class BannerController implements OnlyControllerInterface {
       }
 
       //at a  time only 5  can be  active
-      if(status == '1'){
-      const activeBanners : any = await BannerModel.count({ where: { status: '1' } });
-      if (activeBanners >= 5 ) {
-        return res.status(GlblCode.ERROR_CODE).send({
-          code: GlblCode.ERROR_CODE,
-          status: false,
-          message: "Only 5 active banners are allowed at a time"
-        });
-      }
+      if (status == '1') {
+        const activeBanners: any = await BannerModel.count({ where: { status: '1' } });
+        if (activeBanners >= 5) {
+          return res.status(GlblCode.ERROR_CODE).send({
+            code: GlblCode.ERROR_CODE,
+            status: false,
+            message: "Only 5 active banners are allowed at a time"
+          });
+        }
       }
       //update banner status
       await BannerModel.update({ status }, { where: { id } });
