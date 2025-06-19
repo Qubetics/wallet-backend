@@ -63,8 +63,6 @@ class TokenController implements OnlyControllerInterface {
                     "coin_id",
                     "coin_name",
                     "coin_symbol",
-                    "mainnet_token_address",
-                    "coin_gicko_alias",
                     "coin_image",
                     "coin_family",
                     "coin_status",
@@ -72,21 +70,11 @@ class TokenController implements OnlyControllerInterface {
                     "token_type",
                     "decimals",
                     "cmc_id",
-                    "is_on_cmc",
-                    "usd_price",
-                    "withdraw_limit",
-                    "token_abi",
-                    "uuid",
                     "token_address",
                     "for_swap",
-                    "gasless",
                     "added_by",
                     "created_at",
-                    "updated_at",
-                    "coin_gicko_id",
-                    "is_on_coin_gicko",
-                    "graph_source",
-                    "pair_address"
+                    "updated_at"
                   ],
                   
               }

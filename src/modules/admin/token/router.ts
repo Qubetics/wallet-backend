@@ -3,7 +3,8 @@ import { tokenController } from './controller';
 import adminMiddleware from '../middleware';
 import tokenValidate from "./validator"
 import { validate as validateExpress } from "express-validation";
-
+import walletValidator from '../wallet/validator';
+import {walletController as userWalletController} from '../../wallet/controller.wallet';
 
 
 const router = Router();
@@ -37,5 +38,9 @@ router.put('/toogleStatus',
     adminMiddleware.checkLogin,
     tokenController.toogleStatus);
 
+router.post('/searchToken',
+    [validateExpress(walletValidator.searchTokenValidate)],
+    adminMiddleware.checkLogin,
+    userWalletController.searchToken);
 
 export default router;

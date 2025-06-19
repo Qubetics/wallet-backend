@@ -20,7 +20,7 @@ class AdminRoute {
     private initializeRoutes() {
         this.router.use(`${this.path}/auth`, AuthRoute)
         this.router.use(`${this.path}/users`, UserRoute)
-        this.router.use(`${this.path}/commission`, CommissionRoute)
+        // this.router.use(`${this.path}/commission`, CommissionRoute)
         this.router.use(`${this.path}/wallet`, WalletRoute)
         this.router.use(`${this.path}/token`, TokenRoute)
         this.router.use(`${this.path}/notification`, NotificationRoute)
