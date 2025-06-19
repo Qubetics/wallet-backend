@@ -92,13 +92,13 @@ class UserRoute implements ControllerInterface {
     this.router.post(
       `${this.path}/announcements`,
       // [validate(validator.announcementValidate)],
-      // jwtVerification.verifyToken,
+      jwtVerification.verifyToken,
       userController.getAnnouncementList
     );
 
     this.router.get(
       `${this.path}/banners`,
-      // jwtVerification.verifyToken,
+      jwtVerification.verifyToken,
       userController.getBannerList
     );
   }
