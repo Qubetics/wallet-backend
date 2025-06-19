@@ -24,7 +24,7 @@ router.delete(
   adminMiddleware.checkLogin,
   bannerController.deleteBanner
 );
-
+/** activated and inactivated the banner */
 router.post(
   "/updateBanner",
   validateExpress(BannerValidator.updateBanner),
