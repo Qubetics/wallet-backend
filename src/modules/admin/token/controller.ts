@@ -375,9 +375,6 @@ class TokenController implements OnlyControllerInterface {
 
       if (coinDataExist) {
 
-        console.log("this is coinDataExist >>>", coinDataExist);
-
-
         if (coinDataExist.coin_status == 0) {
           await coin_queries.coin_update(
             { coin_status: 1 },
@@ -387,8 +384,13 @@ class TokenController implements OnlyControllerInterface {
             { coin_family: coin_family },
             coinDataExist.coin_id
           );
+
+          return res.status(GlblCode.ERROR_CODE).send({
+            data: { status: false, message: "Token already exist" },
+          });
+
         } else {
-          console.log("coin status is active");
+
           if (coinDataExist.added_by == GlblAddedBy.USER) {
             const updateCoinData = await coin_queries.coin_update(
               { added_by: GlblAddedBy.ADMIN },
@@ -398,14 +400,14 @@ class TokenController implements OnlyControllerInterface {
               { coin_family: coin_family },
               coinDataExist.coin_id
             );
+            return res.status(GlblCode.SUCCESS).send({
+              data: { status: true, message: "Token updated successfully" },
+            });
           } else {
             return res.status(GlblCode.ERROR_CODE).send({
               data: { status: false, message: "Token already exist" },
             });
           }
-          //   return res.status(GlblCode.SUCCESS).send({
-          //     data: { status: true, message: "Token already exist" },
-          //   });
         }
 
 
