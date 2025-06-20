@@ -35,18 +35,39 @@ class WalletHelpers {
     
     //get within last month added tokens
     public async get_new_added_token(){
-        
         try {
+            // Set date to 30 days back from today
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today);
+            thirtyDaysAgo.setDate(today.getDate() - 30);
+            
+            const todayStr = today.toISOString().split('T')[0];
+            const thirtyDaysAgoStr = thirtyDaysAgo.toISOString().split('T')[0];
+            
+            const whereClause: any = {};
+            whereClause[Op.and] = [
+                Sequelize.where(
+                    Sequelize.fn('DATE', Sequelize.col('created_at')),
+                    {
+                        [Op.gte]: thirtyDaysAgoStr
+                    }
+                ),
+                Sequelize.where(
+                    Sequelize.fn('DATE', Sequelize.col('created_at')),
+                    {
+                        [Op.lte]: todayStr
+                    }
+                )
+            ];
+            
             const new_added_token : number = await CoinsModel.count({
-                where: {
-                        created_at: { [Op.gte]: new Date(new Date().setMonth(new Date().getMonth() - 1))}
-                }
+                where: whereClause
             });
             return new_added_token;
         } catch (error) {
-            console.error("Error in get_new_added_token", error)
+            console.error("Error in get_new_added_token", error);
+            return 0;
         }
-
     }
 
     //get daily active users based on last 24 hours transaction
@@ -69,24 +90,33 @@ class WalletHelpers {
     //get monthly active users based on last eg.30 days transaction
     public async get_monthly_active_users(days: number) {
         try {
-            const today_date = new Date();
-            today_date.setHours(23, 59, 59, 999); 
+            const today = new Date();
+            const daysAgo = new Date(today);
+            daysAgo.setDate(today.getDate() - days);
             
-            const start_date = new Date();
-            start_date.setDate(today_date.getDate() - days);
-            start_date.setHours(0, 0, 0, 0); 
-
-            const monthly_active_users : number = await TrnxHistoryModel.count({
+            const todayStr = today.toISOString().split('T')[0];
+            const daysAgoStr = daysAgo.toISOString().split('T')[0];
+            
+            const whereClause: any = {};
+            whereClause[Op.and] = [
+                Sequelize.where(
+                    Sequelize.fn('DATE', Sequelize.col('created_at')),
+                    {
+                        [Op.gte]: daysAgoStr
+                    }
+                ),
+                Sequelize.where(
+                    Sequelize.fn('DATE', Sequelize.col('created_at')),
+                    {
+                        [Op.lte]: todayStr
+                    }
+                )
+            ];
+            
+            const monthly_active_users: number = await TrnxHistoryModel.count({
                 distinct: true,
                 col: 'user_id',
-                where: {
-                    created_at: {
-                        [Op.between]: [
-                            start_date.toISOString().slice(0, 19).replace('T', ' '), 
-                            today_date.toISOString().slice(0, 19).replace('T', ' ')
-                        ]
-                    }
-                }
+                where: whereClause
             });
             return monthly_active_users || 0;
         } catch (error) {

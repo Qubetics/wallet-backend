@@ -7,7 +7,7 @@ import MenuListsModel from "../../../models/model/model_menu_lists.";
 import { TokenHelper } from "./token.helper";
 import { includes } from "lodash";
 import CoinsModel from "../../../models/model/model.coins";
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import { WalletHelper } from "../wallet/wallet.helper";
 import { Messages } from "../../user/enum";
 import { WalletHelper as userWalletHelper } from "../../wallet/wallet.helpers"
@@ -91,18 +91,20 @@ class TokenController implements OnlyControllerInterface {
 
       //search by from_date and to_date
       if (from_date && to_date) {
-        const start_date = new Date(from_date);
-        start_date.setHours(0, 0, 0, 0);
-
-        const end_date = new Date(to_date);
-        end_date.setHours(23, 59, 59, 999);
-
-        obj.where.created_at = {
-          [Op.between]: [
-            start_date.toISOString().slice(0, 19).replace('T', ' '),
-            end_date.toISOString().slice(0, 19).replace('T', ' ')
-          ]
-        };
+        obj.where[Op.and] = [
+          Sequelize.where(
+            Sequelize.fn('DATE', Sequelize.col('created_at')),
+            {
+              [Op.gte]: from_date
+            }
+          ),
+          Sequelize.where(
+            Sequelize.fn('DATE', Sequelize.col('created_at')),
+            {
+              [Op.lte]: to_date
+            }
+          )
+        ];
       }
 
       //search by added_by
