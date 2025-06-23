@@ -96,7 +96,7 @@ class WalletHelpers {
             
             const todayStr = today.toISOString().split('T')[0];
             const daysAgoStr = daysAgo.toISOString().split('T')[0];
-            
+
             const whereClause: any = {};
             whereClause[Op.and] = [
                 Sequelize.where(
@@ -112,12 +112,37 @@ class WalletHelpers {
                     }
                 )
             ];
+
+
+            // Get unique users from both user_id and to_user_id columns
+            const [userResults, toUserResults] = await Promise.all([
+                TrnxHistoryModel.findAll({
+                    attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('user_id')), 'user_id']],
+                    where: whereClause,
+                    raw: true
+                }),
+                TrnxHistoryModel.findAll({
+                    attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('to_user_id')), 'to_user_id']],
+                    where: {
+                        ...whereClause,
+                        to_user_id: {
+                            [Op.ne]: null
+                        }
+                    },
+                    raw: true
+                })
+            ]);
             
-            const monthly_active_users: number = await TrnxHistoryModel.count({
-                distinct: true,
-                col: 'user_id',
-                where: whereClause
-            });
+            // Combine unique users from both columns
+            const userIds = userResults.map(result => result.user_id);
+            const toUserIds = toUserResults.map(result => result.to_user_id);
+            
+            // Create a Set to get unique user IDs from both columns
+            const uniqueUserIds = new Set([...userIds, ...toUserIds]);
+            
+            const monthly_active_users = uniqueUserIds.size;
+
+            console.log("this is monthly_active_users", monthly_active_users);
             return monthly_active_users || 0;
         } catch (error) {
             console.error("Error in get_monthly_active_users", error);
