@@ -73,14 +73,29 @@ class WalletHelpers {
     //get daily active users based on last 24 hours transaction
     public async get_daily_active_users() {
         try {
-            const daily_active_users : number = await TrnxHistoryModel.count({
-                distinct: true,
-                col: 'user_id',
+            const userIds = await TrnxHistoryModel.findAll({
+                attributes: [
+                    [Sequelize.fn('DISTINCT', Sequelize.col('user_id')), 'id']
+                ],
                 where: {
-                    created_at: { [Op.gte]: new Date(new Date().setHours(new Date().getHours() - 24))}
-                }
+                    created_at: { [Op.gte]: new Date(new Date().setHours(new Date().getHours() - 24)) }
+                },
+                raw: true
             });
-            return daily_active_users || 0;
+
+            const toUserIds = await TrnxHistoryModel.findAll({
+                attributes: [
+                    [Sequelize.fn('DISTINCT', Sequelize.col('to_user_id')), 'id']
+                ],
+                where: {
+                    created_at: { [Op.gte]: new Date(new Date().setHours(new Date().getHours() - 24)) }
+                },
+                raw: true
+            });
+
+            // Merge and deduplicate
+            const allIds = new Set([...userIds.map(u => u.id), ...toUserIds.map(u => u.id)]);
+            return allIds.size;
         } catch (error) {
             console.error("Error in get_daily_active_users", error);
             return 0;
@@ -142,7 +157,6 @@ class WalletHelpers {
             
             const monthly_active_users = uniqueUserIds.size;
 
-            console.log("this is monthly_active_users", monthly_active_users);
             return monthly_active_users || 0;
         } catch (error) {
             console.error("Error in get_monthly_active_users", error);
