@@ -28,3 +28,4 @@ export { AdminErrLogsInterface } from './interface.admin_err_logs';
 export { AdminInterface } from './interface.admins';
 export { NFTInterface } from './interface.nft';
 export { IOnOffRampLog } from './interface.on_off_ramps_logs';
+export { TicsPriceInFiatGraphModel } from './interface.ticsPriceInFiatGraph';
