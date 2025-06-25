@@ -5,6 +5,7 @@ import { language } from "../../../constants";
 import { adminErrQueries, coin_queries, swapSettingQueries, user_queries, wallet_queries } from "../../../helpers/dbHelper";
 import commonHelper from "../../../helpers/common/common.helpers";
 import { Op } from "sequelize";
+import { ethers } from "ethers";
 
 
 class CommissionController implements OnlyControllerInterface {
@@ -54,6 +55,12 @@ class CommissionController implements OnlyControllerInterface {
                 if (req.body.type == 1) {
                     setClause = { percentage: req.body.value }
                 } else {
+                    const check = ethers.isAddress(req.body.value)
+                    if(!check) return res.status(GlblCode.ERROR_CODE).send({
+                        code: GlblCode.ERROR_CODE,
+                        status: false,
+                        message: language[lang].INVALID_WALLET_ADDRESS
+                    });
                     setClause = { address: req.body.value }
                 }
 
