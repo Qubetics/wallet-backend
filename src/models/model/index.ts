@@ -31,6 +31,7 @@ import OnOffRampLogModel from './model.on_off_ramp_logs';
 import AdminModel from './model.admins';
 import MenuListsModel from './model_menu_lists.';
 import PermissionsModel from './model_permissions';
+import { TicsPriceInFiatGraph } from './model.ticsPriceInFiatGraph';
 export {
     AddressBookModel,
     AddressBookWalletsModel,
@@ -64,5 +65,7 @@ export {
     AdminModel,
     OnOffRampLogModel,
     MenuListsModel,
-    PermissionsModel
+    PermissionsModel,
+    TicsPriceInFiatGraph
+
 }
