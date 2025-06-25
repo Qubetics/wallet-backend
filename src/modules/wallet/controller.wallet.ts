@@ -2226,6 +2226,7 @@ class WalletController implements OnlyControllerInterface {
         timestamp
       FROM bucketed
       WHERE rn = 1
+      ORDER BY time_stamp ASC
     `;
   
     const response = await db.db_write.query(query, {
