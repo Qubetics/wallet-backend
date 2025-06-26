@@ -141,7 +141,7 @@ class WalletController implements OnlyControllerInterface {
                 monthly_active_users,
                 total_wallets
             ] = await Promise.all([
-                WalletHelper.get_new_added_token().then(Number),
+                WalletHelper.get_new_added_token().then(String),
                 WalletHelper.get_daily_active_users().then(Number),
                 WalletHelper.get_monthly_active_users(30).then(Number),
                 WalletHelper.get_total_wallets().then(Number)

@@ -918,23 +918,39 @@ class UserController implements OnlyControllerInterface {
     try {
 
         const per_page: number = Number(
-            req.body?.limit == undefined ? (req.body.limit = "10") : req.body.limit
-          );
-          const page: number = Number(
-            req.body.page == undefined ? (req.body.page = "1") : req.body.page
-          );
-          const offset: number = (page - 1) * per_page;
-       
-          const search: string = req.body?.search == undefined ? null : req.body.search;
+          req.body?.limit == undefined ? (req.body.limit = "10") : req.body.limit
+        );
+        const page: number = Number(
+          req.body.page == undefined ? (req.body.page = "1") : req.body.page
+        );
+        const offset: number = (page - 1) * per_page;
+      
+        const search: string = req.body?.search == undefined ? null : req.body.search;
 
-           //object for get token list
-           let obj: any = {
-            where: { status: 'sent' },
-            attributes: [ "id", "title", "message", "created_at", "status"],
-            order: [['id', 'DESC']],
-            limit: per_page,
-            offset: offset,
-            page: page,
+        //FOR TESTING ONLY TO BE REMOVED BEFORE PROD
+        if (req.userId !== 1430) {
+          return res.status(GlblCode.SUCCESS).send({
+            message: language[lang].SUCCESS,
+            status: true,
+            code: GlblCode.SUCCESS,
+            data: {
+              notification_list: [],
+              total: 0,
+              page,
+              per_page,
+              total_pages: 0
+            }
+          });
+        }
+
+          //object for get token list
+        let obj: any = {
+          where: { status: 'sent' },
+          attributes: [ "id", "title", "message", "created_at", "status"],
+          order: [['id', 'DESC']],
+          limit: per_page,
+          offset: offset,
+          page: page,
         }
 
         //search by title, message
@@ -969,6 +985,17 @@ class UserController implements OnlyControllerInterface {
   public async getBannerList(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
+
+        //FOR TESTING ONLY TO BE REMOVED BEFORE PROD
+        if (req.userId !== 1430) {
+          return res.status(GlblCode.SUCCESS).send({
+            message: language[lang].SUCCESS,
+            status: true,
+            code: GlblCode.SUCCESS,
+            data: []
+          });
+        }
+
         const getBannerList: any = await BannerModel.findAll({
           where: { status: '1'},
           attributes: [ "id", "link", "image_path", "created_at"]

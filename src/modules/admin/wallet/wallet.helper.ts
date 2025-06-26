@@ -1,3 +1,4 @@
+import { GlblAddedBy } from "../../../constants/global_enum";
 import { CoinsModel, UsersModel } from "../../../models";
 import TrnxHistoryModel from "../../../models/model/model.trnxHistory";
 import { Op, Sequelize } from "sequelize";
@@ -36,34 +37,14 @@ class WalletHelpers {
     //get within last month added tokens
     public async get_new_added_token(){
         try {
-            // Set date to 30 days back from today
-            const today = new Date();
-            const thirtyDaysAgo = new Date(today);
-            thirtyDaysAgo.setDate(today.getDate() - 30);
+            const whereClause: any = {  coin_status: 1, added_by: GlblAddedBy.ADMIN};
             
-            const todayStr = today.toISOString().split('T')[0];
-            const thirtyDaysAgoStr = thirtyDaysAgo.toISOString().split('T')[0];
-            
-            const whereClause: any = {};
-            whereClause[Op.and] = [
-                Sequelize.where(
-                    Sequelize.fn('DATE', Sequelize.col('created_at')),
-                    {
-                        [Op.gte]: thirtyDaysAgoStr
-                    }
-                ),
-                Sequelize.where(
-                    Sequelize.fn('DATE', Sequelize.col('created_at')),
-                    {
-                        [Op.lte]: todayStr
-                    }
-                )
-            ];
-            
-            const new_added_token : number = await CoinsModel.count({
-                where: whereClause
+            const new_added_token = await CoinsModel.findOne({
+                attributes: [ "coin_name" ],
+                where: whereClause,
+                order: [['created_at', 'DESC']],
             });
-            return new_added_token;
+            return new_added_token ? new_added_token.coin_name : '';
         } catch (error) {
             console.error("Error in get_new_added_token", error);
             return 0;

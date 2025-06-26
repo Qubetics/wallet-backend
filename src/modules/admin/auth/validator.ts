@@ -10,7 +10,7 @@ export default class adminValidator {
     }
     static googleAuthEnabledisable = {
         body: Joi.object({
-            googleSecretKey: Joi.string().required(),
+            googleSecretKey: Joi.string().optional(),
             password: Joi.string().required(),
             action: Joi.number().required(),
             token: Joi.string().required()

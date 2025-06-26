@@ -6,6 +6,8 @@ import { adminErrQueries, coin_queries, swapSettingQueries, user_queries, wallet
 import commonHelper from "../../../helpers/common/common.helpers";
 import { Op } from "sequelize";
 import { ethers } from "ethers";
+import redisHelper from "../../../helpers/common/redis";
+import { config } from "../../../config";
 
 
 class CommissionController implements OnlyControllerInterface {
@@ -19,12 +21,19 @@ class CommissionController implements OnlyControllerInterface {
         let lang: any = req.headers['content-language'] || 'en';
         try {
             console.log("Entered into getCommissionDetails")
-
-            let commissionDetails: any = await swapSettingQueries.swapSettingsFindOne(
-                ['id', 'address', 'percentage'],
-                { id: 1 },
-                [['id', 'ASC']])
-
+            let commissionDetails: any = {};
+            commissionDetails = await redisHelper.getRedisSting(config.ON_CHAIN_DATA);
+            if (commissionDetails) {
+                commissionDetails = JSON.parse(commissionDetails);
+            }else{
+                commissionDetails = await swapSettingQueries.swapSettingsFindOne(
+                    [['address', 'walletAddress'], 'percentage'],
+                    { id: 1 },
+                    [['id', 'ASC']])
+                if (commissionDetails) {
+                    await redisHelper.setRedisSting(config.ON_CHAIN_DATA, JSON.stringify(commissionDetails));
+                }
+            }
             return res.status(GlblCode.SUCCESS).send({
                 message: GlblMessages.SUCCESS,
                 status: true,
@@ -64,9 +73,18 @@ class CommissionController implements OnlyControllerInterface {
                     setClause = { address: req.body.value }
                 }
 
-                await swapSettingQueries.swapSettingsUpdate(
+                const data = await swapSettingQueries.swapSettingsUpdate(
                     setClause,
                     { id: 1 })
+                if (data) {
+                    const commissionDetails = await swapSettingQueries.swapSettingsFindOne(
+                        [['address', 'walletAddress'], 'percentage'],
+                        { id: 1 },
+                        [['id', 'ASC']])
+                    if (commissionDetails) {
+                        await redisHelper.setRedisSting(config.ON_CHAIN_DATA, JSON.stringify(commissionDetails));
+                    }
+                }   
             }
 
             return res.status(GlblCode.SUCCESS).send({
