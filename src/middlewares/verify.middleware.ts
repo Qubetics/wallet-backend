@@ -75,7 +75,7 @@ class JWTVerify {
                response.error(res, {
                   data: {
                      status: false,
-                     message: "**Update Needed**\nThe latest version includes Qubetics chain integration and essential improvements. Please update to continue."
+                     message: "<strong>Update Needed</strong><br>The latest version includes Qubetics chain integration and essential improvements. Please update to continue."
                    }
                });
             }
