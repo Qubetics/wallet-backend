@@ -927,22 +927,6 @@ class UserController implements OnlyControllerInterface {
       
         const search: string = req.body?.search == undefined ? null : req.body.search;
 
-        //FOR TESTING ONLY TO BE REMOVED BEFORE PROD
-        if (req.userId !== 1430) {
-          return res.status(GlblCode.SUCCESS).send({
-            message: language[lang].SUCCESS,
-            status: true,
-            code: GlblCode.SUCCESS,
-            data: {
-              notification_list: [],
-              total: 0,
-              page,
-              per_page,
-              total_pages: 0
-            }
-          });
-        }
-
           //object for get token list
         let obj: any = {
           where: { status: 'sent' },
@@ -985,16 +969,6 @@ class UserController implements OnlyControllerInterface {
   public async getBannerList(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
-
-        //FOR TESTING ONLY TO BE REMOVED BEFORE PROD
-        if (req.userId !== 1430) {
-          return res.status(GlblCode.SUCCESS).send({
-            message: language[lang].SUCCESS,
-            status: true,
-            code: GlblCode.SUCCESS,
-            data: []
-          });
-        }
 
         const getBannerList: any = await BannerModel.findAll({
           where: { status: '1'},
