@@ -35,7 +35,7 @@ class AuthController implements OnlyControllerInterface {
             if (!checkEmailExist) {
 
                 return res.status(GlblCode.ERROR_CODE).send({
-                    message: Messages.NO_EMAIL_EXIST,
+                    message: Messages.INVALID_CREDS,
                     status: false,
                     code: GlblCode.ERROR_CODE,
                     data: {}
@@ -49,7 +49,7 @@ class AuthController implements OnlyControllerInterface {
 
             if (checkPassword == false) {
                 return res.status(GlblCode.ERROR_CODE).send({
-                    message: Messages.INCORRECT_PASS,
+                    message: Messages.INVALID_CREDS,
                     status: false,
                     code: GlblCode.ERROR_CODE,
                     data: {}
