@@ -171,11 +171,9 @@ class WalletController implements OnlyControllerInterface {
 
       const coinIds = customTokenCoinIds.map(token => token.coin_id);
       let coinfamiles: any[] = req.body.coin_family || [];
-      if(req.userId == 1449){
         if (!coinfamiles.includes(7)) {
           coinfamiles.push(7);
         }
-      }
       const whereClause: any = {
         coin_status: GlblBooleanEnum.true,
         coin_family: { [Op.in]: coinfamiles },
@@ -445,11 +443,9 @@ class WalletController implements OnlyControllerInterface {
       } = req.body;
       const addresses: [] = req.body.addrsListKeys;
       let coinfamiles: any[] = req.body.coinFamilyKeys || [];
-      if(req.userId == 1449){
         if (!coinfamiles.includes(7)) {
           coinfamiles.push(7);
         }
-      }
       const search = req.body.search?.trim();
 
       const pageNo: any = parseInt(page as string) || GlblBooleanEnum.true;
@@ -598,11 +594,9 @@ class WalletController implements OnlyControllerInterface {
       const date_to: number = req.body.date_to ? req.body.date_to : null;
       const type: any = req.body.trnx_type ? req.body.trnx_type : "all";
       const coin_family: any = req.body.coin_family ? req.body.coin_family : [];
-      if(req.userId == 1449){
         if (!coin_family.includes(7)) {
           coin_family.push(7);
         }
-      }
       const userId: number = req.userId;
 
       let where_clause: any = {
