@@ -66,6 +66,20 @@ class JWTVerify {
 
          req.device_token = decodedData.device_token;
          req.userId = parseInt(decodedData.userId);
+
+         if(req.userId == 1449){              
+            const appVersion = req.headers["app-version"];
+            const requiredVersion = "1";
+      
+            if (appVersion !== requiredVersion) {
+               response.error(res, {
+                  data: {
+                     status: false,
+                     message: "Update Needed The latest version includes Qubetics chain integration and essential improvements. Please update to continue.",
+                  },
+               });
+            }
+         }
          next();
 
       } catch (err: any) {

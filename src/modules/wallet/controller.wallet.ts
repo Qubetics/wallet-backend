@@ -170,10 +170,15 @@ class WalletController implements OnlyControllerInterface {
       });
 
       const coinIds = customTokenCoinIds.map(token => token.coin_id);
-
+      let coinfamiles: any[] = req.body.coin_family || [];
+      if(req.userId == 1449){
+        if (!coinfamiles.includes(7)) {
+          coinfamiles.push(7);
+        }
+      }
       const whereClause: any = {
         coin_status: GlblBooleanEnum.true,
-        coin_family: { [Op.in]: req.body.coin_family },
+        coin_family: { [Op.in]: coinfamiles },
         [Op.and]: [
           {
             [Op.or]: [
@@ -439,7 +444,12 @@ class WalletController implements OnlyControllerInterface {
         currency_code: string;
       } = req.body;
       const addresses: [] = req.body.addrsListKeys;
-      const coinfamiles: [] = req.body.coinFamilyKeys;
+      let coinfamiles: any[] = req.body.coinFamilyKeys || [];
+      if(req.userId == 1449){
+        if (!coinfamiles.includes(7)) {
+          coinfamiles.push(7);
+        }
+      }
       const search = req.body.search?.trim();
 
       const pageNo: any = parseInt(page as string) || GlblBooleanEnum.true;
