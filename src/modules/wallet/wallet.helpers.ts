@@ -8,14 +8,14 @@ import {
   coin_price_in_fiat_queries,
   coin_queries,
   custom_token_queries,
-  swapSettingQueries,
+  // swapSettingQueries,
 } from "../../helpers/dbHelper";
 import { language } from "../../constants";
 import { global_helper } from "../../helpers/common/global_helper";
 import commonHelper from "../../helpers/common/common.helpers";
 import currency_fiat_queries from "../../helpers/dbHelper/currency_fiats";
 import { wallet_queries } from "../../helpers/dbHelper";
-import userhelper from "../user/helper";
+// import userhelper from "../user/helper";
 import kafka_helper from "../../helpers/common/kafka_helper";
 import resent_graph_data_queries from "../../helpers/dbHelper/resent_graph_data";
 import cmcHelper from "../../helpers/common/cmc.helpers";
@@ -317,6 +317,7 @@ class WalletHelpers implements OnlyControllerInterface {
       throw err;
     }
   }
+
   public async insert_entry_in_custom_token_table(
     coinId: number,
     userId: number
@@ -343,6 +344,7 @@ class WalletHelpers implements OnlyControllerInterface {
       return null;
     }
   }
+
   public async create_wallet_for_coin(
     walletAddress: string,
     coinId: number,
@@ -415,6 +417,7 @@ class WalletHelpers implements OnlyControllerInterface {
       return null;
     }
   }
+
   public async update_token_in_redis(coin_data: any, coin_id: number) {
     try {
       let coin_family = coin_data.coin_family;
@@ -656,6 +659,7 @@ class WalletHelpers implements OnlyControllerInterface {
       throw err;
     }
   }
+
   public async toFixedExp(num: any, fixed: number) {
     try {
       if (num) {
@@ -670,6 +674,7 @@ class WalletHelpers implements OnlyControllerInterface {
       return "0.00";
     }
   }
+
   public async update_nft_token_in_redis(coinData: any) {
     try {
       switch (coinData.coin_family) {
@@ -753,6 +758,32 @@ class WalletHelpers implements OnlyControllerInterface {
       console.log("::Error log:: filterByAgeRange :>> ", error);
       return [];
     }
+  }
+
+  public async parsePossiblyQuotedNumber(value: any) {
+    try {
+      if (typeof value === 'string') {
+        // Check if it's a stringified number with quotes inside (e.g. "\"18\"")
+        if (/^"\d+(\.\d+)?"$/.test(value)) {
+          const innerValue = JSON.parse(value); // => "18"
+          return Number(innerValue);            // => 18
+        }
+
+        // Handle direct number strings like "18"
+        if (/^\d+(\.\d+)?$/.test(value)) {
+          return Number(value);
+        }
+      }
+
+      // If it's already a number, return it
+      if (typeof value === 'number') {
+        return value;
+      }
+    } catch (error) {
+      console.error("Failed to parse value:", value, error);
+    }
+
+    return null; // fallback if not parsable
   }
 }
 export const WalletHelper = new WalletHelpers();

@@ -61,6 +61,9 @@ class WalletController implements OnlyControllerInterface {
         wallet_name: string;
       } = req.body;
 
+      let parseDecimals = await WalletHelper.parsePossiblyQuotedNumber(decimals);
+      console.log('parseDecimals >>>', parseDecimals);
+
       let coinDataExist: any = await coin_queries.coin_find_one(
         [
           "coin_id",
@@ -97,7 +100,7 @@ class WalletController implements OnlyControllerInterface {
           name,
           coin_family,
           token_type,
-          decimals,
+          parseDecimals,
           lang,
           currentUTCDate,
           req.userId
@@ -171,9 +174,9 @@ class WalletController implements OnlyControllerInterface {
 
       const coinIds = customTokenCoinIds.map(token => token.coin_id);
       let coinfamiles: any[] = req.body.coin_family || [];
-        if (!coinfamiles.includes(7)) {
-          coinfamiles.push(7);
-        }
+      if (!coinfamiles.includes(7)) {
+        coinfamiles.push(7);
+      }
       const whereClause: any = {
         coin_status: GlblBooleanEnum.true,
         coin_family: { [Op.in]: coinfamiles },
@@ -443,9 +446,9 @@ class WalletController implements OnlyControllerInterface {
       } = req.body;
       const addresses: [] = req.body.addrsListKeys;
       let coinfamiles: any[] = req.body.coinFamilyKeys || [];
-        if (!coinfamiles.includes(7)) {
-          coinfamiles.push(7);
-        }
+      if (!coinfamiles.includes(7)) {
+        coinfamiles.push(7);
+      }
       const search = req.body.search?.trim();
 
       const pageNo: any = parseInt(page as string) || GlblBooleanEnum.true;
@@ -594,9 +597,9 @@ class WalletController implements OnlyControllerInterface {
       const date_to: number = req.body.date_to ? req.body.date_to : null;
       const type: any = req.body.trnx_type ? req.body.trnx_type : "all";
       const coin_family: any = req.body.coin_family ? req.body.coin_family : [];
-        if (!coin_family.includes(7)) {
-          coin_family.push(7);
-        }
+      if (!coin_family.includes(7)) {
+        coin_family.push(7);
+      }
       const userId: number = req.userId;
 
       let where_clause: any = {
@@ -815,7 +818,7 @@ class WalletController implements OnlyControllerInterface {
         offset: offset,
       };
       const transaction_data: any = await Models.TrnxHistoryModel.findAndCountAll(
-        { ...query, replacements, logging: console.log }
+        { ...query, replacements }
       );
       return response.success(res, {
         data: {
@@ -883,26 +886,26 @@ class WalletController implements OnlyControllerInterface {
   }
   public async searchToken(req: Request, res: Response) {
     const lang: string = (req.headers["content-language"] as string) || "en";
-  
+
     try {
       console.log("req body searchToken >>>", req.body);
-  
+
       const {
         tokenAddress,
         coinFamily,
       }: { tokenAddress: string; coinFamily: number } = req.body;
-  
+
       if (!tokenAddress || !coinFamily) {
         return response.error(res, {
           data: { status: false, message: language[lang].INVALID_TOKEN, data: {} },
         });
       }
-  
+
       const redisKey = `${config.SEARCH_TOKEN}_${coinFamily}`;
       const tokenDetailsStr = await redisClient.getKeyValuePair(redisKey, tokenAddress.toUpperCase());
-  
+
       let tokenDetails: { decimals: string; name: string; symbol: string };
-  
+
       if (tokenDetailsStr) {
         tokenDetails = JSON.parse(tokenDetailsStr);
       } else {
@@ -911,22 +914,22 @@ class WalletController implements OnlyControllerInterface {
           tokenAddress,
           lang
         );
-  
+
         if (!tokenDetails) {
           return response.error(res, {
             data: { status: false, message: language[lang].INVALID_TOKEN, data: {} },
           });
         }
-  
+
         tokenDetails.decimals = tokenDetails.decimals.toString();
-        await redisClient.set_hash_table(redisKey, tokenAddress, JSON.stringify(tokenDetails),3600);
+        await redisClient.set_hash_table(redisKey, tokenAddress, JSON.stringify(tokenDetails), 3600);
       }
-  
+
       if (
         Object.keys(tokenDetails).length !== 0 &&
         tokenDetails.constructor === Object
       ) {
-  
+
         return response.success(res, {
           data: {
             status: true,
@@ -935,7 +938,7 @@ class WalletController implements OnlyControllerInterface {
           },
         });
       }
-  
+
       return response.error(res, {
         data: { status: false, message: language[lang].TOKENS_NOT_FOUND, data: {} },
       });
@@ -950,7 +953,7 @@ class WalletController implements OnlyControllerInterface {
       });
     }
   }
-  
+
   public async swapList(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
@@ -1695,8 +1698,8 @@ class WalletController implements OnlyControllerInterface {
           graphData = await WalletHelper.filterByAgeRange(graphArray, "1d");
         }
       }
-      if( coin_id == 161 ){
-          graphData = await walletController.getCoinGraphGroupedData("1d")
+      if (coin_id == 161) {
+        graphData = await walletController.getCoinGraphGroupedData("1d")
       }
 
       return res.status(GlblCode.SUCCESS).send({
@@ -2113,7 +2116,7 @@ class WalletController implements OnlyControllerInterface {
           duration
         );
       }
-      if( cmcId == 310559898 ){ // TO BE CHANGED
+      if (cmcId == 310559898) { // TO BE CHANGED
         graphData = await walletController.getCoinGraphGroupedData(duration)
       }
 
@@ -2188,7 +2191,7 @@ class WalletController implements OnlyControllerInterface {
   public async getCoinGraphGroupedData(duration: string) {
     let rangeStart: Date;
     let intervalExpression: string;
-  
+
     switch (duration) {
       case '1d':
         rangeStart = moment().subtract(1, 'day').toDate();
@@ -2214,7 +2217,7 @@ class WalletController implements OnlyControllerInterface {
         rangeStart = moment().subtract(365, 'days').toDate();
         intervalExpression = `DATE(DATE_SUB(created_at, INTERVAL MOD(DAY(created_at) - 1, 3) DAY))`;
     }
-  
+
     const query = `
       WITH bucketed AS (
         SELECT
@@ -2237,13 +2240,13 @@ class WalletController implements OnlyControllerInterface {
       WHERE rn = 1
       ORDER BY time_stamp ASC
     `;
-  
+
     const response = await db.db_write.query(query, {
       replacements: { rangeStart },
       type: QueryTypes.SELECT,
-      logging : true
+      // logging: true
     });
-  
+
     return response;
   }
 }
