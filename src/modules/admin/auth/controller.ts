@@ -377,14 +377,15 @@ class AuthController implements OnlyControllerInterface {
                     data: {}
                 };
             } else if (verified == true) {
-                const jwt_token: any = await jwtHelper.create_json_web_token(adminData.id);
-                let final_data = { id: adminData.id, user: adminData.username, email: adminData.email, token: jwt_token, google2fa_status: adminData.google2fa_status }
+                // const jwt_token: any = await jwtHelper.create_json_web_token(adminData.id);
+                // let final_data = { id: adminData.id, user: adminData.username, email: adminData.email, token: jwt_token, google2fa_status: adminData.google2fa_status }
 
                 data = {
                     message: GlblMessages.SUCCESS,
                     status: true,
                     code: GlblCode.SUCCESS,
-                    data: final_data
+                    data: {}
+                    // data: final_data
                 };
 
             } else {
