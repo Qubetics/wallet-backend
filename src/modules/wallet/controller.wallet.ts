@@ -1698,9 +1698,9 @@ class WalletController implements OnlyControllerInterface {
           graphData = await WalletHelper.filterByAgeRange(graphArray, "1d");
         }
       }
-      if (coin_id == 161) {
-        graphData = await walletController.getCoinGraphGroupedData("1d")
-      }
+      // if (coin_id == 161) {
+      //   graphData = await walletController.getCoinGraphGroupedData("1d")
+      // }
 
       return res.status(GlblCode.SUCCESS).send({
         status: true,
@@ -2116,9 +2116,9 @@ class WalletController implements OnlyControllerInterface {
           duration
         );
       }
-      if (cmcId == 310559898) { // TO BE CHANGED
-        graphData = await walletController.getCoinGraphGroupedData(duration)
-      }
+      // if (cmcId == 310559898) { // TO BE CHANGED
+      //   graphData = await walletController.getCoinGraphGroupedData(duration)
+      // }
 
       return res.status(GlblCode.SUCCESS).send({
         status: true,
@@ -2188,67 +2188,67 @@ class WalletController implements OnlyControllerInterface {
     }
   }
 
-  public async getCoinGraphGroupedData(duration: string) {
-    let rangeStart: Date;
-    let intervalExpression: string;
+  // public async getCoinGraphGroupedData(duration: string) {
+  //   let rangeStart: Date;
+  //   let intervalExpression: string;
 
-    switch (duration) {
-      case '1d':
-        rangeStart = moment().subtract(1, 'day').toDate();
-        // 5-minute bucket
-        intervalExpression = `TIMESTAMP(DATE_FORMAT(created_at, '%Y-%m-%d %H:'), FLOOR(MINUTE(created_at) / 5) * 5)`;
-        break;
-      case '1w':
-        rangeStart = moment().subtract(7, 'days').toDate();
-        // 3-hour bucket
-        intervalExpression = `TIMESTAMP(DATE_FORMAT(created_at, '%Y-%m-%d %H:00:00'), FLOOR(HOUR(created_at) / 3) * 3)`;
-        break;
-      case '1m':
-        rangeStart = moment().subtract(30, 'days').toDate();
-        // 12-hour bucket
-        intervalExpression = `TIMESTAMP(DATE(created_at), FLOOR(HOUR(created_at) / 12) * 12)`;
-        break;
-      case '1y':
-        rangeStart = moment().subtract(365, 'days').toDate();
-        // 3-day bucket
-        intervalExpression = `DATE(DATE_SUB(created_at, INTERVAL MOD(DAY(created_at) - 1, 3) DAY))`;
-        break;
-      default:
-        rangeStart = moment().subtract(365, 'days').toDate();
-        intervalExpression = `DATE(DATE_SUB(created_at, INTERVAL MOD(DAY(created_at) - 1, 3) DAY))`;
-    }
+  //   switch (duration) {
+  //     case '1d':
+  //       rangeStart = moment().subtract(1, 'day').toDate();
+  //       // 5-minute bucket
+  //       intervalExpression = `TIMESTAMP(DATE_FORMAT(created_at, '%Y-%m-%d %H:'), FLOOR(MINUTE(created_at) / 5) * 5)`;
+  //       break;
+  //     case '1w':
+  //       rangeStart = moment().subtract(7, 'days').toDate();
+  //       // 3-hour bucket
+  //       intervalExpression = `TIMESTAMP(DATE_FORMAT(created_at, '%Y-%m-%d %H:00:00'), FLOOR(HOUR(created_at) / 3) * 3)`;
+  //       break;
+  //     case '1m':
+  //       rangeStart = moment().subtract(30, 'days').toDate();
+  //       // 12-hour bucket
+  //       intervalExpression = `TIMESTAMP(DATE(created_at), FLOOR(HOUR(created_at) / 12) * 12)`;
+  //       break;
+  //     case '1y':
+  //       rangeStart = moment().subtract(365, 'days').toDate();
+  //       // 3-day bucket
+  //       intervalExpression = `DATE(DATE_SUB(created_at, INTERVAL MOD(DAY(created_at) - 1, 3) DAY))`;
+  //       break;
+  //     default:
+  //       rangeStart = moment().subtract(365, 'days').toDate();
+  //       intervalExpression = `DATE(DATE_SUB(created_at, INTERVAL MOD(DAY(created_at) - 1, 3) DAY))`;
+  //   }
 
-    const query = `
-      WITH bucketed AS (
-        SELECT
-          coin_id,
-          price,
-          timestamp,
-          created_at,
-          ${intervalExpression} AS time_stamp,
-          ROW_NUMBER() OVER (
-            PARTITION BY coin_id, ${intervalExpression}
-            ORDER BY created_at ASC
-          ) AS rn
-        FROM tics_price_in_fiat_graphs
-        WHERE created_at >= :rangeStart
-      )
-      SELECT
-        price,
-        timestamp
-      FROM bucketed
-      WHERE rn = 1
-      ORDER BY time_stamp ASC
-    `;
+  //   const query = `
+  //     WITH bucketed AS (
+  //       SELECT
+  //         coin_id,
+  //         price,
+  //         timestamp,
+  //         created_at,
+  //         ${intervalExpression} AS time_stamp,
+  //         ROW_NUMBER() OVER (
+  //           PARTITION BY coin_id, ${intervalExpression}
+  //           ORDER BY created_at ASC
+  //         ) AS rn
+  //       FROM tics_price_in_fiat_graphs
+  //       WHERE created_at >= :rangeStart
+  //     )
+  //     SELECT
+  //       price,
+  //       timestamp
+  //     FROM bucketed
+  //     WHERE rn = 1
+  //     ORDER BY time_stamp ASC
+  //   `;
 
-    const response = await db.db_write.query(query, {
-      replacements: { rangeStart },
-      type: QueryTypes.SELECT,
-      // logging: true
-    });
+  //   const response = await db.db_write.query(query, {
+  //     replacements: { rangeStart },
+  //     type: QueryTypes.SELECT,
+  //     // logging: true
+  //   });
 
-    return response;
-  }
+  //   return response;
+  // }
 }
 
 export const walletController = new WalletController();
