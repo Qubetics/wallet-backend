@@ -69,6 +69,14 @@ class WalletController implements OnlyControllerInterface {
           "coin_id",
           "coin_status",
           "added_by",
+          "coin_family",
+          "token_address",
+          "is_token",
+          "token_type",
+          "decimals",
+          "coin_symbol",
+          "for_swap",
+          "added_by",
         ],
         { coin_family: coin_family, token_address: token_address }
       );
@@ -79,10 +87,20 @@ class WalletController implements OnlyControllerInterface {
             { coin_status: 1 },
             { coin_id: coinDataExist.coin_id }
           );
-          await WalletHelper.update_token_in_redis(
-            { coin_family: coin_family },
-            coinDataExist.coin_id
-          );
+          
+          const redisCoinData = {
+            coin_id: coinDataExist.coin_id,
+            is_token: coinDataExist.is_token,
+            token_address: coinDataExist.token_address,
+            coin_family: coinDataExist.coin_family,
+            decimals: coinDataExist.decimals,
+            token_type: coinDataExist.token_type,
+            coin_symbol: coinDataExist.coin_symbol,
+            added_by: coinDataExist.added_by,
+            for_swap: coinDataExist.for_swap
+          }
+
+          await WalletHelper.update_token_in_redis_hash(redisCoinData);
         } else {
           console.log("coin status is active");
         }
