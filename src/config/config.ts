@@ -108,6 +108,8 @@ export const config = {
     REGION: zookeeperConfig.config.HUAWEI_OBS.REGION,
     PUBLIC_BASE_URL: zookeeperConfig.config.HUAWEI_OBS.PUBLIC_BASE_URL
   },
+  MORALIS_SCRIPT_ID: 'moralis-chart-widget',
+  MORALIS_SCRIPT_SRC: 'https://moralis.com/static/embed/chart.js',
   
   CONTRACT_ABI: [
     {
