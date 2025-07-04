@@ -1646,7 +1646,8 @@ class WalletController implements OnlyControllerInterface {
         fiat_currency: string;
       } = req.body;
 
-      const coinWalletdata: any = await Models.WalletModel.findOne({
+      // const coinWalletdata: any = await Models.WalletModel.findOne({
+        let coinWalletdata: any = await Models.WalletModel.findOne({
         attributes: ["balance"],
         where: {
           user_id: req.userId,
@@ -1698,9 +1699,20 @@ class WalletController implements OnlyControllerInterface {
           graphData = await WalletHelper.filterByAgeRange(graphArray, "1d");
         }
       }
-      // if (coin_id == 161) {
-      //   graphData = await walletController.getCoinGraphGroupedData("1d")
-      // }
+      const appVersion = req.headers["app-version"];
+      const requiredVersion = "1.1";
+        if (appVersion !== requiredVersion) {
+        if (
+          coin_id === 161 &&
+          coinWalletdata?.dataValues?.coin?.dataValues?.cross_chain_data
+        ) {
+          coinWalletdata.dataValues.coin.dataValues.cross_chain_data = null;
+        }
+      }
+      const moralis = {
+        scriptId : config.MORALIS_SCRIPT_ID,
+        scriptSrc : config.MORALIS_SCRIPT_SRC
+      }
 
       return res.status(GlblCode.SUCCESS).send({
         status: true,
@@ -1708,6 +1720,7 @@ class WalletController implements OnlyControllerInterface {
         message: language[lang].REQUEST_EXECUTED,
         data: coinWalletdata,
         graph: graphData,
+        moralis: moralis
       });
     } catch (err: any) {
       console.error("Error in wallet > updateBalance.", err);

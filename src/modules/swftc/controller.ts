@@ -227,7 +227,22 @@ class SwftcController implements OnlyControllerInterface {
           ],
         };
       }
-      let coinWhere = coin_family !== 0 ? { coin_family } : {};
+
+      const appVersion = req.headers["app-version"];
+      const requiredVersion = "1.1";
+      // let coinWhere = coin_family !== 0 ? { coin_family } : {};
+      let coinWhere = {};
+      if (appVersion !== requiredVersion) {
+        if (coin_family === 7) {
+          coinWhere = { coin_family: -1 };
+        } else if (coin_family !== 0) {
+          coinWhere = { coin_family };
+        } else {
+          coinWhere = { coin_family: { [Op.ne]: 7 } };
+        }
+      } else {
+        coinWhere = coin_family !== 0 ? { coin_family } : {};
+      }
       let swftc_data: any = await Models.SWFTCCoinsDataModel.findAndCountAll({
         attributes: [
           "id",
