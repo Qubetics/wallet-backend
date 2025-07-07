@@ -61,7 +61,9 @@ class TrxHelper {
         console.log('contract_address >>.', contract_address);
         try {
             await this.tronWeb.setAddress(contract_address);
-            let contract: any = await this.tronWeb.contract().at(contract_address);
+            // let contract: any = await this.tronWeb.contract().at(contract_address);
+            let contract: any = await this.tronWeb.contract(config.TRON_ABI, contract_address);
+
             let decimals: number = await contract.decimals().call();
             let dex: any = decimals.toString()
             if (dex.hex != undefined) {
