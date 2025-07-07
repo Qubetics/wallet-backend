@@ -4,6 +4,7 @@ import { TokenStandard } from './enum';
 import commonHelper from '../../helpers/common/common.helpers';
 import { exponentialToDecimal } from '../../helpers/common/globalFunctions';
 import { trxHelper } from '../../helpers/common/trx_helper';
+import { config } from "../../config";
 
 class TronHelper {
  
@@ -136,7 +137,10 @@ class TronHelper {
     ) => {
         try {
             await trxHelper.tronWeb.setAddress(contract_address);
-            let contract = await trxHelper.tronWeb.contract().at(contract_address);
+            // let contract = await trxHelper.tronWeb.contract().at(contract_address);
+            let contract: any = await trxHelper.tronWeb.contract(config.TRON_ABI, contract_address);
+
+
             let decimals = await contract.decimals().call();
             if (decimals._hex != undefined) {
                 decimals = await trxHelper.tronWeb.toDecimal(decimals._hex);
