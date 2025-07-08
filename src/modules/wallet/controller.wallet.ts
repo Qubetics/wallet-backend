@@ -346,20 +346,20 @@ class WalletController implements OnlyControllerInterface {
       const userId: number = req.userId;
       let message: string;
 
-      const checkAddress = await wallet_queries.wallet_find_one(
-        ["wallet_id", "user_id"],
-        { wallet_address: walletAddress }
-      );
+      // const checkAddress = await wallet_queries.wallet_find_one(
+      //   ["wallet_id", "user_id"],
+      //   { wallet_address: walletAddress }
+      // );
 
-      if (!checkAddress || checkAddress.user_id !== req.userId) {
-        return response.error(res, {
-          data: {
-            code: GlblCode.ERROR_CODE,
-            status: false,
-            message: language[lang].UNAUTHORIZED_ACCESS,
-          },
-        });
-      }
+      // if (!checkAddress || checkAddress.user_id !== req.userId) {
+      //   return response.error(res, {
+      //     data: {
+      //       code: GlblCode.ERROR_CODE,
+      //       status: false,
+      //       message: language[lang].UNAUTHORIZED_ACCESS,
+      //     },
+      //   });
+      // }
 
       const coin_data: any = await coin_queries.coin_find_one(["coin_id", "coin_family", "is_token", "token_address", "token_type"], {
         coin_id: coinId,
