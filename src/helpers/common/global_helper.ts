@@ -240,6 +240,8 @@ class Global_helper {
                     break;
                 case config.STATIC_COIN_FAMILY.BTC:
                     balance = (await utxobtc.get_balance(wallet_address))?.toString()
+                    console.log('BTC NODE ERRO')
+                    if(balance == '00') throw 'BTC NODE ERROR'
                     break;
                 case config.STATIC_COIN_FAMILY.POL:
                     balance = (await polEther.get_balance(coinData, wallet_address))?.toString()
