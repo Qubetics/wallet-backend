@@ -100,7 +100,8 @@ class TrxHelper {
         } catch (err: any) {
             console.error(`Error in Fetch_Balance of tron. `, err);
             await commonHelper.save_error_logs("Fetch_Balance_trx", err.message);
-            throw err;
+            // throw err;
+            return null;
         }
     }
     public async Coin_Fetch_Balance(address: string) {

@@ -39,8 +39,8 @@ class utxo {
         } catch (err: any) {
             console.error("Erorr in get balacne of BTC.", err)
             await commonHelper.save_error_logs("get_balance_btc", err.message);
-            return '00';
             // throw err;
+            return null;
         }
     }
 

@@ -103,7 +103,8 @@ class BSCEther {
     } catch (err: any) {
       console.error("Error in get_balance of bnb", err)
       await commonHelper.save_error_logs("get_balance_bnb", err.message);
-      throw err;
+      // throw err;
+      return null;
     }
   }
 

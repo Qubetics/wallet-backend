@@ -136,7 +136,8 @@ class SolanaHelpers {
     } catch (err: any) {
       console.error(`Error in Fetch_Balance of sol. `, err);
       await commonHelper.save_error_logs("Fetch_Balance_sol", err.message);
-      throw err;
+      // throw err;
+      return null;
     }
   }
 

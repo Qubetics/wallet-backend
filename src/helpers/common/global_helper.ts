@@ -240,8 +240,6 @@ class Global_helper {
                     break;
                 case config.STATIC_COIN_FAMILY.BTC:
                     balance = (await utxobtc.get_balance(wallet_address))?.toString()
-                    console.log('BTC NODE ERRO')
-                    if(balance == '00') throw 'BTC NODE ERROR'
                     break;
                 case config.STATIC_COIN_FAMILY.POL:
                     balance = (await polEther.get_balance(coinData, wallet_address))?.toString()
@@ -256,7 +254,8 @@ class Global_helper {
                     balance = (await SolanaHelper.Fetch_Balance(wallet_address, coinData, false))?.toString()
                     break;
             }
-            return { status: true, balance: balance };
+            if(balance == null) return { status: false, balance: '0' };
+            else return { status: true, balance: balance };
         } catch (err: any) {
             console.error("Error in get_wallet_balance.", err)
             await commonHelper.save_error_logs("get_wallet_balance", err.message);
