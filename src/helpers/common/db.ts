@@ -16,7 +16,7 @@ class Database implements DBInterface {
 
     this.db_write = new Sequelize(this.connectionWrite, {
       dialect: "mysql",
-     logging: false,
+      logging: false,
       define: {
         charset: "utf8mb4",
         collate: "utf8mb4_unicode_ci",
@@ -33,7 +33,7 @@ class Database implements DBInterface {
 
     this.db_read = new Sequelize(this.connectionRead, {
       dialect: "mysql",
-     logging: false,
+      logging: false,
       define: {
         charset: "utf8mb4",
         collate: "utf8mb4_unicode_ci",
@@ -56,6 +56,7 @@ class Database implements DBInterface {
       .catch((error: any) => {
         console.error(`Unable to connect to the database: ${config.DB.DB_NAME}`, error);
       });
+    // this.syncTables();
   }
 
   public async syncTables() {

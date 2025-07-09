@@ -8,7 +8,7 @@ interface CoinInstance
   extends Model<CoinInterface, CoinCreationModel>,
   CoinInterface { }
 
-let dataObj = {
+const dataObj = {
   coin_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -55,10 +55,10 @@ let dataObj = {
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
-  token_abi: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
+  // token_abi: {
+  //   type: DataTypes.STRING,
+  //   allowNull: true,
+  // },
   token_address: {
     type: DataTypes.STRING,
     allowNull: true,
@@ -100,11 +100,11 @@ let dataObj = {
     allowNull: true,
   },
 };
-let dataObjIndex = {
+const dataObjIndex = {
   indexes: [
     {
-      unique: true,
-      fields: ["coin_id"],
+      unique: false,
+      fields: ["coin_name"],
     },
     {
       unique: false,
@@ -128,8 +128,20 @@ let dataObjIndex = {
     },
     {
       unique: false,
+      fields: ["cmc_id"],
+    },
+    {
+      unique: false,
+      fields: ["is_on_cmc"],
+    },
+    {
+      unique: false,
       fields: ["token_address"],
     },
+    {
+      unique: false,
+      fields: ["added_by"],
+    }
   ],
 };
 
@@ -138,7 +150,11 @@ const CoinsModel = db.db_write.define<CoinInstance>(
   dataObj,
   dataObjIndex
 );
-
+// CoinsModel.hasOne(CoinsModel, {
+//   foreignKey: "coin_family",
+//   sourceKey: "coin_family",
+//   as: "native_coins_data",
+// });
 CoinsModel.belongsTo(CoinPriceInFiatModel, {
   foreignKey: "cmc_id",
   targetKey: "cmc_id",
@@ -149,9 +165,6 @@ CoinsModel.belongsTo(WatchlistsModel, {
   targetKey: "coin_id",
   as: "watchlist_data",
 });
-CoinsModel.hasOne(CoinsModel, {
-  foreignKey: "coin_family",
-  sourceKey: "coin_family",
-  as: "native_coins_data",
-});
+
+// CoinsModel.sync({ alter: true })
 export default CoinsModel;

@@ -5,7 +5,7 @@ import db from "../../helpers/common/db";
 interface ResetGraphCreationModel extends Optional<ResetGraphDataInterface, "id"> { }
 interface ResetGraphInstance extends Model<ResetGraphDataInterface, ResetGraphCreationModel>, ResetGraphDataInterface { }
 
-let dataObj = {
+const dataObj = {
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -29,7 +29,7 @@ let dataObj = {
         allowNull: true,
     },
 };
-let dataObjIndex = {
+const dataObjIndex = {
     createdAt: false,
     updatedAt: false,
     indexes: [

@@ -8,7 +8,7 @@ interface SwapSettingsInstance
     extends Model<SwapSettingsInterface, SwapSettingsModel>,
     SwapSettingsInterface { }
 
-let dataObj: any = {
+const dataObj: any = {
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -24,8 +24,12 @@ let dataObj: any = {
         allowNull: false
     }
 };
+const dataObjIndex = {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+};
 
-const SwapSettingsModel = db.db_write.define<SwapSettingsInstance>("swap_settings", dataObj);
+const SwapSettingsModel = db.db_write.define<SwapSettingsInstance>("swap_settings", dataObj, dataObjIndex);
 
 export default SwapSettingsModel;
 

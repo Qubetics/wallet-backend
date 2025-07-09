@@ -12,9 +12,9 @@ var bnbMiddleware = {
     try {
       let coinData: any;
       if (req.params.coin === BlockChain.BNB) {
-        coinData = await coin_queries.coin_find_one(["coin_family", "token_abi", "token_address", "cmc_id", "decimals", "is_token", "token_type", "coin_id", "coin_symbol", "coin_name"], { coin_symbol: req.params.coin, coin_family: config.STATIC_COIN_FAMILY.BNB })
+        coinData = await coin_queries.coin_find_one(["coin_family", "token_address", "cmc_id", "decimals", "is_token", "token_type", "coin_id", "coin_symbol", "coin_name"], { coin_symbol: req.params.coin, coin_family: config.STATIC_COIN_FAMILY.BNB })
       } else {
-        coinData = await coin_queries.coin_find_one(["coin_family", "token_abi", "token_address", "cmc_id", "decimals", "is_token", "token_type", "coin_id", "coin_symbol", "coin_name"], { token_address: req.params.coin, coin_family: config.STATIC_COIN_FAMILY.BNB })
+        coinData = await coin_queries.coin_find_one(["coin_family", "token_address", "cmc_id", "decimals", "is_token", "token_type", "coin_id", "coin_symbol", "coin_name"], { token_address: req.params.coin, coin_family: config.STATIC_COIN_FAMILY.BNB })
       }
       if (coinData) {
         req.coininfo = {

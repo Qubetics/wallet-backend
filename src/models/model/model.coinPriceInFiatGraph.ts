@@ -3,12 +3,12 @@ import { CoinPriceInFiatGraphInterface } from "../interface/interface.coinPriceI
 import db from "../../helpers/common/db";
 
 interface CoinPriceInFiatCreationModel
-  extends Optional<CoinPriceInFiatGraphInterface, "id"> {}
+  extends Optional<CoinPriceInFiatGraphInterface, "id"> { }
 interface CoinPriceInFiatInstance
   extends Model<CoinPriceInFiatGraphInterface, CoinPriceInFiatCreationModel>,
-    CoinPriceInFiatGraphInterface {}
+  CoinPriceInFiatGraphInterface { }
 
-let dataObj = {
+const dataObj = {
   id: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -16,7 +16,7 @@ let dataObj = {
     autoIncrement: true,
   },
   cmc_id: {
-    type: DataTypes.NUMBER,
+    type: DataTypes.INTEGER,
     allowNull: true,
   },
   fiat_type: {
@@ -30,25 +30,47 @@ let dataObj = {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  latest_price: {
-    type: DataTypes.JSON,
-    allowNull: true,
-  },
-  latest_price_source: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
+  // latest_price: {
+  //   type: DataTypes.JSON,
+  //   allowNull: true,
+  // },
+  // latest_price_source: {
+  //   type: DataTypes.STRING,
+  //   allowNull: true,
+  // },
+  // value: {
+  //   type: DataTypes.DOUBLE,
+  //   allowNull: true,
+  // },
 };
-let dataObjIndex = {
+const dataObjIndex = {
+  createdAt: 'created_at',
+  updatedAt: 'updated_at',
   indexes: [
     {
       unique: false,
-      fields: ["coin_type"],
+      fields: ["cmc_id"],
+    },
+    {
+      unique: false,
+      fields: ["type"],
     },
     {
       unique: false,
       fields: ["fiat_type"],
     },
+    // {
+    //   unique: false,
+    //   fields: ["value"],
+    // },
+    {
+      unique: false,
+      fields: ["created_at"],
+    },
+    {
+      unique: false,
+      fields: ["updated_at"],
+    }
   ],
 };
 

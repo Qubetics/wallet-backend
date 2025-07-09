@@ -138,7 +138,7 @@ export const language: any = {
         REFERRED: 'Same Referral Exist',
         REFERRED_ALREADY_USED: 'Referral code already used',
         // Maker - Checker
-        INVALID_CHECKER_CODE: 'Invalid Checker Code',
+        // INVALID_CHECKER_CODE: 'Invalid Checker Code',
         INVALID_WALLET_ADDRESS: 'Invalid Wallet Address',
         INVALID_WALLET_NAME: 'Invalid Wallet Name',
         INVALID_DEVICE_ID: 'Cannot be added as a Maker wallet on the same device',
@@ -307,7 +307,7 @@ export const language: any = {
         REFERRED: 'Existe la misma referencia',
 
         // Maker - Checker
-        INVALID_CHECKER_CODE: 'Código de verificación no válido',
+        // INVALID_CHECKER_CODE: 'Código de verificación no válido',
         INVALID_WALLET_ADDRESS: 'Dirección de billetera no válida',
         INVALID_WALLET_NAME: 'Nombre de billetera no válido',
         INVALID_DEVICE_ID: 'No se puede agregar como billetera Maker en el mismo dispositivo',

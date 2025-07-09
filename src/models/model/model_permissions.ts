@@ -1,12 +1,12 @@
 import { DataTypes, Model } from 'sequelize';
 import db from '../../helpers/common/db';
-import { IPermission} from "../interface/interface.permissions";
+import { IPermission } from "../interface/interface.permissions";
 
 import MenuListsModel from './model_menu_lists.';
 
 interface IPermissionInstance extends Model<IPermission>, IPermission { };
 
-const Schema = {
+const dataObj = {
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -39,15 +39,17 @@ const options = {
             fields: ['admin_id']
         },
         {
-            fields: ['menu_list_id']  
+            fields: ['menu_list_id']
         }
     ]
 }
 
-const PermissionsModel : any = db.db_write.define<IPermissionInstance>("permissions", Schema, options)
+const PermissionsModel = db.db_write.define<IPermissionInstance>("permissions", dataObj, options)
 
 // Define relationship with MenuListsModel
 PermissionsModel.belongsTo(MenuListsModel, { foreignKey: 'menu_list_id', as: "menu_list_data" });
 MenuListsModel.hasMany(PermissionsModel, { foreignKey: 'menu_list_id', as: "permission_data" });
+
+// PermissionsModel.sync({ alter: true });
 
 export default PermissionsModel;

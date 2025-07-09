@@ -47,6 +47,6 @@ const options = {
         }
     ]
 }
-const OnOffRampLogModel = db.db_write.define<IOnOffRampLogInstance>('reset_graph_data', Schema, options);
+const OnOffRampLogModel = db.db_write.define<IOnOffRampLogInstance>('on_off_ramp_logs', Schema, options);
 
 export default OnOffRampLogModel;

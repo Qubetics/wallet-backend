@@ -23,8 +23,13 @@ const dataObj = {
         allowNull: true
     }
 };
+const options = {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+}
+const AdminErrLogsModel = db.db_write.define<AdminErrLogsInstance>("admin_err_logs", dataObj, options);
 
-const AdminErrLogsModel = db.db_write.define<AdminErrLogsInstance>("admin_err_logs", dataObj);
+// AdminErrLogsModel.sync({ alter: true });
 export default AdminErrLogsModel;
 
 

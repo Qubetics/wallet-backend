@@ -24,7 +24,7 @@ var transactionMiddleware = {
           "is_token",
           "token_type",
           "token_address",
-          "token_abi",
+          // "token_abi",
         ],
       });
       if (coinData) {

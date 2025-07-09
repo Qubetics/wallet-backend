@@ -16,7 +16,7 @@ class BTCController implements OnlyControllerInterface {
     this.initialize();
   }
   public initialize() { }
-  
+
   public async send(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
@@ -38,7 +38,7 @@ class BTCController implements OnlyControllerInterface {
       }
       req.body.tx_hash = "";
       req.body.tx_type = req.body.tx_type || "WITHDRAW";
-      req.body.nonce = req.body.nonce ? req.body.nonce : 0;
+      // req.body.nonce = req.body.nonce ? req.body.nonce : 0;
       req.body.gas_price = req.body.eth_gas_price ? req.body.eth_gas_price : 0;
       req.body.gas_estimate = req.body.gas_estimate ? req.body.gas_estimate : 0;
       req.body.eth_gas_price = req.body.gas_estimate

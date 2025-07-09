@@ -7,7 +7,7 @@ interface ReferralInstance
     extends Model<ReferralInterface, ReferralModel>,
     ReferralInterface { }
 
-let dataObj: any = {
+const dataObj: any = {
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -31,8 +31,26 @@ let dataObj: any = {
         allowNull: false
     }
 };
+const dataObjIndex = {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    indexes: [
+        {
+            unique: false,
+            fields: ["referrer_to"],
+        },
+        {
+            unique: false,
+            fields: ["used_referral_code"],
+        },
+        {
+            unique: false,
+            fields: ["to_device_id"],
+        }
+    ],
+};
 
-const ReferralModel = db.db_write.define<ReferralInstance>("referrals", dataObj);
+const ReferralModel = db.db_write.define<ReferralInstance>("referrals", dataObj, dataObjIndex);
 
 export default ReferralModel;
 

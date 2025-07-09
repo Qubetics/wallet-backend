@@ -7,7 +7,7 @@ interface BannerInstance
     extends Model<BannerInterface, BannerModel>,
     BannerInterface { }
 
-let dataObj: any = {
+const dataObj: any = {
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -29,8 +29,18 @@ let dataObj: any = {
     }
 };
 
-const BannerModel = db.db_write.define<BannerInstance>("banners", dataObj);
+const options = {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    indexes: [
+        {
+            fields: ['status']
+        }
+    ]
+}
 
-BannerModel.sync({alter : true})
+const BannerModel = db.db_write.define<BannerInstance>("banners", dataObj, options);
+
+// BannerModel.sync({alter : true})
 
 export default BannerModel;

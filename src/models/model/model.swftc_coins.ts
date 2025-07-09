@@ -64,12 +64,39 @@ const dataObj = {
         allowNull: false,
     }
 };
+const dataObjIndex = {
+    underscored: false,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    indexes: [
+        {
+            unique: false,
+            fields: ["coinId"],
+        },
+        {
+            unique: false,
+            fields: ["coinName"],
+        },
+        {
+            unique: false,
+            fields: ["coinCode"],
+        },
+        {
+            unique: false,
+            fields: ["mainNetwork"],
+        },
+        {
+            unique: false,
+            fields: ["status"],
+        }
+    ],
+};
 
 const SWFTCCoinsDataModel = db.db_write.define<SWFTCCoinsModelDataInterface>(
     "swftc_coins",
-    dataObj, {
-    underscored: false
-});
+    dataObj,
+    dataObjIndex
+);
 
 SWFTCCoinsDataModel.belongsTo(CoinsModel, {
     foreignKey: "coinId",

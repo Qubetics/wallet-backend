@@ -8,7 +8,7 @@ interface CoinPriceInFiatInstance
   extends Model<CoinPriceInFiatInterface, CoinPriceInFiatCreationModel>,
   CoinPriceInFiatInterface { }
 
-let dataObj = {
+const dataObj = {
   id: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -85,16 +85,42 @@ let dataObj = {
   },
 };
 
-let dataObjIndex = {
+const dataObjIndex = {
+  createdAt: 'created_at',
+  updatedAt: 'updated_at',
   indexes: [
     {
       unique: false,
-      fields: ["coin_type"],
+      fields: ["coin_id"],
+    },
+    {
+      unique: false,
+      fields: ["coin_symbol"],
+    },
+    {
+      unique: false,
+      fields: ["coin_name"],
+    },
+    {
+      unique: false,
+      fields: ["coin_family"],
+    },
+    {
+      unique: false,
+      fields: ["cmc_id"],
     },
     {
       unique: false,
       fields: ["fiat_type"],
     },
+    {
+      unique: false,
+      fields: ["value"],
+    },
+    {
+      unique: false,
+      fields: ["token_address"],
+    }
   ],
 };
 

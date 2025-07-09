@@ -1,5 +1,5 @@
-export interface DappGroupsInterface {
-  id: number,
-  name: string,
-  image: string
-}
+// export interface DappGroupsInterface {
+//   id: number,
+//   name: string,
+//   image: string
+// }

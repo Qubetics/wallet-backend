@@ -5,7 +5,7 @@ interface AppLanguagesModel extends Optional<AppLanguagesInterface, "id"> { }
 interface AppLanguageInstance
     extends Model<AppLanguagesInterface, AppLanguagesModel>,
     AppLanguagesInterface { }
-let dataObj = {
+const dataObj = {
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -39,9 +39,18 @@ let dataObj = {
     },
 };
 
+const options = {
+    indexes: [
+        {
+            fields: ['status']
+        }
+    ]
+}
+
 const AppLanguagesModel = db.db_write.define<AppLanguageInstance>(
     "app_languages",
-    dataObj
+    dataObj,
+    options
 );
 
 export default AppLanguagesModel;

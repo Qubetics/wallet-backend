@@ -6,7 +6,7 @@ interface CatchErrorMsgsInstance
     extends Model<CatchErrorMsgsInterface, CatchErrorMsgsCreationModel>,
     CatchErrorMsgsInterface { }
 
-let dataObj = {
+const dataObj = {
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -22,10 +22,18 @@ let dataObj = {
         allowNull: true
     }
 };
+const dataObjIndex = {
+    createdAt: false,
+    updatedAt: false,
+};
+
 
 const CatchErrorMsgsModel = db.db_write.define<CatchErrorMsgsInstance>(
     "catch_error_logs",
-    dataObj
+    dataObj,
+    dataObjIndex
 );
+
+
 
 export default CatchErrorMsgsModel;

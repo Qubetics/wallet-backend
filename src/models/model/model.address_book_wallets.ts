@@ -33,12 +33,31 @@ const dataObj = {
         allowNull: false,
     },
 };
+const options = {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    indexes: [
+        {
+            fields: ['address_book_id']
+        },
+        {
+            fields: ['wallet_address']
+        },
+        {
+            fields: ['name']
+        },
+        {
+            fields: ['coin_family']
+        }
+    ]
+}
 
-const AddressBookWalletModel = db.db_write.define<AddressBookWalletInstance>("address_books_wallets", dataObj);
+const AddressBookWalletModel = db.db_write.define<AddressBookWalletInstance>("address_books_wallets", dataObj, options);
 AddressBookModel.hasMany(AddressBookWalletModel, { foreignKey: "address_book_id", sourceKey: "id", as: "wallet_data" })
 AddressBookWalletModel.belongsTo(CoinsModel, { foreignKey: "coin_family", targetKey: "coin_family", as: "coin_data" })
-AddressBookWalletModel.belongsTo(AddressBookModel, { foreignKey: "address_book_id", targetKey: "id", as: "book_data" })
+AddressBookWalletModel.belongsTo(AddressBookModel, { foreignKey: "address_book_id", targetKey: "id", as: "book_data" });
 
+// AddressBookWalletModel.sync({ alter: true });
 export default AddressBookWalletModel;
 
 

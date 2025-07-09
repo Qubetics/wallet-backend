@@ -58,7 +58,7 @@ let dataObj = {
     allowNull: true,
   },
   token_address: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING,
     allowNull: false,
     validate: {},
   },
@@ -86,7 +86,30 @@ let dataObj = {
   }
 };
 
-const NFTModelModel = db.db_write.define<NFTInterfaceInstance>("nfts", dataObj);
+const dataObjIndex = {
+  createdAt: 'created_at',
+  updatedAt: 'updated_at',
+  indexes: [
+    {
+      unique: false,
+      fields: ["coin_family"],
+    },
+    {
+      unique: false,
+      fields: ["wallet_address"],
+    },
+    {
+      unique: false,
+      fields: ["token_id"],
+    },
+    {
+      unique: false,
+      fields: ["token_address"],
+    }
+  ],
+};
+
+const NFTModelModel = db.db_write.define<NFTInterfaceInstance>("nfts", dataObj, dataObjIndex);
 NFTModelModel.belongsTo(CoinsModel, {
   foreignKey: "coin_id",
   as: "coinData",

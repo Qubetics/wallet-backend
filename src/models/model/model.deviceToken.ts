@@ -7,7 +7,7 @@ interface DeviceTokenInstance
   extends Model<DeviceTokenInterface, DeviceTokenCreationModel>,
   DeviceTokenInterface { }
 
-let dataObj = {
+const dataObj = {
   id: {
     primaryKey: true,
     type: DataTypes.INTEGER,
@@ -34,10 +34,6 @@ let dataObj = {
     type: DataTypes.TINYINT,
     allowNull: false,
   },
-  status: {
-    type: DataTypes.TINYINT,
-    allowNull: true,
-  },
   push: {
     type: DataTypes.INTEGER,
     allowNull: true,
@@ -49,10 +45,17 @@ let dataObj = {
   fiat_currency: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  status: {
+    type: DataTypes.TINYINT,
+    allowNull: true,
   }
+
 };
 
-let dataObjIndex = {
+const dataObjIndex = {
+  createdAt: 'created_at',
+  updatedAt: 'updated_at',
   indexes: [
     {
       unique: false,
@@ -60,7 +63,11 @@ let dataObjIndex = {
     },
     {
       unique: false,
-      fields: ["status"],
+      fields: ["device_id"],
+    },
+    {
+      unique: false,
+      fields: ["address"],
     },
     {
       unique: false,
@@ -68,11 +75,24 @@ let dataObjIndex = {
     },
     {
       unique: false,
-      fields: ["address"],
+      fields: ["push"],
     },
+    {
+      unique: false,
+      fields: ["language"],
+    },
+    {
+      unique: false,
+      fields: ["fiat_currency"],
+    },
+    {
+      unique: false,
+      fields: ["status"],
+    },
+
   ],
 };
 
-const DeviceTokenModel = db.db_write.define<DeviceTokenInstance>("deviceTokens", dataObj, dataObjIndex);
+const DeviceTokenModel = db.db_write.define<DeviceTokenInstance>("device_tokens", dataObj, dataObjIndex);
 
 export default DeviceTokenModel;

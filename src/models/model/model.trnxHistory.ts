@@ -8,7 +8,7 @@ interface TrnxHistoryInstance
     extends Model<ITrnxHistoryInterface, TrnxHistoryCreationModel>,
     ITrnxHistoryInterface { }
 
-let dataObj = {
+const dataObj = {
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -103,10 +103,10 @@ let dataObj = {
         type: DataTypes.DOUBLE,
         allowNull: true
     },
-    fiat_price: {
-        type: DataTypes.DOUBLE,
-        allowNull: true
-    },
+    // fiat_price: {
+    //     type: DataTypes.DOUBLE,
+    //     allowNull: true
+    // },
     fiat_type: {
         type: DataTypes.STRING(191),
         allowNull: true
@@ -117,18 +117,70 @@ let dataObj = {
     },
 };
 
-let dataObjIndex = {
+const dataObjIndex = {
     createdAt: 'created_at',
-    updatedAt: 'updated_at'
+    updatedAt: 'updated_at',
+    indexes: [
+        {
+            unique: false,
+            fields: ["user_id"],
+        },
+        {
+            unique: false,
+            fields: ["to_user_id"],
+        },
+        {
+            unique: false,
+            fields: ["coin_id"],
+        },
+        {
+            unique: false,
+            fields: ["coin_family"],
+        },
+        {
+            unique: false,
+            fields: ["from_adrs"],
+        },
+        {
+            unique: false,
+            fields: ["to_adrs"],
+        },
+        {
+            unique: false,
+            fields: ["tx_id"],
+        },
+        {
+            unique: false,
+            fields: ["order_id"],
+        },
+        {
+            unique: false,
+            fields: ["order_status"],
+        },
+        {
+            unique: false,
+            fields: ["status"],
+        },
+        {
+            unique: false,
+            fields: ["blockchain_status"],
+        },
+        {
+            unique: false,
+            fields: ["created_at"],
+        }
+    ],
 }
 
 const TrnxHistoryModel = db.db_write.define<TrnxHistoryInstance>(
-    "trnx_history",
+    "trnx_histories",
     dataObj,
     dataObjIndex
 );
 
 TrnxHistoryModel.belongsTo(CoinsModel, { foreignKey: 'coin_id', targetKey: 'coin_id', as: "coin_data" });
+
+// TrnxHistoryModel.sync({ alter: true });
 
 
 

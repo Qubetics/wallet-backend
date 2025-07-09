@@ -2,10 +2,10 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { SettingsInterface } from "../interface/interface.settings";
 import db from "../../helpers/common/db";
 
-interface SettingsCreationModel extends Optional<SettingsInterface, "id"> {}
+interface SettingsCreationModel extends Optional<SettingsInterface, "id"> { }
 interface SettingsInstance
   extends Model<SettingsInterface, SettingsCreationModel>,
-  SettingsInterface {}
+  SettingsInterface { }
 
 const dataObj = {
   id: {
@@ -22,19 +22,30 @@ const dataObj = {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  created_at:{
-    type:DataTypes.DATE,
-    defaultValue:DataTypes.NOW
-},
-updated_at:{
-    type:DataTypes.DATE,
-    defaultValue:DataTypes.NOW
-}
+  created_at: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW
+  },
+  updated_at: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW
+  }
+};
+const dataObjIndex = {
+  createdAt: false,
+  updatedAt: false,
+  indexes: [
+    {
+      unique: false,
+      fields: ["title"],
+    }
+  ],
 };
 
 const SettingsModel = db.db_write.define<SettingsInstance>(
   "settings",
-  dataObj
+  dataObj,
+  dataObjIndex
 );
 
 

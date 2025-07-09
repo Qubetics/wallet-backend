@@ -7,7 +7,7 @@ interface TrnxBandwidthInstance
     extends Model<TrnxBandwidthInterface, TrnxBandwidthModel>,
     TrnxBandwidthInterface { }
 
-let dataObj: any = {
+const dataObj: any = {
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -36,7 +36,11 @@ let dataObj: any = {
     },
 };
 
-const TrnxBandwidthModel = db.db_write.define<TrnxBandwidthInstance>("tron_bandwidth", dataObj);
+const dataObjIndex = {
+    createdAt: false,
+    updatedAt: false
+};
+const TrnxBandwidthModel = db.db_write.define<TrnxBandwidthInstance>("tron_bandwidth", dataObj, dataObjIndex);
 export default TrnxBandwidthModel;
 
 

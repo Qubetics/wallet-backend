@@ -36,7 +36,23 @@ const dataObj = {
   }
 };
 
-const AddressBookModel = db.db_write.define<AddressBookInstance>("address_books", dataObj);
+const options = {
+  indexes: [
+    {
+      fields: ['user_id']
+    },
+    {
+      fields: ['address']
+    },
+    {
+      fields: ['name']
+    }
+  ]
+}
+
+const AddressBookModel = db.db_write.define<AddressBookInstance>("address_books", dataObj, options);
+
+// AddressBookModel.sync({ alter: true });
 export default AddressBookModel;
 
 

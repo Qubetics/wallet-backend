@@ -57,9 +57,6 @@
                 "coin_family": {
                   "type": "string"
                 },
-                "coin_gicko_id": {
-                  "type": "string"
-                },
                 "token_type": {
                   "type": "string"
                 },
@@ -72,9 +69,6 @@
                 "symbol": {
                   "type": "string"
                 },
-                "coin_gicko_alias": {
-                  "type": "string"
-                },
                 "decimals": {
                   "type": "string"
                 },
@@ -82,9 +76,6 @@
                   "type": "string"
                 },
                 "wallet_name": {
-                  "type": "string"
-                },
-                "isSwapList": {
                   "type": "string"
                 }
               }
@@ -1697,9 +1688,6 @@
             "required": true,
             "schema": {
               "properties": {
-                "is_maker": {
-                  "type": "number"
-                },
                 "amount": {
                   "type": "string"
                 },
@@ -2082,9 +2070,6 @@
             "required": true,
             "schema": {
               "properties": {
-                "is_maker": {
-                  "type": "number"
-                },
                 "amount": {
                   "type": "string"
                 },
@@ -2312,9 +2297,6 @@
             "required": true,
             "schema": {
               "properties": {
-                "is_maker": {
-                  "type": "number"
-                },
                 "amount": {
                   "type": "string"
                 },
@@ -2484,9 +2466,6 @@
             "required": true,
             "schema": {
               "properties": {
-                "is_maker": {
-                  "type": "number"
-                },
                 "amount": {
                   "type": "string"
                 },
@@ -2794,9 +2773,6 @@
             "required": true,
             "schema": {
               "properties": {
-                "is_maker": {
-                  "type": "number"
-                },
                 "tx_type": {
                   "type": "string"
                 },
@@ -2810,13 +2786,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "is_maker",
-                "tx_type",
-                "nonce",
-                "eth_gas_price",
-                "gas_estimate"
-              ]
+              "required": ["tx_type", "nonce", "eth_gas_price", "gas_estimate"]
             }
           }
         ],

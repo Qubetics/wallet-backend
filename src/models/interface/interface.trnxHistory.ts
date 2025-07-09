@@ -19,10 +19,10 @@ export interface ITrnxHistoryInterface {
     nonce: number | null;
     tx_fee: number | null;
     swap_fee: number | null;
-    gas_limit: number | null;
-    gas_price: number | null;
-    gas_reverted: number | null;
-    fiat_price: number | null,
+    // gas_limit: number | null;
+    // gas_price: number | null;
+    // gas_reverted: number | null;
+    // fiat_price: number | null,
     fiat_type: string | null,
     order_status: string | null;
     created_at?: string;

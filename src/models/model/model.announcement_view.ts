@@ -24,7 +24,20 @@ let dataObj: any = {
     }
 };
 
-const AnnouncementStatusModel = db.db_write.define<AnnouncementStatusInstance>("announcement_view_status", dataObj);
+const options = {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    indexes: [
+        {
+            fields: ['view_status']
+        },
+        {
+            fields: ['user_id']
+        }
+    ]
+}
+
+const AnnouncementStatusModel = db.db_write.define<AnnouncementStatusInstance>("announcement_view_status", dataObj, options);
 export default AnnouncementStatusModel;
 
 

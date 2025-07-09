@@ -4,7 +4,7 @@ import { IMenuList } from '../interface/interface.menu_lists';
 
 interface IMenuListInstance extends Model<IMenuList>, IMenuList { };
 
-const Schema = {
+const dataObj = {
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -33,8 +33,7 @@ const options = {
     ]
 }
 
-const MenuListsModel = db.db_write.define<IMenuListInstance>("menu_lists", Schema, options)
-
+const MenuListsModel = db.db_write.define<IMenuListInstance>("menu_lists", dataObj, options)
 
 
 export default MenuListsModel;

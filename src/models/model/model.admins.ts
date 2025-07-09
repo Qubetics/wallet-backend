@@ -60,7 +60,21 @@ let dataObj: any = {
     },
 };
 
-const AdminModel = db.db_write.define<AdminInstance>("admins", dataObj);
+const options = {
+    indexes: [
+        {
+            fields: ['email']
+        },
+        {
+            fields: ['password']
+        },
+        {
+            fields: ['google2fa_status']
+        }
+    ]
+}
+
+const AdminModel = db.db_write.define<AdminInstance>("admins", dataObj, options);
 
 export default AdminModel;
 

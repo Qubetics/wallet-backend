@@ -81,7 +81,7 @@ class TronController implements OnlyControllerInterface {
         : 0; /// gas_estimate
       const trnx_raw: any = req.body.tx_raw;
       const fiat_currency: string = "USD";
-     
+
       if (from_address == to_address) {
         let resMsg = {
           status: false,
@@ -156,7 +156,7 @@ class TronController implements OnlyControllerInterface {
                 coin_family: config.STATIC_COIN_FAMILY.TRX,
                 amount: amount,
                 tx_id: txRes.data.txid,
-                gas_price: null,
+                // gas_price: null,
                 tx_raw: trnx_raw.txID,
                 type: trnx_type,
                 status: GlblStatus.COMPLETED,
@@ -169,10 +169,10 @@ class TronController implements OnlyControllerInterface {
                 block_id: null,
                 nonce: null,
                 swap_fee: null,
-                gas_limit: null,
-                gas_reverted: null,
+                // gas_limit: null,
+                // gas_reverted: null,
                 fiat_type: fiat_currency,
-                fiat_price: null,
+                // fiat_price: null,
                 order_status: req.body.order_id
                   ? GlblBlockchainTxStatusEnum.PENDING
                   : null,

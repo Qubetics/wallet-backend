@@ -7,7 +7,7 @@ interface WalletInstance
   extends Model<WalletInterface, WalletCreationModel>,
   WalletInterface { }
 
-let dataObj = {
+const dataObj = {
   wallet_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -18,7 +18,6 @@ let dataObj = {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-
   wallet_name: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -39,10 +38,10 @@ let dataObj = {
     type: DataTypes.DOUBLE,
     allowNull: false,
   },
-  default_wallet: {
-    type: DataTypes.TINYINT,
-    allowNull: true,
-  },
+  // default_wallet: {
+  //   type: DataTypes.TINYINT,
+  //   allowNull: true,
+  // },
   status: {
     type: DataTypes.TINYINT,
     allowNull: true,
@@ -51,10 +50,10 @@ let dataObj = {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  is_private_wallet: {
-    type: DataTypes.TINYINT,
-    allowNull: true,
-  },
+  // is_private_wallet: {
+  //   type: DataTypes.TINYINT,
+  //   allowNull: true,
+  // },
   created_at: {
     type: DataTypes.DATE,
     allowNull: false,
@@ -67,7 +66,9 @@ let dataObj = {
   },
 };
 
-let dataObjIndex = {
+const dataObjIndex = {
+  createdAt: false,
+  updatedAt: false,
   indexes: [
     {
       unique: false,
@@ -75,7 +76,7 @@ let dataObjIndex = {
     },
     {
       unique: false,
-      fields: ["coin_family"],
+      fields: ["wallet_name"],
     },
     {
       unique: false,
@@ -87,15 +88,28 @@ let dataObjIndex = {
     },
     {
       unique: false,
-      fields: ["default_wallet"],
+      fields: ["coin_family"],
     },
     {
       unique: false,
-      fields: ["is_verified"],
+      fields: ["balance"],
     },
+
+    // {
+    //   unique: false,
+    //   fields: ["default_wallet"],
+    // },
+    // {
+    //   unique: false,
+    //   fields: ["is_verified"],
+    // },
     {
       unique: false,
       fields: ["status"],
+    },
+    {
+      unique: false,
+      fields: ["created_at"],
     },
   ],
 };
@@ -127,5 +141,6 @@ CoinsModel.hasOne(WalletModel, {
   as: "wallet_data"
 });
 
+// WalletModel.sync({ alter: true });
 
 export default WalletModel;

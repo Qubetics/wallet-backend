@@ -5,7 +5,7 @@ import db from "../../helpers/common/db";
 interface GasPriceCreationModel extends Optional<GasPriceInterface, "id"> { }
 interface WalletInstance extends Model<GasPriceInterface, GasPriceCreationModel>, GasPriceInterface { }
 
-let dataObj = {
+const dataObj = {
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -30,6 +30,17 @@ let dataObj = {
     }
 };
 
-const GasPriceModel = db.db_write.define<WalletInstance>('gas_prices', dataObj);
+const dataObjIndex = {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    indexes: [
+        {
+            unique: false,
+            fields: ["coin_family"],
+        }
+    ],
+};
+
+const GasPriceModel = db.db_write.define<WalletInstance>('gas_prices', dataObj, dataObjIndex);
 
 export default GasPriceModel;

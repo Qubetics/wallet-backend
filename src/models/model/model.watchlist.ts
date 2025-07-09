@@ -5,7 +5,7 @@ import db from "../../helpers/common/db";
 interface WatchlistCreationModel extends Optional<WatchlistInterface, "id"> { }
 interface WatchlistInstance extends Model<WatchlistInterface, WatchlistCreationModel>, WatchlistInterface { }
 
-let dataObj = {
+const dataObj = {
    id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -38,9 +38,32 @@ let dataObj = {
    },
 };
 
-const WatchlistsModel = db.db_write.define<WatchlistInstance>("watch_list", dataObj);
+const dataObjIndex = {
+   createdAt: false,
+   updatedAt: false,
+   indexes: [
+      {
+         unique: false,
+         fields: ["user_id"],
+      },
+      {
+         unique: false,
+         fields: ["coin_id"],
+      },
+      {
+         unique: false,
+         fields: ["status"],
+      },
+      {
+         unique: false,
+         fields: ["wallet_address"],
+      }
+   ],
+};
+
+const WatchlistsModel = db.db_write.define<WatchlistInstance>("watch_lists", dataObj, dataObjIndex);
 
 
-WatchlistsModel.sync({ alter: true });
+// WatchlistsModel.sync({ alter: true });
 
 export default WatchlistsModel;

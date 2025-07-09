@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { NotificationInterface } from "../interface/interface.notifications";
 import db from "../../helpers/common/db";
 import CoinsModel from "./model.coins";
-import CurrencyFiatModel from "./model.currencyFiat";
+// import CurrencyFiatModel from "./model.currencyFiat";
 
 interface NotificationCreationModel
   extends Optional<NotificationInterface, "notification_id"> { }
@@ -10,7 +10,7 @@ interface NotificationInstance
   extends Model<NotificationInterface, NotificationCreationModel>,
   NotificationInterface { }
 
-let dataObj = {
+const dataObj = {
   notification_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -79,8 +79,16 @@ let dataObj = {
   },
 };
 
-let dataObjIndex = {
+const dataObjIndex = {
   indexes: [
+    // {
+    //   unique: false,
+    //   fields: ["fiat_type"],
+    // },
+    {
+      unique: false,
+      fields: ["from_user_id"],
+    },
     {
       unique: false,
       fields: ["to_user_id"],
@@ -97,6 +105,26 @@ let dataObjIndex = {
       unique: false,
       fields: ["tx_type"],
     },
+    {
+      unique: false,
+      fields: ["coin_symbol"],
+    },
+    {
+      unique: false,
+      fields: ["coin_id"],
+    },
+    {
+      unique: false,
+      fields: ["wallet_address"],
+    },
+    {
+      unique: false,
+      fields: ["coin_family"],
+    },
+    {
+      unique: false,
+      fields: ["view_status"],
+    }
   ],
 };
 
@@ -106,7 +134,7 @@ const NotificationModel = db.db_write.define<NotificationInstance>(
   dataObjIndex
 );
 NotificationModel.belongsTo(CoinsModel, { foreignKey: 'coin_id', targetKey: "coin_id", as: "coin_data" });
-NotificationModel.belongsTo(CurrencyFiatModel, { foreignKey: 'fiat_type', targetKey: "currency_code", as: "currency_data" });
+// NotificationModel.belongsTo(CurrencyFiatModel, { foreignKey: 'fiat_type', targetKey: "currency_code", as: "currency_data" });
 
 
 export default NotificationModel;

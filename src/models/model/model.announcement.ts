@@ -23,15 +23,25 @@ let dataObj: any = {
         allowNull: true,
     },
     status: {
-        type: DataTypes.ENUM('pending','sent'),
+        type: DataTypes.ENUM('pending', 'sent'),
         allowNull: false,
         defaultValue: 'pending',
     },
-  
+
 };
 
-const AnnouncementModel = db.db_write.define<AnnouncementInstance>("announcements", dataObj);
-AnnouncementModel.sync({alter:true})
+const options = {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    indexes: [
+        {
+            fields: ['status']
+        }
+    ]
+}
+
+const AnnouncementModel = db.db_write.define<AnnouncementInstance>("announcements", dataObj, options);
+// AnnouncementModel.sync({ alter: true })
 export default AnnouncementModel;
 
 
