@@ -346,20 +346,20 @@ class WalletController implements OnlyControllerInterface {
       const userId: number = req.userId;
       let message: string;
 
-      const checkAddress = await wallet_queries.wallet_find_one(
-        ["wallet_id", "user_id"],
-        { wallet_address: walletAddress }
-      );
+      // const checkAddress = await wallet_queries.wallet_find_one(
+      //   ["wallet_id", "user_id"],
+      //   { wallet_address: walletAddress }
+      // );
 
-      if (!checkAddress || checkAddress.user_id !== req.userId) {
-        return response.error(res, {
-          data: {
-            code: GlblCode.ERROR_CODE,
-            status: false,
-            message: language[lang].UNAUTHORIZED_ACCESS,
-          },
-        });
-      }
+      // if (!checkAddress || checkAddress.user_id !== req.userId) {
+      //   return response.error(res, {
+      //     data: {
+      //       code: GlblCode.ERROR_CODE,
+      //       status: false,
+      //       message: language[lang].UNAUTHORIZED_ACCESS,
+      //     },
+      //   });
+      // }
 
       const coin_data: any = await coin_queries.coin_find_one(["coin_id", "coin_family", "is_token", "token_address", "token_type"], {
         coin_id: coinId,
@@ -385,22 +385,48 @@ class WalletController implements OnlyControllerInterface {
           ["wallet_id", "wallet_name"],
           { wallet_address: walletAddress }
         );
-        console.log("wallet_name >>>", wallet_data);
-        const obj: any = {
-          user_id: userId,
-          coin_family: coin_data.coin_family,
-          wallet_name: wallet_data?.wallet_name
-            ? wallet_data.wallet_name
-            : null,
-          wallet_address: walletAddress,
-          coin_id: coinId,
-          balance: balDetails.status ? balDetails.balance : "0",
-          default_wallet: GlblBooleanEnum.true,
-          status: GlblBooleanEnum.true,
-          created_at: currentUTCDate,
-          updated_at: currentUTCDate,
-        };
-        await wallet_queries.wallet_create(obj);
+
+        if(!wallet_data){
+          const wallet_ex: any = await wallet_queries.wallet_find_one(
+            ["wallet_id","wallet_name"],
+            { user_id: userId }
+          );
+
+          console.log("wallet_ex__wallet_name >>>wallet_exwallet_exwallet_ex", wallet_ex);
+          const obj: any = {
+            user_id: userId,
+            coin_family: coin_data.coin_family,
+            wallet_name: wallet_ex?.wallet_name
+              ? wallet_ex.wallet_name
+              : null,
+            wallet_address: walletAddress,
+            coin_id: coinId,
+            balance: balDetails.status ? balDetails.balance : "0",
+            default_wallet: GlblBooleanEnum.true,
+            status: GlblBooleanEnum.true,
+            created_at: currentUTCDate,
+            updated_at: currentUTCDate,
+          };
+          await wallet_queries.wallet_create(obj);
+        }
+        else{
+          console.log("wallet_name >>>", wallet_data);
+          const obj: any = {
+            user_id: userId,
+            coin_family: coin_data.coin_family,
+            wallet_name: wallet_data?.wallet_name
+              ? wallet_data.wallet_name
+              : null,
+            wallet_address: walletAddress,
+            coin_id: coinId,
+            balance: balDetails.status ? balDetails.balance : "0",
+            default_wallet: GlblBooleanEnum.true,
+            status: GlblBooleanEnum.true,
+            created_at: currentUTCDate,
+            updated_at: currentUTCDate,
+          };
+          await wallet_queries.wallet_create(obj);
+        }
       } else {
         const update_wallet_data: any = { status: isActive };
         if (isActive == GlblBooleanEnum.true && balDetails.status) {

@@ -61,7 +61,9 @@ class TrxHelper {
         console.log('contract_address >>.', contract_address);
         try {
             await this.tronWeb.setAddress(contract_address);
-            let contract: any = await this.tronWeb.contract().at(contract_address);
+            // let contract: any = await this.tronWeb.contract().at(contract_address);
+            let contract: any = await this.tronWeb.contract(config.TRON_ABI, contract_address);
+
             let decimals: number = await contract.decimals().call();
             let dex: any = decimals.toString()
             if (dex.hex != undefined) {
@@ -98,7 +100,8 @@ class TrxHelper {
         } catch (err: any) {
             console.error(`Error in Fetch_Balance of tron. `, err);
             await commonHelper.save_error_logs("Fetch_Balance_trx", err.message);
-            throw err;
+            // throw err;
+            return null;
         }
     }
     public async Coin_Fetch_Balance(address: string) {

@@ -115,7 +115,8 @@ class PolEther {
     } catch (err: any) {
       console.error("Error in get_balance of pol", err)
       await commonHelper.save_error_logs("get_balance_pol", err.message);
-      throw err;
+      // throw err;
+      return null;
     }
   }
 
