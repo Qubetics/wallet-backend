@@ -410,14 +410,27 @@ class TokenController implements OnlyControllerInterface {
         } else {
 
           if (coinDataExist.added_by == GlblAddedBy.USER) {
-            const updateCoinData = await coin_queries.coin_update(
+            await coin_queries.coin_update(
               { added_by: GlblAddedBy.ADMIN },
               { coin_id: coinDataExist.coin_id }
             );
-            await userWalletHelper.update_token_in_redis(
-              { coin_family: coin_family },
-              coinDataExist.coin_id
-            );
+            const redisCoinData = {
+              coin_id: coinDataExist.coin_id,
+              is_token: coinDataExist.is_token,
+              token_address: coinDataExist.token_address,
+              coin_family: coinDataExist.coin_family,
+              decimals: coinDataExist.decimals,
+              token_type: coinDataExist.token_type,
+              coin_symbol: coinDataExist.coin_symbol,
+              added_by: GlblAddedBy.ADMIN,
+              for_swap: coinDataExist.for_swap
+            }
+  
+            await userWalletHelper.update_token_in_redis_hash(redisCoinData);
+            // await userWalletHelper.update_token_in_redis(
+            //   { coin_family: coin_family },
+            //   coinDataExist.coin_id
+            // );
             return res.status(GlblCode.SUCCESS).send({
               data: { status: true, message: "Token updated successfully" },
             });
