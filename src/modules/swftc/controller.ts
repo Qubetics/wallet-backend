@@ -105,9 +105,14 @@ class SwftcController implements OnlyControllerInterface {
                 });
                 let image: any = null;
                 let cmcId: any = null;
-                let result: any = await global_helper.get_token_image_from_cmc({
-                  symbol: symbol,
-                });
+                // let result: any = await global_helper.get_token_image_from_cmc({
+                //   symbol: symbol,
+                // });
+                let data: any = {
+                  token_address: token_address,
+                }
+                let result: any = await global_helper.getTokenImageFromCmc(data);
+                console.log("this is coinzone the result >>>", result);
                 if (result) {
                   image = result.image;
                   cmcId = result.id;

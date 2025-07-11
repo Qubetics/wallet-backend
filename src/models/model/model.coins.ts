@@ -23,7 +23,7 @@ let dataObj = {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  is_on_cmc: {
+    is_on_cmc: {
     type: DataTypes.INTEGER,
     allowNull: true,
   },

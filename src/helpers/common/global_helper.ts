@@ -408,6 +408,30 @@ class Global_helper {
         }
     }
 
+    public async getTokenImageFromCmc(data: any) {
+        try {
+            let params: any = `info?address=${data.token_address}`;
+            let result: any = await cmcHelper.cmcApi(params);
+            let id: any = null;
+            let imageUrl: any = null;
+            if (result.data) {
+                let image: any;
+                    const firstKey =  Object.keys(result.data.data)[0];
+                    if (firstKey) {
+                        id = result.data.data[firstKey].id;
+                        image = result.data.data[firstKey].logo;  
+                    }
+                    if (image) {
+                        imageUrl = await this.UpdateCmcImgUrl(image);
+                    }
+            }
+            return { image: imageUrl, id: id };
+        } catch (err: any) {
+            console.error("Error in get_token_image_from_cmc", err);
+            return null;
+        }
+    }
+
     public async getTradingSource(symbol: string): Promise<TradingSourceResponse> {
         console.log('symbol symbol', symbol);
         if (!symbol) return { status: false, graphSource: null, graphPair: '' }; // Exit if no symbol provided
