@@ -18,6 +18,10 @@ class WalletRoute implements ControllerInterface {
       jwtVerification.verifyToken,
       walletController.addToken
     );
+    // this.router.get(
+    //   `${this.path}/validateCmcIds`,
+    //   walletController.validateCmcIds
+    // );
     this.router.post(
       `${this.path}/portfolio`,
       [validateExpress(wallet_validator.portfolioValidate)],

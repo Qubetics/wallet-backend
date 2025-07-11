@@ -641,6 +641,14 @@ class WalletController implements OnlyControllerInterface {
       const date_to: number = req.body.date_to ? req.body.date_to : null;
       const type: any = req.body.trnx_type ? req.body.trnx_type : "all";
       const coin_family: any = req.body.coin_family ? req.body.coin_family : [];
+
+      // if(coin_family.length > 1 ){
+      //   if (!coin_family.includes(7)) {
+      //     coin_family.push(7);
+      //   }
+      // }
+
+
       if (!coin_family.includes(7)) {
         coin_family.push(7);
       }
@@ -2306,6 +2314,145 @@ class WalletController implements OnlyControllerInterface {
 
   //   return response;
   // }
+  // public async isCorrectCmcId(token_address: string, cmc_id: number) : Promise<any> {
+     
+  //   let data: any = {
+  //     token_address: token_address,
+  //   }
+
+  //   let result: any = await global_helper.getTokenImageFromCmc(data);
+
+  //   if(result.id == cmc_id){
+  //     console.log(`${token_address} is correct cmc id ${cmc_id}`);
+  //     return {
+  //       status: true,
+  //       data: {
+  //         new_cmc_id: cmc_id
+  //       }
+  //     }
+  //   }
+  //   else{
+  //     console.log(`${token_address} is incorrect cmc id ${cmc_id} and new cmc id is ${result.id}`);
+  //     return {
+  //       status: false,
+  //       data: {
+  //         new_cmc_id: result.id
+  //       }
+  //     }
+  //   }
+
+
+
+  // }
+
+
+  // public async updateNewCmcId(token_address: string, cmc_id: number, coin_id: number, new_cmc_id: number) : Promise<any> {
+    
+  //   let update = await Models.CoinsModel.update(
+  //     { correct_cmc_id: new_cmc_id, is_correct_cmc_id: 0 },
+  //     { where: { coin_id: coin_id } }
+  //   );
+
+  //   if(update){
+  //     console.log(`${token_address} is updated with new cmc id ${new_cmc_id}`);
+  //   } else {
+  //     console.log(`${token_address} is not updated with new cmc id ${new_cmc_id}`);
+  //   }
+  // }
+
+  // public async recursiveCmcIdValidation(coinData: any, index: number = 0) : Promise<boolean> {
+
+  //   if(index >= coinData.length ) {
+
+  //     console.log(`All ${coinData.length} coins processed successfully`);
+  //     return true;
+  //   }
+
+  //   let coin = coinData[index];
+    
+  //   if (!coin.token_address || !coin.cmc_id) {
+  //     console.log(`Skipping coin at index ${index} due to missing token_address or cmc_id`);
+  //     return this.recursiveCmcIdValidation(coinData, index + 1);
+  //   }
+
+  //   try {
+  //     let check = await this.isCorrectCmcId(coin.token_address, coin.cmc_id);
+
+  //     if(check.status === true) {
+  //       console.log(`${coin.token_address} is correct cmc id ${coin.cmc_id}`);
+  //     } else {
+  //       await this.updateNewCmcId(coin.token_address, coin.cmc_id, coin.coin_id, check.data.new_cmc_id);
+  //       console.log(`${coin.token_address} is incorrect 💥💥💥💥 cmc id ${coin.cmc_id} and new cmc id is ${check.data.new_cmc_id}`);
+  //     }
+  //   } catch (error) {
+  //     console.error(`Error processing coin at index ${index}:`, error);
+  //   }
+    
+  //   // Continue with next coin regardless of success/failure of current one
+  //   return this.recursiveCmcIdValidation(coinData, index + 1);
+  // }
+
+  // public validateCmcIds = async (req: Request, res: Response) => {
+  //   try {
+  //     let coinData: any = await Models.CoinsModel.findAll({
+  //       attributes: ["cmc_id", "coin_id", "token_address"],
+  //       raw: true,
+  //       where: Sequelize.and(
+  //         Sequelize.where(Sequelize.col('cmc_id'), {[Op.ne]: null}),
+  //         Sequelize.where(Sequelize.col('token_address'), {[Op.ne]: null})
+  //       )
+  //     });
+      
+  //     coinData = coinData.map((coin: any) => ({
+  //       cmc_id: coin.cmc_id,
+  //       coin_id: coin.coin_id,
+  //       token_address: coin.token_address,
+  //     }));
+
+  //     console.log("Processing coinData with length:", coinData.length);
+
+  //     // Start the validation process
+  //     this.recursiveCmcIdValidation(coinData)
+  //       .then(() => console.log("CMC ID validation completed"))
+  //       .catch(err => console.error("Error in CMC ID validation:", err));
+
+  //     return res.status(GlblCode.SUCCESS).send({
+  //       status: true,
+  //       code: GlblCode.SUCCESS,
+  //       message: "CMC IDs validation started in background",
+  //       data: { coinsToProcess: Math.min(coinData.length, 10) }
+  //     });
+  //   } catch (error: any) {
+  //     console.error("Error in validateCmcIds:", error);
+  //     return res.status(GlblCode.ERROR_CODE).send({
+  //       status: false,
+  //       code: GlblCode.ERROR_CODE,
+  //       message: "Error starting CMC ID validation",
+  //       error: error.message || "Unknown error"
+  //     });
+  //   }
+  // }
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 export const walletController = new WalletController();
