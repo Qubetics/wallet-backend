@@ -642,16 +642,14 @@ class WalletController implements OnlyControllerInterface {
       const type: any = req.body.trnx_type ? req.body.trnx_type : "all";
       const coin_family: any = req.body.coin_family ? req.body.coin_family : [];
 
-      // if(coin_family.length > 1 ){
-      //   if (!coin_family.includes(7)) {
-      //     coin_family.push(7);
-      //   }
-      // }
-
-
-      if (!coin_family.includes(7)) {
+      if (coin_family.length > 1 && !coin_family.includes(7)) {
         coin_family.push(7);
       }
+
+
+      // if (!coin_family.includes(7)) {
+      //   coin_family.push(7);
+      // }
       const userId: number = req.userId;
 
       let where_clause: any = {
