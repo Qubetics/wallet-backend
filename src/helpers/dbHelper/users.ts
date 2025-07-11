@@ -1,10 +1,10 @@
-import commonHelper from "../common/common.helpers";
+import commonHelper from "../common/common";
 import * as Models from '../../models/model/index';
 
 
 class UserQueries {
 
-    public async user_find_one(attr: any, where_clause: any) {
+    public async userFindOne(attr: any, where_clause: any) {
         try {
             let data: any = await Models.UsersModel.findOne({
                 attributes: attr,
@@ -13,32 +13,35 @@ class UserQueries {
             })
             return data;
         } catch (err: any) {
-            console.error("Error in user_find_one>>", err)
-            await commonHelper.save_error_logs("user_find_one", err.message);
+            console.error("Error in userFindOne>>", err)
+            await commonHelper.saveErrorLogs("userFindOne", err.message);
             throw err;
         }
     }
-    public async user_update(set: any, where_clause: any) {
+
+    public async userUpdate(set: any, where_clause: any) {
         try {
             let data: any = await Models.UsersModel.update(set, { where: where_clause })
             return data;
         } catch (err: any) {
-            console.error("Error in user_update>>", err)
-            await commonHelper.save_error_logs("user_update", err.message);
+            console.error("Error in userUpdate>>", err)
+            await commonHelper.saveErrorLogs("userUpdate", err.message);
             throw err;
         }
     }
-    public async user_create(obj: any) {
+
+    public async userCreate(obj: any) {
         try {
             let data: any = await Models.UsersModel.create(obj)
             return data;
         } catch (err: any) {
-            console.error("Error in user_create>>", err)
-            await commonHelper.save_error_logs("user_create", err.message);
+            console.error("Error in userCreate>>", err)
+            await commonHelper.saveErrorLogs("userCreate", err.message);
             throw err;
         }
     }
-    public async user_find_all(attr: any, where_clause: any, order: any) {
+
+    public async userFindAll(attr: any, where_clause: any, order: any) {
         try {
             let data: any = await Models.UsersModel.findAll({
                 attributes: attr,
@@ -47,11 +50,12 @@ class UserQueries {
             })
             return data;
         } catch (err: any) {
-            console.error("Error in user_find_all>>", err)
-            await commonHelper.save_error_logs("user_find_all", err.message);
+            console.error("Error in userFindAll>>", err)
+            await commonHelper.saveErrorLogs("userFindAll", err.message);
             throw err;
         }
     }
+
     public async usersJoinWalletsJoinCoins(attr1: any, attr2: any, where2: any, attr3: any, where3: any) {
         try {
             let data: any = await Models.UsersModel.findAll({
@@ -74,7 +78,7 @@ class UserQueries {
             return data;
         } catch (err: any) {
             console.error("Error in usersJoinWalletsJoinCoins>>", err)
-            await commonHelper.save_error_logs("usersJoinWalletsJoinCoins", err.message);
+            await commonHelper.saveErrorLogs("usersJoinWalletsJoinCoins", err.message);
             throw err;
         }
     }
@@ -96,7 +100,7 @@ class UserQueries {
             return data;
         } catch (err: any) {
             console.error("Error in usersJoinWallets>>", err)
-            await commonHelper.save_error_logs("usersJoinWallets", err.message);
+            await commonHelper.saveErrorLogs("usersJoinWallets", err.message);
             throw err;
         }
     }
@@ -127,12 +131,12 @@ class UserQueries {
             return data;
         } catch (err: any) {
             console.error("Error in usersJoinWalletsJoinCoins>>", err)
-            await commonHelper.save_error_logs("usersJoinWalletsJoinCoins", err.message);
+            await commonHelper.saveErrorLogs("usersJoinWalletsJoinCoins", err.message);
             throw err;
         }
     }
 
 }
 
-const user_queries = new UserQueries();
-export default user_queries;
+const userQueries = new UserQueries();
+export default userQueries;

@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { NFTInterface } from "../interface/interface.nft";
-import db from "../../helpers/common/db";
+import db from "../../connections/db";
 import CoinsModel from '../model/model.coins';
 
 interface NFTCreationModel extends Optional<NFTInterface, "id"> { }

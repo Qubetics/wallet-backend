@@ -1,10 +1,10 @@
-import commonHelper from "../common/common.helpers";
+import commonHelper from "../common/common";
 import * as Models from '../../models/model/index';
 
 
 class WalletQueries {
 
-    public async wallet_find_one(attr: any, where_clause: any) {
+    public async walletFindOne(attr: any, where_clause: any) {
         try {
             let data: any
             if (attr.length > 0) {
@@ -21,14 +21,15 @@ class WalletQueries {
             }
             return data;
         } catch (err: any) {
-            console.error("Error in wallet_find_one>>", err)
-            await commonHelper.save_error_logs("wallet_find_one", err.message);
+            console.error("Error in walletFindOne>>", err)
+            await commonHelper.saveErrorLogs("walletFindOne", err.message);
             throw err;
         }
     }
-    public async wallet_find_one_with_order(attr: any, where_clause: any, order: any) {
+
+    public async walletFindOneWithOrder(attr: any, where_clause: any, order: any) {
         try {
-            let data: any = await Models.WalletModel.findOne({
+            const data: any = await Models.WalletModel.findOne({
                 attributes: attr,
                 where: where_clause,
                 order: order,
@@ -36,8 +37,8 @@ class WalletQueries {
             })
             return data;
         } catch (err: any) {
-            console.error("Error in wallet_find_one_with_order>>", err)
-            await commonHelper.save_error_logs("wallet_find_one_with_order", err.message);
+            console.error("Error in walletFindOneWithOrder>>", err)
+            await commonHelper.saveErrorLogs("walletFindOneWithOrder", err.message);
             return null;
         }
     }
@@ -50,43 +51,47 @@ class WalletQueries {
     //         return data;
     //     } catch (err: any) {
     //         console.error("Error in wallet_find_all>>", err)
-    //         await commonHelper.save_error_logs("wallet_find_all", err.message);
+    //         await commonHelper.saveErrorLogs("wallet_find_all", err.message);
     //         throw err;
     //     }
     // }
-    public async wallet_update(set: any, where_clause: any) {
+
+    public async walletUpdate(set: any, where_clause: any) {
         try {
-            let data: any = await Models.WalletModel.update(set, { where: where_clause })
+            const data: any = await Models.WalletModel.update(set, { where: where_clause })
             return data;
         } catch (err: any) {
-            console.error("Error in wallet_update>>", err)
-            await commonHelper.save_error_logs("wallet_update", err.message);
+            console.error("Error in walletUpdate>>", err)
+            await commonHelper.saveErrorLogs("walletUpdate", err.message);
             return null;
         }
     }
-    public async wallet_create(obj: any) {
+
+    public async walletCreate(obj: any) {
         try {
-            let data: any = await Models.WalletModel.create(obj)
+            const data: any = await Models.WalletModel.create(obj)
             return data;
         } catch (err: any) {
-            console.error("Error in wallet_create>>", err)
-            await commonHelper.save_error_logs("wallet_create", err.message);
+            console.error("Error in walletCreate>>", err)
+            await commonHelper.saveErrorLogs("walletCreate", err.message);
             return null;
         }
     }
+
     public async walletCount(where: any) {
         try {
-            let data: any = await Models.WalletModel.count({
+            const data: any = await Models.WalletModel.count({
                 where: where,
                 group: ['user_id']
             })
             return data;
         } catch (err: any) {
             console.error("Error in walletCount>>", err)
-            await commonHelper.save_error_logs("walletCount", err.message);
+            await commonHelper.saveErrorLogs("walletCount", err.message);
             throw err;
         }
     }
+
     // public async walletJoinCoins(attr1: any, where1: any, attr2: any, where2: any) {
     //     try {
     //         let data: any = await Models.WalletModel.findAll({
@@ -102,12 +107,12 @@ class WalletQueries {
     //         return data;
     //     } catch (err: any) {
     //         console.error("Error in walletJoinCoins>>", err)
-    //         await commonHelper.save_error_logs("walletJoinCoins", err.message);
+    //         await commonHelper.saveErrorLogs("walletJoinCoins", err.message);
     //         throw err;
     //     }
     // }
 
 }
 
-const wallet_queries = new WalletQueries();
-export default wallet_queries;
+const walletQueries = new WalletQueries();
+export default walletQueries;

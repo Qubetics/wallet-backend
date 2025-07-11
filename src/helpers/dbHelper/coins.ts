@@ -1,11 +1,11 @@
-import commonHelper from "../common/common.helpers";
+import commonHelper from "../common/common";
 import * as Models from '../../models/model/index';
-import { Sequelize } from "sequelize";
+// import { Sequelize } from "sequelize";
 
 
 class CoinQueries {
 
-    public async coin_find_one(attr: any, where_clause: any) {
+    public async coinFindOne(attr: any, where_clause: any) {
         try {
             let data: any;
             if (attr.length > 0) {
@@ -23,12 +23,12 @@ class CoinQueries {
             }
             return data;
         } catch (err: any) {
-            console.error("Error in coin_find_one>>", err)
-            await commonHelper.save_error_logs("coin_find_one", err.message);
+            console.error("Error in coinFindOne>>", err)
+            await commonHelper.saveErrorLogs("coinFindOne", err.message);
             return null;
         }
     }
-    public async coin_find_all(attr: any, where_clause: any) {
+    public async coinFindAll(attr: any, where_clause: any) {
         try {
             let data: any;
             if (attr.length > 0) {
@@ -44,28 +44,29 @@ class CoinQueries {
             }
             return data;
         } catch (err: any) {
-            console.error("Error in coin_find_all>>", err)
-            await commonHelper.save_error_logs("coin_find_all", err.message);
+            console.error("Error in coinFindAll>>", err)
+            await commonHelper.saveErrorLogs("coinFindAll", err.message);
             return null;
         }
     }
-    public async coin_create(obj: any) {
+
+    public async coinCreate(obj: any) {
         try {
-            let data: any = await Models.CoinsModel.create(obj);
+            const data: any = await Models.CoinsModel.create(obj);
             return data;
         } catch (err: any) {
-            console.error("Error in coin_create>>", err);
-    
+            console.error("Error in coinCreate>>", err);
+
             const uniqueConstraint =
                 err.name === 'SequelizeUniqueConstraintError' &&
                 err.errors?.some(
                     (e: any) => e.path === 'unique_coinfamily_tokenaddress' || e.message?.includes('unique_coinfamily_tokenaddress')
                 );
-    
+
             if (uniqueConstraint) {
                 const tokenAddress = obj.token_address;
                 const coinFamily = obj.coin_family;
-    
+
                 try {
                     const existing = await Models.CoinsModel.findOne({
                         where: {
@@ -74,28 +75,29 @@ class CoinQueries {
                         },
                         raw: true
                     });
-                    console.log("🚀 ~ CoinQueries ~ coin_create ~ existing:", existing)
-    
+                    console.log("🚀 ~ CoinQueries ~ coinCreate ~ existing:", existing)
+
                     if (existing) {
                         return existing;
                     }
                 } catch (findErr) {
                     console.error("Error finding existing coin>>", findErr);
-                    await commonHelper.save_error_logs("coin_create_find_existing", (findErr as any).message);
+                    await commonHelper.saveErrorLogs("coinCreate", (findErr as any).message);
                 }
             }
-    
-            await commonHelper.save_error_logs("coin_create", err.message);
+
+            await commonHelper.saveErrorLogs("coinCreate", err.message);
             return null;
         }
     }
-    public async coin_update(set: any, where_clause: any) {
+
+    public async coinUpdate(set: any, where_clause: any) {
         try {
             let data: any = await Models.CoinsModel.update(set, { where: where_clause })
             return data;
         } catch (err: any) {
-            console.error("Error in coin_update>>", err)
-            await commonHelper.save_error_logs("coin_update", err.message);
+            console.error("Error in coinUpdate>>", err)
+            await commonHelper.saveErrorLogs("coinUpdate", err.message);
             return null;
         }
     }
@@ -109,7 +111,7 @@ class CoinQueries {
     //         return data;
     //     } catch (err: any) {
     //         console.error("Error in distinct_coin_data>>", err)
-    //         await commonHelper.save_error_logs("distinct_coin_data", err.message);
+    //         await commonHelper.saveErrorLogs("distinct_coin_data", err.message);
     //         throw err;
     //     }
     // }
@@ -129,7 +131,7 @@ class CoinQueries {
     //         return data;
     //     } catch (err: any) {
     //         console.error("Error in coinsJoinCoinPriceInFiat>>", err)
-    //         await commonHelper.save_error_logs("coinsJoinCoinPriceInFiat", err.message);
+    //         await commonHelper.saveErrorLogs("coinsJoinCoinPriceInFiat", err.message);
     //         return null;
     //     }
     // }
@@ -182,7 +184,7 @@ class CoinQueries {
     //         return data;
     //     } catch (err: any) {
     //         console.error("Error in coinsJoinCoinPriceInFiatJoinChangellyJoinWallet>>", err)
-    //         await commonHelper.save_error_logs("coinsJoinCoinPriceInFiatJoinChangellyJoinWallet", err.message);
+    //         await commonHelper.saveErrorLogs("coinsJoinCoinPriceInFiatJoinChangellyJoinWallet", err.message);
     //         return null;
     //     }
     // }
@@ -222,7 +224,7 @@ class CoinQueries {
     //         return data;
     //     } catch (err: any) {
     //         console.error("Error in coinsJoinCoinPriceInFiatJoinChangellyOnOffRampJoinWallet>>", err)
-    //         await commonHelper.save_error_logs("coinsJoinCoinPriceInFiatJoinChangellyOnOffRampJoinWallet", err.message);
+    //         await commonHelper.saveErrorLogs("coinsJoinCoinPriceInFiatJoinChangellyOnOffRampJoinWallet", err.message);
     //         return null;
     //     }
     // }
@@ -264,11 +266,11 @@ class CoinQueries {
     //         return data;
     //     } catch (err: any) {
     //         console.error("Error in coinsJoinCoinPriceInFiatJoinChangellyOnOffRampJoinWallet>>", err)
-    //         await commonHelper.save_error_logs("coinsJoinCoinPriceInFiatJoinChangellyOnOffRampJoinWallet", err.message);
+    //         await commonHelper.saveErrorLogs("coinsJoinCoinPriceInFiatJoinChangellyOnOffRampJoinWallet", err.message);
     //         return null;
     //     }
     // }
 }
 
-const coin_queries = new CoinQueries();
-export default coin_queries;
+const coinQueries = new CoinQueries();
+export default coinQueries;

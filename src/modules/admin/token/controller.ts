@@ -1,22 +1,16 @@
-import { Request, response, Response } from "express";
+import { Request, Response } from "express";
 import { OnlyControllerInterface } from "../../../interfaces/controller.interface";
-import { GlblAddedBy, GlblCode, GlblMessages } from "../../../constants/global_enum";
+import { GlblAddedBy, GlblCode, GlblMessages } from "../../../constants/enum";
 import { language } from "../../../constants";
-import { adminErrQueries, coin_queries } from "../../../helpers/dbHelper";
-import MenuListsModel from "../../../models/model/model_menu_lists.";
-import { TokenHelper } from "./token.helper";
-import { includes } from "lodash";
+import { adminErrQueries, coinQueries } from "../../../helpers/dbHelper";
+import { TokenHelper } from "./token";
 import CoinsModel from "../../../models/model/model.coins";
 import { Op, Sequelize } from "sequelize";
-import { WalletHelper } from "../wallet/wallet.helper";
-import { Messages } from "../../user/enum";
-import { WalletHelper as userWalletHelper } from "../../wallet/wallet.helpers"
+import { WalletHelper as userWalletHelper } from "../../wallet/helper"
 import { config } from "../../../config";
-import kafka_helper from "../../../helpers/common/kafka_helper";
-import commonHelper from "../../../helpers/common/common.helpers";
-import s3Helper from "../../../helpers/common/s3.helpers";
-
-
+import kafka_helper from "../../../helpers/common/kafka";
+import commonHelper from "../../../helpers/common/common";
+import s3Helper from "../../../helpers/common/s3";
 
 class TokenController implements OnlyControllerInterface {
   constructor() {
@@ -60,21 +54,21 @@ class TokenController implements OnlyControllerInterface {
         offset: offset,
         page: page,
         attributes: [
-         "coin_id",
-         "coin_name",
-         "coin_symbol",
-         "coin_image",
-         "coin_family",
-         "coin_status",
-         "is_token",
-         "token_type",
-         "decimals",
-         "cmc_id",
-         "token_address",
-         "for_swap",
-         "added_by",
-         "created_at",
-         "updated_at"
+          "coin_id",
+          "coin_name",
+          "coin_symbol",
+          "coin_image",
+          "coin_family",
+          "coin_status",
+          "is_token",
+          "token_type",
+          "decimals",
+          "cmc_id",
+          "token_address",
+          "for_swap",
+          "added_by",
+          "created_at",
+          "updated_at"
         ],
 
       }
@@ -335,7 +329,7 @@ class TokenController implements OnlyControllerInterface {
   //         }
   //     } catch (err: any) {
   //         console.log('🔥 ~ ~ add_token error');
-  //         global_helper.handle_catch(res, err)
+  //         globalHelper.handle_catch(res, err)
   //     }
   // };
 
@@ -364,7 +358,7 @@ class TokenController implements OnlyControllerInterface {
         decimals: string;
       } = req.body;
 
-      let coinDataExist: any = await coin_queries.coin_find_one(
+      let coinDataExist: any = await coinQueries.coinFindOne(
         [
           "coin_id",
           "coin_status",
@@ -384,24 +378,24 @@ class TokenController implements OnlyControllerInterface {
       if (coinDataExist) {
 
         if (coinDataExist.coin_status == 0) {
-          await coin_queries.coin_update(
+          await coinQueries.coinUpdate(
             { coin_status: 1 },
             { coin_id: coinDataExist.coin_id }
           );
-          
-          const redisCoinData = {
-              coin_id: coinDataExist.coin_id,
-              is_token: coinDataExist.is_token,
-              token_address: coinDataExist.token_address,
-              coin_family: coinDataExist.coin_family,
-              decimals: coinDataExist.decimals,
-              token_type: coinDataExist.token_type,
-              coin_symbol: coinDataExist.coin_symbol,
-              added_by: coinDataExist.added_by,
-              for_swap: coinDataExist.for_swap
-            }
 
-          await userWalletHelper.update_token_in_redis_hash(redisCoinData);
+          const redisCoinData = {
+            coin_id: coinDataExist.coin_id,
+            is_token: coinDataExist.is_token,
+            token_address: coinDataExist.token_address,
+            coin_family: coinDataExist.coin_family,
+            decimals: coinDataExist.decimals,
+            token_type: coinDataExist.token_type,
+            coin_symbol: coinDataExist.coin_symbol,
+            added_by: coinDataExist.added_by,
+            for_swap: coinDataExist.for_swap
+          }
+
+          await userWalletHelper.updateTokenInRedisHash(redisCoinData);
 
           return res.status(GlblCode.ERROR_CODE).send({
             data: { status: false, message: "Token already exist" },
@@ -410,14 +404,26 @@ class TokenController implements OnlyControllerInterface {
         } else {
 
           if (coinDataExist.added_by == GlblAddedBy.USER) {
-            const updateCoinData = await coin_queries.coin_update(
+            await coinQueries.coinUpdate(
               { added_by: GlblAddedBy.ADMIN },
               { coin_id: coinDataExist.coin_id }
             );
-            await userWalletHelper.update_token_in_redis(
-              { coin_family: coin_family },
-              coinDataExist.coin_id
-            );
+            const redisCoinData = {
+              coin_id: coinDataExist.coin_id,
+              is_token: coinDataExist.is_token,
+              token_address: coinDataExist.token_address,
+              coin_family: coinDataExist.coin_family,
+              decimals: coinDataExist.decimals,
+              token_type: coinDataExist.token_type,
+              coin_symbol: coinDataExist.coin_symbol,
+              added_by: GlblAddedBy.ADMIN,
+              for_swap: coinDataExist.for_swap
+            }
+            await userWalletHelper.updateTokenInRedisHash(redisCoinData);
+            // await userWalletHelper.update_token_in_redis(
+            //   { coin_family: coin_family },
+            //   coinDataExist.coin_id
+            // );
             return res.status(GlblCode.SUCCESS).send({
               data: { status: true, message: "Token updated successfully" },
             });
@@ -431,13 +437,13 @@ class TokenController implements OnlyControllerInterface {
 
         //
         // if (coinDataExist.added_by == "user") {
-        //   await userWalletHelper.insert_entry_in_custom_token_table(
+        //   await userWalletHelper.insertEntryInCustomToken(
         //     coinDataExist.coin_id,
         //     req.userId
         //   );
         // }
       } else {
-        const response: any = await TokenHelper.addCoinToTable(
+        const response: any = await TokenHelper.addCoin(
           token_address,
           symbol,
           name,
@@ -472,7 +478,7 @@ class TokenController implements OnlyControllerInterface {
 
     } catch (err: any) {
       console.error("Error in wallet > addToken.", err);
-      await commonHelper.save_error_logs("wallet_addToken", err.message);
+      await commonHelper.saveErrorLogs("wallet_addToken", err.message);
       throw language[lang].CATCH_MSG;
     }
   }

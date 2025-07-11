@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { config } from "../../config";
-import response from "../../helpers/response/response.helpers";
+import response from "../../helpers/response";
 import * as Models from '../../models/model/index';
 import { language } from "../../constants";
-import commonHelper from "../../helpers/common/common.helpers";
+import commonHelper from "../../helpers/common/common";
 
 let tronMiddleware = {
     requestInfo: async (req: Request, res: Response, next: NextFunction) => {
@@ -66,7 +66,7 @@ let tronMiddleware = {
             }
         } catch (err: any) {
             console.error("ERROR IN TRON REQUEST INFO::::", err)
-            await commonHelper.save_error_logs("tron_middleware", err.message);
+            await commonHelper.saveErrorLogs("tron_middleware", err.message);
             return response.error(res, {
                 data: {
                     status: false,

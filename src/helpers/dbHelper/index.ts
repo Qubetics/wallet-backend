@@ -3,42 +3,42 @@ import { Request } from "express";
 import { config } from "../../config";
 import * as Models from '../../models/model/index'
 import redisClient from "../common/redis";
-import { GlblBlockchainTxStatusEnum, TxReqTypesEnum, GlblBooleanEnum } from "../../constants/global_enum";
-import wallet_queries from "./wallets";
-import user_queries from "./users";
-import coin_queries from './coins';
-import device_token_queries from "./device_tokens";
-import catch_err_msg_queries from "./catch_err_msgs";
-import notification_queries from "./notifications";
+import { GlblBlockchainTxStatusEnum, TxReqTypesEnum, GlblBooleanEnum } from "../../constants/enum";
+import walletQueries from "./wallets";
+import userQueries from "./users";
+import coinQueries from './coins';
+import deviceTokenQueries from "./device_tokens";
+import catchErrMsgQueries from "./catch_err_msgs";
+import notificationQueries from "./notifications";
 import address_book_wallet_queries from './address_book_wallet';
-import address_book_queries from './address_books';
-import gas_prices_queries from './gas_prices';
-import custom_token_queries from './custom_tokens';
-import coin_price_in_fiat_queries from "./coin_price_in_fiat";
-import trnx_history_queries from './trnx_history';
+import addressBookQueries from './address_books';
+import gasPricesQueries from './gas_prices';
+import customTokenQueries from './custom_tokens';
+import coinPriceInFiatQueries from "./coin_price_in_fiat";
+import trnxHistoryQueries from './trnx_history';
 // import { GlblCode, GlblMessages } from "../../constants/global_enum";
 import adminErrQueries from './admin_err_logs';
 import adminQueries from './admins';
 import swapSettingQueries from './swap_settings';
-import settings_queries from './settings';
+import settingsQueries from './settings';
 import { Op } from "sequelize";
 export {
-  wallet_queries,
-  user_queries,
-  coin_queries,
-  device_token_queries,
-  catch_err_msg_queries,
-  notification_queries,
+  walletQueries,
+  userQueries,
+  coinQueries,
+  deviceTokenQueries,
+  catchErrMsgQueries,
+  notificationQueries,
   address_book_wallet_queries,
-  address_book_queries,
-  gas_prices_queries,
-  custom_token_queries,
-  coin_price_in_fiat_queries,
-  trnx_history_queries,
+  addressBookQueries,
+  gasPricesQueries,
+  customTokenQueries,
+  coinPriceInFiatQueries,
+  trnxHistoryQueries,
   adminErrQueries,
   adminQueries,
   swapSettingQueries,
-  settings_queries
+  settingsQueries
 };
 
 class DbHelper {
@@ -171,7 +171,7 @@ class DbHelper {
       user_data = JSON.parse(user_data);
       to_user_id = user_data ? user_data?.user_id : 0;
 
-      let updateWallet: any = await trnx_history_queries.trnx_history_create({
+      let updateWallet: any = await trnxHistoryQueries.trnxHistoryCreate({
         user_id: req.userId,
         to_user_id: to_user_id,
         coin_id: req.coininfo.coin_id,

@@ -1,10 +1,11 @@
 import jwt from "jsonwebtoken";
 import { config } from "../../config";
-import commonHelper from "./common.helpers";
+import commonHelper from "./common";
 import { CryptoHelper } from "./cryptoJs";
 
 class JWT {
-  public async createJSONWebToken(userId: number, device_token: string) {
+
+  public async createJsonWebTokenForUser(userId: number, device_token: string) {
     try {
       const jwtToken: any = jwt.sign({ userId, device_token }, config.JWT_SECRET, {
         expiresIn: 60 * 60 * 2, // 2 Hrs 
@@ -13,13 +14,14 @@ class JWT {
       return CryptoHelper.encrypt(token);
 
     } catch (err: any) {
-      console.error("Error in createJSONWebToken.", err)
-      await commonHelper.save_error_logs("createJSONWebToken", err.message);
+      console.error("Error in createJsonWebTokenForUser.", err)
+      await commonHelper.saveErrorLogs("createJsonWebTokenForUser", err.message);
       throw err;
     }
 
   }
-  public async createJSONRefreshToken(userId: number, device_token: string) {
+
+  public async createJsonRefreshTokenForUser(userId: number, device_token: string) {
     try {
       const options = {
         expiresIn: "365d",
@@ -32,12 +34,13 @@ class JWT {
       const token: string = `REFRESH ${jwtToken}`;
       return CryptoHelper.encrypt(token);
     } catch (err: any) {
-      console.error("Error in createJSONRefreshToken.", err)
-      await commonHelper.save_error_logs("createJSONRefreshToken", err.message);
+      console.error("Error in createJsonRefreshTokenForUser.", err)
+      await commonHelper.saveErrorLogs("createJsonRefreshTokenForUser", err.message);
       throw err;
     }
   }
-  public async create_json_web_token(data: any) {
+
+  public async createJsonWebTokenForAdmin(data: any) {
     const userId: any = data;
     const jwtToken: string = jwt.sign(userId, config.JWT_SECRET);
     const token: any = `JWT ${jwtToken}`;

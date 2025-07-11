@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import db from "../../helpers/common/db";
+import db from "../../connections/db";
 import { CatchErrorMsgsInterface } from '../interface/index.interface';
 interface CatchErrorMsgsCreationModel extends Optional<CatchErrorMsgsInterface, "id"> { }
 interface CatchErrorMsgsInstance

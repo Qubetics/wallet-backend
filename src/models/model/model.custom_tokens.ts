@@ -1,8 +1,8 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { CustomTokenInterface } from "../interface/index.interface";
-import db from "../../helpers/common/db";
-import WalletModel from "./model.wallets";
-import CoinsModel from "./model.coins";
+import db from "../../connections/db";
+// import WalletModel from "./model.wallets";
+// import CoinsModel from "./model.coins";
 
 interface CustomTokenCreationModel extends Optional<CustomTokenInterface, "id"> { }
 interface CustomTokenInstance extends Model<CustomTokenInterface, CustomTokenCreationModel>, CustomTokenInterface { }

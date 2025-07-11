@@ -1,14 +1,14 @@
 import { OnlyControllerInterface } from "../../interfaces/controller.interface";
 import { Request, Response } from "express";
 import { language } from "../../constants";
-import commonHelper from "../../helpers/common/common.helpers";
-import response from "../../helpers/response/response.helpers";
+import commonHelper from "../../helpers/common/common";
+import response from "../../helpers/response";
 import { OnChainHelper } from "./helper";
 import { config } from "../../config";
 import redisHelper from "../../helpers/common/redis";
 import * as Models from "../../models/model"
-import { global_helper } from "../../helpers/common/global_helper";
-import { bigNumberSafeMath } from "../../helpers/common/globalFunctions";
+import { globalHelper } from "../../helpers/common/global";
+import { bigNumberSafeMath } from "../../helpers/common/functions";
 
 class onChainController implements OnlyControllerInterface {
 
@@ -17,7 +17,8 @@ class onChainController implements OnlyControllerInterface {
     }
 
     public initialize() { }
-    public OneinchSwapApi = async (req: Request, res: Response) => {
+
+    public oneInchSwapApi = async (req: Request, res: Response) => {
         let lang: any = req.headers['content-language'] || 'en';
         const { chain_id, src, dst, amount, from, slippage, fee, referrer, mainRouteParts, parts, coin_family } = req.body
         try {
@@ -31,43 +32,43 @@ class onChainController implements OnlyControllerInterface {
             });
         } catch (error: any) {
             console.error("Error in on-chain > OneinchSwapApi.", error.response.data);
-            await commonHelper.save_error_logs("OneinchSwapApi", error.message);
+            await commonHelper.saveErrorLogs("OneinchSwapApi", error.message);
             let description = error?.response?.data?.description || '';
-            let message = (error?.response?.data?.statusCode !== 200 && description !== '') 
-                ? description 
+            let message = (error?.response?.data?.statusCode !== 200 && description !== '')
+                ? description
                 : language[lang].CATCH_MSG;
-            
-                const match = description.match(/Not enough (0x[a-fA-F0-9]{40}) balance\. Amount:\s*(\d+)\.?\s*Balance:\s*(\d+)/);
 
-                if (match) {
-                    const address = match[1];
-                    let amount = match[2];
-                    let balance = match[3];
-                    const token = await global_helper.return_decimals_name_symbol(
-                        coin_family,
-                        address,
-                        lang
-                    );
-                    const decimal = 10 ** token.decimals
-                    amount = bigNumberSafeMath(amount,'/' ,decimal)
-                    balance = bigNumberSafeMath(balance,'/' ,decimal)
-                    return response.error(res, {
-                        data: { status: false, message: `Not enough ${token.name} balance. Amount: ${amount}. Balance: ${balance}`, data: {}}
-                    }); 
-                }
-                
-                const check = description.includes("cannot estimate")
-                if (check) {
-                    return response.error(res, {
-                        data: { status: false, message: 'Unknown Error: "execution reverted". Try increasing your slippage tolerance', data: {}}
-                    }); 
-                }
+            const match = description.match(/Not enough (0x[a-fA-F0-9]{40}) balance\. Amount:\s*(\d+)\.?\s*Balance:\s*(\d+)/);
+
+            if (match) {
+                const address = match[1];
+                let amount = match[2];
+                let balance = match[3];
+                const token = await globalHelper.returnDecimalsNameSymbol(
+                    coin_family,
+                    address,
+                    lang
+                );
+                const decimal = 10 ** token.decimals
+                amount = bigNumberSafeMath(amount, '/', decimal)
+                balance = bigNumberSafeMath(balance, '/', decimal)
+                return response.error(res, {
+                    data: { status: false, message: `Not enough ${token.name} balance. Amount: ${amount}. Balance: ${balance}`, data: {} }
+                });
+            }
+
+            const check = description.includes("cannot estimate")
+            if (check) {
+                return response.error(res, {
+                    data: { status: false, message: 'Unknown Error: "execution reverted". Try increasing your slippage tolerance', data: {} }
+                });
+            }
             return response.error(res, {
-                data: {status: false, message: message, data: {} },
+                data: { status: false, message: message, data: {} },
             });
         }
     }
-    public OneinchQuotesApi = async (req: Request, res: Response) => {
+    public oneInchQuotesApi = async (req: Request, res: Response) => {
         let lang: any = req.headers['content-language'] || 'en';
         try {
             const { chain_id, src, dst, amount, fee } = req.body
@@ -82,18 +83,18 @@ class onChainController implements OnlyControllerInterface {
 
         } catch (error: any) {
             console.error("Error in on-chain > OneinchQuotesApi.", error);
-            await commonHelper.save_error_logs("OneinchQuotesApi", error.message);
+            await commonHelper.saveErrorLogs("OneinchQuotesApi", error.message);
             const description = error?.response?.data?.description || '';
             let message = language[lang].CATCH_MSG;
             if (description.toLowerCase().includes('insufficient liquidity')) {
                 message = 'Swap failed due to insufficient liquidity.';
-            } 
+            }
             return response.error(res, {
                 data: { status: false, message: message, data: {} },
             });
         }
     }
-    public OneinchTokenApproval = async (req: Request, res: Response) => {
+    public oneInchTokenApproval = async (req: Request, res: Response) => {
         let lang: any = req.headers['content-language'] || 'en';
         try {
             const { chain_id, tokenAddress, amount } = req.body
@@ -106,13 +107,13 @@ class onChainController implements OnlyControllerInterface {
             });
         } catch (error: any) {
             console.error("Error in on-chain > OneinchTokenApproval.", error);
-            await commonHelper.save_error_logs("OneinchTokenApproval", error.message);
+            await commonHelper.saveErrorLogs("OneinchTokenApproval", error.message);
             return response.error(res, {
                 data: { status: false, message: language[lang].CATCH_MSG, data: {} },
             });
         }
     }
-    public OneinchSpenderInfo = async (req: Request, res: Response) => {
+    public oneInchSpenderInfo = async (req: Request, res: Response) => {
         let lang: any = req.headers['content-language'] || 'en';
         try {
             const { chain_id } = req.body
@@ -125,13 +126,13 @@ class onChainController implements OnlyControllerInterface {
             });
         } catch (error: any) {
             console.error("Error in on-chain > OneinchSpenderInfo.", error);
-            await commonHelper.save_error_logs("OneinchSpenderInfo", error.message);
+            await commonHelper.saveErrorLogs("OneinchSpenderInfo", error.message);
             return response.error(res, {
                 data: { status: false, message: language[lang].CATCH_MSG, data: {} },
             });
         }
     }
-    public OneinchAllowanceCheck = async (req: Request, res: Response) => {
+    public oneInchAllowanceCheck = async (req: Request, res: Response) => {
         let lang: any = req.headers['content-language'] || 'en';
         try {
             console.log("req body OneinchAllowanceCheck >>>", req.body)
@@ -145,13 +146,13 @@ class onChainController implements OnlyControllerInterface {
             });
         } catch (error: any) {
             console.error("Error in on-chain > OneinchAllowanceCheck.", error);
-            await commonHelper.save_error_logs("OneinchAllowanceCheck", error.message);
+            await commonHelper.saveErrorLogs("OneinchAllowanceCheck", error.message);
             return response.error(res, {
                 data: { status: false, message: language[lang].CATCH_MSG, data: {} },
             });
         }
     }
-    public OneinchTokensApi = async (req: Request, res: Response) => {
+    public oneInchTokensApi = async (req: Request, res: Response) => {
         let lang: any = req.headers['content-language'] || 'en';
         try {
             const { chain_id } = req.body
@@ -164,7 +165,7 @@ class onChainController implements OnlyControllerInterface {
             });
         } catch (error: any) {
             console.error("Error in on-chain > OneinchTokensApi.", error);
-            await commonHelper.save_error_logs("OneinchTokensApi", error.message);
+            await commonHelper.saveErrorLogs("OneinchTokensApi", error.message);
             return response.error(res, {
                 data: { status: false, message: language[lang].CATCH_MSG, data: {} },
             });
@@ -201,7 +202,7 @@ class onChainController implements OnlyControllerInterface {
             });
         } catch (error: any) {
             console.error("Error in on-chain > commisionData.", error);
-            await commonHelper.save_error_logs("commisionData", error.message);
+            await commonHelper.saveErrorLogs("commisionData", error.message);
             return response.error(res, {
                 data: { status: false, message: language[lang].CATCH_MSG, data: {} },
             });

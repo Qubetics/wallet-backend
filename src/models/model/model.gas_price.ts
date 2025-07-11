@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { GasPriceInterface } from "../interface/interface.gasprice";
-import db from "../../helpers/common/db";
+import db from "../../connections/db";
 
 interface GasPriceCreationModel extends Optional<GasPriceInterface, "id"> { }
 interface WalletInstance extends Model<GasPriceInterface, GasPriceCreationModel>, GasPriceInterface { }

@@ -1,4 +1,4 @@
-import { chainId_coinFamily, coinFamily_chainId } from "../../constants/global_enum";
+import { chainId_coinFamily, coinFamily_chainId } from "../../constants/enum";
 import { config } from "../../config";
 import { OnlyControllerInterface } from "../../interfaces/controller.interface";
 

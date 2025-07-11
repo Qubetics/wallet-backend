@@ -28,7 +28,7 @@
 //       response.success(res, { data: dappGroupList });
 //     } catch (err: any) {
 //       console.error("Error in dapp > getDappList.", err)
-//       await commonHelper.save_error_logs("dapp_getDappList", err.message);
+//       await commonHelper.saveErrorLogs("dapp_getDappList", err.message);
 //       let data = {
 //         code: GlblCode.ERROR_CODE,
 //         status: false,

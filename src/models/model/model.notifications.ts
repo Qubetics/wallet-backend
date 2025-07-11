@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { NotificationInterface } from "../interface/interface.notifications";
-import db from "../../helpers/common/db";
+import db from "../../connections/db";
 import CoinsModel from "./model.coins";
 // import CurrencyFiatModel from "./model.currencyFiat";
 
@@ -61,25 +61,19 @@ const dataObj = {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  state: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
+  // state: {
+  //   type: DataTypes.STRING,
+  //   allowNull: true,
+  // },
   wallet_address: {
     type: DataTypes.STRING,
     allowNull: true,
-  },
-  created_at: {
-    type: DataTypes.DATE,
-    allowNull: false,
-  },
-  updated_at: {
-    type: DataTypes.DATE,
-    allowNull: false,
-  },
+  }
 };
 
 const dataObjIndex = {
+  createdAt: 'created_at',
+  updatedAt: 'updated_at',
   indexes: [
     // {
     //   unique: false,

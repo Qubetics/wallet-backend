@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { BannerInterface } from "../interface/interface.banner";
-import db from "../../helpers/common/db";
+import db from "../../connections/db";
 
 interface BannerModel extends Optional<BannerInterface, "id"> { }
 interface BannerInstance

@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { OnlyControllerInterface } from "../../../interfaces/controller.interface";
-import { GlblCode, GlblMessages } from "../../../constants/global_enum";
+import { GlblCode, GlblMessages } from "../../../constants/enum";
 import { language } from "../../../constants";
 import { adminErrQueries } from "../../../helpers/dbHelper";
-import MenuListsModel from "../../../models/model/model_menu_lists.";
+// import MenuListsModel from "../../../models/model/model_menu_lists.";
 import { AnnouncementModel } from "../../../models";
 import { Op } from "sequelize";
-import { NotificationHelper } from "./notification.helper";
+import { NotificationHelper } from "./helper";
 
 
 
@@ -23,29 +23,29 @@ class NotificationController implements OnlyControllerInterface {
 
             const per_page: number = Number(
                 req.body?.limit == undefined ? (req.body.limit = "10") : req.body.limit
-              );
-              const page: number = Number(
+            );
+            const page: number = Number(
                 req.body.page == undefined ? (req.body.page = "1") : req.body.page
-              );
-              const offset: number = (page - 1) * per_page;
-           
-              const search: string = req.body?.search == undefined ? null : req.body.search;
+            );
+            const offset: number = (page - 1) * per_page;
 
-               //object for get token list
-               let obj: any = {
+            const search: string = req.body?.search == undefined ? null : req.body.search;
+
+            //object for get token list
+            let obj: any = {
                 where: {},
                 order: [['id', 'DESC']],
                 limit: per_page,
                 offset: offset,
                 page: page,
-                attributes : [ "id", "title", "message", "created_at", "status"]
+                attributes: ["id", "title", "message", "created_at", "status"]
             }
 
             //search by title, message
             if (search) {
                 obj.where[Op.or] = [
-                { title: { [Op.like]: `%${search}%` } },
-                { message: { [Op.like]: `%${search}%` } }
+                    { title: { [Op.like]: `%${search}%` } },
+                    { message: { [Op.like]: `%${search}%` } }
                 ];
             }
 
@@ -75,7 +75,7 @@ class NotificationController implements OnlyControllerInterface {
 
             const { title, message }: { title: string, message: string } = req.body;
 
-            if(!title || !message) {
+            if (!title || !message) {
                 return res.status(GlblCode.ERROR_CODE).send({
                     code: GlblCode.ERROR_CODE,
                     status: false,
@@ -106,9 +106,9 @@ class NotificationController implements OnlyControllerInterface {
     public async updateNotification(req: Request, res: Response) {
         let lang: any = req.headers['content-language'] || 'en';
         try {
-            const { id , message , title }: { id: string, message: string, title: string } = req.body;
+            const { id, message, title }: { id: string, message: string, title: string } = req.body;
 
-            if(!id || !message || !title) {
+            if (!id || !message || !title) {
                 return res.status(GlblCode.ERROR_CODE).send({
                     code: GlblCode.ERROR_CODE,
                     status: false,
@@ -117,7 +117,7 @@ class NotificationController implements OnlyControllerInterface {
             }
 
             let exist_notification: any = await AnnouncementModel.findOne({ where: { id } });
-            if(!exist_notification) {
+            if (!exist_notification) {
                 return res.status(GlblCode.ERROR_CODE).send({
                     code: GlblCode.ERROR_CODE,
                     status: false,
@@ -149,8 +149,8 @@ class NotificationController implements OnlyControllerInterface {
         let lang: any = req.headers['content-language'] || 'en';
         try {
             const id = Number(req.params.id);
-            
-            if(!id) {
+
+            if (!id) {
                 return res.status(GlblCode.ERROR_CODE).send({
                     code: GlblCode.ERROR_CODE,
                     status: false,
@@ -159,7 +159,7 @@ class NotificationController implements OnlyControllerInterface {
             }
 
             const exist_notification: any = await AnnouncementModel.findOne({ where: { id } });
-            if(!exist_notification) {
+            if (!exist_notification) {
                 return res.status(GlblCode.ERROR_CODE).send({
                     code: GlblCode.ERROR_CODE,
                     status: false,
@@ -186,6 +186,6 @@ class NotificationController implements OnlyControllerInterface {
             });
         }
     }
-}   
+}
 
 export const notificationController = new NotificationController();

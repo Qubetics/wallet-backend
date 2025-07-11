@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwtHelper from "../helpers/common/jwt";
-import response from "../helpers/response/response.helpers";
+import response from "../helpers/response";
 import { language } from "../constants";
 import { CryptoHelper } from "../helpers/common/cryptoJs";
 

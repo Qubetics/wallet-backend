@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { SwapSettingsInterface } from "../interface/interface.swap_setting";
-import db from "../../helpers/common/db";
+import db from "../../connections/db";
 
 
 interface SwapSettingsModel extends Optional<SwapSettingsInterface, "id"> { }

@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { ReferralInterface } from "../interface/interface.referrals";
-import db from "../../helpers/common/db";
+import db from "../../connections/db";
 
 interface ReferralModel extends Optional<ReferralInterface, "id"> { }
 interface ReferralInstance

@@ -1,6 +1,6 @@
-import commonHelper from "../common/common.helpers";
+import commonHelper from "../common/common";
 import * as Models from '../../models/model/index';
-import { Op } from "sequelize";
+// import { Op } from "sequelize";
 
 
 class NotificationQueries {
@@ -15,7 +15,7 @@ class NotificationQueries {
     //         return data;
     //     } catch (err: any) {
     //         console.error("Error in notification_find_one>>", err)
-    //         await commonHelper.save_error_logs("notification_find_one", err.message);
+    //         await commonHelper.saveErrorLogs("notification_find_one", err.message);
     //         throw err;
     //     }
     // }
@@ -25,7 +25,7 @@ class NotificationQueries {
     //         return data;
     //     } catch (err: any) {
     //         console.error("Error in notification_update>>", err)
-    //         await commonHelper.save_error_logs("notification_update", err.message);
+    //         await commonHelper.saveErrorLogs("notification_update", err.message);
     //         throw err;
     //     }
     // }
@@ -35,13 +35,13 @@ class NotificationQueries {
     //         return data;
     //     } catch (err: any) {
     //         console.error("Error in notification_create>>", err)
-    //         await commonHelper.save_error_logs("notification_create", err.message);
+    //         await commonHelper.saveErrorLogs("notification_create", err.message);
     //         throw err;
     //     }
     // }
 
     // Joints
-    public async notifications_joint_find_all_count_all(attr1: any, attr2: any, attr3: any, where1: any, where2: any, per_page: number, offset: number) {
+    public async notificationsJointFindAllCountAll(attr1: any, attr2: any, attr3: any, where1: any, where2: any, per_page: number, offset: number) {
         try {
             const data: any = await Models.NotificationModel.findAndCountAll({
                 attributes: attr1,
@@ -66,13 +66,13 @@ class NotificationQueries {
             });
             return data;
         } catch (err: any) {
-            console.error("Error in notifications_joint_find_all_count_all>>", err)
-            await commonHelper.save_error_logs("notifications_joint_find_all_count_all", err.message);
+            console.error("Error in notificationsJointFindAllCountAll>>", err)
+            await commonHelper.saveErrorLogs("notificationsJointFindAllCountAll", err.message);
             throw err;
         }
     }
 
 }
 
-const notification_queries = new NotificationQueries();
-export default notification_queries;
+const notificationQueries = new NotificationQueries();
+export default notificationQueries;

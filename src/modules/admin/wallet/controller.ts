@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
 import { OnlyControllerInterface } from "../../../interfaces/controller.interface";
-import { GlblCode, GlblMessages } from "../../../constants/global_enum";
+import { GlblCode, GlblMessages } from "../../../constants/enum";
 import { language } from "../../../constants";
 import { adminErrQueries } from "../../../helpers/dbHelper";
 import MenuListsModel from "../../../models/model/model_menu_lists.";
-import { WalletHelper } from "./wallet.helper";
-import { includes } from "lodash";
+import { WalletHelper } from "./helper";
 import CoinsModel from "../../../models/model/model.coins";
 import { Op } from "sequelize";
 
@@ -43,10 +42,10 @@ class WalletController implements OnlyControllerInterface {
         try {
 
             const per_page: number = Number(
-              req.body?.limit == undefined ? (req.body.limit = "10") : req.body.limit
+                req.body?.limit == undefined ? (req.body.limit = "10") : req.body.limit
             );
             const page: number = Number(
-              req.body.page == undefined ? (req.body.page = "1") : req.body.page
+                req.body.page == undefined ? (req.body.page = "1") : req.body.page
             );
             const offset: number = (page - 1) * per_page;
             const userId: number = Number(req.body?.user_id == undefined ? null : req.body.user_id);
@@ -54,7 +53,7 @@ class WalletController implements OnlyControllerInterface {
             const from_date: string = req.body?.from_date == undefined ? null : req.body.from_date;
             const to_date: string = req.body?.to_date == undefined ? null : req.body.to_date;
             const coin_family: string = req.body?.coin_family == undefined ? null : req.body.coin_family;
-            
+
             //object for get transaction history
             let obj: any = {
                 where: {},
@@ -62,7 +61,7 @@ class WalletController implements OnlyControllerInterface {
                 limit: per_page,
                 offset: offset,
                 page: page,
-                attributes : ["from_adrs","coin_family", "to_adrs", "tx_id", "blockchain_status", "amount", "created_at"],
+                attributes: ["from_adrs", "coin_family", "to_adrs", "tx_id", "blockchain_status", "amount", "created_at"],
                 includes: [
                     {
                         model: CoinsModel,
@@ -75,10 +74,10 @@ class WalletController implements OnlyControllerInterface {
             //search by from_adrs, to_adrs, tx_id, type
             if (search) {
                 obj.where[Op.or] = [
-                { from_adrs: { [Op.like]: `%${search}%` } },
-                { to_adrs: { [Op.like]: `%${search}%` } },
-                { tx_id: { [Op.like]: `%${search}%` } },
-                { type: { [Op.like]: `%${search}%` } }
+                    { from_adrs: { [Op.like]: `%${search}%` } },
+                    { to_adrs: { [Op.like]: `%${search}%` } },
+                    { tx_id: { [Op.like]: `%${search}%` } },
+                    { type: { [Op.like]: `%${search}%` } }
                 ];
             }
 
@@ -93,18 +92,18 @@ class WalletController implements OnlyControllerInterface {
             }
 
             //search by from_date and to_date
-            if(from_date && to_date){
+            if (from_date && to_date) {
                 const start_date = new Date(from_date);
                 start_date.setHours(0, 0, 0, 0);
-                
+
                 const end_date = new Date(to_date);
                 end_date.setHours(23, 59, 59, 999);
-                
-                obj.where.created_at = { 
+
+                obj.where.created_at = {
                     [Op.between]: [
-                        start_date.toISOString().slice(0, 19).replace('T', ' '), 
+                        start_date.toISOString().slice(0, 19).replace('T', ' '),
                         end_date.toISOString().slice(0, 19).replace('T', ' ')
-                    ] 
+                    ]
                 };
             }
 
@@ -133,7 +132,7 @@ class WalletController implements OnlyControllerInterface {
     public async dashboard(req: Request, res: Response) {
         let lang: any = req.headers['content-language'] || 'en';
         try {
-            
+
             // Fetch all data in parallel
             const [
                 new_added_token,

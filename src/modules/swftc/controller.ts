@@ -8,12 +8,12 @@ import {
   GlblAddedBy,
   GlblBooleanEnum,
   GlblCode,
-} from "../../constants/global_enum";
-import { global_helper } from "../../helpers/common/global_helper";
+} from "../../constants/enum";
+import { globalHelper } from "../../helpers/common/global";
 import { language } from "../../constants";
-import commonHelper from "../../helpers/common/common.helpers";
-import { Op, Sequelize } from "sequelize";
-import { coin_queries } from "../../helpers/dbHelper";
+import commonHelper from "../../helpers/common/common";
+import { Op } from "sequelize";
+import { coinQueries } from "../../helpers/dbHelper";
 
 class SwftcController implements OnlyControllerInterface {
   constructor() {
@@ -23,10 +23,10 @@ class SwftcController implements OnlyControllerInterface {
   public initialize() { }
 
   public async post_data(req: Request, res: Response) {
-    console.log(
-      "config.SWFTC.SWFTC_QUERY_COINLIST >>>",
-      config.SWFTC.SWFTC_QUERY_COINLIST
-    );
+    // console.log(
+    //   "config.SWFTC.SWFTC_QUERY_COINLIST >>>",
+    //   config.SWFTC.SWFTC_QUERY_COINLIST
+    // );
     let lang: any = req.headers["content-language"] || "en";
     try {
       var data = JSON.stringify({
@@ -105,7 +105,7 @@ class SwftcController implements OnlyControllerInterface {
                 });
                 let image: any = null;
                 let cmcId: any = null;
-                let result: any = await global_helper.get_token_image_from_cmc({
+                let result: any = await globalHelper.getTokenImageFromCmc({
                   symbol: symbol,
                 });
                 if (result) {
@@ -118,7 +118,7 @@ class SwftcController implements OnlyControllerInterface {
                   let graphPair: string | null = null;
                   if (token_address && symbol) {
                     const tradingViewData =
-                      await global_helper.getTradingSource(symbol);
+                      await globalHelper.getTradingSource(symbol);
                     console.log("tradingViewData >>>", tradingViewData);
                     if (tradingViewData.status) {
                       graphSource = tradingViewData.graphSource;
@@ -153,7 +153,7 @@ class SwftcController implements OnlyControllerInterface {
                     created_at: currentUTCDate,
                     updated_at: currentUTCDate,
                   };
-                  let response: any = await coin_queries.coin_create(coinData);
+                  const response: any = await coinQueries.coinCreate(coinData);
                   coin_id = response?.coin_id;
                 } else {
                   coin_id = findCoin?.coin_id;
@@ -314,7 +314,7 @@ class SwftcController implements OnlyControllerInterface {
       return res.status(result.code).send(result);
     } catch (err: any) {
       console.error("err in get_data of SWFTC>>", err);
-      await commonHelper.save_error_logs("swftc_coindata", err.message);
+      await commonHelper.saveErrorLogs("swftc_coindata", err.message);
       let data = {
         status: false,
         code: GlblCode.ERROR_CODE,
@@ -393,7 +393,7 @@ class SwftcController implements OnlyControllerInterface {
       return res.status(result.code).send(result);
     } catch (err: any) {
       console.error("err in get_data of queryCoinData>>", err);
-      await commonHelper.save_error_logs("swftc_queryCoinData", err.message);
+      await commonHelper.saveErrorLogs("swftc_queryCoinData", err.message);
       let data = {
         status: false,
         code: GlblCode.ERROR_CODE,
@@ -425,7 +425,7 @@ class SwftcController implements OnlyControllerInterface {
       return res.status(data.code).send(data);
     } catch (err: any) {
       console.error(`getBaseInfo err >>>`, err);
-      await commonHelper.save_error_logs("SWFT_getBaseInfo", err.message);
+      await commonHelper.saveErrorLogs("SWFT_getBaseInfo", err.message);
       let data = {
         details: [],
         status: false,
@@ -459,7 +459,7 @@ class SwftcController implements OnlyControllerInterface {
       return res.status(data.code).send(data);
     } catch (err: any) {
       console.error(`accountExchange err >>>`, err);
-      await commonHelper.save_error_logs("SWFT_accountExchange", err.message);
+      await commonHelper.saveErrorLogs("SWFT_accountExchange", err.message);
       let data = {
         details: [],
         status: false,

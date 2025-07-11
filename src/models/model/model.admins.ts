@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { AdminInterface } from "../index";
-import db from "../../helpers/common/db";
+import db from "../../connections/db";
 
 interface AdminModel extends Optional<AdminInterface, "id"> { }
 interface AdminInstance

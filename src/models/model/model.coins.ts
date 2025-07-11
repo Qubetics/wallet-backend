@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { CoinInterface } from "../interface/index.interface";
-import db from "../../helpers/common/db";
-import CoinPriceInFiatModel from "../model/model.coinPriceInFiat";
+import db from "../../connections/db";
+import CoinPriceInFiatModel from "./model.coin_price_in_fiat";
 import WatchlistsModel from "./model.watchlist";
 interface CoinCreationModel extends Optional<CoinInterface, "coin_id"> { }
 interface CoinInstance

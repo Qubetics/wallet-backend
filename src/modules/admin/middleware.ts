@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import jwtHelper from '../../helpers/common/jwt';
 import { config } from "../../config";
-import { GlblCode, GlblMessages } from './../../constants/global_enum';
+import { GlblCode, GlblMessages } from '../../constants/enum';
 import { Messages } from "./auth/enum";
 import { adminQueries } from "../../helpers/dbHelper";
 import jwt from 'jsonwebtoken';
-import commonHelper from "../../helpers/common/common.helpers";
-import s3Helper from "../../helpers/common/s3.helpers";
+import commonHelper from "../../helpers/common/common";
+import s3Helper from "../../helpers/common/s3";
 import { CryptoHelper } from "../../helpers/common/cryptoJs";
 import BannerModel from "../../models/model/model.banner";
 
@@ -91,27 +91,27 @@ class AdminMiddleware {
         }
     }
 
-    public uploadImageToHuawei = async (req: Request, res: Response, next: NextFunction, folder : any = 'Banner') => {
+    public uploadImageToHuawei = async (req: Request, res: Response, next: NextFunction, folder: any = 'Banner') => {
         try {
-          if (req.files && req.files.image) {
-            const file = Array.isArray(req.files.image) ? req.files.image[0] : req.files.image;
-            const uploadedUrl = await s3Helper.uploadToHuaweiS3(file, folder);
-            req.body.imagePath = uploadedUrl;
-          }
-          next();
+            if (req.files && req.files.image) {
+                const file = Array.isArray(req.files.image) ? req.files.image[0] : req.files.image;
+                const uploadedUrl = await s3Helper.uploadToHuaweiS3(file, folder);
+                req.body.imagePath = uploadedUrl;
+            }
+            next();
         } catch (error: any) {
-          console.error("❌ Image Upload Middleware Error:", error.message);
-          return res.status(GlblCode.ERROR_CODE).json({
-            message: GlblMessages.FILE_UPLOAD_ERROR,
-            status: false,
-            code: GlblCode.ERROR_CODE,
-            data: {},
-        });
+            console.error("❌ Image Upload Middleware Error:", error.message);
+            return res.status(GlblCode.ERROR_CODE).json({
+                message: GlblMessages.FILE_UPLOAD_ERROR,
+                status: false,
+                code: GlblCode.ERROR_CODE,
+                data: {},
+            });
         }
-      };
+    };
 
     public checkActiveBanners = async (req: Request, res: Response, next: NextFunction) => {
-        const activeBanners : any = await BannerModel.count({ where: { status: '1' } });
+        const activeBanners: any = await BannerModel.count({ where: { status: '1' } });
         if (activeBanners >= 5) {
             return res.status(GlblCode.ERROR_CODE).send({
                 code: GlblCode.ERROR_CODE,

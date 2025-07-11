@@ -1,4 +1,4 @@
-import ZooKeeper from './connections/zookeeper.conn';
+import ZooKeeper from './connections/zookeeper';
 (async () => {
     await ZooKeeper.connectZookeeper();
     await require('./config/index');

@@ -10,8 +10,8 @@ import { config } from "./config";
 import helmet from "helmet";
 import { encryptionMiddleware } from "./middlewares/encryption.middleware";
 import { ValidationError, Joi } from 'express-validation';
-import { GlblCode, GlblMessages, InfoMessages } from "./constants/global_enum";
-import ApiLimiter from "./middlewares/apiRateLimiter";
+import { GlblCode, GlblMessages, InfoMessages } from "./constants/enum";
+import ApiLimiter from "./middlewares/rateLimit.middleware";
 import sanitizeHtml from "sanitize-html";
 
 const swaggerUi = require('swagger-ui-express');

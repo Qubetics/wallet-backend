@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import { OnlyControllerInterface } from "../../../interfaces/controller.interface";
-import { GlblBooleanEnum, GlblCode, GlblMessages } from "../../../constants/global_enum";
+import { GlblCode, GlblMessages } from "../../../constants/enum";
 import { language } from "../../../constants";
 import { adminErrQueries } from "../../../helpers/dbHelper";
-import s3Helper from "../../../helpers/common/s3.helpers";
+import s3Helper from "../../../helpers/common/s3";
 import { Op } from "sequelize";
-import { BannerHelper } from "./banner.helper";
+import { BannerHelper } from "./helper";
 import BannerModel from "../../../models/model/model.banner";
 
 class BannerController implements OnlyControllerInterface {

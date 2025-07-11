@@ -1,4 +1,4 @@
-import zookeeperConfig from "../connections/zookeeper.conn";
+import zookeeperConfig from "../connections/zookeeper";
 const name = "qubetics";
 
 export const config = {
@@ -110,7 +110,7 @@ export const config = {
   },
   MORALIS_SCRIPT_ID: 'moralis-chart-widget',
   MORALIS_SCRIPT_SRC: 'https://moralis.com/static/embed/chart.js',
-  
+
   CONTRACT_ABI: [
     {
       constant: true,
@@ -1124,7 +1124,7 @@ export const config = {
     },
   ],
 
-  TRON_ABI : [
+  TRON_ABI: [
     {
       constant: true,
       inputs: [],

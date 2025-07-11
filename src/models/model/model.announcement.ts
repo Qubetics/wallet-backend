@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { AnnouncementInterface } from "../interface/interface.announcements";
-import db from "../../helpers/common/db";
+import db from "../../connections/db";
 
 interface AnnouncementModel extends Optional<AnnouncementInterface, "id"> { }
 interface AnnouncementInstance

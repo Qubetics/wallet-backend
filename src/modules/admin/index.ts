@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import AuthRoute from './auth/router';
+import AuthRoute from './auth/route';
 // import UserRoute from './users/router';
-import CommissionRoute from './commission/router';
-import WalletRoute from './wallet/router';
-import TokenRoute from './token/router'
-import NotificationRoute from './notification/router'
-import BannerRoute from './banner/router';
+import CommissionRoute from './commission/route';
+import WalletRoute from './wallet/route';
+import TokenRoute from './token/route'
+import NotificationRoute from './notification/route'
+import BannerRoute from './banner/route';
 
 
 

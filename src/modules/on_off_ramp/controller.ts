@@ -1,14 +1,13 @@
 import { Request, Response } from "express";
 import { OnlyControllerInterface } from "../../interfaces/controller.interface";
 import * as Models from '../../models/model/index';
-import { GlblBlockchainTxStatusEnum, GlblCode, GlblMessages, GlblStatus } from "../../constants/global_enum";
+import { GlblBlockchainTxStatusEnum, GlblCode, GlblMessages, GlblStatus } from "../../constants/enum";
 import { TYPE, TxReqTypesEnum } from "./enum";
-import jwt from "jsonwebtoken";
-import { language, NotificationTypes } from "../../constants";
-import commonHelper from "../../helpers/common/common.helpers";
+import { language } from "../../constants";
+import commonHelper from "../../helpers/common/common";
 import { Op } from "sequelize";
-import { bigNumberSafeConversion } from "../../helpers/common/globalFunctions";
-import { global_helper } from "../../helpers/common/global_helper";
+import { bigNumberSafeConversion } from "../../helpers/common/functions";
+import { globalHelper } from "../../helpers/common/global";
 import dbHelper from "../../helpers/dbHelper";
 
 
@@ -65,7 +64,7 @@ class OnOffRampController implements OnlyControllerInterface {
 
         } catch (err: any) {
             console.error("Error in transak_initiate_txn>>", err)
-            await commonHelper.save_error_logs("on_off_ramp_initiate_txn", err.message);
+            await commonHelper.saveErrorLogs("on_off_ramp_initiate_txn", err.message);
             return res.status(GlblCode.ERROR_CODE).send({
                 status: false,
                 code: GlblCode.ERROR_CODE,
@@ -74,6 +73,7 @@ class OnOffRampController implements OnlyControllerInterface {
         }
 
     }
+
     public async mercuryoWebhook(req: Request, res: Response) {
         try {
             console.log('🚀 ~ ~ mercuro_webhook req.body?.data', req.body?.data);
@@ -167,7 +167,7 @@ class OnOffRampController implements OnlyControllerInterface {
                                     raw: true
                                 });
                                 if (coin_data) {
-                                    let balance = await global_helper.get_wallet_balance(coin_data, webhookData?.tx?.address);
+                                    let balance = await globalHelper.getWalletBalance(coin_data, webhookData?.tx?.address, false);
 
                                     await Models.WalletModel.update(
                                         { balance: Number(balance) },
@@ -206,7 +206,7 @@ class OnOffRampController implements OnlyControllerInterface {
                                     tx_id: txDetail.id || 0,
                                     tx_type: webhookData?.type.toUpperCase(),
                                 };
-                                await global_helper.sendNotification(dataNoti);
+                                await globalHelper.sendNotification(dataNoti);
                             }
                         }
                     }
@@ -215,7 +215,7 @@ class OnOffRampController implements OnlyControllerInterface {
             }
         } catch (err: any) {
             console.error("Error in mercuro_webhook>>", err)
-            await commonHelper.save_error_logs("transak_webhook", err.message)
+            await commonHelper.saveErrorLogs("transak_webhook", err.message)
             return res.status(GlblCode.ERROR_CODE).send({
                 status: false,
                 code: GlblCode.ERROR_CODE,

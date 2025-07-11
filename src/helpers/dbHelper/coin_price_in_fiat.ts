@@ -1,19 +1,19 @@
 import * as Models from '../../models/model/index';
-import commonHelper from '../common/common.helpers';
+import commonHelper from '../common/common';
 
 class CoinPriceInFiatQueries {
 
-    public async coin_price_in_fiat_create(obj: any) {
+    public async coinPriceInFiatCreate(obj: any) {
         try {
             let data: any = await Models.CoinPriceInFiatModel.create(obj)
             return data;
         } catch (err: any) {
-            console.error("Error in coin_price_in_fiat_create>>", err)
-            await commonHelper.save_error_logs("coin_price_in_fiat_create", err.message);
+            console.error("Error in coinPriceInFiatCreate>>", err)
+            await commonHelper.saveErrorLogs("coinPriceInFiatCreate", err.message);
             return null;
         }
     }
-    public async coin_price_in_fiat_find_one(attr: any, where_clause: any) {
+    public async coinPriceInFiatFindOne(attr: any, where_clause: any) {
         try {
             let data: any = await Models.CoinPriceInFiatModel.findOne({
                 attributes: attr,
@@ -22,8 +22,8 @@ class CoinPriceInFiatQueries {
             })
             return data;
         } catch (err: any) {
-            console.error("Error in coin_price_in_fiat_find_one>>", err)
-            await commonHelper.save_error_logs("coin_price_in_fiat_find_one", err.message);
+            console.error("Error in coinPriceInFiatFindOne>>", err)
+            await commonHelper.saveErrorLogs("coinPriceInFiatFindOne", err.message);
             return null;
         }
     }
@@ -36,7 +36,7 @@ class CoinPriceInFiatQueries {
     //         return data;
     //     } catch (err: any) {
     //         console.error("Error in coinPriceInFiatFindAll>>", err)
-    //         await commonHelper.save_error_logs("coinPriceInFiatFindAll", err.message);
+    //         await commonHelper.saveErrorLogs("coinPriceInFiatFindAll", err.message);
     //         return null;
     //     }
     // }
@@ -46,12 +46,12 @@ class CoinPriceInFiatQueries {
     //         return data;
     //     } catch (err: any) {
     //         console.error("Error in coin_price_in_fiat_bulk_create>>", err)
-    //         await commonHelper.save_error_logs("coin_price_in_fiat_bulk_create", err.message);
+    //         await commonHelper.saveErrorLogs("coin_price_in_fiat_bulk_create", err.message);
 
     //         throw err;
     //     }
     // }
-    public async coin_price_in_fiat_graph_find_one(attr: any, where_clause: any) {
+    public async coinPriceInFiatGraphFindOne(attr: any, where_clause: any) {
         try {
             let data: any = await Models.CoinPriceInFiatGraphModel.findOne({
                 attributes: attr,
@@ -60,24 +60,24 @@ class CoinPriceInFiatQueries {
             })
             return data;
         } catch (err: any) {
-            console.error("Error in coin_price_in_fiat_graph_find_one>>", err)
-            await commonHelper.save_error_logs("coin_price_in_fiat_graph_find_one", err.message);
+            console.error("Error in coinPriceInFiatGraphFindOne>>", err)
+            await commonHelper.saveErrorLogs("coinPriceInFiatGraphFindOne", err.message);
             throw err;
         }
     }
 
-    public async coin_price_in_fiat_graph_create(obj: any) {
+    public async coinPriceInFiatGraphCreate(obj: any) {
         try {
             let data: any = await Models.CoinPriceInFiatGraphModel.create(obj)
             return data;
         } catch (err: any) {
-            console.error("Error in coin_price_in_fiat_graph_create>>", err)
-            await commonHelper.save_error_logs("coin_price_in_fiat_graph_create", err.message);
+            console.error("Error in coinPriceInFiatGraphCreate>>", err)
+            await commonHelper.saveErrorLogs("coinPriceInFiatGraphCreate", err.message);
             return null;
         }
     }
 
 }
 
-const coin_price_in_fiat_queries = new CoinPriceInFiatQueries();
-export default coin_price_in_fiat_queries;
+const coinPriceInFiatQueries = new CoinPriceInFiatQueries();
+export default coinPriceInFiatQueries;

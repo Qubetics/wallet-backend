@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import response from "../helpers/response/response.helpers";
-import commonHelper from "../helpers/common/common.helpers";
+import response from "../helpers/response";
+import commonHelper from "../helpers/common/common";
 // import { config } from "../config/config";
 // import { GlblMessages } from "../constants/global_enum";
 import { language } from "../constants";

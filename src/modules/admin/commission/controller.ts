@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { OnlyControllerInterface } from "../../../interfaces/controller.interface";
-import { GlblBooleanEnum, GlblCode, GlblMessages } from "../../../constants/global_enum";
+import { GlblCode, GlblMessages } from "../../../constants/enum";
 import { language } from "../../../constants";
-import { adminErrQueries, coin_queries, swapSettingQueries, user_queries, wallet_queries } from "../../../helpers/dbHelper";
-import commonHelper from "../../../helpers/common/common.helpers";
-import { Op } from "sequelize";
+import { adminErrQueries, swapSettingQueries } from "../../../helpers/dbHelper";
+// import commonHelper from "../../../helpers/common/common.helpers";
+// import { Op } from "sequelize";
 import { ethers } from "ethers";
 import redisHelper from "../../../helpers/common/redis";
 import { config } from "../../../config";
@@ -25,7 +25,7 @@ class CommissionController implements OnlyControllerInterface {
             commissionDetails = await redisHelper.getRedisSting(config.ON_CHAIN_DATA);
             if (commissionDetails) {
                 commissionDetails = JSON.parse(commissionDetails);
-            }else{
+            } else {
                 commissionDetails = await swapSettingQueries.swapSettingsFindOne(
                     [['address', 'walletAddress'], 'percentage'],
                     { id: 1 },
@@ -65,7 +65,7 @@ class CommissionController implements OnlyControllerInterface {
                     setClause = { percentage: req.body.value }
                 } else {
                     const check = ethers.isAddress(req.body.value)
-                    if(!check) return res.status(GlblCode.ERROR_CODE).send({
+                    if (!check) return res.status(GlblCode.ERROR_CODE).send({
                         code: GlblCode.ERROR_CODE,
                         status: false,
                         message: language[lang].INVALID_WALLET_ADDRESS
@@ -84,7 +84,7 @@ class CommissionController implements OnlyControllerInterface {
                     if (commissionDetails) {
                         await redisHelper.setRedisSting(config.ON_CHAIN_DATA, JSON.stringify(commissionDetails));
                     }
-                }   
+                }
             }
 
             return res.status(GlblCode.SUCCESS).send({

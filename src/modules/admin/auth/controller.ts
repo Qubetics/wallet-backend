@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { OnlyControllerInterface } from "../../../interfaces/controller.interface";
-import { GlblBooleanEnum, GlblCode, GlblMessages } from "../../../constants/global_enum";
+import { GlblBooleanEnum, GlblCode, GlblMessages } from "../../../constants/enum";
 import { language } from "../../../constants";
 import { adminErrQueries, adminQueries } from "../../../helpers/dbHelper";
 import { Messages } from './enum';
@@ -10,7 +10,7 @@ import { config } from "../../../config";
 import jwtHelper from "../../../helpers/common/jwt";
 import speakeasy from 'speakeasy';
 import QRCode from "qrcode";
-import adminMiddleware from "../middleware";
+// import adminMiddleware from "../middleware";
 import { MenuListsModel, PermissionsModel } from "../../../models";
 import permissionsQueries from "../../../helpers/dbHelper/permissions";
 
@@ -55,15 +55,15 @@ class AuthController implements OnlyControllerInterface {
                     data: {}
                 });
             }
-             //if google2fa_status is 1 then check if token is required
-            if(checkEmailExist.google2fa_status == 1  ){
+            //if google2fa_status is 1 then check if token is required
+            if (checkEmailExist.google2fa_status == 1) {
 
-                if(req.body.token == null || req.body.token == undefined || req.body.token == ""){
+                if (req.body.token == null || req.body.token == undefined || req.body.token == "") {
                     return res.status(GlblCode.SUCCESS).send({
                         message: Messages.TOKEN_REQUIRED,
                         status: true,
                         code: GlblCode.SUCCESS,
-                        data: {token: null, google_2fa: GlblBooleanEnum.true}
+                        data: { token: null, google_2fa: GlblBooleanEnum.true }
                     });
                 }
 
@@ -75,7 +75,7 @@ class AuthController implements OnlyControllerInterface {
                     algorithm: "sha1"
                 });
 
-                if(verified == false){
+                if (verified == false) {
                     return res.status(GlblCode.ERROR_CODE).send({
                         message: Messages.INVALID_2FA,
                         status: false,
@@ -91,7 +91,7 @@ class AuthController implements OnlyControllerInterface {
                 await redisClient.delKey(config.ADMIN_TOKEN, (checkEmailExist.email).toUpperCase())
             }
 
-            const jwtToken: any = await jwtHelper.create_json_web_token(checkEmailExist.id);
+            const jwtToken: any = await jwtHelper.createJsonWebTokenForAdmin(checkEmailExist.id);
 
             await adminQueries.adminUpdate(
                 { login_status: GlblBooleanEnum.true },
@@ -111,8 +111,8 @@ class AuthController implements OnlyControllerInterface {
 
             adminData = {
                 ...adminData,
-                token : jwtToken,
-                permissions_data : permissions_data
+                token: jwtToken,
+                permissions_data: permissions_data
             }
 
             //set jwt token in redis for 1 hour
@@ -255,7 +255,7 @@ class AuthController implements OnlyControllerInterface {
             let data: any;
             const adminId: number = req.body.adminId;
             const { password, action, token }: { password: string, action: number, token: string } = req.body;
-            const {google2fa_secret : googleSecretKey} = req.body.adminDetails;
+            const { google2fa_secret: googleSecretKey } = req.body.adminDetails;
             console.log("req googleSecretKey", googleSecretKey)
 
             let adminData: any = await adminQueries.adminFindOne(
@@ -377,7 +377,7 @@ class AuthController implements OnlyControllerInterface {
                     data: {}
                 };
             } else if (verified == true) {
-                // const jwt_token: any = await jwtHelper.create_json_web_token(adminData.id);
+                // const jwt_token: any = await jwtHelper.createJsonWebTokenForAdmin(adminData.id);
                 // let final_data = { id: adminData.id, user: adminData.username, email: adminData.email, token: jwt_token, google2fa_status: adminData.google2fa_status }
 
                 data = {
@@ -424,7 +424,7 @@ class AuthController implements OnlyControllerInterface {
             }
 
             //check if new password is same as old password
-            if(newPassword == oldPassword){
+            if (newPassword == oldPassword) {
                 return res.status(GlblCode.ERROR_CODE).send({
                     message: Messages.NEW_PASS_SAME_AS_OLD_PASS,
                     status: false,

@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { AddressBookInterface } from "../interface/interface.address_book";
-import db from "../../helpers/common/db";
+import db from "../../connections/db";
 
 interface AddressBookCreationModel extends Optional<AddressBookInterface, "id"> { }
 interface AddressBookInstance

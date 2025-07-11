@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { TrnxBandwidthInterface } from "../index";
-import db from "../../helpers/common/db";
+import db from "../../connections/db";
 
 interface TrnxBandwidthModel extends Optional<TrnxBandwidthInterface, "id"> { }
 interface TrnxBandwidthInstance

@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import db from "../../helpers/common/db";
+import db from "../../connections/db";
 import { AdminErrLogsInterface } from '../interface/index.interface';
 
 interface AdminErrLogsCreationModel extends Optional<AdminErrLogsInterface, "id"> { }

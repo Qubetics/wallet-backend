@@ -1,14 +1,14 @@
 import * as Models from '../../models/model/index';
-import commonHelper from '../common/common.helpers';
+import commonHelper from '../common/common';
 
 class PermissionsQueries {
 
     public permissionsModal: any = Models.PermissionsModel;
 
     public async getAdminPermissions(obj: any) {
-        
+
         try {
-            let data: any = await this.permissionsModal.findAll({
+            const data: any = await this.permissionsModal.findAll({
                 where: {
                     admin_id: obj.admin_id
                 },
@@ -18,7 +18,7 @@ class PermissionsQueries {
             return data;
         } catch (err: any) {
             console.error("Error in getAdminPermissions>>", err)
-            await commonHelper.save_error_logs("getAdminPermission err", err.message);
+            await commonHelper.saveErrorLogs("getAdminPermission err", err.message);
             throw err;
         }
 

@@ -2,37 +2,37 @@ import {
   Fiat_Currency,
   GlblBooleanEnum,
   WalletName,
-} from "../../constants/global_enum";
+} from "../../constants/enum";
 
 import { Sequelize } from "sequelize";
-import { global_helper } from "../../helpers/common/global_helper";
+import { globalHelper } from "../../helpers/common/global";
 import redisClient from "../../helpers/common/redis";
 import { config } from "../../config";
 import dbHelper, {
-  wallet_queries,
-  user_queries,
-  coin_queries,
-  device_token_queries,
+  walletQueries,
+  userQueries,
+  coinQueries,
+  deviceTokenQueries,
   address_book_wallet_queries,
 } from "../../helpers/dbHelper/index";
-import commonHelper from "../../helpers/common/common.helpers";
+import commonHelper from "../../helpers/common/common";
 import { language } from "../../constants";
-import kafka_helper from "../../helpers/common/kafka_helper";
+import kafka_helper from "../../helpers/common/kafka";
 
 
 class userHelper {
   constructor() { }
 
-  public async old_user_generate_referral(device_id: any, userId: any) {
+  public async oldUserGenerateReferral(device_id: any, userId: any) {
     try {
-      let user_exist: any = await user_queries.user_find_one(
+      let user_exist: any = await userQueries.userFindOne(
         ["referral_code", "device_id"],
         { user_id: userId }
       );
       let referral_code: any;
       let where_clause: any;
       if (user_exist.referral_code == null) {
-        let code: any = await userhelper.generate_referral_code();
+        let code: any = await userhelper.generateReferralCode();
         where_clause = { referral_code: code };
         referral_code = code;
       } else {
@@ -60,19 +60,20 @@ class userHelper {
         }
       }
       if (where_clause) {
-        await user_queries.user_update(where_clause, { user_id: userId });
+        await userQueries.userUpdate(where_clause, { user_id: userId });
       }
       return referral_code;
     } catch (err: any) {
-      console.error("Error in old_user_generate_referral>>>>", err);
-      await commonHelper.save_error_logs(
-        "old_user_generate_referral",
+      console.error("Error in oldUserGenerateReferral>>>>", err);
+      await commonHelper.saveErrorLogs(
+        "oldUserGenerateReferral",
         err.message
       );
       return 0;
     }
   }
-  public async generate_referral_code() {
+
+  public async generateReferralCode() {
     try {
       const characters: string =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -83,18 +84,19 @@ class userHelper {
       }
       return code;
     } catch (err: any) {
-      console.error("Error in user > generate_referral_code.", err);
-      await commonHelper.save_error_logs("generate_referral_code", err.message);
+      console.error("Error in user > generateReferralCode.", err);
+      await commonHelper.saveErrorLogs("generateReferralCode", err.message);
       return err;
     }
   }
-  public async create_new_user(device_id: any, user_name: string) {
+
+  public async createNewUser(device_id: any, user_name: string) {
     try {
       const currentUTCDate: string = new Date()
         .toISOString()
         .replace(/T/, " ")
         .replace(/\..+/, "");
-      let code: any = await userhelper.generate_referral_code();
+      let code: any = await userhelper.generateReferralCode();
       let obj: any = {
         user_name: user_name,
         // request_rejected: 0,
@@ -109,16 +111,17 @@ class userHelper {
         created_at: currentUTCDate,
         updated_at: currentUTCDate,
       };
-      let userData: any = await user_queries.user_create(obj);
+      let userData: any = await userQueries.userCreate(obj);
       let user_id: any = userData.user_id;
       return { code, user_id };
     } catch (err: any) {
-      console.error("Error in create_new_user>>", err);
-      await commonHelper.save_error_logs("create_new_user", err.message);
+      console.error("Error in createNewUser>>", err);
+      await commonHelper.saveErrorLogs("createNewUser", err.message);
       return false;
     }
   }
-  public async updating_balance(
+
+  public async updatingBalance(
     addressList: any,
     userId: number,
     req: any,
@@ -135,11 +138,11 @@ class userHelper {
       for await (const wallet of addressList) {
         if (!wallet.address) continue;
 
-        let address: string = wallet.address;
-        let symbol: string = wallet.symbol;
-        let coin_family: number = wallet.coin_family;
+        const address: string = wallet.address;
+        const symbol: string = wallet.symbol;
+        const coin_family: number = wallet.coin_family;
 
-        let addressValidity: any = await global_helper.validate_address(
+        const addressValidity: any = await globalHelper.validateAddress(
           address,
           coin_family
         );
@@ -149,7 +152,7 @@ class userHelper {
           );
 
         // Getting Coin data
-        let coinData: any = await coin_queries.coin_find_one(
+        const coinData: any = await coinQueries.coinFindOne(
           [
             "coin_id",
             "coin_family",
@@ -162,15 +165,16 @@ class userHelper {
         );
         if (coinData) {
           // balance of coin
-          let balDetails: any = await global_helper.get_wallet_balance(
+          const balDetails: any = await globalHelper.getWalletBalance(
             coinData,
-            address
+            address,
+            false
           );
-          let balance: string = "0";
-          if (balDetails.status) {
-            balance = balDetails.balance;
-          }
-          let ifWalletExists: any = await wallet_queries.wallet_find_one(
+          // let balance: string = "0";
+          // if (balDetails.status) {
+          //   balance = balDetails.balance;
+          // }
+          const ifWalletExists: any = await walletQueries.walletFindOne(
             ["wallet_id"],
             {
               wallet_address: address,
@@ -179,12 +183,12 @@ class userHelper {
             }
           );
           if (ifWalletExists) {
-            await wallet_queries.wallet_update(
+            await walletQueries.walletUpdate(
               { wallet_name: wallet_name, status: GlblBooleanEnum.true },
               { wallet_id: ifWalletExists.wallet_id }
             );
           } else {
-            let obj: any = {
+            const walletCreatedData: any = {
               user_id: userId,
               wallet_name: wallet_name,
               wallet_address: address,
@@ -198,8 +202,8 @@ class userHelper {
               updated_at: currentUTCDate,
             };
             // Creating wallet for that blockchain (coin)
-            await wallet_queries.wallet_create(obj);
-            await this.update_wallet_address_list(
+            await walletQueries.walletCreate(walletCreatedData);
+            await this.addWalletAddressInRedis(
               wallet.coin_family,
               address,
               userId,
@@ -222,7 +226,7 @@ class userHelper {
           }
         }
         if (device_token !== "chrome" && device_token !== "abc") {
-          await this.device_token_helper(
+          await this.saveDeviceTokens(
             device_token,
             userId,
             lang,
@@ -233,13 +237,13 @@ class userHelper {
         }
       }
     } catch (err: any) {
-      console.error("Error in updating_balance>>>", err);
-      await commonHelper.save_error_logs("updating_balance", err.message);
+      console.error("Error in updatingBalance>>>", err);
+      await commonHelper.saveErrorLogs("updatingBalance", err.message);
       return false;
     }
   }
 
-  private async update_wallet_address_list(
+  private async addWalletAddressInRedis(
     coin_family: number,
     address: string,
     user_id: number,
@@ -298,15 +302,16 @@ class userHelper {
           break;
       }
     } catch (err: any) {
-      console.error("Error in update_wallet_address_list.", err);
-      await commonHelper.save_error_logs(
-        "update_wallet_address_list",
+      console.error("Error in addWalletAddressInRedis.", err);
+      await commonHelper.saveErrorLogs(
+        "addWalletAddressInRedis",
         err.message
       );
       throw err;
     }
   }
-  public async device_token_helper(
+
+  public async saveDeviceTokens(
     device_token: any,
     userId: number,
     lang: string,
@@ -316,13 +321,13 @@ class userHelper {
   ) {
     try {
       let checkUserDeviceToken: any =
-        await device_token_queries.device_token_find_one(["status"], {
+        await deviceTokenQueries.deviceTokenFindOne(["status"], {
           device_id: device_id,
           address: address,
           coin_family: coin_family,
         });
       if (!checkUserDeviceToken) {
-        await device_token_queries.device_token_create({
+        await deviceTokenQueries.deviceTokenCreate({
           device_id: device_id,
           device_token: device_token,
           user_id: userId,
@@ -334,26 +339,27 @@ class userHelper {
           push: 1,
         });
       } else {
-        await device_token_queries.device_token_update(
+        await deviceTokenQueries.deviceTokenUpdate(
           { status: GlblBooleanEnum.true, device_token: device_token },
           { device_id: device_id, address: address, coin_family: coin_family }
         );
       }
       return true;
     } catch (err: any) {
-      console.error("Error in device_token_helper>>>", err);
-      await commonHelper.save_error_logs("device_token_helper", err.message);
+      console.error("Error in saveDeviceTokens>>>", err);
+      await commonHelper.saveErrorLogs("saveDeviceTokens", err.message);
       return false;
     }
   }
-  public async wallet_name(
+
+  public async addressBookName(
     address_book_id: number,
     coin_family: number,
     wallet_name: string
   ) {
     try {
       let check_name: any =
-        await address_book_wallet_queries.address_book_wallets_find_all(
+        await address_book_wallet_queries.addressBookWalletsFindAll(
           ["name"],
           { address_book_id: address_book_id, coin_family: coin_family }
         );
@@ -467,8 +473,8 @@ class userHelper {
       }
       return wallet_name;
     } catch (err: any) {
-      console.error("Error in finding default wallet_name>>>>", err);
-      await commonHelper.save_error_logs("wallet_name", err.message);
+      console.error("Error in finding default addressBookName>>>>", err);
+      await commonHelper.saveErrorLogs("addressBookName", err.message);
       return wallet_name;
     }
   }
@@ -486,7 +492,7 @@ class userHelper {
     }
   }
 
-  public async referral_already_used(data: any, lang: string) {
+  public async referralAlreadyUsed(data: any, lang: string) {
     try {
       let {
         device_id,
@@ -525,16 +531,17 @@ class userHelper {
       }
     } catch (err: any) {
       console.error("Error in check_referral_already_exist.", err);
-      await commonHelper.save_error_logs(
+      await commonHelper.saveErrorLogs(
         "check_referral_already_exist",
         err.message
       );
       throw err;
     }
   }
-  public async referral_code_is_valid(referral_code: string, lang: string) {
+
+  public async referralCodeIsValid(referral_code: string, lang: string) {
     try {
-      let user_exist: any = await user_queries.user_find_one(
+      let user_exist: any = await userQueries.userFindOne(
         ["referral_code", "device_id"],
         { referral_code: referral_code }
       );
@@ -542,11 +549,12 @@ class userHelper {
         throw new Error(`${language[lang].INVALID_REFERRAL_CODE})`);
       }
     } catch (error) {
-      await commonHelper.save_error_logs("check_referral_code_exist", error);
+      await commonHelper.saveErrorLogs("check_referral_code_exist", error);
       return { status: false, data: null };
     }
   }
-  public async save_referral_code(data: any, lang: string) {
+
+  public async saveReferralCode(data: any, lang: string) {
     try {
       let {
         user_id,
@@ -577,10 +585,11 @@ class userHelper {
       }
     } catch (err: any) {
       console.error("Error in update_referral_code>>", err);
-      await commonHelper.save_error_logs("update_referral_code", err.message);
+      await commonHelper.saveErrorLogs("update_referral_code", err.message);
       throw err;
     }
   }
+
 }
 
 const userhelper = new userHelper();

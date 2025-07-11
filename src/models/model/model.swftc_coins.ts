@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { SWFTCcoinsInterface } from "../interface/interface.swftc_coins";
-import db from "../../helpers/common/db";
+import db from "../../connections/db";
 import CoinsModel from "./model.coins";
 
 interface SWFTCCoinsModel extends Optional<SWFTCcoinsInterface, "id"> { }

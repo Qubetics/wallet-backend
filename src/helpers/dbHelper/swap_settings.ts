@@ -1,4 +1,4 @@
-import commonHelper from "../common/common.helpers";
+import commonHelper from "../common/common";
 import * as Models from '../../models/model/index';
 
 
@@ -15,7 +15,7 @@ class SwapSettingQueries {
             return data;
         } catch (err: any) {
             console.error("Error in swapSettingsFindOne>>", err)
-            await commonHelper.save_error_logs("swapSettingsFindOne", err.message);
+            await commonHelper.saveErrorLogs("swapSettingsFindOne", err.message);
             throw err;
         }
     }
@@ -26,7 +26,7 @@ class SwapSettingQueries {
             return data;
         } catch (err: any) {
             console.error("Error in swapSettingsUpdate>>", err)
-            await commonHelper.save_error_logs("swapSettingsUpdate", err.message);
+            await commonHelper.saveErrorLogs("swapSettingsUpdate", err.message);
             throw err;
         }
     }

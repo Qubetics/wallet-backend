@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { WatchlistInterface } from "../interface/interface.watchlists";
-import db from "../../helpers/common/db";
+import db from "../../connections/db";
 
 interface WatchlistCreationModel extends Optional<WatchlistInterface, "id"> { }
 interface WatchlistInstance extends Model<WatchlistInterface, WatchlistCreationModel>, WatchlistInterface { }

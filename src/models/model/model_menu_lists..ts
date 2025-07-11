@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import db from '../../helpers/common/db';
+import db from '../../connections/db';
 import { IMenuList } from '../interface/interface.menu_lists';
 
 interface IMenuListInstance extends Model<IMenuList>, IMenuList { };

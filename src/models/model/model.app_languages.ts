@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { AppLanguagesInterface } from "../index";
-import db from "../../helpers/common/db";
+import db from "../../connections/db";
 interface AppLanguagesModel extends Optional<AppLanguagesInterface, "id"> { }
 interface AppLanguageInstance
     extends Model<AppLanguagesInterface, AppLanguagesModel>,

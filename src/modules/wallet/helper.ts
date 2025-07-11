@@ -1,0 +1,791 @@
+import { OnlyControllerInterface } from "../../interfaces/controller.interface";
+import redisHelper from "../../helpers/common/redis";
+import * as Models from "../../models/model/index";
+import { config } from "../../config";
+import { GlblAddedBy, GlblBooleanEnum } from "../../constants/enum";
+import { exponentialToDecimal } from "../../helpers/common/functions";
+import {
+  coinPriceInFiatQueries,
+  coinQueries,
+  customTokenQueries,
+  // swapSettingQueries,
+} from "../../helpers/dbHelper";
+import { language } from "../../constants";
+import { globalHelper } from "../../helpers/common/global";
+import commonHelper from "../../helpers/common/common";
+import currencyFiatQueries from "../../helpers/dbHelper/currency_fiats";
+import { walletQueries } from "../../helpers/dbHelper";
+// import userhelper from "../user/helper";
+import kafka_helper from "../../helpers/common/kafka";
+import resentGraphDataQueries from "../../helpers/dbHelper/resent_graph_data";
+import cmcHelper from "../../helpers/common/cmc";
+import { Op } from "sequelize";
+
+class WalletHelpers implements OnlyControllerInterface {
+  constructor() {
+    this.initialize();
+  }
+  public initialize() { }
+
+  public async addCoin(
+    tokenAddress: string,
+    symbol: string,
+    name: string,
+    coinFamily: number,
+    tokenType: string,
+    decimals: any,
+    lang: any,
+    currentUTCDate: any,
+    userId: number
+  ) {
+    try {
+      let swapSupported: number = 0;
+
+      if (
+        coinFamily == config.STATIC_COIN_FAMILY.ETH ||
+        coinFamily == config.STATIC_COIN_FAMILY.BNB ||
+        coinFamily == config.STATIC_COIN_FAMILY.POL
+      ) {
+        swapSupported = await globalHelper.oneInchSwapSupported(
+          tokenAddress,
+          coinFamily
+        );
+      }
+
+      let image: any = null;
+      let cmc_id: number | null = null;
+      let graphSource: string | null = null;
+      let graphPair: string | null = null;
+
+      if (tokenAddress && symbol) {
+        let cmc_data: any = await globalHelper.getTokenImageFromCmc({
+          symbol: symbol,
+        });
+        cmc_id = cmc_data ? cmc_data.id : GlblBooleanEnum.false;
+        image = cmc_data ? cmc_data.image : null;
+        const tradingViewData = await globalHelper.getTradingSource(symbol);
+        console.log("tradingViewData >>>", tradingViewData);
+        if (tradingViewData.status) {
+          graphSource = tradingViewData.graphSource;
+          graphPair = tradingViewData.graphPair;
+        }
+      }
+      console.log("coinZone>>>", image, "token_type>>", image);
+
+      let coinData: any = {
+        coin_name: name,
+        coin_symbol: symbol.toUpperCase(),
+        coin_image: image,
+        cmc_id: cmc_id,
+        coin_family: coinFamily,
+        coin_status: GlblBooleanEnum.true,
+        is_token: GlblBooleanEnum.true,
+        is_on_cmc: cmc_id ? GlblBooleanEnum.true : GlblBooleanEnum.false,
+        for_swap: swapSupported,
+        added_by: GlblAddedBy.USER,
+        token_type: tokenType.toUpperCase(),
+        decimals: Math.pow(10, parseInt(decimals)),
+        token_address: tokenAddress,
+        created_at: currentUTCDate,
+        updated_at: currentUTCDate,
+        graph_pair: graphPair,
+        graph_source: graphSource,
+        is_on_trading_view: graphSource ? 1 : 0,
+      };
+      const response: any = await coinQueries.coinCreate(coinData);
+      console.log("🚀 ~ WalletHelpers ~ response:", response)
+
+      coinData.coin_id = response.coin_id;
+      const redisCoinData = {
+        coin_id: coinData.coin_id,
+        is_token: coinData.is_token,
+        token_address: coinData.token_address,
+        coin_family: coinData.coin_family,
+        decimals: coinData.decimals,
+        token_type: coinData.token_type,
+        coin_symbol: coinData.coin_symbol,
+        added_by: coinData.added_by,
+        for_swap: coinData.for_swap
+      }
+      // await WalletHelper.update_token_in_redis(coinData, 0);
+      await WalletHelper.updateTokenInRedisHash(redisCoinData)
+      await customTokenQueries.customTokenCreate({
+        coin_id: coinData.coin_id,
+        user_id: userId,
+      });
+
+      if (cmc_id != null) {
+        await WalletHelper.insertGraphResetData(cmc_id);
+      }
+
+      return { coinData: coinData };
+    } catch (err: any) {
+      console.error("Error in addCoin>>", err);
+      await commonHelper.saveErrorLogs("addCoin", err.message);
+      return null;
+    }
+  }
+
+  private async insertGraphResetData(cmc_id: number) {
+    try {
+      const currentUTCDate: string = new Date()
+        .toISOString()
+        .replace(/T/, " ")
+        .replace(/\..+/, "");
+      const graph_data: any =
+        await resentGraphDataQueries.resentGraphDataFindOne(["id"], {
+          cmc_id: cmc_id,
+        });
+      if (graph_data == null) {
+        await resentGraphDataQueries.resent_graph_data_create({
+          cmc_id: cmc_id,
+          graph_type: "1d",
+          created_at: currentUTCDate,
+          updated_at: null,
+        });
+      }
+    } catch (err: any) {
+      console.error("Error in insertGraphResetData>>", err);
+      await commonHelper.saveErrorLogs(
+        "insertGraphResetData",
+        err.message
+      );
+      throw err;
+    }
+  }
+
+  private async update_fiat_coin_price(
+    cmc_id: number,
+    coin_symbol: string,
+    coin_name: string,
+    coin_family: number,
+    token_address: any,
+    coin_id: number
+  ) {
+    try {
+      let coin_data: any = {
+        coin_symbol: coin_symbol,
+        coin_name: coin_name,
+        coin_family: coin_family,
+        token_address: token_address,
+      };
+      console.log("coin_data>>", coin_data);
+      let fiatCurrency: any =
+        await currencyFiatQueries.currencyFiatFindAll(
+          ["currency_code", "status"],
+          { status: 1 }
+        );
+      if (fiatCurrency) {
+        let codes: any = fiatCurrency.map((el: any) => el.currency_code);
+        let currencyFormat: any = codes.toString().replace(/[\[\]']+/g, "");
+        let result: any = await cmcHelper.cmcApi(
+          `quotes/latest?id=${cmc_id}&convert=${currencyFormat}`
+        );
+        if (result?.data?.data) {
+          for (let i: number = 0; i < fiatCurrency.length; i++) {
+            // Check cmc data in coin price in fiat
+            let data_exist: any =
+              await coinPriceInFiatQueries.coinPriceInFiatFindOne(
+                ["id"],
+                {
+                  cmc_id: cmc_id,
+                  fiat_type: fiatCurrency[i].currency_code.toLowerCase(),
+                }
+              );
+            if (!data_exist) {
+              let latest_price: any = {
+                price:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].price,
+                timestamp:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].last_updated,
+                volume_24h:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].volume_24h,
+                price_change_24h:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].percent_change_24h,
+              };
+              let data_to_insert: any = {
+                coin_id: coin_id,
+                coin_symbol: coin_data.coin_symbol,
+                coin_name: coin_data.coin_name,
+                coin_family: coin_data.coin_family,
+                cmc_id: cmc_id,
+                fiat_type: fiatCurrency[i].currency_code.toLowerCase(),
+                value:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].price,
+                price_change_24h:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].percent_change_24h,
+                price_change_percentage_24h:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].percent_change_24h,
+                market_cap:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].market_cap,
+                circulating: result.data.data[cmc_id].circulating_supply,
+                total_supply: result.data.data[cmc_id].total_supply,
+                rank: result.data.data[cmc_id].cmc_rank,
+                volume_24h:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].volume_24h,
+                token_address: coin_data.token_address,
+                max_supply: result.data.data[cmc_id].max_supply,
+                latest_price: latest_price,
+              };
+              await coinPriceInFiatQueries.coinPriceInFiatCreate(
+                data_to_insert
+              );
+            }
+            let types = ["1d"];
+            let graph_data_exist: any =
+              await coinPriceInFiatQueries.coinPriceInFiatGraphFindOne(
+                ["id"],
+                {
+                  cmc_id: cmc_id,
+                  fiat_type: fiatCurrency[i].currency_code.toLowerCase(),
+                }
+              );
+            if (!graph_data_exist) {
+              let latest_price_graph: any = [
+                {
+                  price:
+                    result.data.data[cmc_id].quote[
+                      fiatCurrency[i].currency_code.toUpperCase()
+                    ].price,
+                  timestamp:
+                    result.data.data[cmc_id].quote[
+                      fiatCurrency[i].currency_code.toUpperCase()
+                    ].last_updated,
+                  volume_24h:
+                    result.data.data[cmc_id].quote[
+                      fiatCurrency[i].currency_code.toUpperCase()
+                    ].volume_24h,
+                  price_change_24h:
+                    result.data.data[cmc_id].quote[
+                      fiatCurrency[i].currency_code.toUpperCase()
+                    ].percent_change_24h,
+                },
+              ];
+
+              let data_to_insert_graph: any = {
+                coin_id: coin_id,
+                cmc_id: cmc_id,
+                sparkline: latest_price_graph,
+                coin_type: coin_data.coin_symbol,
+                type: types[0],
+                fiat_type: fiatCurrency[i].currency_code.toUpperCase(),
+                latest_price: latest_price_graph,
+                latest_price_source: types[0],
+                value:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].price,
+                price_change_24h:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].percent_change_24h,
+                price_change_percentage_24h:
+                  result.data.data[cmc_id].quote[
+                    fiatCurrency[i].currency_code.toUpperCase()
+                  ].percent_change_24h,
+              };
+              await coinPriceInFiatQueries.coinPriceInFiatGraphCreate(
+                data_to_insert_graph
+              );
+            }
+          }
+        } else {
+          console.log("no data in cmc");
+        }
+      } else {
+        console.log("no fiat currency");
+      }
+    } catch (err: any) {
+      console.error("Error in update_fiat_coin_price>>", err);
+      await commonHelper.saveErrorLogs("update_fiat_coin_price", err.message);
+      throw err;
+    }
+  }
+
+  public async insertEntryInCustomToken(
+    coinId: number,
+    userId: number
+  ) {
+    try {
+      let selectToken: any = await customTokenQueries.customTokenFindOne(
+        ["id", "user_id", "coin_id"],
+        { coin_id: coinId, user_id: userId }
+      );
+      if (selectToken == null) {
+        await customTokenQueries.customTokenCreate({
+          coin_id: coinId,
+          user_id: userId,
+        });
+      } else {
+        console.log("Data is present in selectToken");
+      }
+    } catch (err: any) {
+      console.error("Error in insertEntryInCustomToken>>", err);
+      await commonHelper.saveErrorLogs(
+        "insertEntryInCustomToken",
+        err.message
+      );
+      return null;
+    }
+  }
+
+  public async createWalletForCoin(
+    walletAddress: string,
+    coinId: number,
+    walletName: string,
+    userId: number,
+    coinFamily: number,
+    lang: string,
+    currentUTCDate: any,
+    tokenAddress: string,
+    isToken: number,
+    tokenType: string
+  ) {
+    try {
+      let message: any;
+      let wallet_data: any = await walletQueries.walletFindOneWithOrder(
+        ["wallet_id", "status"],
+        { wallet_address: { [Op.like]: walletAddress }, coin_id: coinId },
+        [["wallet_id", "ASC"]]
+      );
+      if (!wallet_data) {
+        const tokenBalData: any = await globalHelper.getNewTokenBalance(
+          coinFamily,
+          walletAddress,
+          tokenAddress
+        );
+
+        const save_wallet_data = {
+          wallet_address: walletAddress,
+          wallet_name: walletName,
+          coin_id: coinId,
+          user_id: userId,
+          balance: tokenBalData.status ? tokenBalData.balance : "0",
+          default_wallet: 1,
+          coin_family: coinFamily,
+          status: 1,
+          created_at: currentUTCDate,
+          updated_at: currentUTCDate,
+        };
+        await walletQueries.walletCreate(save_wallet_data);
+        message = language[lang].TOKEN_ADDED;
+        if (tokenBalData.status == false) {
+          // add to queue
+          await kafka_helper.produceMessage(config.BACKEND_WALLET_ADDRESSES, {
+            coin_data: {
+              coin_id: coinId,
+              coin_family: coinFamily,
+              is_token: isToken,
+              token_address: tokenAddress,
+              token_type: tokenType,
+            },
+            wallet_address: walletAddress,
+            queue_count: 0,
+          });
+        }
+      } else {
+        if (wallet_data.status == 1) {
+          message = language[lang].TOKEN_EXIST;
+        } else {
+          await walletQueries.walletUpdate(
+            { status: 1 },
+            { wallet_address: walletAddress, coin_id: coinId }
+          );
+          message = language[lang].TOKEN_ADDED;
+        }
+      }
+      return message;
+    } catch (err: any) {
+      console.error("error at createWalletForCoin================>", err);
+      await commonHelper.saveErrorLogs("createWalletForCoin", err.message);
+      return null;
+    }
+  }
+
+  /*public async update_token_in_redis(coin_data: any, coin_id: number) {
+    try {
+      const coin_family = coin_data.coin_family;
+      let tokensList: any;
+      let specific_token_data: any;
+      if (coin_id > 0) {
+        const token: any = await coinQueries.coinFindOne([], {
+          coin_id: coin_id,
+        });
+        specific_token_data = token;
+      } else {
+        specific_token_data = coin_data;
+      }
+      switch (coin_family) {
+        case config.STATIC_COIN_FAMILY.ETH:
+          tokensList = await redisHelper.getRedisSting(
+            config.TOKENLIST.ETH.ERC20
+          );
+          tokensList = JSON.parse(tokensList);
+          if (tokensList) {
+            await tokensList.push(specific_token_data);
+            await redisHelper.setRedisSting(
+              config.TOKENLIST.ETH.ERC20,
+              JSON.stringify(tokensList)
+            );
+          } else {
+            tokensList = await coinQueries.coinFindAll([], {
+              coin_status: 1,
+              coin_family: coin_family,
+            });
+            await redisHelper.setRedisSting(
+              config.TOKENLIST.ETH.ERC20,
+              JSON.stringify(tokensList)
+            );
+          }
+          break;
+        case config.STATIC_COIN_FAMILY.BNB:
+          tokensList = await redisHelper.getRedisSting(
+            config.TOKENLIST.BSC.BEP20
+          );
+          tokensList = JSON.parse(tokensList);
+          if (tokensList) {
+            await tokensList.push(specific_token_data);
+            await redisHelper.setRedisSting(
+              config.TOKENLIST.BSC.BEP20,
+              JSON.stringify(tokensList)
+            );
+          } else {
+            tokensList = await coinQueries.coinFindAll([], {
+              coin_status: 1,
+              coin_family: coin_family,
+            });
+            await redisHelper.setRedisSting(
+              config.TOKENLIST.BSC.BEP20,
+              JSON.stringify(tokensList)
+            );
+          }
+          break;
+        case config.STATIC_COIN_FAMILY.POL:
+          tokensList = await redisHelper.getRedisSting(
+            config.TOKENLIST.POL.ERC20
+          );
+          tokensList = JSON.parse(tokensList);
+          if (tokensList) {
+            await tokensList.push(specific_token_data);
+            await redisHelper.setRedisSting(
+              config.TOKENLIST.POL.ERC20,
+              JSON.stringify(tokensList)
+            );
+          } else {
+            tokensList = await coinQueries.coinFindAll([], {
+              coin_status: 1,
+              coin_family: coin_family,
+            });
+            await redisHelper.setRedisSting(
+              config.TOKENLIST.POL.ERC20,
+              JSON.stringify(tokensList)
+            );
+          }
+          break;
+        case config.STATIC_COIN_FAMILY.TICS:
+          tokensList = await redisHelper.getRedisSting(
+            config.TOKENLIST.TICS.ERC20
+          );
+          tokensList = JSON.parse(tokensList);
+          if (tokensList) {
+            await tokensList.push(specific_token_data);
+            await redisHelper.setRedisSting(
+              config.TOKENLIST.TICS.ERC20,
+              JSON.stringify(tokensList)
+            );
+          } else {
+            tokensList = await coinQueries.coinFindAll([], {
+              coin_status: 1,
+              coin_family: coin_family,
+            });
+            await redisHelper.setRedisSting(
+              config.TOKENLIST.TICS.ERC20,
+              JSON.stringify(tokensList)
+            );
+          }
+          break;
+        case config.STATIC_COIN_FAMILY.SOL:
+          tokensList = await redisHelper.getRedisSting(
+            config.TOKENLIST.SOL.SPL
+          );
+          tokensList = JSON.parse(tokensList);
+          if (tokensList) {
+            await tokensList.push(specific_token_data);
+            await redisHelper.setRedisSting(
+              config.TOKENLIST.SOL.SPL,
+              JSON.stringify(tokensList)
+            );
+          } else {
+            tokensList = await coinQueries.coinFindAll([], {
+              coin_status: 1,
+              coin_family: coin_family,
+            });
+            await redisHelper.setRedisSting(
+              config.TOKENLIST.SOL.SPL,
+              JSON.stringify(tokensList)
+            );
+          }
+          break;
+        case config.STATIC_COIN_FAMILY.TRX:
+          tokensList = await redisHelper.getRedisSting(
+            config.TOKENLIST.TRON.TRX20
+          );
+          tokensList = JSON.parse(tokensList);
+          if (tokensList) {
+            await tokensList.push(specific_token_data);
+            await redisHelper.setRedisSting(
+              config.TOKENLIST.TRON.TRX20,
+              JSON.stringify(tokensList)
+            );
+          } else {
+            tokensList = await coinQueries.coinFindAll([], {
+              coin_status: 1,
+              coin_family: coin_family,
+            });
+            await redisHelper.setRedisSting(
+              config.TOKENLIST.TRON.TRX20,
+              JSON.stringify(tokensList)
+            );
+          }
+          break;
+      }
+    } catch (err: any) {
+      console.error("error at update_token_in_redis", err);
+      await commonHelper.saveErrorLogs("update_token_in_redis", err.message);
+      return null;
+    }
+  }*/
+
+  public async updateTokenInRedisHash(coin_data: any) {
+    try {
+      switch (coin_data.coin_family) {
+        case config.STATIC_COIN_FAMILY.BNB:
+          await redisHelper.set_hash_table(
+            config.TOKENLIST.BSC.BEP20,
+            coin_data.token_address,
+            JSON.stringify(coin_data)
+          );
+          break;
+        case config.STATIC_COIN_FAMILY.POL:
+          await redisHelper.set_hash_table(
+            config.TOKENLIST.POL.ERC20,
+            coin_data.token_address,
+            JSON.stringify(coin_data)
+          );
+        case config.STATIC_COIN_FAMILY.TICS:
+          await redisHelper.set_hash_table(
+            config.TOKENLIST.TICS.ERC20,
+            coin_data.token_address,
+            JSON.stringify(coin_data)
+          );
+        case config.STATIC_COIN_FAMILY.SOL:
+          await redisHelper.set_hash_table(
+            config.TOKENLIST.SOL.SPL,
+            coin_data.token_address,
+            JSON.stringify(coin_data)
+          );
+          break;
+        case config.STATIC_COIN_FAMILY.TRX:
+          await redisHelper.set_hash_table(
+            config.TOKENLIST.TRON.TRX20,
+            coin_data.token_address,
+            JSON.stringify(coin_data)
+          );
+          break;
+        default:
+          await redisHelper.set_hash_table(
+            config.TOKENLIST.ETH.ERC20,
+            coin_data.token_address,
+            JSON.stringify(coin_data)
+          );
+          break;
+      }
+    } catch (err: any) {
+      console.error("Error in updateTokenInRedisHash.", err);
+      await commonHelper.saveErrorLogs(
+        "updateTokenInRedisHash",
+        err.message
+      );
+      return null;
+    }
+
+  }
+
+  public async minCoinBalance(
+    wallet_data: any,
+    fiat_currency: string,
+    usd_value: any
+  ) {
+    try {
+      let fiat_currency_value: any = await Models.CoinPriceInFiatModel.findOne({
+        attributes: ["value"],
+        where: {
+          coin_id: wallet_data.coin_id,
+          fiat_type: fiat_currency,
+        },
+        raw: true,
+      });
+      let min_bal: number = 10 / usd_value;
+      let min_bal_in_fiat: number = min_bal * fiat_currency_value.value;
+      min_bal_in_fiat =
+        min_bal_in_fiat < 0.000001
+          ? await WalletHelper.toFixedExp(min_bal_in_fiat, 8)
+          : min_bal_in_fiat < 0.0001
+            ? await WalletHelper.toFixedExp(min_bal_in_fiat, 6)
+            : await WalletHelper.toFixedExp(min_bal_in_fiat, 2);
+      console.log("min_bal>>>>", min_bal_in_fiat);
+      return {
+        min_bal_in_fiat: min_bal_in_fiat,
+        fiat_value: fiat_currency_value.value,
+      };
+    } catch (err: any) {
+      console.error("Error in minCoinBalance of wallet", err);
+      throw err;
+    }
+  }
+
+  public async toFixedExp(num: any, fixed: number) {
+    try {
+      if (num) {
+        num = exponentialToDecimal(Number(num));
+        let re = new RegExp("^-?\\d+(?:.\\d{0," + (fixed || -1) + "})?");
+        return num.toString().match(re)[0];
+      } else {
+        return "0.00";
+      }
+    } catch (err: any) {
+      console.error("Error in toFixedExp>>", err);
+      return "0.00";
+    }
+  }
+
+  public async updateNftTokenInRedis(coinData: any) {
+    try {
+      switch (coinData.coin_family) {
+        case config.STATIC_COIN_FAMILY.ETH:
+          await redisHelper.set_hash_table(
+            config.TOKENLIST.ETH.NFT,
+            coinData.token_address,
+            JSON.stringify(coinData)
+          );
+          break;
+        case config.STATIC_COIN_FAMILY.BNB:
+          await redisHelper.set_hash_table(
+            config.TOKENLIST.BSC.NFT,
+            coinData.token_address,
+            JSON.stringify(coinData)
+          );
+          break;
+      }
+    } catch (err: any) {
+      console.error("Error in updateNftTokenInRedis.", err);
+      await commonHelper.saveErrorLogs(
+        "updateNftTokenInRedis",
+        err.message
+      );
+      return null;
+    }
+  }
+
+  // Function to filter elements based on the age range
+  public async filterByAgeRange(
+    elementsArray: any,
+    range: string
+  ): Promise<any[]> {
+    try {
+      const now = Date.now(); // Current timestamp
+      let timeRange: number = 0;
+      // Define time ranges
+      switch (range) {
+        case "1d":
+          timeRange = 1 * 24 * 60 * 60 * 1000; // 1 day in milliseconds
+          break;
+        case "1w":
+          timeRange = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+          break;
+        case "1m":
+          timeRange = 30 * 24 * 60 * 60 * 1000; // 30 days (approx 1 month)
+          break;
+        case "3m":
+          timeRange = 90 * 24 * 60 * 60 * 1000; // 90 days (approx 3 months)
+          break;
+        case "1y":
+          timeRange = 365 * 24 * 60 * 60 * 1000; // 1 year
+          break;
+        case "all":
+          timeRange = 0; // all time
+          break;
+        default:
+          timeRange = 0; // If invalid range, default to zero
+      }
+
+      if (!timeRange) {
+        return elementsArray;
+      }
+      // Calculate the time threshold
+      const thresholdTime = new Date(now - timeRange);
+
+      // Find the index of the first element that meets the time condition
+      const firstMatchIndex = elementsArray.findIndex((item: any) => {
+        const itemTime = new Date(item.timestamp);
+        return itemTime >= thresholdTime; // Match items within the specified range
+      });
+
+      // Return all remaining elements starting from the first match
+      if (firstMatchIndex !== -1) {
+        return elementsArray.slice(firstMatchIndex);
+      }
+
+      // If no match is found, return an empty array
+      return [];
+    } catch (error) {
+      console.log("::Error log:: filterByAgeRange :>> ", error);
+      return [];
+    }
+  }
+
+  public async parsePossiblyQuotedNumber(value: any) {
+    try {
+      if (typeof value === 'string') {
+        // Check if it's a stringified number with quotes inside (e.g. "\"18\"")
+        if (/^"\d+(\.\d+)?"$/.test(value)) {
+          const innerValue = JSON.parse(value); // => "18"
+          return Number(innerValue);            // => 18
+        }
+
+        // Handle direct number strings like "18"
+        if (/^\d+(\.\d+)?$/.test(value)) {
+          return Number(value);
+        }
+      }
+
+      // If it's already a number, return it
+      if (typeof value === 'number') {
+        return value;
+      }
+    } catch (error) {
+      console.error("Failed to parse value:", value, error);
+    }
+
+    return null; // fallback if not parsable
+  }
+}
+export const WalletHelper = new WalletHelpers();

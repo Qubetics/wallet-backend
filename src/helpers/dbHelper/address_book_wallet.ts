@@ -1,4 +1,4 @@
-import commonHelper from "../common/common.helpers";
+import commonHelper from "../common/common";
 import * as Models from '../../models/model/index';
 
 
@@ -14,11 +14,11 @@ class AddressBookWalletQueries {
     //         return data;
     //     } catch (err: any) {
     //         console.error("Error in address_book_wallets_find_one>>", err)
-    //         await commonHelper.save_error_logs("address_book_wallets_find_one", err.message);
+    //         await commonHelper.saveErrorLogs("address_book_wallets_find_one", err.message);
     //         throw err;
     //     }
     // }
-    public async address_book_wallets_find_all(attr: any, where_clause: any) {
+    public async addressBookWalletsFindAll(attr: any, where_clause: any) {
         try {
             let data: any = await Models.AddressBookWalletsModel.findAll({
                 attributes: attr,
@@ -26,12 +26,12 @@ class AddressBookWalletQueries {
             })
             return data;
         } catch (err: any) {
-            console.error("Error in address_book_wallets_find_all>>", err)
-            await commonHelper.save_error_logs("address_book_wallets_find_all", err.message);
+            console.error("Error in addressBookWalletsFindAll>>", err)
+            await commonHelper.saveErrorLogs("addressBookWalletsFindAll", err.message);
             throw err;
         }
     }
-    public async address_book_wallet_get_count(where_clause: any) {
+    public async addressBookWalletGetCount(where_clause: any) {
         try {
             let data: number = await Models.AddressBookWalletsModel.count({
                 where: where_clause
@@ -39,32 +39,32 @@ class AddressBookWalletQueries {
             return data;
         } catch (err: any) {
             console.error("Error in address_book_get_count>>", err)
-            await commonHelper.save_error_logs("address_book_get_count", err.message);
+            await commonHelper.saveErrorLogs("address_book_get_count", err.message);
             throw err;
         }
     }
-    public async address_book_wallet_create(obj: any) {
+    public async addressBookWalletCreate(obj: any) {
         try {
             let data: any = await Models.AddressBookWalletsModel.create(obj)
             return data;
         } catch (err: any) {
-            console.error("Error in address_book_wallet_create>>", err)
-            await commonHelper.save_error_logs("address_book_wallet_create", err.message);
+            console.error("Error in addressBookWalletCreate>>", err)
+            await commonHelper.saveErrorLogs("addressBookWalletCreate", err.message);
             throw err;
         }
     }
-    public async address_book_wallet_destroy(where_clause: any) {
+    public async addressBookWalletDestroy(where_clause: any) {
         try {
             await Models.AddressBookWalletsModel.destroy({ where: where_clause })
         } catch (err: any) {
-            console.error("Error in address_book_wallet_destroy>>", err)
-            await commonHelper.save_error_logs("address_book_wallet_destroy", err.message);
+            console.error("Error in addressBookWalletDestroy>>", err)
+            await commonHelper.saveErrorLogs("addressBookWalletDestroy", err.message);
             throw err;
         }
     }
 
     // Joint
-    public async address_book_wallets_with_address_book(attr1: any, attr2: any, where1: any, where2: any) {
+    public async addressBookWalletsWithAddressBook(attr1: any, attr2: any, where1: any, where2: any) {
         try {
             let data: any = await Models.AddressBookWalletsModel.findOne({
                 attributes: attr1,
@@ -80,8 +80,8 @@ class AddressBookWalletQueries {
             });
             return data;
         } catch (err: any) {
-            console.error("Error in address_book_wallets_with_address_book>>", err)
-            await commonHelper.save_error_logs("address_book_wallets_with_address_book", err.message);
+            console.error("Error in addressBookWalletsWithAddressBook>>", err)
+            await commonHelper.saveErrorLogs("addressBookWalletsWithAddressBook", err.message);
             throw err;
         }
     }

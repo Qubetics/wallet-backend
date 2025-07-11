@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { ResetGraphDataInterface } from "../interface/index.interface";
-import db from "../../helpers/common/db";
+import db from "../../connections/db";
 
 interface ResetGraphCreationModel extends Optional<ResetGraphDataInterface, "id"> { }
 interface ResetGraphInstance extends Model<ResetGraphDataInterface, ResetGraphCreationModel>, ResetGraphDataInterface { }

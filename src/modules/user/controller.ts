@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Op } from "sequelize";
 import jwtHelper from "../../helpers/common/jwt";
-import response from "../../helpers/response/response.helpers";
+import response from "../../helpers/response";
 import { OnlyControllerInterface } from "../../interfaces/controller.interface";
 import * as Models from "../../models/model/index";
 import userhelper from "./helper";
@@ -9,22 +9,22 @@ import {
   GlblBooleanEnum,
   GlblCode,
   WalletName,
-} from "../../constants/global_enum";
-import { global_helper } from "../../helpers/common/global_helper";
+} from "../../constants/enum";
+import { globalHelper } from "../../helpers/common/global";
 import { ErrorMessages, language } from "../../constants";
-import commonHelper from "../../helpers/common/common.helpers";
+import commonHelper from "../../helpers/common/common";
 import {
-  address_book_queries,
+  addressBookQueries,
   address_book_wallet_queries,
-  device_token_queries,
-  notification_queries,
-  user_queries,
-  wallet_queries,
+  deviceTokenQueries,
+  notificationQueries,
+  userQueries,
+  walletQueries,
 } from "../../helpers/dbHelper/index";
 import { config } from "../../config";
 import emojiRegex from "emoji-regex";
 import * as ethers from "ethers";
-import { NotificationHelper } from "../admin/notification/notification.helper";
+import { NotificationHelper } from "../admin/notification/helper";
 import BannerModel from "../../models/model/model.banner";
 class UserController implements OnlyControllerInterface {
   constructor() {
@@ -40,7 +40,7 @@ class UserController implements OnlyControllerInterface {
   public async createWallet(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      let {
+      const {
         wallet_address,
         addressList,
         wallet_name,
@@ -97,14 +97,14 @@ class UserController implements OnlyControllerInterface {
 
       if (referral_code) {
         /** check referral code is valid */
-        await userhelper.referral_code_is_valid(referral_code, lang);
+        await userhelper.referralCodeIsValid(referral_code, lang);
       }
 
       // Check whether same wallet address exist
       let checkAddressExists: any = null;
 
       if (wallet_address) {
-        checkAddressExists = await wallet_queries.wallet_find_one(["user_id"], {
+        checkAddressExists = await walletQueries.walletFindOne(["user_id"], {
           wallet_address: wallet_address,
         });
       }
@@ -119,14 +119,14 @@ class UserController implements OnlyControllerInterface {
 
         // Insert device id and referral code if not there
         if (device_id) {
-          user_referral_code = await userhelper.old_user_generate_referral(
+          user_referral_code = await userhelper.oldUserGenerateReferral(
             device_id,
             userId
           );
         }
       } else {
         // Create New User
-        let code_userId: any = await userhelper.create_new_user(
+        let code_userId: any = await userhelper.createNewUser(
           device_id,
           wallet_name
         );
@@ -141,11 +141,11 @@ class UserController implements OnlyControllerInterface {
       /** save referral data */
       if (referral_code) {
         /** check referral code already used */
-        await userhelper.referral_already_used(
+        await userhelper.referralAlreadyUsed(
           { device_id: device_id, address: wallet_address, user_id: null },
           lang
         );
-        await userhelper.save_referral_code(
+        await userhelper.saveReferralCode(
           {
             user_id: userId,
             referral_code: referral_code,
@@ -156,7 +156,7 @@ class UserController implements OnlyControllerInterface {
       }
 
       // Updating balance
-      userhelper.updating_balance(
+      userhelper.updatingBalance(
         addressList,
         userId,
         req,
@@ -169,9 +169,9 @@ class UserController implements OnlyControllerInterface {
       let token: string;
       let refreshToken: string;
 
-      token = await jwtHelper.createJSONWebToken(userId, device_token);
+      token = await jwtHelper.createJsonWebTokenForUser(userId, device_token);
 
-      refreshToken = await jwtHelper.createJSONRefreshToken(
+      refreshToken = await jwtHelper.createJsonRefreshTokenForUser(
         userId,
         device_token
       );
@@ -191,7 +191,7 @@ class UserController implements OnlyControllerInterface {
       });
     } catch (err: any) {
       console.error("Error in user > create wallet (2).", err);
-      await commonHelper.save_error_logs("users_createWallet", err.message);
+      await commonHelper.saveErrorLogs("users_createWallet", err.message);
       return response.error(res, { data: { status: false } });
     }
   }
@@ -214,20 +214,20 @@ class UserController implements OnlyControllerInterface {
       if (userIds && userIds.length > 0) {
         let users: any = [];
         if (type == "all") {
-          await device_token_queries.device_token_destroy({
+          await deviceTokenQueries.deviceTokenDestroy({
             device_id: deviceId,
           });
-          users = await user_queries.user_find_all(
+          users = await userQueries.userFindAll(
             ["user_id", "device_id"],
             { device_id: { [Op.like]: `%${deviceId}` } },
             [["user_id", "DESC"]]
           );
         } else {
-          await device_token_queries.device_token_destroy({
+          await deviceTokenQueries.deviceTokenDestroy({
             device_id: deviceId,
             user_id: userIds,
           });
-          users = await user_queries.user_find_all(
+          users = await userQueries.userFindAll(
             ["user_id", "device_id"],
             { user_id: userIds, device_id: { [Op.like]: `%${deviceId}` } },
             [["user_id", "DESC"]]
@@ -252,7 +252,7 @@ class UserController implements OnlyControllerInterface {
             })
             .filter((update: any) => update !== null);
           for (const update of updates) {
-            await user_queries.user_update(
+            await userQueries.userUpdate(
               { device_id: update.device_id !== "" ? update.device_id : null },
               { user_id: update.user_id }
             );
@@ -270,7 +270,7 @@ class UserController implements OnlyControllerInterface {
       });
     } catch (err: any) {
       console.error("Error in user > userLogout.", err);
-      await commonHelper.save_error_logs("users_userLogout", err.message);
+      await commonHelper.saveErrorLogs("users_userLogout", err.message);
       return response.error(res, {
         data: {
           code: GlblCode.ERROR_CODE,
@@ -293,7 +293,7 @@ class UserController implements OnlyControllerInterface {
       );
       const offset: number = (page - 1) * per_page;
 
-      const checkAddress = await wallet_queries.wallet_find_one(
+      const checkAddress = await walletQueries.walletFindOne(
         ["wallet_id", "user_id"],
         { wallet_address: { [Op.in]: req.body.addrsListKeys } }
       );
@@ -309,7 +309,7 @@ class UserController implements OnlyControllerInterface {
       }
 
       const notifications_data =
-        await notification_queries.notifications_joint_find_all_count_all(
+        await notificationQueries.notificationsJointFindAllCountAll(
           [
             "wallet_address",
             "amount",
@@ -344,7 +344,7 @@ class UserController implements OnlyControllerInterface {
       });
     } catch (err: any) {
       console.error("Error in user > notificationList.", err);
-      await commonHelper.save_error_logs("users_notificationList", err.message);
+      await commonHelper.saveErrorLogs("users_notificationList", err.message);
       return response.error(res, { data: { status: false } });
     }
   }
@@ -357,7 +357,7 @@ class UserController implements OnlyControllerInterface {
       let wallet_name = req.body.wallet_name;
 
       const wallet_address_exist: any =
-        await address_book_wallet_queries.address_book_wallets_with_address_book(
+        await address_book_wallet_queries.addressBookWalletsWithAddressBook(
           ["address_book_id"],
           ["id"],
           { wallet_address: wallet_address, coin_family: coin_family },
@@ -374,13 +374,13 @@ class UserController implements OnlyControllerInterface {
         });
       }
 
-      let address_book: any = await address_book_queries.address_books_find_one(
+      let address_book: any = await addressBookQueries.addressBooksFindOne(
         ["id", "name", "address"],
         { address: address, user_id: user_id, name: contact_name }
       );
 
       if (!address_book) {
-        address_book = await address_book_queries.address_book_create({
+        address_book = await addressBookQueries.addressBookCreate({
           address: address,
           user_id: user_id,
           name: contact_name,
@@ -391,7 +391,7 @@ class UserController implements OnlyControllerInterface {
       let address_book_id = address_book?.id;
 
       const wallet_name_exist: number =
-        await address_book_wallet_queries.address_book_wallet_get_count({
+        await address_book_wallet_queries.addressBookWalletGetCount({
           address_book_id: address_book_id,
           name: wallet_name,
         });
@@ -407,7 +407,7 @@ class UserController implements OnlyControllerInterface {
       }
       let name: any;
       if (!wallet_name) {
-        name = await userhelper.wallet_name(
+        name = await userhelper.addressBookName(
           address_book_id,
           coin_family,
           wallet_name
@@ -416,7 +416,7 @@ class UserController implements OnlyControllerInterface {
         name = wallet_name;
       }
       wallet_name = name;
-      const addressValidity: any = await global_helper.validate_address(
+      const addressValidity: any = await globalHelper.validateAddress(
         wallet_address,
         coin_family
       );
@@ -424,7 +424,7 @@ class UserController implements OnlyControllerInterface {
         throw new Error(`${language[lang].INVALID_ADDRESS} (${coin_family})`);
 
       const total_wallets: any =
-        await address_book_wallet_queries.address_book_wallets_find_all(
+        await address_book_wallet_queries.addressBookWalletsFindAll(
           ["name"],
           { address_book_id: address_book_id }
         );
@@ -438,7 +438,7 @@ class UserController implements OnlyControllerInterface {
         });
       }
 
-      await address_book_wallet_queries.address_book_wallet_create({
+      await address_book_wallet_queries.addressBookWalletCreate({
         address_book_id: address_book_id,
         name: wallet_name,
         wallet_address: wallet_address,
@@ -453,7 +453,7 @@ class UserController implements OnlyControllerInterface {
       });
     } catch (err: any) {
       console.error("Error in user > add_address_book.", err);
-      await commonHelper.save_error_logs("users_add_address_book", err.message);
+      await commonHelper.saveErrorLogs("users_add_address_book", err.message);
       return response.error(res, {
         data: {
           code: GlblCode.ERROR_CODE,
@@ -482,7 +482,7 @@ class UserController implements OnlyControllerInterface {
       const user_id: number = req.userId;
 
       const address_book_data: any =
-        await address_book_queries.address_book_with_address_book_wallet_coins_joint(
+        await addressBookQueries.addressBookWithAddressBookWalletCoinsJoint(
           ["id", "name", "address", "created_at"],
           [
             "id",
@@ -509,7 +509,7 @@ class UserController implements OnlyControllerInterface {
         );
 
       const address_book_data_number: any =
-        await address_book_queries.address_book_count({
+        await addressBookQueries.addressBookCount({
           name: { [Op.like]: search },
           address: address,
           user_id: user_id,
@@ -531,7 +531,7 @@ class UserController implements OnlyControllerInterface {
       });
     } catch (err: any) {
       console.error("Error in user > address_book.", err);
-      await commonHelper.save_error_logs("users_address_book", err.message);
+      await commonHelper.saveErrorLogs("users_address_book", err.message);
       return response.error(res, {
         data: {
           data: [],
@@ -559,14 +559,14 @@ class UserController implements OnlyControllerInterface {
       let wallet_name: string = req.body.wallet_name;
       const user_id: number = req.userId;
 
-      const address_book: any = await address_book_queries.address_books_find_one(
+      const address_book: any = await addressBookQueries.addressBooksFindOne(
         ["id", "name", "address"],
         { address: address, user_id: user_id, name: contact_name }
       );
 
       if (address_book) {
         let address_book_id: any = address_book?.id;
-        let name: any = await userhelper.wallet_name(
+        let name: any = await userhelper.addressBookName(
           address_book_id,
           coin_family,
           wallet_name
@@ -598,7 +598,7 @@ class UserController implements OnlyControllerInterface {
       });
     } catch (err: any) {
       console.error("Entered in user > get_wallet_name.", err);
-      await commonHelper.save_error_logs("users_get_wallet_name", err.message);
+      await commonHelper.saveErrorLogs("users_get_wallet_name", err.message);
       return response.error(res, {
         data: {
           code: GlblCode.ERROR_CODE,
@@ -616,7 +616,7 @@ class UserController implements OnlyControllerInterface {
       const user_id: number = req.userId;
       const search: any = req.body.search == undefined ? (req.body.search = "%%") : (req.body.search = "%" + req.body.search + "%");
 
-      let address_book: any = await address_book_queries.address_books_find_all(
+      let address_book: any = await addressBookQueries.addressBooksFindAll(
         ["name"],
         { user_id: user_id, name: { [Op.like]: search } }
       );
@@ -634,7 +634,7 @@ class UserController implements OnlyControllerInterface {
       });
     } catch (err: any) {
       console.error("Error in user > search.", err);
-      await commonHelper.save_error_logs("users_search", err.message);
+      await commonHelper.saveErrorLogs("users_search", err.message);
       return response.error(res, {
         data: {
           code: GlblCode.ERROR_CODE,
@@ -652,7 +652,7 @@ class UserController implements OnlyControllerInterface {
         req.body;
       const user_id = req.userId;
 
-      const addressBook = await address_book_queries.address_books_find_one(['user_id'], { id: address_book_id });
+      const addressBook = await addressBookQueries.addressBooksFindOne(['user_id'], { id: address_book_id });
 
       if (!addressBook) {
         return response.error(res, {
@@ -675,7 +675,7 @@ class UserController implements OnlyControllerInterface {
       }
 
       let address_book_wallet: number =
-        await address_book_wallet_queries.address_book_wallet_get_count({
+        await address_book_wallet_queries.addressBookWalletGetCount({
           address_book_id: address_book_id,
         });
 
@@ -688,15 +688,15 @@ class UserController implements OnlyControllerInterface {
           },
         });
       } else if (address_book_wallet == GlblBooleanEnum.true) {
-        await address_book_wallet_queries.address_book_wallet_destroy({
+        await address_book_wallet_queries.addressBookWalletDestroy({
           id: id,
           address_book_id: address_book_id,
         });
-        await address_book_queries.address_book_destroy({
+        await addressBookQueries.addressBookDestroy({
           id: address_book_id,
         });
       } else {
-        await address_book_wallet_queries.address_book_wallet_destroy({
+        await address_book_wallet_queries.addressBookWalletDestroy({
           id: id,
           address_book_id: address_book_id,
         });
@@ -711,7 +711,7 @@ class UserController implements OnlyControllerInterface {
       });
     } catch (err: any) {
       console.error("Error in user > delete_address_book_wallet_address.", err);
-      await commonHelper.save_error_logs(
+      await commonHelper.saveErrorLogs(
         "users_delete_address_book_wallet_address",
         err.message
       );
@@ -731,7 +731,7 @@ class UserController implements OnlyControllerInterface {
       console.log("req body user deleteAddressBook>>>", req.body);
       const { id }: { id: number } = req.body;
       const user_id = req.userId;
-      let address_book: any = await address_book_queries.address_book_count({
+      let address_book: any = await addressBookQueries.addressBookCount({
         id: id,
       });
       if (address_book == GlblBooleanEnum.false) {
@@ -744,7 +744,7 @@ class UserController implements OnlyControllerInterface {
         });
       }
 
-      const addressBook = await address_book_queries.address_books_find_one(['user_id'], { id: id });
+      const addressBook = await addressBookQueries.addressBooksFindOne(['user_id'], { id: id });
       if (!addressBook) {
         return response.error(res, {
           data: {
@@ -765,13 +765,13 @@ class UserController implements OnlyControllerInterface {
         });
       }
 
-      await address_book_queries.address_book_destroy({ id: id });
+      await addressBookQueries.addressBookDestroy({ id: id });
       let address_book_wallet_data: number =
-        await address_book_wallet_queries.address_book_wallet_get_count({
+        await address_book_wallet_queries.addressBookWalletGetCount({
           address_book_id: id,
         });
       if (address_book_wallet_data > 0) {
-        await address_book_wallet_queries.address_book_wallet_destroy({
+        await address_book_wallet_queries.addressBookWalletDestroy({
           address_book_id: id,
         });
       }
@@ -784,7 +784,7 @@ class UserController implements OnlyControllerInterface {
       });
     } catch (err: any) {
       console.error("Error in user > delete_address_book.", err);
-      await commonHelper.save_error_logs(
+      await commonHelper.saveErrorLogs(
         "users_delete_address_book",
         err.message
       );
@@ -881,7 +881,7 @@ class UserController implements OnlyControllerInterface {
       response.success(res, { data: data });
     } catch (err: any) {
       console.error("Error in announcement_view_status API", err);
-      await commonHelper.save_error_logs("users_announcements", err.message);
+      await commonHelper.saveErrorLogs("users_announcements", err.message);
       return response.error(res, { data: { status: false } });
     }
   }
@@ -902,7 +902,7 @@ class UserController implements OnlyControllerInterface {
       });
     } catch (err: any) {
       console.error("Error in user > app_language", err);
-      await commonHelper.save_error_logs("user_app_language", err.message);
+      await commonHelper.saveErrorLogs("user_app_language", err.message);
       response.error(res, {
         data: {
           status: false,
@@ -916,46 +916,46 @@ class UserController implements OnlyControllerInterface {
     let lang: any = req.headers['content-language'] || 'en';
     try {
 
-        const per_page: number = Number(
-          req.body?.limit == undefined ? (req.body.limit = "10") : req.body.limit
-        );
-        const page: number = Number(
-          req.body.page == undefined ? (req.body.page = "1") : req.body.page
-        );
-        const offset: number = (page - 1) * per_page;
-      
-        const search: string = req.body?.search == undefined ? null : req.body.search;
+      const per_page: number = Number(
+        req.body?.limit == undefined ? (req.body.limit = "10") : req.body.limit
+      );
+      const page: number = Number(
+        req.body.page == undefined ? (req.body.page = "1") : req.body.page
+      );
+      const offset: number = (page - 1) * per_page;
 
-          //object for get token list
-        let obj: any = {
-          where: { status: 'sent' },
-          attributes: [ "id", "title", "message", "created_at", "status"],
-          order: [['id', 'DESC']],
-          limit: per_page,
-          offset: offset,
-          page: page,
-        }
+      const search: string = req.body?.search == undefined ? null : req.body.search;
 
-        //search by title, message
-        if (search) {
-            obj.where[Op.or] = [
-            { title: { [Op.like]: `%${search}%` } },
-            { message: { [Op.like]: `%${search}%` } }
-            ];
-        }
+      //object for get token list
+      let obj: any = {
+        where: { status: 'sent' },
+        attributes: ["id", "title", "message", "created_at", "status"],
+        order: [['id', 'DESC']],
+        limit: per_page,
+        offset: offset,
+        page: page,
+      }
 
-        const get_notification_list: any = await NotificationHelper.getNotificationList(obj);
+      //search by title, message
+      if (search) {
+        obj.where[Op.or] = [
+          { title: { [Op.like]: `%${search}%` } },
+          { message: { [Op.like]: `%${search}%` } }
+        ];
+      }
 
-        return res.status(GlblCode.SUCCESS).send({
-            message: language[lang].SUCCESS,
-            status: true,
-            code: GlblCode.SUCCESS,
-            data: get_notification_list
-        });
+      const get_notification_list: any = await NotificationHelper.getNotificationList(obj);
+
+      return res.status(GlblCode.SUCCESS).send({
+        message: language[lang].SUCCESS,
+        status: true,
+        code: GlblCode.SUCCESS,
+        data: get_notification_list
+      });
 
     } catch (err: any) {
       console.error("Error in user > getAnnouncementList", err);
-      await commonHelper.save_error_logs("user_getAnnouncementList", err.message);
+      await commonHelper.saveErrorLogs("user_getAnnouncementList", err.message);
       response.error(res, {
         data: {
           status: false,
@@ -969,21 +969,21 @@ class UserController implements OnlyControllerInterface {
     let lang: any = req.headers['content-language'] || 'en';
     try {
 
-        const getBannerList: any = await BannerModel.findAll({
-          where: { status: '1'},
-          attributes: [ "id", "link", "image_path", "created_at"]
-        })
+      const getBannerList: any = await BannerModel.findAll({
+        where: { status: '1' },
+        attributes: ["id", "link", "image_path", "created_at"]
+      })
 
-        return res.status(GlblCode.SUCCESS).send({
-            message: language[lang].SUCCESS,
-            status: true,
-            code: GlblCode.SUCCESS,
-            data: getBannerList
-        });
+      return res.status(GlblCode.SUCCESS).send({
+        message: language[lang].SUCCESS,
+        status: true,
+        code: GlblCode.SUCCESS,
+        data: getBannerList
+      });
 
     } catch (err: any) {
       console.error("Error in user > getAnnouncementList", err);
-      await commonHelper.save_error_logs("user_getAnnouncementList", err.message);
+      await commonHelper.saveErrorLogs("user_getAnnouncementList", err.message);
       response.error(res, {
         data: {
           status: false,

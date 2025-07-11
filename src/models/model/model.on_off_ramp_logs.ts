@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import db from "../../helpers/common/db";
+import db from "../../connections/db";
 import { IOnOffRampLog } from '../interface/index.interface';
 
 interface IOnOffRampLogInstance extends Model<IOnOffRampLog>, IOnOffRampLog { };

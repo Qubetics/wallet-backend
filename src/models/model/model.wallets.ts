@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { WalletInterface } from "../interface/interface.wallets";
-import db from "../../helpers/common/db";
+import db from "../../connections/db";
 import CoinsModel from '../model/model.coins';
 interface WalletCreationModel extends Optional<WalletInterface, "wallet_id"> { }
 interface WalletInstance

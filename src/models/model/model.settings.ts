@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { SettingsInterface } from "../interface/interface.settings";
-import db from "../../helpers/common/db";
+import db from "../../connections/db";
 
 interface SettingsCreationModel extends Optional<SettingsInterface, "id"> { }
 interface SettingsInstance

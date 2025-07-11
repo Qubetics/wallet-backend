@@ -1,10 +1,10 @@
-import commonHelper from "../common/common.helpers";
+import commonHelper from "../common/common";
 import * as Models from '../../models/model/index';
 
 
 class CustomTokensQueries {
 
-    public async custom_token_find_one(attr: any, where_clause: any) {
+    public async customTokenFindOne(attr: any, where_clause: any) {
         try {
             let data: any = await Models.CustomTokennModel.findOne({
                 attributes: attr,
@@ -13,8 +13,8 @@ class CustomTokensQueries {
             })
             return data;
         } catch (err: any) {
-            console.error("Error in custom_token_find_one>>", err)
-            await commonHelper.save_error_logs("custom_token_find_one", err.message);
+            console.error("Error in customTokenFindOne>>", err)
+            await commonHelper.saveErrorLogs("customTokenFindOne", err.message);
             return null;
         }
     }
@@ -24,17 +24,17 @@ class CustomTokensQueries {
     //         return data;
     //     } catch (err: any) {
     //         console.error("Error in custom_token_update>>", err)
-    //         await commonHelper.save_error_logs("custom_token_update", err.message);
+    //         await commonHelper.saveErrorLogs("custom_token_update", err.message);
     //         throw err;
     //     }
     // }
-    public async custom_token_create(obj: any) {
+    public async customTokenCreate(obj: any) {
         try {
             let data: any = await Models.CustomTokennModel.create(obj)
             return data;
         } catch (err: any) {
-            console.error("Error in custom_token_create>>", err)
-            await commonHelper.save_error_logs("custom_token_create", err.message);
+            console.error("Error in customTokenCreate>>", err)
+            await commonHelper.saveErrorLogs("customTokenCreate", err.message);
             return null;
         }
     }
@@ -43,12 +43,12 @@ class CustomTokensQueries {
     //         await Models.CustomTokennModel.destroy({ where: where_clause })
     //     } catch (err: any) {
     //         console.error("Error in custom_token_destroy>>", err)
-    //         await commonHelper.save_error_logs("custom_token_destroy", err.message);
+    //         await commonHelper.saveErrorLogs("custom_token_destroy", err.message);
     //         throw err;
     //     }
     // }
 
 }
 
-const custom_token_queries = new CustomTokensQueries();
-export default custom_token_queries;
+const customTokenQueries = new CustomTokensQueries();
+export default customTokenQueries;

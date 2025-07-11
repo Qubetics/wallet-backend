@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import db from '../../helpers/common/db';
+import db from '../../connections/db';
 import { IPermission } from "../interface/interface.permissions";
 
 import MenuListsModel from './model_menu_lists.';
