@@ -11,7 +11,7 @@ interface TicsNativeInstance
     TicsNativeInterface {}
 
 const TicsNativeAddressModel = db.db_write.define<TicsNativeInstance>(
-  "tics_wallet_addresses",
+  "tics_native_addresses",
   {
     id: {
       type: DataTypes.INTEGER.UNSIGNED,
@@ -19,7 +19,7 @@ const TicsNativeAddressModel = db.db_write.define<TicsNativeInstance>(
       primaryKey: true,
     },
     wallet_id: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: "wallets",
@@ -28,7 +28,11 @@ const TicsNativeAddressModel = db.db_write.define<TicsNativeInstance>(
       onUpdate: "CASCADE",
       onDelete: "CASCADE",
     },
-    tics_native_address: {
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    address: {
       type: DataTypes.STRING(100),
       allowNull: false,
       unique: true,
@@ -48,7 +52,7 @@ const TicsNativeAddressModel = db.db_write.define<TicsNativeInstance>(
     indexes: [
       {
         unique: true,
-        fields: ["tics_native_address"],
+        fields: ["address"],
       },
       {
         fields: ["wallet_id"],
@@ -56,7 +60,7 @@ const TicsNativeAddressModel = db.db_write.define<TicsNativeInstance>(
     ],
     underscored: true,
     timestamps: false,
-    tableName: "tics_wallet_addresses",
+    tableName: "tics_native_addresses",
   }
 );
 
@@ -68,7 +72,9 @@ TicsNativeAddressModel.belongsTo(WalletModel, {
 
 WalletModel.hasOne(TicsNativeAddressModel, {
   foreignKey: "wallet_id",
-  as: "tics_wallet_address",
+  as: "tics_native_addresses",
 });
+
+// TicsNativeAddressModel.sync({ alter: true });
 
 export default TicsNativeAddressModel;

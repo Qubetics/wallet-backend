@@ -238,36 +238,26 @@ class userHelper {
             );
             if (ifWalletExists) {
               const ticsNativeWallet = await TicsNativeAddressModel.findOne({
-                
+                where: {
+                  wallet_id: ifWalletExists.wallet_id,
+                  address: address,
+                }
               })
-              await wallet_queries.wallet_update(
-                { wallet_name: wallet_name, status: GlblBooleanEnum.true },
-                { wallet_id: ifWalletExists.wallet_id }
-              );
-            } else {
-              let obj: any = {
-                user_id: userId,
-                wallet_name: wallet_name,
-                wallet_address: address,
-                default_wallet: GlblBooleanEnum.true,
-                status: GlblBooleanEnum.true,
-                coin_id: coinData.coin_id,
-                // balance: balDetails.status ? balDetails.balance : "0",
-                coin_family: coin_family,
-                is_private_wallet: req.body.isPrivateKey,
-                created_at: currentUTCDate,
-                updated_at: currentUTCDate,
-              };
-              // Creating wallet for that blockchain (coin)
-              await wallet_queries.wallet_create(obj);
+              if(!ticsNativeWallet){
+                await TicsNativeAddressModel.create({
+                  wallet_id: ifWalletExists.wallet_id,
+                  address: address,
+                  user_id: userId
+                })
+              }
               await this.update_wallet_address_list(
                 wallet.coin_family,
                 address,
                 userId,
-                wallet_name
+                wallet_name,
+                ifWalletExists?.wallet_id
               );
-
-          }
+            }
         }
       }
         if (device_token !== "chrome" && device_token !== "abc") {
@@ -292,7 +282,8 @@ class userHelper {
     coin_family: number,
     address: string,
     user_id: number,
-    wallet_name: string
+    wallet_name: string,
+    wallet_id?: number
   ) {
     try {
       switch (coin_family) {
@@ -332,12 +323,21 @@ class userHelper {
           );
           break;
         case config.STATIC_COIN_FAMILY.TICS:
-          await redisClient.set_hash_table(
-            config.TICS_WALLET_ADDRESS,
-            address,
-            JSON.stringify({ address, user_id, wallet_name })
-          );
-          break;
+          if(address.startsWith("qubetics") && wallet_id){
+            await redisClient.set_hash_table(
+              config.TICS_NATIVE_WALLET_ADDRESS,
+              address,
+              JSON.stringify({ address, user_id, wallet_name, wallet_id })
+            );
+            break;
+          }else{
+            await redisClient.set_hash_table(
+              config.TICS_WALLET_ADDRESS,
+              address,
+              JSON.stringify({ address, user_id, wallet_name })
+            );
+            break;
+          }
         case config.STATIC_COIN_FAMILY.SOL:
           await redisClient.set_hash_table(
             config.SOL_WALLET_ADDRESS,

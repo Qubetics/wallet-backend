@@ -31,6 +31,10 @@ class TicsRoute implements ControllerInterface {
       TicsMiddleware.requestInfo,
       TicsControllers.getNonce);
 
+    this.router.post(`${this.path}/:coin/native_address`,
+      jwtVerification.verifyToken,
+      TicsMiddleware.requestNativeInfo,
+      TicsControllers.sendNative);
   }
 
 }

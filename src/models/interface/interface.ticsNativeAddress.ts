@@ -1,7 +1,8 @@
 export interface TicsNativeInterface {
     id?: number;
     wallet_id: number;
-    tics_native_address: string;
+    address: string;
+    user_id: number;
     created_at?: Date;
     updated_at?: Date;
   }

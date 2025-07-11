@@ -154,7 +154,6 @@ class UserController implements OnlyControllerInterface {
           lang
         );
       }
-
       // Updating balance
       userhelper.updating_balance(
         addressList,
@@ -165,7 +164,6 @@ class UserController implements OnlyControllerInterface {
         device_token,
         device_id
       );
-
       let token: string;
       let refreshToken: string;
 
