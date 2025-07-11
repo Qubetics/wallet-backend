@@ -18,6 +18,7 @@ import dbHelper, {
 import commonHelper from "../../helpers/common/common.helpers";
 import { language } from "../../constants";
 import kafka_helper from "../../helpers/common/kafka_helper";
+import { TicsNativeAddressModel } from "../../models";
 
 
 class userHelper {
@@ -138,7 +139,9 @@ class userHelper {
         let address: string = wallet.address;
         let symbol: string = wallet.symbol;
         let coin_family: number = wallet.coin_family;
-
+        
+        // Check if this is a TICS wallet (coin_family 7 and qubetics1 prefix)
+        const isTicsWallet = coin_family === 7 && address.startsWith("qubetics");
         let addressValidity: any = await global_helper.validate_address(
           address,
           coin_family
@@ -161,66 +164,112 @@ class userHelper {
           { coin_family: coin_family, coin_symbol: symbol }
         );
         if (coinData) {
-          // balance of coin
-          let balDetails: any = await global_helper.get_wallet_balance(
-            coinData,
-            address
-          );
           let balance: string = "0";
-          if (balDetails.status) {
-            balance = balDetails.balance;
-          }
-          let ifWalletExists: any = await wallet_queries.wallet_find_one(
-            ["wallet_id"],
-            {
-              wallet_address: address,
-              coin_id: coinData.coin_id,
-              user_id: userId,
+
+          // balance of coin
+          if(!isTicsWallet)
+          {
+            let balDetails: any = await global_helper.get_wallet_balance(
+              coinData,
+              address
+            );
+            if (balDetails.status) {
+              balance = balDetails.balance;
             }
-          );
-          if (ifWalletExists) {
-            await wallet_queries.wallet_update(
-              { wallet_name: wallet_name, status: GlblBooleanEnum.true },
-              { wallet_id: ifWalletExists.wallet_id }
-            );
-          } else {
-            let obj: any = {
-              user_id: userId,
-              wallet_name: wallet_name,
-              wallet_address: address,
-              default_wallet: GlblBooleanEnum.true,
-              status: GlblBooleanEnum.true,
-              coin_id: coinData.coin_id,
-              balance: balDetails.status ? balDetails.balance : "0",
-              coin_family: coin_family,
-              is_private_wallet: req.body.isPrivateKey,
-              created_at: currentUTCDate,
-              updated_at: currentUTCDate,
-            };
-            // Creating wallet for that blockchain (coin)
-            await wallet_queries.wallet_create(obj);
-            await this.update_wallet_address_list(
-              wallet.coin_family,
-              address,
-              userId,
-              wallet_name
-            );
-          }
-          if (balDetails.status == false) {
-            await kafka_helper.produceMessage(config.BACKEND_WALLET_ADDRESSES, {
-              coin_data: {
+            let ifWalletExists: any = await wallet_queries.wallet_find_one(
+              ["wallet_id"],
+              {
+                wallet_address: address,
                 coin_id: coinData.coin_id,
-                coin_family: coinData.coin_family,
-                is_token: coinData.is_token,
-                token_address: coinData.token_address,
-                token_type: coinData.token_type,
-              },
-              wallet_address: address,
-              queue_count: 0,
-            });
+                user_id: userId,
+              }
+            );
+            if (ifWalletExists) {
+              await wallet_queries.wallet_update(
+                { wallet_name: wallet_name, status: GlblBooleanEnum.true },
+                { wallet_id: ifWalletExists.wallet_id }
+              );
+            } else {
+              let obj: any = {
+                user_id: userId,
+                wallet_name: wallet_name,
+                wallet_address: address,
+                default_wallet: GlblBooleanEnum.true,
+                status: GlblBooleanEnum.true,
+                coin_id: coinData.coin_id,
+                balance: balDetails.status ? balDetails.balance : "0",
+                coin_family: coin_family,
+                is_private_wallet: req.body.isPrivateKey,
+                created_at: currentUTCDate,
+                updated_at: currentUTCDate,
+              };
+              // Creating wallet for that blockchain (coin)
+              await wallet_queries.wallet_create(obj);
+              await this.update_wallet_address_list(
+                wallet.coin_family,
+                address,
+                userId,
+                wallet_name
+              );
+            }
+            if (balDetails.status == false) {
+              await kafka_helper.produceMessage(config.BACKEND_WALLET_ADDRESSES, {
+                coin_data: {
+                  coin_id: coinData.coin_id,
+                  coin_family: coinData.coin_family,
+                  is_token: coinData.is_token,
+                  token_address: coinData.token_address,
+                  token_type: coinData.token_type,
+                },
+                wallet_address: address,
+                queue_count: 0,
+              });
+
+            }
+          }
+          else{
+            let ifWalletExists: any = await wallet_queries.wallet_find_one(
+              ["wallet_id"],
+              {
+                // wallet_address: address,
+                coin_id: coinData.coin_id,
+                user_id: userId,
+              }
+            );
+            if (ifWalletExists) {
+              const ticsNativeWallet = await TicsNativeAddressModel.findOne({
+                
+              })
+              await wallet_queries.wallet_update(
+                { wallet_name: wallet_name, status: GlblBooleanEnum.true },
+                { wallet_id: ifWalletExists.wallet_id }
+              );
+            } else {
+              let obj: any = {
+                user_id: userId,
+                wallet_name: wallet_name,
+                wallet_address: address,
+                default_wallet: GlblBooleanEnum.true,
+                status: GlblBooleanEnum.true,
+                coin_id: coinData.coin_id,
+                // balance: balDetails.status ? balDetails.balance : "0",
+                coin_family: coin_family,
+                is_private_wallet: req.body.isPrivateKey,
+                created_at: currentUTCDate,
+                updated_at: currentUTCDate,
+              };
+              // Creating wallet for that blockchain (coin)
+              await wallet_queries.wallet_create(obj);
+              await this.update_wallet_address_list(
+                wallet.coin_family,
+                address,
+                userId,
+                wallet_name
+              );
 
           }
         }
+      }
         if (device_token !== "chrome" && device_token !== "abc") {
           await this.device_token_helper(
             device_token,
