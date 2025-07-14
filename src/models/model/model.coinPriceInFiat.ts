@@ -89,10 +89,6 @@ let dataObjIndex = {
   indexes: [
     {
       unique: false,
-      fields: ["coin_type"],
-    },
-    {
-      unique: false,
       fields: ["fiat_type"],
     },
   ],
