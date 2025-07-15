@@ -23,6 +23,12 @@ export default class user_validator {
             message: Joi.string().allow(null, "").optional(),
         })
     }
+    static createWalletNativeValidate = {
+        body: Joi.object({
+            evmWalletAddress: Joi.string().required(),
+            nativeWalletAddress: Joi.string().required(),
+        })
+    }
     static logoutValidate = {
         body: Joi.object({
             deviceId: Joi.string().required(),

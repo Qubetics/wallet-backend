@@ -124,7 +124,6 @@ class DbHelper {
     req: Request
   ) {
     try {
-
       let checkTxHistory: any = await Models.TrnxHistoryModel.findOne({
         attributes: ['id', 'tx_id'],
         where: {

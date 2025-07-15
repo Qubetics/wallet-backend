@@ -98,6 +98,7 @@ export const config = {
     SOL_RPC_URL: zookeeperConfig.config.SOL_RPC_URL,
     TICS_RPC_URL: zookeeperConfig.config.TICS_RPC_URL,
     ETH_DAPP_RPC_URL: zookeeperConfig.config.ETH_DAPP_RPC_URL,
+    TICS_NATIVE_RPC_URL: zookeeperConfig.config.TICS_NATIVE_RPC_URL,
   },
 
   MORALIS_TRADINGVIEW_TOPIC: zookeeperConfig.config.MORALIS_TRADING_VIEW_TOPIC,

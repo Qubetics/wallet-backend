@@ -1116,8 +1116,8 @@ class WalletController implements OnlyControllerInterface {
         ETH_DAPP_RPC_URL: config.NODE.ETH_DAPP_RPC_URL,
         POL_RPC_URL: config.NODE.POL_RPC_URL,
         TICS_RPC_URL: config.NODE.TICS_RPC_URL,
-        SOL_RPC_URL:
-          "https://mainnet.helius-rpc.com/?api-key=REDACTED",
+        SOL_RPC_URL: config.NODE.SOL_RPC_URL,
+        TICS_NATIVE_RPC_URL: config.NODE.TICS_NATIVE_RPC_URL,
       };
 
       return res.status(GlblCode.SUCCESS).send(data);

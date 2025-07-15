@@ -139,6 +139,127 @@ class userHelper {
         let address: string = wallet.address;
         let symbol: string = wallet.symbol;
         let coin_family: number = wallet.coin_family;
+
+        let addressValidity: any = await global_helper.validate_address(
+          address,
+          coin_family
+        );
+        if (!addressValidity)
+          throw new Error(
+            `${language[lang].INVALID_ADDRESS} (${symbol.toUpperCase()})`
+          );
+
+        // Getting Coin data
+        let coinData: any = await coin_queries.coin_find_one(
+          [
+            "coin_id",
+            "coin_family",
+            "coin_symbol",
+            "is_token",
+            "token_address",
+            "token_type",
+          ],
+          { coin_family: coin_family, coin_symbol: symbol }
+        );
+        if (coinData) {
+          // balance of coin
+          let balDetails: any = await global_helper.get_wallet_balance(
+            coinData,
+            address
+          );
+          let balance: string = "0";
+          if (balDetails.status) {
+            balance = balDetails.balance;
+          }
+          let ifWalletExists: any = await wallet_queries.wallet_find_one(
+            ["wallet_id"],
+            {
+              wallet_address: address,
+              coin_id: coinData.coin_id,
+              user_id: userId,
+            }
+          );
+          if (ifWalletExists) {
+            await wallet_queries.wallet_update(
+              { wallet_name: wallet_name, status: GlblBooleanEnum.true },
+              { wallet_id: ifWalletExists.wallet_id }
+            );
+          } else {
+            let obj: any = {
+              user_id: userId,
+              wallet_name: wallet_name,
+              wallet_address: address,
+              default_wallet: GlblBooleanEnum.true,
+              status: GlblBooleanEnum.true,
+              coin_id: coinData.coin_id,
+              balance: balDetails.status ? balDetails.balance : "0",
+              coin_family: coin_family,
+              is_private_wallet: req.body.isPrivateKey,
+              created_at: currentUTCDate,
+              updated_at: currentUTCDate,
+            };
+            // Creating wallet for that blockchain (coin)
+            await wallet_queries.wallet_create(obj);
+            await this.update_wallet_address_list(
+              wallet.coin_family,
+              address,
+              userId,
+              wallet_name
+            );
+          }
+          if (balDetails.status == false) {
+            await kafka_helper.produceMessage(config.BACKEND_WALLET_ADDRESSES, {
+              coin_data: {
+                coin_id: coinData.coin_id,
+                coin_family: coinData.coin_family,
+                is_token: coinData.is_token,
+                token_address: coinData.token_address,
+                token_type: coinData.token_type,
+              },
+              wallet_address: address,
+              queue_count: 0,
+            });
+
+          }
+        }
+        if (device_token !== "chrome" && device_token !== "abc") {
+          await this.device_token_helper(
+            device_token,
+            userId,
+            lang,
+            address,
+            coin_family,
+            device_id
+          );
+        }
+      }
+    } catch (err: any) {
+      console.error("Error in updating_balance>>>", err);
+      await commonHelper.save_error_logs("updating_balance", err.message);
+      return false;
+    }
+  }
+
+  public async updating_balance2(
+    addressList: any,
+    userId: number,
+    req: any,
+    wallet_name: string,
+    lang: string,
+    device_token: string,
+    device_id: string
+  ) {
+    try {
+      const currentUTCDate: string = new Date()
+        .toISOString()
+        .replace(/T/, " ")
+        .replace(/\..+/, "");
+      for await (const wallet of addressList) {
+        if (!wallet.address) continue;
+
+        let address: string = wallet.address;
+        let symbol: string = wallet.symbol;
+        let coin_family: number = wallet.coin_family;
         
         // Check if this is a TICS wallet (coin_family 7 and qubetics1 prefix)
         const isTicsWallet = coin_family === 7 && address.startsWith("qubetics");
@@ -228,7 +349,7 @@ class userHelper {
             }
           }
           else{
-            let ifWalletExists: any = await wallet_queries.wallet_find_one(
+            const ifWalletExists: any = await wallet_queries.wallet_find_one(
               ["wallet_id"],
               {
                 // wallet_address: address,
@@ -278,7 +399,7 @@ class userHelper {
     }
   }
 
-  private async update_wallet_address_list(
+  public async update_wallet_address_list(
     coin_family: number,
     address: string,
     user_id: number,
