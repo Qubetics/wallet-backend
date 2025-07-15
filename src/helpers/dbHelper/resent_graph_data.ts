@@ -17,16 +17,16 @@ class ResentGraphDataQueries {
             throw err;
         }
     }
-    public async resent_graph_data_update(set: any, where_clause: any) {
-        try {
-            let data: any = await Models.ResetGraphDataModel.update(set, { where: where_clause })
-            return data;
-        } catch (err: any) {
-            console.error("Error in resent_graph_data_update>>", err)
-            await commonHelper.save_error_logs("resent_graph_data_update", err.message);
-            throw err;
-        }
-    }
+    // public async resent_graph_data_update(set: any, where_clause: any) {
+    //     try {
+    //         let data: any = await Models.ResetGraphDataModel.update(set, { where: where_clause })
+    //         return data;
+    //     } catch (err: any) {
+    //         console.error("Error in resent_graph_data_update>>", err)
+    //         await commonHelper.save_error_logs("resent_graph_data_update", err.message);
+    //         throw err;
+    //     }
+    // }
     public async resent_graph_data_create(obj: any) {
         try {
             let data: any = await Models.ResetGraphDataModel.create(obj)

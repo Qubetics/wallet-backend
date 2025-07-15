@@ -46,6 +46,7 @@ export const config = {
   TRON_WALLET_ADDRESS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TRON_WALLET_ADDRESS}`,
   SOL_WALLET_ADDRESS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.SOL_WALLET_ADDRESS}`,
   TICS_WALLET_ADDRESS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TICS_WALLET_ADDRESS}`,
+  TICS_NATIVE_WALLET_ADDRESS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TICS_NATIVE_WALLET_ADDRESS}`,
   SEARCH_TOKEN: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.SEARCH_TOKEN}`,
   KEYS: {
     MORALIS: zookeeperConfig.config.MORALIS_KEY,
@@ -97,6 +98,7 @@ export const config = {
     SOL_RPC_URL: zookeeperConfig.config.SOL_RPC_URL,
     TICS_RPC_URL: zookeeperConfig.config.TICS_RPC_URL,
     ETH_DAPP_RPC_URL: zookeeperConfig.config.ETH_DAPP_RPC_URL,
+    TICS_NATIVE_RPC_URL: zookeeperConfig.config.TICS_NATIVE_RPC_URL,
   },
 
   MORALIS_TRADINGVIEW_TOPIC: zookeeperConfig.config.MORALIS_TRADING_VIEW_TOPIC,

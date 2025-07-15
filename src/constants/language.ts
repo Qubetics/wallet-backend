@@ -166,7 +166,9 @@ export const language: any = {
         REQUEST_EXIST: 'Request already exist.',
         REQUEST_SESSION_EXPIRED: 'Request Expired',
         // Changelly
-        CHANGE_MIN_AMOUNT: (crytpAmount: string, coinSymbol: string) => `Minimal amount is ${crytpAmount} ${coinSymbol}.`
+        CHANGE_MIN_AMOUNT: (crytpAmount: string, coinSymbol: string) => `Minimal amount is ${crytpAmount} ${coinSymbol}.`,
+        INVALID_TRANSACTION_DATA: "Invalid transaction data",
+        WALLET_CREATED: "Wallet created successfully.",
     },
     sp: {
         //Wallets
@@ -335,9 +337,8 @@ export const language: any = {
         REQUEST_EXIST: 'La solicitud ya existe.',
         REQUEST_SESSION_EXPIRED: 'Solicitud caducada',
         // Changelly
-        CHANGE_MIN_AMOUNT: (crytpAmount: string, coinSymbol: string) => `La cantidad mínima es ${crytpAmount} ${coinSymbol}.`
-
-
-
+        CHANGE_MIN_AMOUNT: (crytpAmount: string, coinSymbol: string) => `La cantidad mínima es ${crytpAmount} ${coinSymbol}.`,
+        INVALID_TRANSACTION_DATA: "Datos de transacción no válidos",
+        WALLET_CREATED: "Cartera creada exitosamente.",
     }
 }

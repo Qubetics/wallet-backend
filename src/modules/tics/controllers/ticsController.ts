@@ -251,6 +251,85 @@ class TicsController implements OnlyControllerInterface {
       });
     }
   }
+
+  public async sendNative(req: Request, res: Response) {
+    let lang: any = req.headers['content-language'] || 'en';
+    try {
+      const prefixedRawTx = req?.body?.txid.startsWith('0x') ? req?.body?.txid : ( '0x' + req?.body?.txid );
+      req.body.tx_hash = prefixedRawTx;
+      req.body.tx_status = "completed";
+      const resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
+
+      if (resultStatus.status && resultStatus.status == true) {
+        if (req.body.tx_type == "withdraw") {
+          return response.success(res, {
+            data: {
+              status: true,
+              message: language[lang].WITHDRAW_REQUEST_ETH(
+                req.body.amount,
+                req.coininfo.coin_symbol
+              ),
+              tx_hash: prefixedRawTx,
+            },
+          });
+        } else {
+          return response.success(res, {
+            data: {
+              status: true,
+              message: language[lang].SWAP_REQUEST_ETH(
+                req.body.amount,
+                req.coininfo.coin_symbol
+              ),
+              tx_hash: prefixedRawTx,
+            },
+          });
+        }
+      } else {
+        return response.error(res, {
+          data: {
+            status: false,
+            message: language[lang].TRANSACTION_REQUEST,
+          },
+        });
+      }
+    } catch (err: any) {
+      console.error("Error in TICS NATIVE send API >>>>>", err);
+      await commonHelper.save_error_logs("tics_native_send", err.message);
+      return response.error(res, {
+        data: {
+          status: false,
+          message: language[lang].CATCH_MSG,
+        },
+      });
+    }
+  }
+
+  public async getEstimationGasNative(req: Request, res: Response) {
+    let lang: any = req.headers["content-language"] || "en";
+    try {
+      const gasEstimate = 74232;
+      const gasPrice = '90000000000tics';  
+      return response.success(res, {
+        data: {
+          status: true,
+          message: language[lang].DATA_FETCHED,
+          data: {
+            gas_estimate: gasEstimate,
+            gas_price: gasPrice,
+          },
+        },
+      });
+    } catch (err: any) {
+      console.error("Error in TICS NATIVE gas estimation API >>>>>", err);
+      await commonHelper.save_error_logs("tics_native_gas_estimation", err.message);
+      return response.error(res, {
+        data: {
+          status: false,
+          message: language[lang].CATCH_MSG,
+        },
+      });
+    }
+  }
 }
 
 export const TicsControllers = new TicsController();
