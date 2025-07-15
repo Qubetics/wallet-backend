@@ -29,6 +29,7 @@ class UserRoute implements ControllerInterface {
     this.router.post(
       `${this.path}/create/wallet/native`,
       [validate(validator.createWalletNativeValidate)],
+      jwtVerification.verifyToken,
       userController.createWalletNative
     );
 

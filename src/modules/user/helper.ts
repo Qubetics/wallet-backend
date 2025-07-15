@@ -257,23 +257,23 @@ class userHelper {
       for await (const wallet of addressList) {
         if (!wallet.address) continue;
 
-        let address: string = wallet.address;
-        let symbol: string = wallet.symbol;
-        let coin_family: number = wallet.coin_family;
+        const address: string = wallet.address;
+        const symbol: string = wallet.symbol;
+        const coin_family: number = wallet.coin_family;
         
         // Check if this is a TICS wallet (coin_family 7 and qubetics1 prefix)
         const isTicsWallet = coin_family === 7 && address.startsWith("qubetics");
-        let addressValidity: any = await global_helper.validate_address(
-          address,
-          coin_family
-        );
-        if (!addressValidity)
-          throw new Error(
-            `${language[lang].INVALID_ADDRESS} (${symbol.toUpperCase()})`
-          );
+        // let addressValidity: any = await global_helper.validate_address(
+        //   address,
+        //   coin_family
+        // );
+        // if (!addressValidity)
+        //   throw new Error(
+        //     `${language[lang].INVALID_ADDRESS} (${symbol.toUpperCase()})`
+        //   );
 
         // Getting Coin data
-        let coinData: any = await coin_queries.coin_find_one(
+        const coinData: any = await coin_queries.coin_find_one(
           [
             "coin_id",
             "coin_family",
@@ -290,14 +290,14 @@ class userHelper {
           // balance of coin
           if(!isTicsWallet)
           {
-            let balDetails: any = await global_helper.get_wallet_balance(
+            const balDetails: any = await global_helper.get_wallet_balance(
               coinData,
               address
             );
             if (balDetails.status) {
               balance = balDetails.balance;
             }
-            let ifWalletExists: any = await wallet_queries.wallet_find_one(
+            const ifWalletExists: any = await wallet_queries.wallet_find_one(
               ["wallet_id"],
               {
                 wallet_address: address,

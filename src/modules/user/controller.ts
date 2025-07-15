@@ -245,6 +245,24 @@ class UserController implements OnlyControllerInterface {
           });
         }
       }
+      /** validate the wallet addresses */
+      for await (const wallet of addressList) {
+        if (!wallet?.address) continue;
+
+        const { address, symbol, coin_family }: {
+          address: string;
+          symbol: string;
+          coin_family: number;
+        } = wallet;
+
+        const isValid: boolean = await global_helper.validate_address(address, coin_family);
+
+        if (!isValid) {
+          throw new Error(`${language[lang].INVALID_ADDRESS} (${symbol?.toUpperCase()})`);
+        }
+      }
+
+
 
       // Check if the input contains emojis
       if (userController.validateEmojis(wallet_name)) {
@@ -376,7 +394,7 @@ class UserController implements OnlyControllerInterface {
             address: nativeWalletAddress,
           }
         })
-        if(!ticsNativeWallet){
+        if (!ticsNativeWallet) {
 
           const addressValidity = await ticsEther.validate_tics_address(nativeWalletAddress);
           if (!addressValidity) {
@@ -401,7 +419,7 @@ class UserController implements OnlyControllerInterface {
           );
         }
       }
-      
+
       return response.success(res, {
         data: {
           status: true,
@@ -1136,42 +1154,42 @@ class UserController implements OnlyControllerInterface {
     let lang: any = req.headers['content-language'] || 'en';
     try {
 
-        const per_page: number = Number(
-          req.body?.limit == undefined ? (req.body.limit = "10") : req.body.limit
-        );
-        const page: number = Number(
-          req.body.page == undefined ? (req.body.page = "1") : req.body.page
-        );
-        const offset: number = (page - 1) * per_page;
-      
-        const search: string = req.body?.search == undefined ? null : req.body.search;
+      const per_page: number = Number(
+        req.body?.limit == undefined ? (req.body.limit = "10") : req.body.limit
+      );
+      const page: number = Number(
+        req.body.page == undefined ? (req.body.page = "1") : req.body.page
+      );
+      const offset: number = (page - 1) * per_page;
 
-          //object for get token list
-        let obj: any = {
-          where: { status: 'sent' },
-          attributes: [ "id", "title", "message", "created_at", "status"],
-          order: [['id', 'DESC']],
-          limit: per_page,
-          offset: offset,
-          page: page,
-        }
+      const search: string = req.body?.search == undefined ? null : req.body.search;
 
-        //search by title, message
-        if (search) {
-            obj.where[Op.or] = [
-            { title: { [Op.like]: `%${search}%` } },
-            { message: { [Op.like]: `%${search}%` } }
-            ];
-        }
+      //object for get token list
+      let obj: any = {
+        where: { status: 'sent' },
+        attributes: ["id", "title", "message", "created_at", "status"],
+        order: [['id', 'DESC']],
+        limit: per_page,
+        offset: offset,
+        page: page,
+      }
 
-        const get_notification_list: any = await NotificationHelper.getNotificationList(obj);
+      //search by title, message
+      if (search) {
+        obj.where[Op.or] = [
+          { title: { [Op.like]: `%${search}%` } },
+          { message: { [Op.like]: `%${search}%` } }
+        ];
+      }
 
-        return res.status(GlblCode.SUCCESS).send({
-            message: language[lang].SUCCESS,
-            status: true,
-            code: GlblCode.SUCCESS,
-            data: get_notification_list
-        });
+      const get_notification_list: any = await NotificationHelper.getNotificationList(obj);
+
+      return res.status(GlblCode.SUCCESS).send({
+        message: language[lang].SUCCESS,
+        status: true,
+        code: GlblCode.SUCCESS,
+        data: get_notification_list
+      });
 
     } catch (err: any) {
       console.error("Error in user > getAnnouncementList", err);
@@ -1189,17 +1207,17 @@ class UserController implements OnlyControllerInterface {
     let lang: any = req.headers['content-language'] || 'en';
     try {
 
-        const getBannerList: any = await BannerModel.findAll({
-          where: { status: '1'},
-          attributes: [ "id", "link", "image_path", "created_at"]
-        })
+      const getBannerList: any = await BannerModel.findAll({
+        where: { status: '1' },
+        attributes: ["id", "link", "image_path", "created_at"]
+      })
 
-        return res.status(GlblCode.SUCCESS).send({
-            message: language[lang].SUCCESS,
-            status: true,
-            code: GlblCode.SUCCESS,
-            data: getBannerList
-        });
+      return res.status(GlblCode.SUCCESS).send({
+        message: language[lang].SUCCESS,
+        status: true,
+        code: GlblCode.SUCCESS,
+        data: getBannerList
+      });
 
     } catch (err: any) {
       console.error("Error in user > getAnnouncementList", err);
