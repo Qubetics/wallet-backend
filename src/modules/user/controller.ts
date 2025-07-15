@@ -16,6 +16,7 @@ import commonHelper from "../../helpers/common/common.helpers";
 import {
   address_book_queries,
   address_book_wallet_queries,
+  coin_queries,
   device_token_queries,
   notification_queries,
   user_queries,
@@ -378,12 +379,16 @@ class UserController implements OnlyControllerInterface {
       const { evmWalletAddress, nativeWalletAddress } = req.body;
       const userId = req.userId;
 
+      const coinData = await coin_queries.coin_find_one(["coin_id", "coin_family"], {
+        coin_family: config.STATIC_COIN_FAMILY.TICS,
+        is_token: GlblBooleanEnum.false,
+      });
       const ifWalletExists: any = await wallet_queries.wallet_find_one(
         ["wallet_id", "wallet_name"],
         {
           wallet_address: evmWalletAddress,
-          coin_id: 161,
-          coin_family: config.STATIC_COIN_FAMILY.TICS,
+          coin_id: coinData?.coin_id,
+          coin_family: coinData?.coin_family,
           user_id: userId,
         }
       );
