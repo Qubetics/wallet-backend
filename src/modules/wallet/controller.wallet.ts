@@ -87,7 +87,7 @@ class WalletController implements OnlyControllerInterface {
             { coin_status: 1 },
             { coin_id: coinDataExist.coin_id }
           );
-          
+
           const redisCoinData = {
             coin_id: coinDataExist.coin_id,
             is_token: coinDataExist.is_token,
@@ -386,9 +386,9 @@ class WalletController implements OnlyControllerInterface {
           { wallet_address: walletAddress }
         );
 
-        if(!wallet_data){
+        if (!wallet_data) {
           const wallet_ex: any = await wallet_queries.wallet_find_one(
-            ["wallet_id","wallet_name"],
+            ["wallet_id", "wallet_name"],
             { user_id: userId }
           );
 
@@ -408,8 +408,16 @@ class WalletController implements OnlyControllerInterface {
             updated_at: currentUTCDate,
           };
           await wallet_queries.wallet_create(obj);
+          await userhelper.update_wallet_address_list(
+            coin_data.coin_family,
+            walletAddress,
+            userId,
+            wallet_ex?.wallet_name
+              ? wallet_ex.wallet_name
+              : null
+          );
         }
-        else{
+        else {
           console.log("wallet_name >>>", wallet_data);
           const obj: any = {
             user_id: userId,
@@ -426,6 +434,14 @@ class WalletController implements OnlyControllerInterface {
             updated_at: currentUTCDate,
           };
           await wallet_queries.wallet_create(obj);
+          await userhelper.update_wallet_address_list(
+            coin_data.coin_family,
+            walletAddress,
+            userId,
+            wallet_data?.wallet_name
+              ? wallet_data.wallet_name
+              : null
+          );
         }
       } else {
         const update_wallet_data: any = { status: isActive };
@@ -1697,7 +1713,7 @@ class WalletController implements OnlyControllerInterface {
       } = req.body;
 
       // const coinWalletdata: any = await Models.WalletModel.findOne({
-        let coinWalletdata: any = await Models.WalletModel.findOne({
+      let coinWalletdata: any = await Models.WalletModel.findOne({
         attributes: ["balance"],
         where: {
           user_id: req.userId,
@@ -1751,7 +1767,7 @@ class WalletController implements OnlyControllerInterface {
       }
       const appVersion = req.headers["app-version"];
       const requiredVersion = "1.1";
-        if (appVersion !== requiredVersion) {
+      if (appVersion !== requiredVersion) {
         if (
           coin_id === 161 &&
           coinWalletdata?.dataValues?.coin?.dataValues?.cross_chain_data
@@ -1760,8 +1776,8 @@ class WalletController implements OnlyControllerInterface {
         }
       }
       const moralis = {
-        scriptId : config.MORALIS_SCRIPT_ID,
-        scriptSrc : config.MORALIS_SCRIPT_SRC
+        scriptId: config.MORALIS_SCRIPT_ID,
+        scriptSrc: config.MORALIS_SCRIPT_SRC
       }
 
       return res.status(GlblCode.SUCCESS).send({
