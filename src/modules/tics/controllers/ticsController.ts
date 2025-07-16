@@ -307,7 +307,7 @@ class TicsController implements OnlyControllerInterface {
   public async getEstimationGasNative(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      const gasEstimate = 74232;
+      const gasEstimate = 111348;
       const gasPrice = '90000000000tics';  
       return response.success(res, {
         data: {
