@@ -58,7 +58,7 @@ class TicsEther {
     }
   }
 
-  private async isValidCosmosAddress(address: string, expectedPrefix: string = "qubetics" ): Promise<boolean> {
+  private async isValidCosmosAddress(address: string, expectedPrefix: string = "qubetics"): Promise<boolean> {
     try {
       const decoded = fromBech32(address);
       return decoded.prefix === expectedPrefix;
@@ -242,7 +242,7 @@ class TicsEther {
 
       return {
         status: true,
-        gas_estimate: gasLimit > BigInt(30000) ? Math.floor(Number(gasLimit)) : 30000,
+        gas_estimate: gasLimit > BigInt(30000) ? Math.floor(Number(gasLimit) - 10000) : 20000,
         message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('TICS')
       };
     } catch (err: any) {
