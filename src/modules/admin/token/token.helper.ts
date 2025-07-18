@@ -142,7 +142,7 @@ class TokenHelpers {
             coin_family: coinFamily,
             coin_status: GlblBooleanEnum.true,
             is_token: GlblBooleanEnum.true,
-            is_on_cmc: cmc_id ? GlblBooleanEnum.true : GlblBooleanEnum.false,
+            is_on_cmc: GlblBooleanEnum.true,
             for_swap: swapSupported,
             added_by: GlblAddedBy.ADMIN,
             token_type: tokenType.toUpperCase(),

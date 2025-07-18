@@ -308,7 +308,9 @@ class TicsController implements OnlyControllerInterface {
     let lang: any = req.headers["content-language"] || "en";
     try {
       const gasEstimate = 111348;
-      const gasPrice = '90000000000tics';  
+      const gasPrice = '90000000000tics';
+      const bufferedGasEstimate = gasEstimate*1.25;
+      const bufferedGasPrice = 90;  
       return response.success(res, {
         data: {
           status: true,
@@ -316,6 +318,8 @@ class TicsController implements OnlyControllerInterface {
           data: {
             gas_estimate: gasEstimate,
             gas_price: gasPrice,
+            buffered_gas_estimate: bufferedGasEstimate,
+            buffered_gas_price: bufferedGasPrice,
           },
         },
       });

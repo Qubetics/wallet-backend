@@ -1236,6 +1236,46 @@ class UserController implements OnlyControllerInterface {
     }
   }
 
+  public async currentTimestamp(req: Request, res: Response) {
+    let lang: any = req.headers['content-language'] || 'en';
+    try {
+      const { payload } = req.body;
+      const checkPayload = Buffer.from(payload, 'hex').toString('utf8');
+      if (!checkPayload || checkPayload !== "qubetics-wallet") {
+        return response.error(res, {
+          data: {
+            status: false,
+            message: "Unauthorized.",
+          },
+        });
+      }
+
+      // const currentTimestamp = Date.now();
+      const currentTimestamp = new Date()
+      .toISOString()
+      .replace('T', ' ')
+      .replace(/\.\d{3}Z$/, '');
+
+      return response.success(res, {
+        data: {
+          status: true,
+          message: language[lang].SUCCESS,
+          data: {
+              current_timestamp: currentTimestamp
+          },
+        },
+      });
+    } catch (err: any) {
+      console.error("Error in user > currentTimestamp", err);
+      await commonHelper.save_error_logs("user_currentTimestamp", err.message);
+      response.error(res, {
+        data: {
+          status: false,
+          message: language[lang].CATCH_MSG,
+        }
+      });
+    }
+  }
 }
 
 export const userController = new UserController();

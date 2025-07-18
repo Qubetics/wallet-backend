@@ -114,6 +114,11 @@ class UserRoute implements ControllerInterface {
       jwtVerification.verifyToken,
       userController.getBannerList
     );
+
+    this.router.post(
+      `${this.path}/current_timestamp`,
+      userController.currentTimestamp
+    );
   }
 }
 
