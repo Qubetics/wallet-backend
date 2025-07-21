@@ -5,7 +5,7 @@
   "main": "server.ts",
   "scripts": {
     "build": "rm -rf build && tsc --build && cp -a ./src/public ./src/views ./build && cp -a ./src/config/keys ./build/config && cp -a ./src/config/admin_keys ./build/config && cp ./src/swagger.json ./build/swagger.json",
-    "start": "rm -rf build && tsc --build && cp -a ./src/public ./src/views ./build && cp -a ./src/config/keys ./build/config && cp -a ./src/config/admin_keys ./build/config && cp ./src/swagger.json ./build/swagger.json && cp -a ./src/cert ./build/cert && node build/server.js",
+    "start": "rm -rf build && tsc --build && cp -a ./src/public ./src/views ./build && cp -a ./src/config/keys ./build/config && cp -a ./src/config/admin_keys ./build/config && cp ./src/swagger.json ./build/swagger.json && node build/server.js",
     "lint": "tslint -p tsconfig.json -c tslint.json"
   },
   "keywords": [
