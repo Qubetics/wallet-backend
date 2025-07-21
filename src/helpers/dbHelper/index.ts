@@ -124,7 +124,6 @@ class DbHelper {
     req: Request
   ) {
     try {
-
       let checkTxHistory: any = await Models.TrnxHistoryModel.findOne({
         attributes: ['id', 'tx_id'],
         where: {
@@ -156,7 +155,11 @@ class DbHelper {
       if (req.coininfo.coin_family == config.STATIC_COIN_FAMILY.ETH) {
         user_data = await redisClient.getKeyValuePair(config.ETH_WALLET_ADDRESS, req.body.to.toUpperCase())
       } else if (req.coininfo.coin_family == config.STATIC_COIN_FAMILY.TICS) {
-        user_data = await redisClient.getKeyValuePair(config.TICS_WALLET_ADDRESS, req.body.to.toUpperCase())
+        if (req.body.to.toUpperCase().includes('QUBETICS')) {
+          user_data = await redisClient.getKeyValuePair(config.TICS_NATIVE_WALLET_ADDRESS, req.body.to.toUpperCase())
+        } else {
+          user_data = await redisClient.getKeyValuePair(config.TICS_WALLET_ADDRESS, req.body.to.toUpperCase())
+        }
       } else if (req.coininfo.coin_family == config.STATIC_COIN_FAMILY.BTC) {
         user_data = await redisClient.getKeyValuePair(config.BTC_WALLET_ADDRESS, req.body.to.toUpperCase())
       } else if (req.coininfo.coin_family == config.STATIC_COIN_FAMILY.TRX) {

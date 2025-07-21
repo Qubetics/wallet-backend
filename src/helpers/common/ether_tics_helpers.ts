@@ -6,6 +6,7 @@ import { language } from "../../constants";
 import { ethers } from "ethers";
 import commonHelper from "./common.helpers";
 import { AbiItem } from "../../interfaces/ether.interface";
+import { fromBech32 } from "@cosmjs/encoding";
 
 class TicsEther {
   public provider: ethers.JsonRpcProvider;
@@ -45,10 +46,25 @@ class TicsEther {
 
   public async validate_tics_address(address: string) {
     try {
-      return ethers.isAddress(address);
+      if (address.startsWith("qubetics")) {
+        return await this.isValidCosmosAddress(address, "qubetics");
+      } else {
+        return ethers.isAddress(address);
+      }
     } catch (err: any) {
       console.error("Error in validate_tics_address", err);
       await commonHelper.save_error_logs("validate_tics_address", err.message);
+      return false;
+    }
+  }
+
+  private async isValidCosmosAddress(address: string, expectedPrefix: string = "qubetics"): Promise<boolean> {
+    try {
+      const decoded = fromBech32(address);
+      return decoded.prefix === expectedPrefix;
+    } catch (err: any) {
+      console.error("Bech32 decoding failed:", err.message);
+      await commonHelper.save_error_logs("isValidBech32Address", err.message);
       return false;
     }
   }
@@ -226,7 +242,7 @@ class TicsEther {
 
       return {
         status: true,
-        gas_estimate: gasLimit > BigInt(30000) ? Math.floor(Number(gasLimit)) : 30000,
+        gas_estimate: gasLimit > BigInt(30000) ? Math.floor(Number(gasLimit) - 10000) : 20000,
         message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('TICS')
       };
     } catch (err: any) {

@@ -4,20 +4,20 @@ import * as Models from '../../models/model/index';
 
 class AddressBookWalletQueries {
 
-    public async address_book_wallets_find_one(attr: any, where_clause: any) {
-        try {
-            let data: any = await Models.AddressBookWalletsModel.findOne({
-                attributes: attr,
-                where: where_clause,
-                raw: true
-            })
-            return data;
-        } catch (err: any) {
-            console.error("Error in address_book_wallets_find_one>>", err)
-            await commonHelper.save_error_logs("address_book_wallets_find_one", err.message);
-            throw err;
-        }
-    }
+    // public async address_book_wallets_find_one(attr: any, where_clause: any) {
+    //     try {
+    //         let data: any = await Models.AddressBookWalletsModel.findOne({
+    //             attributes: attr,
+    //             where: where_clause,
+    //             raw: true
+    //         })
+    //         return data;
+    //     } catch (err: any) {
+    //         console.error("Error in address_book_wallets_find_one>>", err)
+    //         await commonHelper.save_error_logs("address_book_wallets_find_one", err.message);
+    //         throw err;
+    //     }
+    // }
     public async address_book_wallets_find_all(attr: any, where_clause: any) {
         try {
             let data: any = await Models.AddressBookWalletsModel.findAll({

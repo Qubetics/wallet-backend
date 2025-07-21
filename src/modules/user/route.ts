@@ -21,6 +21,19 @@ class UserRoute implements ControllerInterface {
     );
 
     this.router.post(
+      `${this.path}/create/wallet2`,
+      [validate(validator.createWalletValidate)],
+      userController.createWallet2
+    );
+
+    this.router.post(
+      `${this.path}/create/wallet/native`,
+      [validate(validator.createWalletNativeValidate)],
+      jwtVerification.verifyToken,
+      userController.createWalletNative
+    );
+
+    this.router.post(
       `${this.path}/logout`,
       [validate(validator.logoutValidate)],
       jwtVerification.verifyToken,
@@ -100,6 +113,11 @@ class UserRoute implements ControllerInterface {
       `${this.path}/banners`,
       jwtVerification.verifyToken,
       userController.getBannerList
+    );
+
+    this.router.post(
+      `${this.path}/current_timestamp`,
+      userController.currentTimestamp
     );
   }
 }
