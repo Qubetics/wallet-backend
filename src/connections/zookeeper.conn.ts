@@ -9,7 +9,7 @@ class ZookeeprProvider {
     config: any = {};
     constructor() {
         client.connect();
-    }
+    } 
     connectZookeeper = async () => {
         return new Promise((resolve, reject) => {
             client.once("connected", () => {
