@@ -172,7 +172,6 @@ class Server implements ServerInterface {
 
   }
 
-
   public initializeControllers() {
     const url: string = `/api/v1`;
     console.log(
