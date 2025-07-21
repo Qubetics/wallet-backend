@@ -10,14 +10,13 @@ import { exponentialToDecimal } from "./globalFunctions";
 import * as Models from '../../models/model/index';
 import commonHelper from "./common.helpers";
 import { bscEther } from "./ether_bsc_helpers";
-import { URL as _URL, URLSearchParams as _URLSearchParams } from "url";
+// import { URL as _URL, URLSearchParams as _URLSearchParams } from "url";
 import { polEther } from "./ether_pol_helpers";
 import { SolanaHelper } from "./solana.helper";
 import cmcHelper from "./cmc.helpers";
 import { ticsEther } from "./ether_tics_helpers";
 import firebaseAdmin from 'firebase-admin';
 import { fcmServiceAccount } from "../../constants/firebase.admin.key";
-import { error } from "console";
 
 
 class Global_helper {
@@ -428,6 +427,84 @@ class Global_helper {
             return { image: imageUrl, id: id };
         } catch (err: any) {
             console.error("Error in get_token_image_from_cmc", err);
+            return null;
+        }
+    }
+    
+    //TODO : get  from config
+    public STATIC_COIN_FAMILY_SYMBOL = {
+            1: "BNB",
+            2: "ETH",
+            3: "BTC",
+            4: "POL",
+            5: "SOL",
+            6: "TRX",
+            7: "TICS"
+    }
+
+    public STATIC_COIN_FAMILY_NAME = {
+        1: "BNB",
+        2: "Ethereum",
+        3: "BTC",
+        4: "Polygon",
+        5: "Solana",
+        6: "Tron",
+        7: "TICS"
+    }
+
+    public async getTokenImageFromCmcBySymbol(data: any) {
+        try {
+            const tokenAddress = data.tokenAddress;
+            const coinFamily = data.coinFamily as keyof typeof this.STATIC_COIN_FAMILY_SYMBOL;
+            const  PlatformName = this.STATIC_COIN_FAMILY_NAME[coinFamily];
+
+            if(PlatformName == null){
+                return { image: null, id: null };
+            }
+
+            let params: any = `info?symbol=${data.symbol}`;
+
+            let result: any = await cmcHelper.cmcApi(params);
+            let id: any = null;
+            let imageUrl: any = null;
+            
+            if (result.data && result.data.data) {
+                let image: any;
+                const symbolKey = Object.keys(result.data.data)[0];
+                
+                if (symbolKey) {
+                    // Get all tokens with this symbol
+                    const tokens = result.data.data[symbolKey];
+                    
+                    // Find the token that matches both symbol and token address
+                    for (const token of tokens) {
+
+                        if (token.contract_address) {
+                            // Check each contract address entry
+                            for (const contract of token.contract_address) {
+
+                                if (contract?.platform && 
+                                    contract?.platform?.coin && 
+                                    contract?.platform?.coin?.name == PlatformName && 
+                                    contract?.contract_address?.toLowerCase() == tokenAddress.toLowerCase()) {
+                                    id = token.id;
+                                    image = token.logo;
+                                    break;
+                                }
+                            }
+                            if (id) break; // Break outer loop if match found
+                        }
+                    }
+                    
+                    if (image) {
+                        imageUrl = await this.UpdateCmcImgUrl(image);
+                    }
+                }
+            }
+           
+            return { image: imageUrl, id: id };
+        } catch (err: any) {
+            console.error("Error in getTokenImageFromCmcBySymbol", err);
             return null;
         }
     }

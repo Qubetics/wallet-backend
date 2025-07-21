@@ -2312,16 +2312,31 @@ class WalletController implements OnlyControllerInterface {
 
   //   return response;
   // }
-  // public async isCorrectCmcId(token_address: string, cmc_id: number) : Promise<any> {
-     
+  // public async isCorrectCmcId(token_address: string, cmc_id: number, coin_symbol: string, coin_family: number) : Promise<any> {
+      
+
   //   let data: any = {
-  //     token_address: token_address,
+  //     symbol: coin_symbol,
+  //     coinFamily: coin_family,
+  //     tokenAddress: token_address,
+  //   }
+  //   let result: any = await global_helper.getTokenImageFromCmcBySymbol(data);
+
+  //   if(result?.id == null){
+  //     console.log(`${token_address} is not found on cmc`);
+  //     return {
+  //       status: false,
+  //       data: {
+  //         new_cmc_id: null
+  //       }
+  //     }
   //   }
 
-  //   let result: any = await global_helper.getTokenImageFromCmc(data);
+  //   console.log("Result API CMCID", result.id);
+  //   console.log("Cmc ID from DB", cmc_id);
 
-  //   if(result.id == cmc_id){
-  //     console.log(`${token_address} is correct cmc id ${cmc_id}`);
+  //   if(result?.id == cmc_id){
+  //     console.log(result.id, "is correct cmc id", cmc_id);
   //     return {
   //       status: true,
   //       data: {
@@ -2334,7 +2349,7 @@ class WalletController implements OnlyControllerInterface {
   //     return {
   //       status: false,
   //       data: {
-  //         new_cmc_id: result.id
+  //         new_cmc_id: result?.id
   //       }
   //     }
   //   }
@@ -2368,15 +2383,17 @@ class WalletController implements OnlyControllerInterface {
 
   //   let coin = coinData[index];
     
-  //   if (!coin.token_address || !coin.cmc_id) {
-  //     console.log(`Skipping coin at index ${index} due to missing token_address or cmc_id`);
-  //     return this.recursiveCmcIdValidation(coinData, index + 1);
-  //   }
 
   //   try {
-  //     let check = await this.isCorrectCmcId(coin.token_address, coin.cmc_id);
+  //     let check = await this.isCorrectCmcId(coin.token_address, coin.cmc_id, coin.coin_symbol, coin.coin_family);
 
-  //     if(check.status === true) {
+  //     if(check.data.new_cmc_id == null){
+  //       console.log(`${coin.token_address} is not found on cmc`);
+  //       await new Promise(resolve => setTimeout(resolve, 1500));
+  //       return this.recursiveCmcIdValidation(coinData, index + 1);
+  //     }
+
+  //     if(check.status == true) {
   //       console.log(`${coin.token_address} is correct cmc id ${coin.cmc_id}`);
   //     } else {
   //       await this.updateNewCmcId(coin.token_address, coin.cmc_id, coin.coin_id, check.data.new_cmc_id);
@@ -2386,6 +2403,9 @@ class WalletController implements OnlyControllerInterface {
   //     console.error(`Error processing coin at index ${index}:`, error);
   //   }
     
+  //   // Add a one second delay before processing the next coin
+  //   await new Promise(resolve => setTimeout(resolve, 1500));
+    
   //   // Continue with next coin regardless of success/failure of current one
   //   return this.recursiveCmcIdValidation(coinData, index + 1);
   // }
@@ -2393,18 +2413,23 @@ class WalletController implements OnlyControllerInterface {
   // public validateCmcIds = async (req: Request, res: Response) => {
   //   try {
   //     let coinData: any = await Models.CoinsModel.findAll({
-  //       attributes: ["cmc_id", "coin_id", "token_address"],
+  //       attributes: ["cmc_id", "coin_id", "token_address", "coin_symbol", "coin_family"],
   //       raw: true,
   //       where: Sequelize.and(
-  //         Sequelize.where(Sequelize.col('cmc_id'), {[Op.ne]: null}),
-  //         Sequelize.where(Sequelize.col('token_address'), {[Op.ne]: null})
-  //       )
+  //         // Sequelize.where(Sequelize.col('cmc_id'), {[Op.gt]: 0}),
+  //         // Sequelize.where(Sequelize.col('token_address'), {[Op.ne]: null})
+  //         // Sequelize.where(Sequelize.col('is_on_cmc'), {[Op.eq]: 0})
+  //       ),
+  //       limit: 50,
+  //       offset: 750
   //     });
       
   //     coinData = coinData.map((coin: any) => ({
   //       cmc_id: coin.cmc_id,
   //       coin_id: coin.coin_id,
   //       token_address: coin.token_address,
+  //       coin_symbol: coin.coin_symbol,
+  //       coin_family: coin.coin_family
   //     }));
 
   //     console.log("Processing coinData with length:", coinData.length);

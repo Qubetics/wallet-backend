@@ -60,10 +60,20 @@ class WalletHelpers implements OnlyControllerInterface {
         //   symbol: symbol,
         // });
 
-        let data: any = {
-          token_address: tokenAddress,
+        // let data: any = {
+        //   token_address: tokenAddress,
+        // }
+        // let cmc_data: any = await global_helper.getTokenImageFromCmc(data);
+
+
+        const cmcPayload: any = {
+          symbol: symbol,
+          coinFamily: coinFamily,
+          tokenAddress: tokenAddress,
         }
-        let cmc_data: any = await global_helper.getTokenImageFromCmc(data);
+        const cmc_data: any = await global_helper.getTokenImageFromCmcBySymbol(cmcPayload);
+
+
         console.log("this is the cmc_data >>>", cmc_data);
         cmc_id = cmc_data ? cmc_data.id : GlblBooleanEnum.false;
         image = cmc_data ? cmc_data.image : null;

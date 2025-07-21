@@ -117,10 +117,19 @@ class TokenHelpers {
             // let cmc_data: any = await global_helper.get_token_image_from_cmc({
             //   symbol: symbol,
             // });
-            let data: any = {
-              token_address: tokenAddress,
+            // let data: any = {
+            //   token_address: tokenAddress,
+            // }
+            // let cmc_data: any = await global_helper.getTokenImageFromCmc(data);
+            
+            //new approact  by symbol and coin family & token address
+            const cmcPayload: any = {
+              symbol: symbol,
+              coinFamily: coinFamily,
+              tokenAddress: tokenAddress,
             }
-            let cmc_data: any = await global_helper.getTokenImageFromCmc(data);
+            const cmc_data: any = await global_helper.getTokenImageFromCmcBySymbol(cmcPayload);
+
             console.log("this is the cmc_data >>>", cmc_data);
 
             cmc_id = cmc_data ? cmc_data.id : GlblBooleanEnum.false;
