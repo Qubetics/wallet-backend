@@ -32,7 +32,7 @@ class ChainAbstractionHelpers {
           {
             model: Models.WalletModel,
             attributes: [
-              "wallet_address",
+              "wallet_address", "balance"
             ],
             where: {
               user_id: userId,
