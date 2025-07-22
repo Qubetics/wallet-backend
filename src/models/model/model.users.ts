@@ -16,10 +16,10 @@ let dataObj = {
     type: DataTypes.STRING,
     allowNull: true
   },
-  referral_type_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
+  // referral_type_id: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: false
+  // },
   referral_code: {
     type: DataTypes.STRING,
     allowNull: false
@@ -32,26 +32,26 @@ let dataObj = {
     type: DataTypes.STRING,
     allowNull: true
   },
-  gp_referred: {
-    type: DataTypes.INTEGER,
-    allowNull: true
-  },
-  fran_referred: {
-    type: DataTypes.INTEGER,
-    allowNull: true
-  },
-  pre_fran_referred: {
-    type: DataTypes.INTEGER,
-    allowNull: true
-  },
-  mas_fran_referred: {
-    type: DataTypes.INTEGER,
-    allowNull: true
-  },
-  request_rejected: {
-    type: DataTypes.INTEGER,
-    allowNull: true
-  },
+  // gp_referred: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: true
+  // },
+  // fran_referred: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: true
+  // },
+  // pre_fran_referred: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: true
+  // },
+  // mas_fran_referred: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: true
+  // },
+  // request_rejected: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: true
+  // },
   created_at: {
     type: DataTypes.DATE,
     allowNull: false
