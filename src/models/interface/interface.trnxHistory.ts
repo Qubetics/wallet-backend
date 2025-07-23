@@ -9,20 +9,20 @@ export interface ITrnxHistoryInterface {
     from_adrs: string | null;
     to_adrs: string;
     tx_id: string | null;
-    merchant_id: string | null
+    // merchant_id: string | null
     order_id: string | null;
     tx_raw: string | null;
     status: string;
     blockchain_status: string | null;
     amount: number;
     block_id: number | null;
-    nonce: number | null;
+    // nonce: number | null;
     tx_fee: number | null;
     swap_fee: number | null;
     gas_limit: number | null;
     gas_price: number | null;
     gas_reverted: number | null;
-    fiat_price: number | null,
+    // fiat_price: number | null,
     fiat_type: string | null,
     order_status: string | null;
     created_at?: string;

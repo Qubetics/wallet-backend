@@ -165,14 +165,14 @@ class TronController implements OnlyControllerInterface {
                 to_user_id: to_user_id,
                 req_type: TxReqTypesEnum.APP,
                 order_id: req.body.order_id,
-                merchant_id: null,
+                // merchant_id: null,
                 block_id: null,
-                nonce: null,
+                // nonce: null,
                 swap_fee: null,
                 gas_limit: null,
                 gas_reverted: null,
                 fiat_type: fiat_currency,
-                fiat_price: null,
+                // fiat_price: null,
                 order_status: req.body.order_id
                   ? GlblBlockchainTxStatusEnum.PENDING
                   : null,

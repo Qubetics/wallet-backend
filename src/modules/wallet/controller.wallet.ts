@@ -726,7 +726,7 @@ class WalletController implements OnlyControllerInterface {
         "blockchain_status",
         "coin_id",
         "amount",
-        "fiat_price",
+        // "fiat_price",
         "fiat_type",
         "created_at",
         "updated_at",
