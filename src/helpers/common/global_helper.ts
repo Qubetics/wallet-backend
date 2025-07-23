@@ -443,14 +443,14 @@ class Global_helper {
     }
 
     public STATIC_COIN_FAMILY_NAME = {
-        1: "BNB",
-        2: "Ethereum",
-        3: "BTC",
-        4: "Polygon",
-        5: "Solana",
-        6: "Tron",
-        7: "TICS"
-    }
+        1: ["BNB"],
+        2: ["Ethereum"],
+        3: ["BTC"],
+        4: ["POL (prev. MATIC)", "Polygon", "MATIC"], 
+        5: ["Solana"],
+        6: ["TRON", "Tron"],
+        7: ["TICS"]
+      }
 
     public async getTokenImageFromCmcBySymbol(data: any) {
         try {
@@ -485,7 +485,7 @@ class Global_helper {
 
                                 if (contract?.platform && 
                                     contract?.platform?.coin && 
-                                    contract?.platform?.coin?.name == PlatformName && 
+                                    PlatformName.includes(contract?.platform?.coin?.name) && 
                                     contract?.contract_address?.toLowerCase() == tokenAddress.toLowerCase()) {
                                     id = token.id;
                                     image = token.logo;
