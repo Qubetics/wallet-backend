@@ -18,7 +18,7 @@ let polMiddleware = {
           },
           attributes: [
             "coin_family",
-            "token_abi",
+            // "token_abi",
             "token_address",
             "decimals",
             "is_token",
@@ -36,7 +36,7 @@ let polMiddleware = {
           },
           attributes: [
             "coin_family",
-            "token_abi",
+            // "token_abi",
             "token_address",
             "decimals",
             "is_token",
