@@ -144,7 +144,7 @@ class BTCController implements OnlyControllerInterface {
   // }
 
   public async unspent(req: Request, res: Response) {
-    let lang: any = req.headers['content-language'] || 'en';
+    const lang: any = req.headers['content-language'] || 'en';
     try {
       const address = req.params?.address;
       // Use Blockstream API for UTXOs
@@ -209,7 +209,7 @@ class BTCController implements OnlyControllerInterface {
     }
   }
   public async send(req: Request, res: Response) {
-    let lang: any = req.headers["content-language"] || "en";
+    const lang: any = req.headers["content-language"] || "en";
     try {
       console.log("req body btc send >>>", req.body);
 
@@ -249,15 +249,15 @@ class BTCController implements OnlyControllerInterface {
       }
       req.body.tx_hash = dataFromBtc.data;
       console.log("request body hash", req.body.tx_hash);
-      console.log("send Raw Trnx Hash", dataFromBtc.result);
+      console.log("send Raw Trnx Hash", dataFromBtc);
 
-      let resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
+      const resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
       if (resultStatus.status && resultStatus.status == true) {
         return response.success(res, {
           data: {
             status: true,
             message: language[lang].TRANSACTION_BROADCAST_SUCCESSFULLY,
-            data: dataFromBtc.data.result,
+            data: dataFromBtc.data,
           },
         });
       } else {
