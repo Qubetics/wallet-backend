@@ -6,7 +6,7 @@ import commonHelper from "./common.helpers";
 class utxo {
     public config: any;
     private rpcConfig: any;
-    
+
     constructor() {
         this.config = {
             method: 'get',
@@ -98,30 +98,43 @@ class utxo {
 
     public async getUnspent(address: string) {
         try {
-            // For public nodes, use scantxoutset to get unspent outputs for any address
-            const scanResult = await this.makeRpcCall('scantxoutset', ['start', [`addr(${address})`]]);
-            
-            if (scanResult && scanResult.success && scanResult.unspents && scanResult.unspents.length > 0) {
-                // Transform scantxoutset result to match listunspent format
-                return scanResult.unspents.map((utxo: any) => ({
+            // Use Blockstream testnet API for UTXOs
+            const url = `https://blockstream.info/testnet/api/address/${address}/utxo`;
+            const response = await axios.get(url);
+
+            if (Array.isArray(response.data)) {
+                // Map Blockstream UTXO format to expected format
+                return response.data.map((utxo: any) => ({
                     txid: utxo.txid,
                     vout: utxo.vout,
-                    amount: utxo.amount,
-                    confirmations: scanResult.height - utxo.height + 1,
-                    height: utxo.height,
-                    scriptPubKey: utxo.scriptPubKey
+                    amount: utxo.value / 100000000, // value is in satoshis, convert to BTC
+                    confirmations: utxo.status && utxo.status.confirmed && utxo.status.block_height
+                        ? (Math.max(1, 1)) // Blockstream API does not provide current height, so set to 1 if confirmed
+                        : 0,
+                    height: utxo.status && utxo.status.block_height ? utxo.status.block_height : 0,
+                    scriptPubKey: undefined // Not available from Blockstream UTXO endpoint
                 }));
             }
-            
             return [];
         } catch (err: any) {
-            // Fallback to listunspent if available
             try {
-                const unspent = await this.makeRpcCall('listunspent', [0, 9999999, [address]]);
-                return unspent;
+                const scanResult = await this.makeRpcCall('scantxoutset', ['start', [`addr(${address})`]]);
+            
+                if (scanResult && scanResult.success && scanResult.unspents && scanResult.unspents.length > 0) {
+                    return scanResult.unspents.map((utxo: any) => ({
+                        txid: utxo.txid,
+                        vout: utxo.vout,
+                        amount: utxo.amount,
+                        confirmations: scanResult.height - utxo.height + 1,
+                        height: utxo.height,
+                        scriptPubKey: utxo.scriptPubKey
+                    }));
+                }
+                
+                return [];
             } catch (fallbackError) {
                 console.error("Error in getUnspent of BTC", err);
-                return null;
+                return []
             }
         }
     }
@@ -152,15 +165,23 @@ class utxo {
 
     public async getBalance(address: string) {
         try {
-            const scanResult = await this.makeRpcCall('scantxoutset', ['start', [`addr(${address})`]]);
-            return scanResult.total_amount || 0;
+            // Use Blockstream testnet API for balance
+            const url = `https://blockstream.info/testnet/api/address/${address}`;
+            const response = await axios.get(url);
+            if (response.data && typeof response.data.chain_stats?.funded_txo_sum === "number" && typeof response.data.chain_stats?.spent_txo_sum === "number") {
+                // Calculate balance in satoshis
+                const funded = response.data.chain_stats.funded_txo_sum;
+                const spent = response.data.chain_stats.spent_txo_sum;
+                const balance = funded - spent;
+                return balance / 100000000; // Convert to BTC
+            }
+            return 0;
         } catch (err: any) {
             try {
-                const unspent = await this.makeRpcCall('listunspent', [0, 9999999, [address]]);
-                const balance = unspent.reduce((total: number, utxo: any) => total + utxo.amount, 0);
-                return balance;
+                const scanResult = await this.makeRpcCall('scantxoutset', ['start', [`addr(${address})`]]);
+                return scanResult.total_amount || 0;
             } catch (fallbackError) {
-                console.error("Both scantxoutset and listunspent failed for balance:", err);
+                console.error("Both Blockstream and scantxoutset failed for balance:", err);
                 return null;
             }
         }
