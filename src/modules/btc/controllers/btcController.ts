@@ -162,40 +162,36 @@ class BTCController implements OnlyControllerInterface {
             satoshis: data.value,
             confirmations: data.status && data.status.confirmed ? 1 : 0
           };
-
-          // For the first UTXO, fetch the raw transaction and scriptPubKey
-          if (i === 0) {
-            try {
-              const txUrl = `https://blockstream.info/testnet/api/tx/${data.txid}`;
-              const txResult = await axios.get(txUrl);
-              const transaction_data = txResult.data;
-              if (transaction_data && Array.isArray(transaction_data.vout) && transaction_data.vout.length > 0) {
-                // Find the vout that matches the UTXO's vout index
-                const unspent_vout = transaction_data.vout.find((vout: any) => vout.n !== undefined ? vout.n === data.vout : vout === transaction_data.vout[data.vout]);
-                // Blockstream's vout array does not have 'n', index is the vout number
-                const voutObj = transaction_data.vout[data.vout];
-                if (voutObj) {
-                  unspent_data.scriptPubKey = voutObj.scriptpubkey;
-                  unspent_data.address = voutObj.scriptpubkey_address;
-                } else {
-                  unspent_data.scriptPubKey = '';
-                  unspent_data.address = '';
-                }
-                // Blockstream does not provide raw hex in this endpoint
-                // If you need raw tx hex, you can fetch from /tx/{txid}/hex
-                try {
-                  const txHexUrl = `https://blockstream.info/testnet/api/tx/${data.txid}/hex`;
-                  const txHexResult = await axios.get(txHexUrl);
-                  unspent_data.tx_raw = txHexResult.data;
-                } catch (hexErr) {
-                  unspent_data.tx_raw = '';
-                }
+          try {
+            const txUrl = `https://blockstream.info/testnet/api/tx/${data.txid}`;
+            const txResult = await axios.get(txUrl);
+            const transaction_data = txResult.data;
+            if (transaction_data && Array.isArray(transaction_data.vout) && transaction_data.vout.length > 0) {
+              // Find the vout that matches the UTXO's vout index
+              const unspent_vout = transaction_data.vout.find((vout: any) => vout.n !== undefined ? vout.n === data.vout : vout === transaction_data.vout[data.vout]);
+              // Blockstream's vout array does not have 'n', index is the vout number
+              const voutObj = transaction_data.vout[data.vout];
+              if (voutObj) {
+                unspent_data.scriptPubKey = voutObj.scriptpubkey;
+                unspent_data.address = voutObj.scriptpubkey_address;
+              } else {
+                unspent_data.scriptPubKey = '';
+                unspent_data.address = '';
               }
-            } catch (txErr) {
-              unspent_data.scriptPubKey = '';
-              unspent_data.address = '';
-              unspent_data.tx_raw = '';
+              // Blockstream does not provide raw hex in this endpoint
+              // If you need raw tx hex, you can fetch from /tx/{txid}/hex
+              try {
+                const txHexUrl = `https://blockstream.info/testnet/api/tx/${data.txid}/hex`;
+                const txHexResult = await axios.get(txHexUrl);
+                unspent_data.tx_raw = txHexResult.data;
+              } catch (hexErr) {
+                unspent_data.tx_raw = '';
+              }
             }
+          } catch (txErr) {
+            unspent_data.scriptPubKey = '';
+            unspent_data.address = '';
+            unspent_data.tx_raw = '';
           }
           res_data.push(unspent_data);
         }
