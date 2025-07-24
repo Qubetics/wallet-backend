@@ -706,8 +706,8 @@ class WalletController implements OnlyControllerInterface {
         [
           Sequelize.literal(`(
             CASE 
-              WHEN type IN ('withdraw', 'deposit') AND user_id = :userId THEN 'withdraw'
-              WHEN type IN ('withdraw', 'deposit') AND to_user_id = :userId THEN 'deposit'
+              WHEN type IN ('withdraw', 'deposit') AND trnx_history.user_id = :userId THEN 'withdraw'
+              WHEN type IN ('withdraw', 'deposit') AND trnx_history.to_user_id = :userId THEN 'deposit'
               ELSE type
             END
           )`),
@@ -890,6 +890,7 @@ class WalletController implements OnlyControllerInterface {
         order: [["id", "DESC"]],
         limit: limit,
         offset: offset,
+        logging: console.log
       };
       const transaction_data: any = await Models.TrnxHistoryModel.findAndCountAll(
         { ...query, replacements }
