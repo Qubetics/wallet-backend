@@ -64,7 +64,7 @@ class ChainAbstractionController implements OnlyControllerInterface {
       }
       console.log("🚀 ~ TicsController ~ sendIntent ~ data:", data)
       const result: any = await dbHelper.saveIntentWithdrawTxDetails(data);
-      if (resultStatus.status && result.status == true) {
+      if (result) {
         return response.success(res, {
           data: {
             status: true,
