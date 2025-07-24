@@ -46,6 +46,10 @@ const IntentTrnxHistoryModel = db.db_write.define<IntentTrnxHistoryInstance>(
 IntentTrnxHistoryModel.sync({alter:true})
 
 IntentTrnxHistoryModel.belongsTo(TrnxHistoryModel, { foreignKey: 'tx_id', targetKey: 'id', as: "trnx_history" });
-
+TrnxHistoryModel.hasOne(IntentTrnxHistoryModel, {
+    foreignKey: 'tx_id',
+    sourceKey: 'id',
+    as: 'intent_data' // or any alias you like
+  });
 
 export default IntentTrnxHistoryModel;

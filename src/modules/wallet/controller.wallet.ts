@@ -878,6 +878,14 @@ class WalletController implements OnlyControllerInterface {
               },
             ],
           },
+          {
+            model: Models.IntentTrnxHistoryModel,
+            as: "intent_data",
+            attributes: [
+              "tx_hash"
+            ],
+            required: false,
+          }
         ],
         order: [["id", "DESC"]],
         limit: limit,
