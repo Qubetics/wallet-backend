@@ -1,4 +1,7 @@
-import { Server as HTTPServer, createServer } from "https";
+// Conditional import based on server environment
+import { Server as HTTPServer, createServer as createHTTPServer } from "http";
+import { Server as HTTPSServer, createServer as createHTTPSServer } from "https";
+
 import express, { NextFunction, Request, Response } from "express";
 import { ServerInterface } from "./interfaces/server.interface";
 import controllers from "./modules/controllers.index";
@@ -21,19 +24,54 @@ import fs from 'fs';
 
 class Server implements ServerInterface {
   public app: express.Application;
-  public httpServer: HTTPServer;
-  public sslKey: Buffer;
-  public sslCert: Buffer;
+  public httpServer: HTTPServer | HTTPSServer;
+  public sslKey?: Buffer;
+  public sslCert?: Buffer;
+  private isStage: boolean;
 
   constructor() {
-    this.sslKey = fs.readFileSync(path.join(__dirname, './cert/key.pem'));
-    this.sslCert = fs.readFileSync(path.join(__dirname, './cert/cert.pem'));
-
+    // Validate that zookeeper configuration is loaded
+    if (!config.SERVER) {
+      throw new Error('❌ SERVER configuration not found in zookeeper. Please ensure zookeeper is properly configured.');
+    }
+    
+    // Check if server environment is 'stage' for HTTP, otherwise use HTTPS
+    this.isStage = config.SERVER === 'stage';
+    
+    console.log(`🔧 Detected environment: ${config.SERVER}`);
+    console.log(`📋 Protocol selection: ${this.isStage ? 'HTTP' : 'HTTPS'}`);
+    
+    // Always read SSL certificates (they might be needed even for stage in some cases)
+    try {
+      this.sslKey = fs.readFileSync(path.join(__dirname, './cert/key.pem'));
+      this.sslCert = fs.readFileSync(path.join(__dirname, './cert/cert.pem'));
+      console.log('🔐 SSL certificates loaded successfully');
+    } catch (error) {
+      if (!this.isStage) {
+        throw new Error(`❌ Failed to load SSL certificates for HTTPS mode: ${error}`);
+      }
+      console.warn('⚠️  SSL certificates not found, but continuing in HTTP mode for stage environment');
+    }
 
     this.app = express();
 
     this.app.use(expressFileUploader());
-    this.httpServer = createServer({ key: this.sslKey, cert: this.sslCert, passphrase: config.SSL_PASS_PHRASE }, this.app);
+    
+    // Conditional server creation based on environment
+    if (this.isStage) {
+      console.log('🌍 Starting server in STAGE mode - Using HTTP configuration');
+      this.httpServer = createHTTPServer(this.app);
+    } else {
+      console.log('🔒 Starting server in PRODUCTION mode - Using HTTPS configuration');
+      if (!this.sslKey || !this.sslCert) {
+        throw new Error('❌ SSL certificates are required for HTTPS mode but were not loaded properly');
+      }
+      this.httpServer = createHTTPSServer({ 
+        key: this.sslKey, 
+        cert: this.sslCert, 
+        passphrase: config.SSL_PASS_PHRASE 
+      }, this.app);
+    }
 
     this.app.use(helmet());
     this.app.use(helmet.contentSecurityPolicy({
@@ -129,8 +167,13 @@ class Server implements ServerInterface {
   }
 
   public startServer() {
+    const protocol = this.isStage ? 'HTTP' : 'HTTPS';
+    const url = this.isStage ? `http://localhost:${config.PORT}` : `https://localhost:${config.PORT}`;
+    
     this.httpServer.listen(config.PORT, () => {
-      console.log('server listen on port:', config.PORT);
+      console.log(`🚀 ${protocol} server listening on port: ${config.PORT}`);
+      console.log(`📡 Server URL: ${url}`);
+      console.log(`🔧 Environment: ${config.SERVER}`);
     });
     this.app.get("/", (req: Request, res: Response) => {
       res.send(InfoMessages.APP_INFO).status(GlblCode.SUCCESS);
