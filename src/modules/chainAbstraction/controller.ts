@@ -48,17 +48,14 @@ class ChainAbstractionController implements OnlyControllerInterface {
         intentHash,
         hash,
       } = req.body;
-      let tx_id = 0;
-      if(hash && hash !== "") {
-        const resultStatus: any = await dbHelper.getTrnxHistoryByTxId(hash);
-        console.log("🚀 ~ TicsController ~ sendIntent ~ tx_id:", resultStatus)
-        if(!resultStatus) {
-          return response.error(res, {
-            data: { status: false, message: language[lang].TRNX_NOT_FOUND },
-          });
-        }
-        tx_id = resultStatus.id;
+      const resultStatus: any = await dbHelper.getTrnxHistoryByTxId(hash);
+      console.log("🚀 ~ TicsController ~ sendIntent ~ tx_id:", resultStatus)
+      if(!resultStatus) {
+        return response.error(res, {
+          data: { status: false, message: language[lang].TRNX_NOT_FOUND },
+        });
       }
+      const tx_id = resultStatus.id;
       const data = {
         tx_hash: intentHash,
         tx_id: tx_id,
@@ -66,8 +63,8 @@ class ChainAbstractionController implements OnlyControllerInterface {
         status: 'pending'
       }
       console.log("🚀 ~ TicsController ~ sendIntent ~ data:", data)
-      const resultStatus: any = await dbHelper.saveIntentWithdrawTxDetails(data);
-      if (resultStatus.status && resultStatus.status == true) {
+      const result: any = await dbHelper.saveIntentWithdrawTxDetails(data);
+      if (resultStatus.status && result.status == true) {
         return response.success(res, {
           data: {
             status: true,
