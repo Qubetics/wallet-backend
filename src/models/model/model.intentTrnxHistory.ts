@@ -27,6 +27,10 @@ let dataObj = {
         type: DataTypes.STRING,
         allowNull: true
     },
+    status: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
 };
 
 let dataObjIndex = {

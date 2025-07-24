@@ -19,6 +19,17 @@ class ChainAbstractionRoute implements ControllerInterface {
       jwtVerification.verifyToken,
       chainAbstractionController.getCoinList
     );
+    this.router.post(
+      `${this.path}/saveIntentHash`,
+      jwtVerification.verifyToken,
+      chainAbstractionController.saveIntent
+    );
+    this.router.post(
+      `${this.path}/updateIntentStatus`,
+      jwtVerification.verifyToken,
+      chainAbstractionController.changeIntentStatus
+    );
+    
   }
 }
 export default ChainAbstractionRoute;

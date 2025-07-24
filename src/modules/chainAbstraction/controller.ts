@@ -7,6 +7,10 @@ import {
   GlblCode,
 } from "../../constants/global_enum";
 import { chainAbstractionHelper } from "./helpers";
+import commonHelper from "../../helpers/common/common.helpers";
+import response from "../../helpers/response/response.helpers";
+import { language } from "../../constants";
+import dbHelper from "../../helpers/dbHelper";
 
 class ChainAbstractionController implements OnlyControllerInterface {
   constructor() {
@@ -34,6 +38,111 @@ class ChainAbstractionController implements OnlyControllerInterface {
         data: error,
       };
       return res.status(data.code).send(data);
+    }
+  }
+
+  public async saveIntent(req: Request, res: Response) {
+    let lang: any = req.headers['content-language'] || 'en';
+    try {
+      const {
+        intentHash,
+        hash,
+      } = req.body;
+      let tx_id = 0;
+      if(hash && hash !== "") {
+        const resultStatus: any = await dbHelper.getTrnxHistoryByTxId(hash);
+        console.log("🚀 ~ TicsController ~ sendIntent ~ tx_id:", resultStatus)
+        if(!resultStatus) {
+          return response.error(res, {
+            data: { status: false, message: language[lang].TRNX_NOT_FOUND },
+          });
+        }
+        tx_id = resultStatus.id;
+      }
+      const data = {
+        tx_hash: intentHash,
+        tx_id: tx_id,
+        user_id: req.userId,
+        status: 'pending'
+      }
+      console.log("🚀 ~ TicsController ~ sendIntent ~ data:", data)
+      const resultStatus: any = await dbHelper.saveIntentWithdrawTxDetails(data);
+      if (resultStatus.status && resultStatus.status == true) {
+        return response.success(res, {
+          data: {
+            status: true,
+            message: language[lang].SUCCESS,
+          },
+        });
+      } else {
+        return response.error(res, {
+          data: {
+            status: false,
+            message: language[lang].FAILED
+          },
+        });
+      }
+    } 
+    catch (err: any) {
+      console.error("Error in QUBETICS saveIntent API >>>>>", err)
+      await commonHelper.save_error_logs("saveIntent", err.message);
+      return response.error(res, {
+        data: {
+          status: false,
+          message: language[lang].CATCH_MSG
+        },
+      });
+    }
+  }
+  public async changeIntentStatus(req: Request, res: Response) {
+    let lang: any = req.headers['content-language'] || 'en';
+    try {
+      const {
+        hash,
+        status
+      } = req.body;
+      let txId = 0;
+      if(hash && hash !== "") {
+        const resultStatus: any = await dbHelper.getIntentTrnxHistory(hash);
+        console.log("🚀 ~ TicsController ~ sendIntent ~ tx_id:", resultStatus)
+        if(!resultStatus) {
+          return response.error(res, {
+            data: { status: false, message: language[lang].TRNX_NOT_FOUND },
+          });
+        }
+        txId = resultStatus.tx_id;
+      }
+      const data = {
+        tx_hash: hash,
+        tx_id: txId,
+      }
+      console.log("🚀 ~ TicsController ~ sendIntent ~ data:", data)
+      const resultStatus: any = await dbHelper.updateIntentTrnxHistory({status: status},data);
+      if (resultStatus.status && resultStatus.status == true) {
+        return response.success(res, {
+          data: {
+            status: true,
+            message: language[lang].SUCCESS,
+          },
+        });
+      } else {
+        return response.error(res, {
+          data: {
+            status: false,
+            message: language[lang].FAILED
+          },
+        });
+      }
+    } 
+    catch (err: any) {
+      console.error("Error in QUBETICS saveIntent API >>>>>", err)
+      await commonHelper.save_error_logs("saveIntent", err.message);
+      return response.error(res, {
+        data: {
+          status: false,
+          message: language[lang].CATCH_MSG
+        },
+      });
     }
   }
 }

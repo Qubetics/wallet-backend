@@ -377,6 +377,41 @@ class DbHelper {
       throw err;
     }
   }
+  public async getIntentTrnxHistory(tx_hash: string) {
+    try {
+      const resultStatus: any = await Models.IntentTrnxHistoryModel.findOne(
+        {
+          where: { tx_hash: tx_hash },
+          attributes: ["id" , "tx_id"],
+          raw: true
+        });
+      return resultStatus;
+    } catch (err: any) {
+      console.error("Error in getTrnxHistoryByTxId", err)
+      throw err;
+    }
+  }
+
+  async updateIntentTrnxHistory(data:any,where:any) {
+    try {
+  
+      const [updatedCount] = await Models.IntentTrnxHistoryModel.update(
+        data, // add more fields if needed
+        {
+          where: where,
+        }
+      );
+  
+      if (updatedCount === 0) {
+        throw new Error('No matching record found or no changes made');
+      }
+  
+      return { status: true, message: 'Transaction updated successfully' };
+    } catch (error) {
+      console.error('Error updating transaction history:', error);
+      throw error;
+    }
+  }
 }
 
 const dbHelper = new DbHelper();
