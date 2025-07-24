@@ -33,6 +33,7 @@ import MenuListsModel from './model_menu_lists.';
 import PermissionsModel from './model_permissions';
 import { TicsPriceInFiatGraph } from './model.ticsPriceInFiatGraph';
 import TicsNativeAddressModel from './model.ticsNativeAddress';
+import IntentTrnxHistoryModel from './model.intentTrnxHistory';
 export {
     AddressBookModel,
     AddressBookWalletsModel,
@@ -68,6 +69,6 @@ export {
     MenuListsModel,
     PermissionsModel,
     TicsPriceInFiatGraph,
-    TicsNativeAddressModel
-
+    TicsNativeAddressModel,
+    IntentTrnxHistoryModel
 }

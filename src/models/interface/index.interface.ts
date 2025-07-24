@@ -30,3 +30,4 @@ export { NFTInterface } from './interface.nft';
 export { IOnOffRampLog } from './interface.on_off_ramps_logs';
 export { TicsPriceInFiatGraphModel } from './interface.ticsPriceInFiatGraph';
 export { TicsNativeInterface } from './interface.ticsNativeAddress';
+export { IntentTrnxHistoryInterface } from './interface.intentTrnxHistory';

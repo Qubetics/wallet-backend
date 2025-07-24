@@ -27,6 +27,11 @@ class TicsRoute implements ControllerInterface {
       TicsMiddleware.requestInfo,
       TicsControllers.send);
 
+    this.router.post(`${this.path}/:coin/sendIntent`,
+      jwtVerification.verifyToken,
+      TicsMiddleware.requestInfo,
+      TicsControllers.sendIntent);
+
     /** Not used */
     this.router.post(`${this.path}/:coin/nonce`,
       jwtVerification.verifyToken,
