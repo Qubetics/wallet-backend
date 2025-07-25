@@ -18,7 +18,7 @@ class utxo {
          // Configuration for testnet RPC calls
          this.rpcConfig = {
             method: 'post',
-            url: 'https://bitcoin-testnet-rpc.publicnode.com',
+            url: `${config.NODE.BTC_TESTNET_RPC_URL}`,
             headers: {
                 'Content-Type': 'application/json',
             }

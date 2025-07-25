@@ -42,6 +42,7 @@ export const language: any = {
         PENDING: "pending",
         ESTIMATE_TRANSFER_GAS_FEE: (symbol: string) => `Estimate ${symbol} transfer gas fee.`,
         TRNX_NOT_FOUND: "Tx not found.",
+        TRNX_EXIST: 'Tx Already Exist.',
         //On-off-Ramp
         INITIATE_TXN_CREATED: "Transaction created successfully.",
         //TRON
@@ -214,6 +215,7 @@ export const language: any = {
         PENDING: "pendiente.",
         ESTIMATE_TRANSFER_GAS_FEE: (symbol: any) => `Calcule la tarifa de transferencia de gas de ${symbol}.`,
         TRNX_NOT_FOUND: "Tx no encontrado.",
+        TRNX_EXIST: 'El Tx ya existe.',
         //On-off-Ramp
         INITIATE_TXN_CREATED: "Transacción creada exitosamente.",
         //TRON

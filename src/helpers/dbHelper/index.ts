@@ -377,11 +377,11 @@ class DbHelper {
       throw err;
     }
   }
-  public async getIntentTrnxHistory(tx_hash: string) {
+  public async getIntentTrnxHistory(where: any) {
     try {
       const resultStatus: any = await Models.IntentTrnxHistoryModel.findOne(
         {
-          where: { tx_hash: tx_hash },
+          where: where,
           attributes: ["id" , "tx_id"],
           raw: true
         });
