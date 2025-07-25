@@ -32,7 +32,7 @@ let dataObj = {
         allowNull: true
     },
     fees: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.DOUBLE,
         allowNull: false,
         defaultValue: 0
     },
