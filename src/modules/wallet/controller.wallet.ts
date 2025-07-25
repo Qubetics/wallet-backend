@@ -883,7 +883,8 @@ class WalletController implements OnlyControllerInterface {
             as: "intent_data",
             attributes: [
               "tx_hash",
-              "fees"
+              "fees",
+              "status"
             ],
             required: false,
           }
