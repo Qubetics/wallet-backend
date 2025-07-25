@@ -47,6 +47,7 @@ class ChainAbstractionController implements OnlyControllerInterface {
       const {
         intentHash,
         hash,
+        fees
       } = req.body;
       const trnx: any = await dbHelper.getTrnxHistoryByTxId(hash);
       if(!trnx) {
@@ -65,7 +66,8 @@ class ChainAbstractionController implements OnlyControllerInterface {
         tx_hash: intentHash,
         tx_id: txId,
         user_id: req.userId,
-        status: 'pending'
+        status: 'pending',
+        fees: fees
       }
       const result: any = await dbHelper.saveIntentWithdrawTxDetails(data);
       if (result) {

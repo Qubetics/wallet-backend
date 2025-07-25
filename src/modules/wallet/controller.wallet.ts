@@ -882,7 +882,8 @@ class WalletController implements OnlyControllerInterface {
             model: Models.IntentTrnxHistoryModel,
             as: "intent_data",
             attributes: [
-              "tx_hash"
+              "tx_hash",
+              "fees"
             ],
             required: false,
           }

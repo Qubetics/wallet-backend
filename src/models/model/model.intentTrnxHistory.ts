@@ -31,6 +31,11 @@ let dataObj = {
         type: DataTypes.STRING,
         allowNull: true
     },
+    fees: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
 };
 
 let dataObjIndex = {
