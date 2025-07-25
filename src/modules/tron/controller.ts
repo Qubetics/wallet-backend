@@ -1,7 +1,7 @@
 import response from "../../helpers/response/response.helpers";
 import { OnlyControllerInterface } from "../../interfaces/controller.interface";
 import { Request, Response } from "express";
-import { Tron_Helper } from "./helper";
+import { tronHelper } from "./helper";
 import * as Models from "./../../models/model/index";
 import { trxHelper } from "../../helpers/common/trx_helper";
 import { config } from "../../config";
@@ -33,7 +33,7 @@ class TronController implements OnlyControllerInterface {
       const amount: number = req.body.amount;
       const is_bridge = 1;
       const coinData = req.coininfo;
-      let fee_data: any = await Tron_Helper.getEstimationGas({
+      const fee_data: any = await tronHelper.getEstimationGas({
         fromAddress: from_address,
         toAddress: to_address,
         amount: amount,
@@ -76,14 +76,14 @@ class TronController implements OnlyControllerInterface {
       const coin_id: number = req.body.coin_id;
       const amount: number = req.body.amount;
       const gas_price: number = req.body.gas_price;
-      const gas_estimate: number = req.body.gas_estimate
-        ? req.body.gas_estimate
-        : 0; /// gas_estimate
+      // const gas_estimate: number = req.body.gas_estimate
+      // ? req.body.gas_estimate
+      // : 0; /// gas_estimate
       const trnx_raw: any = req.body.tx_raw;
       const fiat_currency: string = "USD";
-     
+
       if (from_address == to_address) {
-        let resMsg = {
+        const resMsg = {
           status: false,
           message: language[lang].SAME_ADDRESS,
         };
@@ -93,7 +93,7 @@ class TronController implements OnlyControllerInterface {
         const coin: any = req.coininfo
         if (!coin) {
           console.error(`coin not found >>>`);
-          let resMsg = {
+          const resMsg = {
             status: false,
             message: language[lang].CATCH_MSG,
           };
@@ -116,7 +116,7 @@ class TronController implements OnlyControllerInterface {
           return response.error(res, { data: resMsg });
         }
 
-        return await Tron_Helper.BroadcastRawTx(
+        return await tronHelper.broadCastRawTx(
           trnx_raw,
           async (error: any, txRes: any) => {
             if (error) {
@@ -132,7 +132,7 @@ class TronController implements OnlyControllerInterface {
                 message = language[lang].INSUFFICIENT_GAS_PRICE;
               }
 
-              let resMsg = {
+              const resMsg = {
                 status: false,
                 message: message,
                 trnx_hash: null,
@@ -178,7 +178,7 @@ class TronController implements OnlyControllerInterface {
                   : null,
               });
 
-              let resMsg = {
+              const resMsg = {
                 status: true,
                 message: language[lang].WITHDRAW_REQUEST_ETH(
                   req.body.amount,
@@ -192,7 +192,7 @@ class TronController implements OnlyControllerInterface {
         );
       } else {
         console.error(`tron trnx_raw not found `);
-        let resMsg = {
+        const resMsg = {
           status: false,
           message: language[lang].CATCH_MSG,
         };
@@ -201,7 +201,7 @@ class TronController implements OnlyControllerInterface {
     } catch (err: any) {
       console.error(`TransactionController Withdraw  error >>>`, err);
       await commonHelper.save_error_logs("tron_send", err.message);
-      let resMsg = {
+      const resMsg = {
         status: false,
         message: language[lang].CATCH_MSG,
       };
