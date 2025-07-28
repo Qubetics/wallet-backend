@@ -22,6 +22,7 @@ class ChainAbstractionHelpers {
           "token_address",
           "token_type",
           "coin_status",
+          "decimals"
         ],
         where: {
           coin_status: GlblBooleanEnum.true,

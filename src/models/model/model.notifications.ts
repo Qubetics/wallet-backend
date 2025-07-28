@@ -61,10 +61,10 @@ let dataObj = {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  state: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
+  // state: {
+  //   type: DataTypes.STRING,
+  //   allowNull: true,
+  // },
   wallet_address: {
     type: DataTypes.STRING,
     allowNull: true,

@@ -557,7 +557,7 @@ class UserController implements OnlyControllerInterface {
             "amount",
             "notification_type",
             "tx_type",
-            "state",
+            // "state",
             "message",
             "alert_price",
             "fiat_type",

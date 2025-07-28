@@ -192,7 +192,7 @@ class OnOffRampController implements OnlyControllerInterface {
                                 coin_symbol: webhookData?.currency.toLowerCase(),
                                 coin_family: txDetail.coin_family,
                                 coin_id: txDetail.coin_id,
-                                state: notification_status
+                                // state: notification_status
                             };
                             await Models.NotificationModel.create(notificationData);
                             /* send push notification */
