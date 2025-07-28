@@ -26,7 +26,7 @@ class ChainAbstractionHelpers {
         where: {
           coin_status: GlblBooleanEnum.true,
           coin_family: { [Op.in]: coinFamilies },
-          is_token: GlblBooleanEnum.false,
+          for_chain_abstraction: GlblBooleanEnum.true,
         },
         include: [
           {

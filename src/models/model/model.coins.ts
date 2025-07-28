@@ -91,6 +91,11 @@ let dataObj = {
     type: DataTypes.TINYINT,
     allowNull: true,
   },
+  for_chain_abstraction: {
+    type: DataTypes.TINYINT,
+    allowNull: false,
+    defaultValue: 0
+  },
   created_at: {
     type: DataTypes.DATE,
     allowNull: true,

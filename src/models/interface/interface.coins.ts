@@ -19,6 +19,7 @@ export interface CoinInterface {
   pair_address?: string | null;
   is_on_trading_view?: number | null;
   is_on_moralis_inactive?: number | null;
+  for_chain_abstraction?: number;
   created_at?: string;
   updated_at?: string;
 }
