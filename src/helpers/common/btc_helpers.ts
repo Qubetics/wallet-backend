@@ -98,6 +98,7 @@ class utxo {
 
     public async getUnspent(address: string) {
         try {
+            console.log("INSIDE getUnspent")
             // Use Blockstream testnet API for UTXOs
             const url = `https://blockstream.info/testnet/api/address/${address}/utxo`;
             const response = await axios.get(url);
@@ -118,6 +119,8 @@ class utxo {
             return [];
         } catch (err: any) {
             try {
+            console.log("INSIDE makeRpc")
+
                 const scanResult = await this.makeRpcCall('scantxoutset', ['start', [`addr(${address})`]]);
             
                 if (scanResult && scanResult.success && scanResult.unspents && scanResult.unspents.length > 0) {
