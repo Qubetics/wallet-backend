@@ -910,12 +910,23 @@ class WalletController implements OnlyControllerInterface {
       });
     }
   }
+
   public async updateWalletOrder(req: Request, res: Response) {
-    let lang: any = req.headers["content-language"] || "en";
+    const lang: any = req.headers["content-language"] || "en";
     try {
       console.log("req body updateWalletOrder >>>", req.body);
       const { wallets }: any = req.body;
-      const walletAddress = wallets[0].wallet_address
+
+      if (wallets.length == 0) {
+        return response.error(res, {
+          data: {
+            status: false,
+            message: language[lang].NO_WALLETS_PROVIDED,
+          },
+        });
+      }
+
+      const walletAddress = wallets[0].wallet_address;
       const checkAddress = await wallet_queries.wallet_find_one(
         ["wallet_id", "user_id"],
         { wallet_address: walletAddress }
@@ -940,14 +951,19 @@ class WalletController implements OnlyControllerInterface {
           }
         );
       }
-      return response.success(res, { data: { status: true } });
+      return response.success(res, { data: { status: true, message: language[lang].UPDATED } });
     } catch (err: any) {
       console.error("Error in wallet > updateWalletOrder.", err);
       await commonHelper.save_error_logs(
         "wallet_updateWalletOrder",
         err.message
       );
-      return response.error(res, { data: language[lang].CATCH_MSG });
+      return response.error(res, {
+        data: {
+          status: false,
+          message: language[lang].CATCH_MSG,
+        },
+      });
     }
   }
   public async searchToken(req: Request, res: Response) {
@@ -1014,7 +1030,7 @@ class WalletController implements OnlyControllerInterface {
       return response.error(res, {
         data: {
           status: false,
-          data: { message: language[lang].CATCH_MSG, data: {} },
+          message: language[lang].CATCH_MSG
         },
       });
     }
@@ -1420,13 +1436,22 @@ class WalletController implements OnlyControllerInterface {
   }
 
   public async NativeCoinFiatPrice(req: Request, res: Response) {
-    let lang: any = req.headers["content-language"] || "en";
+    const lang: any = req.headers["content-language"] || "en";
     try {
       const {
         coin_family,
         fiat_currency,
       }: { coin_family: number; fiat_currency: string } = req.body;
 
+      if (coin_family == undefined) {
+        return response.error(res, {
+          data: {
+            status: false,
+            // message: language[lang].INVALID_COIN_FAMILY,
+          },
+        });
+      }
+      
       const nativeCoin: any = await Models.CoinsModel.findOne({
         attributes: ["cmc_id"],
         where: {
@@ -1466,7 +1491,7 @@ class WalletController implements OnlyControllerInterface {
         "wallet_NativeCoinFiatPrice",
         err.message
       );
-      let data = {
+      const data = {
         code: GlblCode.ERROR_CODE,
         status: false,
         message: language[lang].CATCH_MSG,
@@ -2329,7 +2354,7 @@ class WalletController implements OnlyControllerInterface {
   //   return response;
   // }
   // public async isCorrectCmcId(token_address: string, cmc_id: number, coin_symbol: string, coin_family: number) : Promise<any> {
-      
+
 
   //   let data: any = {
   //     symbol: coin_symbol,
@@ -2376,7 +2401,7 @@ class WalletController implements OnlyControllerInterface {
 
 
   // public async updateNewCmcId(token_address: string, cmc_id: number, coin_id: number, new_cmc_id: number) : Promise<any> {
-    
+
   //   let update = await Models.CoinsModel.update(
   //     { correct_cmc_id: new_cmc_id, is_correct_cmc_id: 0 },
   //     { where: { coin_id: coin_id } }
@@ -2398,7 +2423,7 @@ class WalletController implements OnlyControllerInterface {
   //   }
 
   //   let coin = coinData[index];
-    
+
 
   //   try {
   //     let check = await this.isCorrectCmcId(coin.token_address, coin.cmc_id, coin.coin_symbol, coin.coin_family);
@@ -2418,10 +2443,10 @@ class WalletController implements OnlyControllerInterface {
   //   } catch (error) {
   //     console.error(`Error processing coin at index ${index}:`, error);
   //   }
-    
+
   //   // Add a one second delay before processing the next coin
   //   await new Promise(resolve => setTimeout(resolve, 1500));
-    
+
   //   // Continue with next coin regardless of success/failure of current one
   //   return this.recursiveCmcIdValidation(coinData, index + 1);
   // }
@@ -2439,7 +2464,7 @@ class WalletController implements OnlyControllerInterface {
   //       limit: 50,
   //       offset: 750
   //     });
-      
+
   //     coinData = coinData.map((coin: any) => ({
   //       cmc_id: coin.cmc_id,
   //       coin_id: coin.coin_id,
@@ -2472,7 +2497,7 @@ class WalletController implements OnlyControllerInterface {
   //   }
   // }
 
- 
+
 
 
 

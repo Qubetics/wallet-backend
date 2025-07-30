@@ -169,6 +169,8 @@ export const language: any = {
         CHANGE_MIN_AMOUNT: (crytpAmount: string, coinSymbol: string) => `Minimal amount is ${crytpAmount} ${coinSymbol}.`,
         INVALID_TRANSACTION_DATA: "Invalid transaction data",
         WALLET_CREATED: "Wallet created successfully.",
+        INVALID_COIN_FAMILY: "Invalid coin family.",
+        NO_WALLETS_PROVIDED: "Nothing to Reorder."
     },
     sp: {
         //Wallets
