@@ -174,15 +174,15 @@ class DbHelper {
       user_data = JSON.parse(user_data);
       to_user_id = user_data ? user_data?.user_id : 0;
 
-      let updateWallet: any = await trnx_history_queries.trnx_history_create({
+      const updateWallet: any = await trnx_history_queries.trnx_history_create({
         user_id: req.userId,
         to_user_id: to_user_id,
         coin_id: req.coininfo.coin_id,
         coin_family: req.coininfo.coin_family,
         type: req.body.tx_type,
         req_type: req.body.req_type || TxReqTypesEnum.APP,
-        from_adrs: req.body.from,
-        to_adrs: req.body.to,
+        from_adrs: req.body.from?.trim(),
+        to_adrs: req.body.to?.trim(),
         tx_id: req.body.tx_hash,
         merchant_id: null,
         order_id: req.body.order_id ? req.body.order_id : null,
