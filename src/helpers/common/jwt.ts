@@ -7,8 +7,8 @@ class JWT {
   public async createJSONWebToken(userId: number, device_token: string) {
     try {
       const jwtToken: any = jwt.sign({ userId, device_token }, config.JWT_SECRET, {
-        // expiresIn: 60 * 60 * 2, // 2 Hrs 
-        expiresIn: "1m", // 2 Hrs 
+        expiresIn: 60 * 60 * 2, // 2 Hrs 
+        // expiresIn: "1m", // 2 Hrs 
       });
       const token: string = `JWT ${jwtToken}`;
       return CryptoHelper.encrypt(token);
