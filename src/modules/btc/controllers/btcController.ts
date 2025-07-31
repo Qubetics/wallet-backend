@@ -143,71 +143,71 @@ class BTCController implements OnlyControllerInterface {
   //   }
   // }
 
-  // public async unspent(req: Request, res: Response) {
-  //   const lang: any = req.headers['content-language'] || 'en';
-  //   try {
-  //     const address = req.params?.address;
-  //     // Use Blockstream API for UTXOs
-  //     const utxoUrl = `https://blockstream.info/testnet/api/address/${address}/utxo`;
-  //     const utxoResult = await axios.get(utxoUrl);
+  public async unspent(req: Request, res: Response) {
+    const lang: any = req.headers['content-language'] || 'en';
+    try {
+      const address = req.params?.address;
+      // Use Blockstream API for UTXOs
+      const utxoUrl = `https://blockstream.info/testnet/api/address/${address}/utxo`;
+      const utxoResult = await axios.get(utxoUrl);
 
-  //     let res_data: any = [];
-  //     if (utxoResult && Array.isArray(utxoResult.data) && utxoResult.data.length > 0) {
-  //       for (let i = 0; i < utxoResult.data.length; i++) {
-  //         const data = utxoResult.data[i];
-  //         const unspent_data: any = {
-  //           txid: data.txid,
-  //           block_height: data.status && data.status.block_height ? data.status.block_height : 0,
-  //           vout: data.vout,
-  //           satoshis: data.value,
-  //           confirmations: data.status && data.status.confirmed ? 1 : 0
-  //         };
-  //         try {
-  //           const txUrl = `https://blockstream.info/testnet/api/tx/${data.txid}`;
-  //           const txResult = await axios.get(txUrl);
-  //           const transaction_data = txResult.data;
-  //           if (transaction_data && Array.isArray(transaction_data.vout) && transaction_data.vout.length > 0) {
-  //             // Find the vout that matches the UTXO's vout index
-  //             const unspent_vout = transaction_data.vout.find((vout: any) => vout.n !== undefined ? vout.n === data.vout : vout === transaction_data.vout[data.vout]);
-  //             // Blockstream's vout array does not have 'n', index is the vout number
-  //             const voutObj = transaction_data.vout[data.vout];
-  //             if (voutObj) {
-  //               unspent_data.scriptPubKey = voutObj.scriptpubkey;
-  //               unspent_data.address = voutObj.scriptpubkey_address;
-  //             } else {
-  //               unspent_data.scriptPubKey = '';
-  //               unspent_data.address = '';
-  //             }
-  //             // Blockstream does not provide raw hex in this endpoint
-  //             // If you need raw tx hex, you can fetch from /tx/{txid}/hex
-  //             try {
-  //               const txHexUrl = `https://blockstream.info/testnet/api/tx/${data.txid}/hex`;
-  //               const txHexResult = await axios.get(txHexUrl);
-  //               unspent_data.tx_raw = txHexResult.data;
-  //             } catch (hexErr) {
-  //               unspent_data.tx_raw = '';
-  //             }
-  //           }
-  //         } catch (txErr) {
-  //           unspent_data.scriptPubKey = '';
-  //           unspent_data.address = '';
-  //           unspent_data.tx_raw = '';
-  //         }
-  //         res_data.push(unspent_data);
-  //       }
-  //     }
-  //     return response.success(res, {
-  //       data: {
-  //         status: true,
-  //         data: res_data,
-  //         message: language[lang].SUCCESS
-  //       },
-  //     });
-  //   } catch (err: any) {
-  //     await commonHelper.save_error_logs("btc_unspent", err.message);
-  //     console.error("ERROR in BTC unspent API", err)
-  //   }
-  // }
+      let res_data: any = [];
+      if (utxoResult && Array.isArray(utxoResult.data) && utxoResult.data.length > 0) {
+        for (let i = 0; i < utxoResult.data.length; i++) {
+          const data = utxoResult.data[i];
+          const unspent_data: any = {
+            txid: data.txid,
+            block_height: data.status && data.status.block_height ? data.status.block_height : 0,
+            vout: data.vout,
+            satoshis: data.value,
+            confirmations: data.status && data.status.confirmed ? 1 : 0
+          };
+          try {
+            const txUrl = `https://blockstream.info/testnet/api/tx/${data.txid}`;
+            const txResult = await axios.get(txUrl);
+            const transaction_data = txResult.data;
+            if (transaction_data && Array.isArray(transaction_data.vout) && transaction_data.vout.length > 0) {
+              // Find the vout that matches the UTXO's vout index
+              const unspent_vout = transaction_data.vout.find((vout: any) => vout.n !== undefined ? vout.n === data.vout : vout === transaction_data.vout[data.vout]);
+              // Blockstream's vout array does not have 'n', index is the vout number
+              const voutObj = transaction_data.vout[data.vout];
+              if (voutObj) {
+                unspent_data.scriptPubKey = voutObj.scriptpubkey;
+                unspent_data.address = voutObj.scriptpubkey_address;
+              } else {
+                unspent_data.scriptPubKey = '';
+                unspent_data.address = '';
+              }
+              // Blockstream does not provide raw hex in this endpoint
+              // If you need raw tx hex, you can fetch from /tx/{txid}/hex
+              try {
+                const txHexUrl = `https://blockstream.info/testnet/api/tx/${data.txid}/hex`;
+                const txHexResult = await axios.get(txHexUrl);
+                unspent_data.tx_raw = txHexResult.data;
+              } catch (hexErr) {
+                unspent_data.tx_raw = '';
+              }
+            }
+          } catch (txErr) {
+            unspent_data.scriptPubKey = '';
+            unspent_data.address = '';
+            unspent_data.tx_raw = '';
+          }
+          res_data.push(unspent_data);
+        }
+      }
+      return response.success(res, {
+        data: {
+          status: true,
+          data: res_data,
+          message: language[lang].SUCCESS
+        },
+      });
+    } catch (err: any) {
+      await commonHelper.save_error_logs("btc_unspent", err.message);
+      console.error("ERROR in BTC unspent API", err)
+    }
+  }
   public async send(req: Request, res: Response) {
     const lang: any = req.headers["content-language"] || "en";
     try {
@@ -274,67 +274,67 @@ class BTCController implements OnlyControllerInterface {
       console.error("err", err as Error);
     }
   }
-  public async unspent(req: Request, res: Response) {
-    let lang: any = req.headers["content-language"] || "en";
-    try {
-      const address = req.params?.address;
-      // Get unspent outputs using the utxo class
-      const unspentOutputs = await utxobtc.getUnspent(address);
-      let res_data: any = [];
+  // public async unspent(req: Request, res: Response) {
+  //   let lang: any = req.headers["content-language"] || "en";
+  //   try {
+  //     const address = req.params?.address;
+  //     // Get unspent outputs using the utxo class
+  //     const unspentOutputs = await utxobtc.getUnspent(address);
+  //     let res_data: any = [];
 
-      if (unspentOutputs && unspentOutputs.length > 0) {
-        for (let i = 0; i < unspentOutputs.length; i++) {
-          const data = unspentOutputs[i];
+  //     if (unspentOutputs && unspentOutputs.length > 0) {
+  //       for (let i = 0; i < unspentOutputs.length; i++) {
+  //         const data = unspentOutputs[i];
 
-          const unspent_data: any = {
-            txid: data.txid,
-            block_height: data.height || 0,
-            vout: data.vout,
-            satoshis: Math.round(data.amount * 100000000), // Convert BTC to satoshis
-            confirmations: data.confirmations,
-          };
+  //         const unspent_data: any = {
+  //           txid: data.txid,
+  //           block_height: data.height || 0,
+  //           vout: data.vout,
+  //           satoshis: Math.round(data.amount * 100000000), // Convert BTC to satoshis
+  //           confirmations: data.confirmations,
+  //         };
 
-          // Get transaction details only for the first item (as per original logic)
-          if (i === 0) {
-            const transactionData = await utxobtc.getTransactionDetails(
-              data.txid
-            );
+  //         // Get transaction details only for the first item (as per original logic)
+  //         if (i === 0) {
+  //           const transactionData = await utxobtc.getTransactionDetails(
+  //             data.txid
+  //           );
 
-            if (
-              transactionData &&
-              transactionData.vout !== undefined &&
-              transactionData.vout.length > 0
-            ) {
-              unspent_data.tx_raw = transactionData.hex;
+  //           if (
+  //             transactionData &&
+  //             transactionData.vout !== undefined &&
+  //             transactionData.vout.length > 0
+  //           ) {
+  //             unspent_data.tx_raw = transactionData.hex;
 
-              const unspent_vout = transactionData.vout.filter(
-                (vout: any) => vout.n == data.vout
-              );
-              if (unspent_vout.length > 0) {
-                unspent_data.scriptPubKey = unspent_vout[0].scriptPubKey.hex;
-                unspent_data.address =
-                  unspent_vout[0].scriptPubKey.address || address;
-              } else {
-                unspent_data.scriptPubKey = "";
-                unspent_data.address = address;
-              }
-            }
-          }
-          res_data.push(unspent_data);
-        }
-      }
-      return response.success(res, {
-        data: {
-          status: true,
-          data: res_data,
-          message: language[lang].SUCCESS,
-        },
-      });
-    } catch (err: any) {
-      await commonHelper.save_error_logs("btc_unspent", err.message);
-      console.error("ERROR in BTC unspent API", err);
-    }
-  }
+  //             const unspent_vout = transactionData.vout.filter(
+  //               (vout: any) => vout.n == data.vout
+  //             );
+  //             if (unspent_vout.length > 0) {
+  //               unspent_data.scriptPubKey = unspent_vout[0].scriptPubKey.hex;
+  //               unspent_data.address =
+  //                 unspent_vout[0].scriptPubKey.address || address;
+  //             } else {
+  //               unspent_data.scriptPubKey = "";
+  //               unspent_data.address = address;
+  //             }
+  //           }
+  //         }
+  //         res_data.push(unspent_data);
+  //       }
+  //     }
+  //     return response.success(res, {
+  //       data: {
+  //         status: true,
+  //         data: res_data,
+  //         message: language[lang].SUCCESS,
+  //       },
+  //     });
+  //   } catch (err: any) {
+  //     await commonHelper.save_error_logs("btc_unspent", err.message);
+  //     console.error("ERROR in BTC unspent API", err);
+  //   }
+  // }
 }
 
 let btcController = new BTCController();
