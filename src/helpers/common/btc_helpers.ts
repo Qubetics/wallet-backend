@@ -97,27 +97,27 @@ class utxo {
     }
 
     public async getUnspent(address: string) {
-        // try {
+        try {
             console.log("INSIDE getUnspent")
-        //     // Use Blockstream testnet API for UTXOs
-        //     const url = `https://blockstream.info/testnet/api/address/${address}/utxo`;
-        //     const response = await axios.get(url);
+            // Use Blockstream testnet API for UTXOs
+            const url = `https://blockstream.info/testnet/api/address/${address}/utxo`;
+            const response = await axios.get(url);
 
-        //     if (Array.isArray(response.data)) {
-        //         // Map Blockstream UTXO format to expected format
-        //         return response.data.map((utxo: any) => ({
-        //             txid: utxo.txid,
-        //             vout: utxo.vout,
-        //             amount: utxo.value / 100000000, // value is in satoshis, convert to BTC
-        //             confirmations: utxo.status && utxo.status.confirmed && utxo.status.block_height
-        //                 ? (Math.max(1, 1)) // Blockstream API does not provide current height, so set to 1 if confirmed
-        //                 : 0,
-        //             height: utxo.status && utxo.status.block_height ? utxo.status.block_height : 0,
-        //             scriptPubKey: undefined // Not available from Blockstream UTXO endpoint
-        //         }));
-        //     }
-        //     return [];
-        // } catch (err: any) {
+            if (Array.isArray(response.data)) {
+                // Map Blockstream UTXO format to expected format
+                return response.data.map((utxo: any) => ({
+                    txid: utxo.txid,
+                    vout: utxo.vout,
+                    amount: utxo.value / 100000000, // value is in satoshis, convert to BTC
+                    confirmations: utxo.status && utxo.status.confirmed && utxo.status.block_height
+                        ? (Math.max(1, 1)) // Blockstream API does not provide current height, so set to 1 if confirmed
+                        : 0,
+                    height: utxo.status && utxo.status.block_height ? utxo.status.block_height : 0,
+                    scriptPubKey: undefined // Not available from Blockstream UTXO endpoint
+                }));
+            }
+            return [];
+        } catch (err: any) {
             try {
             console.log("INSIDE makeRpc")
 
@@ -139,7 +139,7 @@ class utxo {
                 console.error("Error in getUnspent of BTC", fallbackError);
                 return []
             }
-        // }
+        }
     }
 
     public async getTransactionDetails(txid: string) {
