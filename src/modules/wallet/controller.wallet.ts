@@ -845,10 +845,10 @@ class WalletController implements OnlyControllerInterface {
           [Op.and]: {
             [Op.or]: {
               coin_name: {
-                [Op.like]: { [Op.like]: `%${search}%` },
+                [Op.like]:  `%${search}%` 
               },
               coin_symbol: {
-                [Op.like]: { [Op.like]: `%${search}%` },
+                [Op.like]:`%${search}%`
               },
             },
           },
