@@ -26,11 +26,11 @@ class UserRoute implements ControllerInterface {
       userController.createWallet2
     );
 
-    this.router.post(
-      `${this.path}/create/wallet3`,
-      [validate(validator.createWalletValidate)],
-      userController.createWallet3
-    );
+    // this.router.post(
+    //   `${this.path}/create/wallet3`,
+    //   [validate(validator.createWalletValidate)],
+    //   userController.createWallet3
+    // );
 
     this.router.post(
       `${this.path}/create/wallet/native`,
