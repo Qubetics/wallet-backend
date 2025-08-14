@@ -255,7 +255,7 @@ class TicsController implements OnlyControllerInterface {
   public async sendNative(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
-      const prefixedRawTx = req?.body?.txid.startsWith('0x') ? req?.body?.txid : ( '0x' + req?.body?.txid );
+      const prefixedRawTx = req?.body?.txid.startsWith('0x') ? req?.body?.txid : ('0x' + req?.body?.txid);
       req.body.tx_hash = prefixedRawTx;
       req.body.tx_status = "completed";
       const resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
@@ -309,8 +309,8 @@ class TicsController implements OnlyControllerInterface {
     try {
       const gasEstimate = 111348;
       const gasPrice = '90000000000tics';
-      const bufferedGasEstimate = gasEstimate*1.25;
-      const bufferedGasPrice = 90;  
+      const bufferedGasEstimate = gasEstimate * 2;
+      const bufferedGasPrice = 90;
       return response.success(res, {
         data: {
           status: true,
