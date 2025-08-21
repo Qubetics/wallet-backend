@@ -129,7 +129,9 @@ class WalletHelpers implements OnlyControllerInterface {
       });
 
       if (cmc_id != null) {
-        await WalletHelper.insert_graph_reset_data(cmc_id);
+        //insert graph reset data in db not needed for stage build
+        console.log("skipping graph reset data insertion for cmc_id  as we on satge ,, add token>>>", cmc_id);
+        // await WalletHelper.insert_graph_reset_data(cmc_id);
       }
 
       return { coinData: coinData };
