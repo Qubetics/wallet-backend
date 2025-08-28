@@ -102,7 +102,8 @@ class EthController implements OnlyControllerInterface {
     } catch (err: any) {
       await commonHelper.save_error_logs("eth_getEstimationGas", err.message);
       return response.error(res, {
-        data: { status: false, message: language[lang].CATCH_MSG + err },
+        // data: { status: false, message: language[lang].CATCH_MSG + err },
+        data: { status: false, message: language[lang].CATCH_MSG },
       });
     }
   }
