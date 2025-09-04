@@ -34,6 +34,7 @@ import PermissionsModel from './model_permissions';
 import { TicsPriceInFiatGraph } from './model.ticsPriceInFiatGraph';
 import TicsNativeAddressModel from './model.ticsNativeAddress';
 import IntentTrnxHistoryModel from './model.intentTrnxHistory';
+import MpcWalletsModel from './model.mpcWallets';
 export {
     AddressBookModel,
     AddressBookWalletsModel,
@@ -70,5 +71,6 @@ export {
     PermissionsModel,
     TicsPriceInFiatGraph,
     TicsNativeAddressModel,
-    IntentTrnxHistoryModel
+    IntentTrnxHistoryModel,
+    MpcWalletsModel
 }

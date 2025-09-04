@@ -1,0 +1,101 @@
+import { DataTypes, Model, Optional } from "sequelize";
+import db from "../../helpers/common/db";
+import WalletModel from "./model.wallets";
+import { MpcWalletsInterface } from "../interface/interface.mpcWallets";
+import CoinsModel from "./model.coins";
+
+// Optional ID for creation
+interface MpcWalletsCreationAttrs extends Optional<MpcWalletsInterface, "id"> {}
+
+interface MpcWalletsInstance
+  extends Model<MpcWalletsInterface, MpcWalletsCreationAttrs>,
+    MpcWalletsInterface {}
+
+const MpcWalletsModel = db.db_write.define<MpcWalletsInstance>(
+  "mpc_wallets",
+  {
+    id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    wallet_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "wallets",
+        key: "wallet_id",
+      },
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    coin_family: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    wallet_address: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
+      unique: true,
+    },
+    balance: {
+      type: DataTypes.DECIMAL(30, 18),
+      allowNull: false,
+      defaultValue: 0,
+    },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+  },
+  {
+    indexes: [
+      {
+        unique: true,
+        fields: ["wallet_address"],
+      },
+      {
+        fields: ["wallet_id"],
+      },
+    ],
+    underscored: true,
+    timestamps: false,
+    tableName: "mpc_wallets",
+  }
+);
+
+// Associations
+MpcWalletsModel.belongsTo(WalletModel, {
+  foreignKey: "wallet_id",
+  as: "wallet",
+});
+
+WalletModel.hasOne(MpcWalletsModel, {
+  foreignKey: "wallet_id",
+  as: "mpc_wallets",
+});
+
+// MpcWalletsModel.belongsTo(CoinsModel, {
+//   foreignKey: "coin_family",
+//   targetKey: "coin_family",
+// });
+
+// CoinsModel.hasOne(MpcWalletsModel, {
+//   foreignKey: "coin_family",
+//   sourceKey: "coin_family",
+//   as: "mpc_wallets",
+// });
+
+MpcWalletsModel.sync({ alter: true });
+
+export default MpcWalletsModel;
