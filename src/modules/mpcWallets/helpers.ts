@@ -3,6 +3,7 @@ import commonHelper from "../../helpers/common/common.helpers";
 import { global_helper } from "../../helpers/common/global_helper";
 import { coin_queries } from "../../helpers/dbHelper";
 import { config } from "../../config/config";
+import { Op } from "sequelize";
 
 class MpcWalletsHelpers {
 
@@ -100,13 +101,21 @@ class MpcWalletsHelpers {
    * - Updates balances in parallel.
    * - Adds clear comments for maintainability.
    */
-  public async getMpcWallets(userId: number) {
+  public async getMpcWallets(userId: number, reqBody: any) {
     try {
+
+      const { addresses } = reqBody;
+
+      let whereClause: any = { user_id: userId };
+
+      if(addresses && addresses?.length > 0){
+        whereClause.wallet_address = { [Op.in]: addresses.map((address: any) => address.address) };
+      }
 
       // Fetch all MPC wallets for the user
       const mpcWallets: any[] = await Models.MpcWalletsModel.findAll({
         attributes: ["wallet_id", "coin_family", "wallet_address", "balance"],
-        where: { user_id: userId },
+        where: whereClause,
         raw: true
       });
 
@@ -178,8 +187,6 @@ class MpcWalletsHelpers {
 
       // Return all updated wallets
       return {
-        status: true,
-        message: "Mpc wallets have been fetched successfully",
         mpcWallets: updatedMpcWallets
       };
 

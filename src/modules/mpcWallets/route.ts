@@ -22,6 +22,7 @@ class MpcWalletsRoute implements ControllerInterface {
 
     this.router.post(
       `${this.path}/getMpcWallets`,
+      [validateExpress(mpcWallets_validator.getMpcWallets)],
       jwtVerification.verifyToken,
       mpcWalletsController.getMpcWallets
     );
