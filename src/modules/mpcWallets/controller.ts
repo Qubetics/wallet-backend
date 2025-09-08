@@ -43,9 +43,9 @@ class MpcWalletsController implements OnlyControllerInterface {
   public async getMpcWallets(req: Request, res: Response) {
     try {
       
-      const reqBody: any = req.body;
+      const {wallet_address, coin_family}: any = req.body;
 
-      const data: any = await mpcWalletsHelper.getMpcWallets(req.userId, reqBody);
+      const data: any = await mpcWalletsHelper.getMpcWallets(req.userId, wallet_address, coin_family);
       return res.status(GlblCode.SUCCESS).send({
         status: true,
         code: GlblCode.SUCCESS,

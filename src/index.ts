@@ -131,8 +131,10 @@ class Server implements ServerInterface {
   }
 
   public startServer() {
-    this.httpServer.listen(config.PORT, () => {
-      console.log('server listen on port:', config.PORT);
+    // this.httpServer.listen(config.PORT, () => {
+      this.httpServer.listen(9005, () => {
+
+      console.log('server listen on port:', 9005);
     });
     this.app.get("/", (req: Request, res: Response) => {
       res.send(InfoMessages.APP_INFO).status(GlblCode.SUCCESS);

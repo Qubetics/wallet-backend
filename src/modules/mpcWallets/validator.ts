@@ -12,16 +12,9 @@ export default class mpcWalletsValidator {
 
   static getMpcWallets = {
     body: Joi.object({
-      addresses: Joi.array()
-        .items(
-          Joi.object({
-            address: Joi.string().required(),
-            coin_family: Joi.string().optional(),
-          })
-        )
-        .optional(),
+      wallet_address: Joi.string().required(),
+      coin_family: Joi.number().required(),
     }),
   };
-  }
 
-
+}

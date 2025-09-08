@@ -76,12 +76,12 @@ class MpcWalletsHelpers {
       );
 
       // Return success with created wallet objects
-      return {
-        status: true,
-        message: "Mpc wallets have been saved successfully",
-        btcMpcWallet,
-        ticsMpcWallet
-      };
+        return {
+          status: true,
+          message: "Mpc wallets have been saved successfully",
+          btcMpcWallet,
+          ticsMpcWallet
+        };
 
     } catch (error: any) {
       // Log error and return error response
@@ -95,111 +95,34 @@ class MpcWalletsHelpers {
     }
   }
 
-  /**
-   * Fetches all MPC wallets for a user, updates their balances, and returns the result.
-   * - Fetches all wallets in one query.
-   * - Updates balances in parallel.
-   * - Adds clear comments for maintainability.
-   */
-  public async getMpcWallets(userId: number, reqBody: any) {
-    try {
 
-      const { addresses } = reqBody;
 
-      let whereClause: any = { user_id: userId };
+  public async getMpcWallets(userId: number, wallet_address: string, coin_family: number ) {
+     try {
+      
 
-      if(addresses && addresses?.length > 0){
-        whereClause.wallet_address = { [Op.in]: addresses.map((address: any) => address.address) };
-      }
-
-      // Fetch all MPC wallets for the user
-      const mpcWallets: any[] = await Models.MpcWalletsModel.findAll({
-        attributes: ["wallet_id", "coin_family", "wallet_address", "balance"],
-        where: whereClause,
-        raw: true
-      });
-
-      // If no wallets found, return early
-      if (!mpcWallets?.length) {
-        return {
-          status: true,
-          message: "No mpc wallets found",
-          mpcWallets: []
-        };
-      }
-
-      // Helper to get coin symbol by family
-      const getCoinSymbol = (coinFamily: number) =>
-        coinFamily == config.STATIC_COIN_FAMILY.BTC ? "btc" : "tics";
-
-      // Prepare all balance update promises in parallel for speed
-      const updatedMpcWallets = await Promise.all(
-        mpcWallets.map(async (mpcWallet) => {
-          // Fetch coin data for this wallet
-          const coinData = await coin_queries.coin_find_one(
-            [
-              "coin_id",
-              "coin_family",
-              "coin_symbol",
-              "is_token",
-              "token_address",
-              "token_type",
-            ],
-            {
-              coin_family: mpcWallet.coin_family,
-              coin_symbol: getCoinSymbol(mpcWallet.coin_family)
-            }
-          );
-
-          if (!coinData) {
-            // If coin data not found, return wallet as is
-            return mpcWallet;
+      const  walletData  = await Models.WalletModel.findOne({
+        where: {
+          user_id: userId,
+          wallet_address:  wallet_address,
+          coin_family: coin_family
+        },
+        attributes: [ "user_id", "coin_family", "wallet_address", "balance"],
+        include: [
+          {
+            model: Models.MpcWalletsModel,
+            as: "mpcWallets"
           }
+        ]
+      })
 
-          // Get wallet balance from blockchain/helper
-          const balDetails = await global_helper.get_wallet_balance(
-            coinData,
-            mpcWallet.wallet_address
-          );
+      return walletData
 
-          // Use fetched balance if available, else default to "0"
-          const balance = balDetails?.status ? balDetails.balance : "0";
-
-          // Update balance in DB (do not await for speed, but can be awaited if consistency is critical)
-          Models.MpcWalletsModel.update(
-            { balance },
-            {
-              where: {
-                wallet_id: mpcWallet.wallet_id,
-                coin_family: mpcWallet.coin_family,
-                wallet_address: mpcWallet.wallet_address
-              }
-            }
-          ).catch((err: any) => {
-            // Log but don't block on update error
-            console.error("Failed to update MPC wallet balance", err);
-          });
-
-          // Return wallet with updated balance
-          return { ...mpcWallet, balance };
-        })
-      );
-
-      // Return all updated wallets
-      return {
-        mpcWallets: updatedMpcWallets
-      };
-
-    } catch (error: any) {
-      // Log and return error
-      console.error("Error in getMpcWallets>>>>", error);
-      await commonHelper.save_error_logs("getMpcWallets", error?.message);
-      return {
-        status: false,
-        message: "Error in getMpcWallets",
-        error: error?.message
-      };
-    }
-  }
+     } catch (error) {
+      console.log("error", error)
+     }
 }
-export const mpcWalletsHelper = new MpcWalletsHelpers();
+
+}
+
+export const mpcWalletsHelper = new MpcWalletsHelpers()

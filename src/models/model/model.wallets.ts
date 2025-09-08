@@ -2,6 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { WalletInterface } from "../interface/interface.wallets";
 import db from "../../helpers/common/db";
 import CoinsModel from '../model/model.coins';
+import MpcWalletsModel from '../model/model.mpcWallets';
 interface WalletCreationModel extends Optional<WalletInterface, "wallet_id"> { }
 interface WalletInstance
   extends Model<WalletInterface, WalletCreationModel>,
@@ -125,6 +126,12 @@ CoinsModel.hasOne(WalletModel, {
   foreignKey: "coin_id",
   sourceKey: "coin_id",
   as: "wallet_data"
+});
+
+WalletModel.hasMany(MpcWalletsModel, {
+  foreignKey: "wallet_id",
+  sourceKey: "wallet_id",
+  as: "mpcWallets"
 });
 
 
