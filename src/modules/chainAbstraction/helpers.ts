@@ -11,6 +11,12 @@ class ChainAbstractionHelpers {
  
   public async getCoinList(coinFamilies: any[], addrsList: any[], userId: number) {
     try {
+      
+      //Hardcoded for Bitcoin & TICS Remove this later
+      coinFamilies = [3,7];
+      const coinSymbols = ["btc", "tics"];
+
+
       const data: any = await Models.CoinsModel.findAll({
         attributes: [
           "coin_id",
@@ -27,6 +33,7 @@ class ChainAbstractionHelpers {
         where: {
           coin_status: GlblBooleanEnum.true,
           coin_family: { [Op.in]: coinFamilies },
+          coin_symbol: { [Op.in]: coinSymbols },
           for_chain_abstraction: GlblBooleanEnum.true,
         },
         include: [
