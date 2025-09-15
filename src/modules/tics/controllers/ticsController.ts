@@ -9,7 +9,8 @@ import response from "../../../helpers/response/response.helpers";
 import { ticsEther } from "../../../helpers/common/ether_tics_helpers";
 import commonHelper from "../../../helpers/common/common.helpers";
 import { AbiItem } from "../../../interfaces/ether.interface";
-
+import BigNumber from "bignumber.js";
+import { ethers } from "ethers";
 class TicsController implements OnlyControllerInterface {
   constructor() {
     this.initialize();
@@ -109,9 +110,20 @@ class TicsController implements OnlyControllerInterface {
         tx_raw,
       } = req.body;
       // const gasPriceInWei = await ticsEther.convertGweiToWei(gas_price);
-      const maxGas = await bigNumberSafeMath(gas_price, '*', gas_estimate);
-      // const maxGas = gas_price * gas_estimate;
-      const gasInTics = await ticsEther.convertWeiToTics(maxGas);
+      console.log("🚀 ~ TicsController ~ send ~ gas_price:", gas_price)
+      console.log("🚀 ~ TicsController ~ send ~ gas_estimate:", gas_estimate)
+
+
+      // Directly use BigNumber here instead of bigNumberSafeMath
+      // Convert gas price to wei first
+      const gasPriceWei = ethers.parseUnits(gas_price.toString(), "gwei"); // BigInt in Wei
+
+      // Multiply with gas estimate
+      const maxGas = gasPriceWei * BigInt(gas_estimate); // stays as BigInt
+
+      // Now convert to ETH or TICS for display
+      const gasInTics = ethers.formatEther(maxGas); // converts BigInt -> string ETH
+
       // TICS only
       if (req.coininfo.is_token == false && req.coininfo.coin_symbol == "tics") {
         let withdrawAmount;
