@@ -7,7 +7,7 @@ import { bigNumberSafeMath } from "../../../helpers/common/globalFunctions";
 import { config } from "../../../config";
 import { global_helper } from "../../../helpers/common/global_helper";
 import { utxobtc } from "../../../helpers/common/btc_helpers";
-import { GlblCode } from "../../../constants/global_enum";
+import { GlblBlockchainTxStatusEnum, GlblCode } from "../../../constants/global_enum";
 import commonHelper from "../../../helpers/common/common.helpers";
 import axios from "axios";
 
@@ -265,6 +265,50 @@ class BTCController implements OnlyControllerInterface {
           data: {
             status: false,
             message: language[lang].TRANSACTION_BROADCAST_FAILED,
+            data: {},
+          },
+        });
+      }
+    } catch (err: any) {
+      await commonHelper.save_error_logs("btc_send", err.message);
+      console.error("err", err as Error);
+    }
+  }
+
+  public async saveTransaction(req: Request, res: Response) {
+    try {
+      console.log("req body btc saveTransaction >>>", req.body);
+
+      const transactionHash = req.body.tx_hash;
+
+   
+      req.body.tx_hash = transactionHash;
+      req.body.tx_type = req.body.tx_type ,
+      req.body.nonce = req.body.nonce ? req.body.nonce : 0;
+      req.body.gas_price = req.body.eth_gas_price ? req.body.eth_gas_price : 0;
+      req.body.gas_estimate = req.body.gas_estimate ? req.body.gas_estimate : 0;
+      req.body.eth_gas_price = req.body.gas_estimate
+        ? req.body.gas_estimate
+        : 0;
+      req.body.tx_status = "completed";
+      req.body.blockchain_status = GlblBlockchainTxStatusEnum.CONFIRMED;
+
+  
+      const resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
+
+      if (resultStatus.status && resultStatus.status == true) {
+        return response.success(res, {
+          data: {
+            status: true,
+            message: "Transaction saved successfully",
+            data: {},
+          },
+        });
+      } else {
+        return response.error(res, {
+          data: {
+            status: false,
+            message: "Transaction save failed",
             data: {},
           },
         });

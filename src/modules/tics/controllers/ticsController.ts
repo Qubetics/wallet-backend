@@ -11,6 +11,7 @@ import commonHelper from "../../../helpers/common/common.helpers";
 import { AbiItem } from "../../../interfaces/ether.interface";
 import BigNumber from "bignumber.js";
 import { ethers } from "ethers";
+import { GlblBlockchainTxStatusEnum } from "../../../constants/global_enum";
 class TicsController implements OnlyControllerInterface {
   constructor() {
     this.initialize();
@@ -249,6 +250,158 @@ class TicsController implements OnlyControllerInterface {
         data: {
           status: false,
           message: language[lang].CATCH_MSG
+        },
+      });
+    }
+  }
+
+  public async saveTransaction(req: Request, res: Response) {
+    try {
+      // const { token_address: contractAddress, token_abi: ABI } = req.coininfo;
+      const transactionHash = req.body.tx_hash;
+      // const dapp_transaction: any = req.body.add_amount;
+      const {
+        gas_estimate,
+        amount,
+        gas_price,
+        from,
+        tx_raw,
+      } = req.body;
+      
+      // const maxGas = await bigNumberSafeMath(gas_price, '*', gas_estimate);
+      
+      // const gasInTics = await ticsEther.convertWeiToTics(maxGas);
+
+      // Directly use BigNumber here instead of bigNumberSafeMath
+      // Convert gas price to wei first
+      const gasPriceWei = ethers.parseUnits(gas_price.toString(), "gwei"); // BigInt in Wei
+
+      // // Multiply with gas estimate
+      const maxGas = gasPriceWei * BigInt(gas_estimate); // stays as BigInt
+
+      // // Now convert to ETH or TICS for display
+      const gasInTics = ethers.formatEther(maxGas); // converts BigInt -> string ETH
+
+
+      // TICS only
+      if (req.coininfo.is_token == false && req.coininfo.coin_symbol == "tics") {
+        // let withdrawAmount;
+        // if (dapp_transaction == 1) {
+        //   withdrawAmount = bigNumberSafeMath('0', "+", gasInTics);
+        // } else {
+        //   withdrawAmount = bigNumberSafeMath(amount, "+", gasInTics);
+        // }
+        // const ticsBalance = await ticsEther.get_coin_balance(from, true);
+        // console.log("🚀 ~ TicsController ~ saveTransaction ~ ticsBalance:", ticsBalance)
+        // console.log("🚀 ~ TicsController ~ saveTransaction ~ withdrawAmount:", withdrawAmount)
+        // if (Number(ticsBalance) < Number(withdrawAmount)) {
+        //   return response.error(res, {
+        //     data: { status: false, message: language[lang].INSUFFICIENT },
+        //   });
+        // }
+      } else if (
+        req.coininfo.coin_family == config.STATIC_COIN_FAMILY.TICS &&
+        req.coininfo.is_token == true &&
+        req.coininfo.token_type === "ERC20"
+      ) {
+        // const ticsBalance = await ticsEther.get_coin_balance(from, true);
+        // const ERC20TokenBalance = await ticsEther.get_erc20_token_balance(
+        //   contractAddress,
+        //   ABI as AbiItem[],
+        //   req.body.from
+        // );
+        // if (Number(ticsBalance) < Number(gasInTics)) {
+        //   return response.error(res, {
+        //     data: {
+        //       status: false,
+        //       message: language[lang].INSUFFICIENTTICS
+        //     },
+        //   });
+        // } else if (Number(ERC20TokenBalance) < Number(amount)) {
+        //   return response.error(res, {
+        //     data: {
+        //       status: false,
+        //       message: language[lang].ETH_INSUFFICIENT(req.coininfo.coin_symbol)
+        //     },
+        //   });
+        // }
+      } else if (
+        req.coininfo.coin_family == config.STATIC_COIN_FAMILY.TICS &&
+        req.coininfo.is_token == true &&
+        req.coininfo.token_type === "ERC721"
+      ) {
+        // const ticsBalance = await ticsEther.get_coin_balance(from, true);
+        // if (Number(ticsBalance) < Number(gasInTics)) {
+        //   return response.error(res, {
+        //     data: {
+        //       status: false,
+        //       message: language[lang].ETH_GAS(gasInTics, 'TICS')
+        //     },
+        //   });
+        // }
+       }
+
+        req.body.tx_hash = transactionHash;
+        req.body.tx_status = "completed";
+        req.body.tx_fee = gasInTics;
+        req.body.blockchain_status = GlblBlockchainTxStatusEnum.CONFIRMED;
+
+        const resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
+
+        if (
+          req.coininfo.is_token == true &&
+          req.coininfo.token_type === "ERC721"
+        ) {
+          await Models.NFTModelModel.update(
+            {
+              available: 0,
+            },
+            { where: { token_address: req.coininfo.token_address as string } }
+          );
+        }
+
+        if (resultStatus.status && resultStatus.status == true) {
+          if (req.body.tx_type == 'Approve') {
+
+            return response.success(res, {
+              data: {
+                status: true,
+                message: "Transaction saved successfully",
+                tx_hash: transactionHash,
+              },
+            });
+          } else if (req.body.tx_type == 'withdraw') {
+
+            return response.success(res, {
+              data: {
+                status: true,
+                message: "Transaction saved successfully",
+                tx_hash: transactionHash,
+              },
+            });
+          } else {
+            return response.success(res, {
+              data: {
+                status: true,
+                message: "Transaction saved successfully",
+                tx_hash: transactionHash,
+              },
+            });
+          }
+        } else {
+          return response.error(res, {
+            data: {
+              status: false,
+              message: "Transaction save failed",
+            },
+          });
+        }
+
+    } catch (err: any) {
+      return response.error(res, {
+        data: {
+          status: false,
+          message: "Transaction save failed",
         },
       });
     }

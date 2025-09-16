@@ -10,7 +10,7 @@ let ticsMiddleware = {
     let lang: any = req.headers['content-language'] || 'en';
     try {
       let coinData: any;
-      if (req.params.coin === "tics") {
+      if (req.params.coin == "tics") {
         coinData = await Models.CoinsModel.findOne({
           where: {
             coin_symbol: req.params.coin,

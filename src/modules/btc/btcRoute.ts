@@ -16,6 +16,11 @@ class BtcRoute implements ControllerInterface {
       BtcMiddleware.requestInfo,
       BtcController.send);
 
+    this.router.post(`${this.path}/:coin/saveTransaction`,
+        jwtVerification.verifyToken,
+        BtcMiddleware.requestInfo,
+        BtcController.saveTransaction);
+
     this.router.get(`${this.path}/unspent/:address`,
       jwtVerification.verifyToken,
       BtcController.unspent)
