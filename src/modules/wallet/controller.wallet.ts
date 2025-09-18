@@ -2219,10 +2219,12 @@ class WalletController implements OnlyControllerInterface {
             let fetchNftData = null;
 
             if (symbol.toUpperCase() == "ETH") {
-              let params: string = `?format=decimal&media_items=true&chain=${chainData.type}&limit=${limit}`;
-
+              let params: string = `?format=decimal&media_items=true&chain=${chainData.type}`;
               if (cursor) {
-                params = `${params}&cursor=${cursor}`
+                params = `${params}&cursor=${cursor}`;
+              }
+              if (limit) {
+                params = `${params}&limit=${limit}`;
               }
 
               const method = "get";
