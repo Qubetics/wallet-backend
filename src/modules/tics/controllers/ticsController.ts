@@ -9,6 +9,7 @@ import response from "../../../helpers/response/response.helpers";
 import { ticsEther } from "../../../helpers/common/ether_tics_helpers";
 import commonHelper from "../../../helpers/common/common.helpers";
 import { AbiItem } from "../../../interfaces/ether.interface";
+import { TokenType } from "../../../constants/global_enum";
 
 class TicsController implements OnlyControllerInterface {
   constructor() {
@@ -49,58 +50,113 @@ class TicsController implements OnlyControllerInterface {
     req: Request,
     res: Response
   ): Promise<Response | undefined> {
-    let lang: any = req.headers['content-language'] || 'en';
+    const lang: any = req.headers['content-language'] || 'en';
+
     try {
-      let estimationRes: {
-        status: boolean;
-        gas_estimate: any;
-        message: any;
-      };
-      //Gas estimation 0 for coins other than BSC/BEP20
-      if (
-        req.coininfo &&
-        req.coininfo.coin_family !== config.STATIC_COIN_FAMILY.TICS
-      ) {
+      // If coininfo absent -> return error early
+      if (!req.coininfo) {
+        return response.error(res, {
+          data: { status: false, message: language[lang].CATCH_MSG },
+        });
+      }
+
+      // Gas estimation is 0 for coins other than TICS
+      if (req.coininfo.coin_family !== config.STATIC_COIN_FAMILY.TICS) {
         return response.success(res, {
           data: { status: true, gas_estimate: 0, gas_gwei_price: 0 },
         });
-      } else if (req.coininfo) {
-        const { from, to }: { from: string; to: string } = req.body;
-        const { token_address, token_abi, is_token } = req.coininfo;
-        if (is_token) {
-          estimationRes =
-            await ticsEther.getErc20TokenTransferGasEstimationCost(
-              token_address,
-              token_abi,
+      }
+
+      // For TICS family proceed
+      // Ensure estimationRes is always defined with a default
+      let estimationRes: {
+        status: boolean;
+        gas_estimate: number;
+        message?: string;
+      } = { status: false, gas_estimate: 0, message: '' };
+
+      const { from, to, amount, token_value }: { from: string; to: string; amount?: number; token_value?: string } = req.body;
+      const { token_address, token_abi, is_token, token_type } = req.coininfo;
+
+      if (is_token && token_address) {
+        // ERC20
+        if (token_type === TokenType.ERC20) {
+          // (ensure token_abi present if your helper requires it)
+          estimationRes = await ticsEther.getErc20TokenTransferGasEstimationCost(
+            token_address,
+            token_abi,
+            from,
+            to,
+            lang
+          );
+        }
+        // ERC721
+        else if (token_type === TokenType.ERC721) {
+          if (token_value) {
+            // token_value is usually tokenId for ERC721
+            estimationRes = await ticsEther.getErc721TokenTransferGasEstimationCost(
               from,
               to,
+              token_value,
+              token_address,
               lang
             );
-        } else {
-          estimationRes = await ticsEther.getTicsGasLimit(from, to, lang);
+          } else {
+            return response.error(res, {
+              data: { status: false, message: language[lang].CATCH_MSG },
+            });
+          }
         }
-        const gas_price = await ticsEther.getGasPrice(true);
-        return response.success(res, {
-          data: {
-            status: true,
-            gas_estimate: estimationRes.gas_estimate,
-            gas_price: gas_price,
-          },
-        });
+        // ERC1155
+        else if (token_type === TokenType.ERC1155) {
+          if (token_value && amount) {
+
+            // amount must be provided for ERC1155
+            estimationRes = await ticsEther.getErc1155TokenTransferGasEstimationCost(
+              from,
+              to,
+              token_value,
+              token_address,
+              amount,
+              lang
+            );
+
+          } else {
+            return response.error(res, {
+              data: { status: false, message: language[lang].CATCH_MSG },
+            });
+          }
+        } else {
+          // Unknown token type -> default/fallback
+          estimationRes = { status: false, gas_estimate: 0, message: 'Unsupported token type' };
+        }
+      } else {
+        // Native TICS transfer (non-token)
+        estimationRes = await ticsEther.getTicsGasLimit(from, to, lang);
       }
+
+      const gas_price = await ticsEther.getGasPrice(true);
+
+      return response.success(res, {
+        data: {
+          status: true,
+          gas_estimate: estimationRes?.gas_estimate ?? 0,
+          gas_price: gas_price ?? 0,
+        },
+      });
     } catch (err: any) {
-      await commonHelper.save_error_logs("tics_getEstimationGas", err.message);
+      await commonHelper.save_error_logs('tics_getEstimationGas', err.message);
       return response.error(res, {
-        // data: { status: false, message: language[lang].CATCH_MSG + err },
         data: { status: false, message: language[lang].CATCH_MSG },
       });
     }
   }
 
+
   public async send(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
-      const { token_address: contractAddress, token_abi: ABI } = req.coininfo;
+      const { token_address: contractAddress, token_abi: ABI, coin_family: coin_family } = req.coininfo;
       const dapp_transaction: any = req.body.add_amount;
       const {
         gas_estimate,
@@ -132,7 +188,7 @@ class TicsController implements OnlyControllerInterface {
       } else if (
         req.coininfo.coin_family == config.STATIC_COIN_FAMILY.TICS &&
         req.coininfo.is_token == true &&
-        req.coininfo.token_type === "ERC20"
+        req.coininfo.token_type === TokenType.ERC20
       ) {
         const ticsBalance = await ticsEther.get_coin_balance(from, true);
         const ERC20TokenBalance = await ticsEther.get_erc20_token_balance(
@@ -158,7 +214,7 @@ class TicsController implements OnlyControllerInterface {
       } else if (
         req.coininfo.coin_family == config.STATIC_COIN_FAMILY.TICS &&
         req.coininfo.is_token == true &&
-        req.coininfo.token_type === "ERC721"
+        (req.coininfo.token_type === TokenType.ERC721 || req.coininfo.token_type === TokenType.ERC1155)
       ) {
         const ticsBalance = await ticsEther.get_coin_balance(from, true);
         if (Number(ticsBalance) < Number(gasInTics)) {
@@ -170,21 +226,23 @@ class TicsController implements OnlyControllerInterface {
           });
         }
       }
-      let transferData = await ticsEther.sendTicsOrTokens(
+      await ticsEther.sendTicsOrTokens(
         req,
         lang,
         tx_raw,
         async (err: Error, txid: string) => {
           if (err) {
-            const filteredMessage = await handleErrorMessage(err)
 
+            const filteredMessage = await handleErrorMessage(err)
             return response.error(res, {
               data: {
                 status: false,
                 message: filteredMessage
               },
             });
+
           } else {
+
             req.body.tx_hash = txid;
             req.body.tx_status = "completed";
             req.body.tx_fee = gasInTics;
@@ -192,13 +250,14 @@ class TicsController implements OnlyControllerInterface {
 
             if (
               req.coininfo.is_token == true &&
-              req.coininfo.token_type === "ERC721"
+              (req.coininfo.token_type === TokenType.ERC721 || req.coininfo.token_type === TokenType.ERC1155)
             ) {
+
               await Models.NFTModelModel.update(
                 {
                   available: 0,
                 },
-                { where: { token_address: req.coininfo.token_address as string } }
+                { where: { token_address: req.coininfo.token_address as string, coin_family: coin_family } }
               );
             }
 

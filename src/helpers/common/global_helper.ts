@@ -253,7 +253,7 @@ class Global_helper {
                     balance = (await SolanaHelper.Fetch_Balance(wallet_address, coinData, false))?.toString()
                     break;
             }
-            if(balance == null) return { status: false, balance: '0' };
+            if (balance == null) return { status: false, balance: '0' };
             else return { status: true, balance: balance };
         } catch (err: any) {
             console.error("Error in get_wallet_balance.", err)
@@ -415,14 +415,14 @@ class Global_helper {
             let imageUrl: any = null;
             if (result.data) {
                 let image: any;
-                    const firstKey =  Object.keys(result.data.data)[0];
-                    if (firstKey) {
-                        id = result.data.data[firstKey].id;
-                        image = result.data.data[firstKey].logo;  
-                    }
-                    if (image) {
-                        imageUrl = await this.UpdateCmcImgUrl(image);
-                    }
+                const firstKey = Object.keys(result.data.data)[0];
+                if (firstKey) {
+                    id = result.data.data[firstKey].id;
+                    image = result.data.data[firstKey].logo;
+                }
+                if (image) {
+                    imageUrl = await this.UpdateCmcImgUrl(image);
+                }
             }
             return { image: imageUrl, id: id };
         } catch (err: any) {
@@ -430,35 +430,35 @@ class Global_helper {
             return null;
         }
     }
-    
+
     //TODO : get  from config
     public STATIC_COIN_FAMILY_SYMBOL = {
-            1: "BNB",
-            2: "ETH",
-            3: "BTC",
-            4: "POL",
-            5: "SOL",
-            6: "TRX",
-            7: "TICS"
+        1: "BNB",
+        2: "ETH",
+        3: "BTC",
+        4: "POL",
+        5: "SOL",
+        6: "TRX",
+        7: "TICS"
     }
 
     public STATIC_COIN_FAMILY_NAME = {
         1: ["BNB"],
         2: ["Ethereum"],
         3: ["BTC"],
-        4: ["POL (prev. MATIC)", "Polygon", "MATIC"], 
+        4: ["POL (prev. MATIC)", "Polygon", "MATIC"],
         5: ["Solana"],
         6: ["TRON", "Tron"],
         7: ["TICS"]
-      }
+    }
 
     public async getTokenImageFromCmcBySymbol(data: any) {
         try {
             const tokenAddress = data.tokenAddress;
             const coinFamily = data.coinFamily as keyof typeof this.STATIC_COIN_FAMILY_SYMBOL;
-            const  PlatformName = this.STATIC_COIN_FAMILY_NAME[coinFamily];
+            const PlatformName = this.STATIC_COIN_FAMILY_NAME[coinFamily];
 
-            if(PlatformName == null){
+            if (PlatformName == null) {
                 return { image: null, id: null };
             }
 
@@ -467,15 +467,15 @@ class Global_helper {
             let result: any = await cmcHelper.cmcApi(params);
             let id: any = null;
             let imageUrl: any = null;
-            
+
             if (result.data && result.data.data) {
                 let image: any;
                 const symbolKey = Object.keys(result.data.data)[0];
-                
+
                 if (symbolKey) {
                     // Get all tokens with this symbol
                     const tokens = result.data.data[symbolKey];
-                    
+
                     // Find the token that matches both symbol and token address
                     for (const token of tokens) {
 
@@ -483,9 +483,9 @@ class Global_helper {
                             // Check each contract address entry
                             for (const contract of token.contract_address) {
 
-                                if (contract?.platform && 
-                                    contract?.platform?.coin && 
-                                    PlatformName.includes(contract?.platform?.coin?.name) && 
+                                if (contract?.platform &&
+                                    contract?.platform?.coin &&
+                                    PlatformName.includes(contract?.platform?.coin?.name) &&
                                     contract?.contract_address?.toLowerCase() == tokenAddress.toLowerCase()) {
                                     id = token.id;
                                     image = token.logo;
@@ -495,13 +495,13 @@ class Global_helper {
                             if (id) break; // Break outer loop if match found
                         }
                     }
-                    
+
                     if (image) {
                         imageUrl = await this.UpdateCmcImgUrl(image);
                     }
                 }
             }
-           
+
             return { image: imageUrl, id: id };
         } catch (err: any) {
             console.error("Error in getTokenImageFromCmcBySymbol", err);
@@ -648,7 +648,7 @@ class Global_helper {
                     }
                 })
                 .catch(error => {
-                    console.log('💥 ~ ~ Request timed out', error);
+                    console.log('💥 ~ ~ Request timed out', error?.message);
                     resolve({ status: false, imgExtension: '', text_data: '' });
                 });
         });

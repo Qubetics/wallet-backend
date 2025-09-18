@@ -186,6 +186,7 @@ class TicsEther {
       throw err;
     }
   }
+
   async getErc20TokenTransferGasEstimationCost(
     token_contract: string | null | undefined,
     token_abi: AbiItem[] | string,
@@ -207,7 +208,7 @@ class TicsEther {
           return {
             status: false,
             gas_estimate: 60000,
-            message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('ETH')
+            message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('TICS')
           };
         }
         gasLimit = await contract.transfer.estimateGas(toAddress, tokenValue, { from: fromAddress });
@@ -230,6 +231,72 @@ class TicsEther {
       };
     }
   }
+
+  public async getErc721TokenTransferGasEstimationCost(
+    toAddress: string,
+    fromAddress: string,
+    tokenValue: string,
+    tokenAddress: string,
+    lang: string
+  ) {
+    try {
+      // const nonce = await this.provider.getTransactionCount(fromAddress, 'pending');
+
+      const contract = new ethers.Contract(
+        tokenAddress,
+        config.ERC721ABI,
+        this.provider
+      );
+      const gasLimit = await contract.transferFrom.estimateGas(fromAddress, toAddress, tokenValue, { from: fromAddress });
+      return {
+        status: true,
+        gas_estimate:
+          gasLimit == BigInt(0) ? 120000 : Math.floor(Number(gasLimit)),
+        message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('TICS')
+      };
+    } catch (error) {
+      console.error("🔥 ~ ~ getErc721TokenTransferGasEstimationCost ether.tics.helper.ts error")
+      return {
+        status: false,
+        gas_estimate: 120000,
+        message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('TICS')
+      };
+    }
+  }
+
+  public async getErc1155TokenTransferGasEstimationCost(
+    toAddress: string,
+    fromAddress: string,
+    tokenValue: string,
+    tokenAddress: string,
+    tokenAmount: number,
+    lang: string
+  ) {
+    try {
+      // const nonce = await this.provider.getTransactionCount(fromAddress, 'pending');
+
+      const contract = new ethers.Contract(
+        tokenAddress,
+        config.ERC1155ABI,
+        this.provider
+      );
+      const gasLimit = await contract.safeTransferFrom.estimateGas(fromAddress, toAddress, tokenValue, tokenAmount, { from: fromAddress });
+      return {
+        status: true,
+        gas_estimate:
+          gasLimit == BigInt(0) ? 120000 : Math.floor(Number(gasLimit)),
+        message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('TICS')
+      };
+    } catch (error) {
+      console.error("🔥 ~ ~ getErc1155TokenTransferGasEstimationCost ether.tics.helper.ts error")
+      return {
+        status: false,
+        gas_estimate: 120000,
+        message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('TICS')
+      };
+    }
+  }
+
   async getTicsGasLimit(from: string, to: string, lang: string) {
     try {
       const amount = await this.get_coin_balance(from, true);
@@ -254,6 +321,7 @@ class TicsEther {
       };
     }
   }
+
   public async broadcastTicsRawTx(rawTx: string, cb: CallableFunction) {
     try {
       const prefixedRawTx = rawTx.startsWith('0x') ? rawTx : '0x' + rawTx;
@@ -268,6 +336,7 @@ class TicsEther {
       throw error;
     }
   }
+
   public async sendTicsOrTokens(
     req: any,
     lang: string,
@@ -299,6 +368,7 @@ class TicsEther {
 
     }
   }
+
   public async convertWeiToTics(value: number | bigint | string): Promise<string> {
     try {
       const valueAsString = value.toString();

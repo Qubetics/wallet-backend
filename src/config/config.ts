@@ -73,6 +73,7 @@ export const config = {
     },
     TICS: {
       ERC20: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE_TICS}`,
+      NFT: `${name}_${zookeeperConfig.config.SERVER}_tics_nft`,
     },
   },
   ETH_TESTNET_NODE: zookeeperConfig.config.ETH_TESTNET_NODE,
@@ -112,7 +113,7 @@ export const config = {
   },
   MORALIS_SCRIPT_ID: 'moralis-chart-widget',
   MORALIS_SCRIPT_SRC: 'https://moralis.com/static/embed/chart.js',
-  
+
   CONTRACT_ABI: [
     {
       constant: true,
@@ -1126,7 +1127,7 @@ export const config = {
     },
   ],
 
-  TRON_ABI : [
+  TRON_ABI: [
     {
       constant: true,
       inputs: [],

@@ -26,7 +26,7 @@ let dataObj = {
     validate: {},
   },
   image: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: true,
     validate: {},
   },

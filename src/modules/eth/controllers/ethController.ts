@@ -46,6 +46,7 @@ class EthController implements OnlyControllerInterface {
       });
     }
   }
+  
   public async getEstimationGas(
     req: Request,
     res: Response

@@ -157,6 +157,21 @@ export default class wallet_validator {
         .required(),
     }),
   };
+  static nfts = {
+    body: Joi.object({
+      address_list: Joi.array()
+        .items(
+          Joi.object({
+            coin_symbol: Joi.string().required(),
+            wallet_address: Joi.string().required(),
+            coin_family: Joi.number().integer().required(),
+          })
+        )
+        .required(),
+      cursor: Joi.string().optional(),
+      limit: Joi.number().optional()
+    }),
+  };
   static order_update = {
     body: Joi.object({
       wallets: Joi.array()

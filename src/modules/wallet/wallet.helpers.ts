@@ -691,7 +691,7 @@ class WalletHelpers implements OnlyControllerInterface {
     }
   }
 
-  public async update_nft_token_in_redis(coinData: any) {
+  public async updateNftTokenInRedis(coinData: any) {
     try {
       switch (coinData.coin_family) {
         case config.STATIC_COIN_FAMILY.ETH:
@@ -701,9 +701,9 @@ class WalletHelpers implements OnlyControllerInterface {
             JSON.stringify(coinData)
           );
           break;
-        case config.STATIC_COIN_FAMILY.BNB:
+        case config.STATIC_COIN_FAMILY.TICS:
           await redisHelper.set_hash_table(
-            config.TOKENLIST.BSC.NFT,
+            config.TOKENLIST.TICS.NFT,
             coinData.token_address,
             JSON.stringify(coinData)
           );
