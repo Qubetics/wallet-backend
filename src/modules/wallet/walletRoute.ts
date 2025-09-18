@@ -138,7 +138,7 @@ class WalletRoute implements ControllerInterface {
     this.router.post(
       `${this.path}/nfts`,
       [validateExpress(wallet_validator.nfts)],
-      // jwtVerification.verifyToken,
+      jwtVerification.verifyToken,
       walletController.nfts
     );
 
