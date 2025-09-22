@@ -342,7 +342,7 @@ class TicsController implements OnlyControllerInterface {
        }
 
         req.body.tx_hash = transactionHash;
-        req.body.tx_status = "completed";
+        req.body.tx_status = "pending";
         req.body.tx_fee = gasInTics;
         req.body.blockchain_status = GlblBlockchainTxStatusEnum.CONFIRMED;
 
@@ -406,6 +406,55 @@ class TicsController implements OnlyControllerInterface {
       });
     }
   }
+
+  public async updateTransactionStatus(req: Request, res: Response) {
+    try {
+      
+      const { tx_status, tx_hash } = req.body;
+
+      if(!tx_hash || !tx_status) {
+        return response.error(res, {
+          data: {
+            status: false,
+            message: "Transaction hash and status are required",
+          },
+        });
+      }
+      // const dapp_transaction: any = req.body.add_amount;
+      const  transaction: any = await dbHelper.getTrnxHistoryByTxId(tx_hash);
+
+      if(!transaction) {
+        return response.error(res, {
+          data: {
+            status: false,
+            message: "Transaction not found",
+          },
+        });
+      }
+
+      if(transaction) {
+        await Models.TrnxHistoryModel.update(
+          { status: tx_status },
+          { where: { tx_id: tx_hash, id : transaction.id } }
+        );
+      }
+
+      return response.success(res, {
+        data: {
+          status: true,
+          message: "Transaction status updated successfully",
+        },
+      });
+    }
+    catch (err: any) {
+      return response.error(res, {
+        data: {
+          status: false,
+          message: "Transaction status update failed",
+        },
+      });
+    }
+  }  
 
   public async sendNative(req: Request, res: Response) {
     let lang: any = req.headers['content-language'] || 'en';

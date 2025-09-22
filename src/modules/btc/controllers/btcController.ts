@@ -10,6 +10,7 @@ import { utxobtc } from "../../../helpers/common/btc_helpers";
 import { GlblBlockchainTxStatusEnum, GlblCode } from "../../../constants/global_enum";
 import commonHelper from "../../../helpers/common/common.helpers";
 import axios from "axios";
+import * as Models from '../../../models/model/index';
 
 class BTCController implements OnlyControllerInterface {
   constructor() {
@@ -290,7 +291,7 @@ class BTCController implements OnlyControllerInterface {
       req.body.eth_gas_price = req.body.gas_estimate
         ? req.body.gas_estimate
         : 0;
-      req.body.tx_status = "completed";
+      req.body.tx_status = "pending";
       req.body.blockchain_status = GlblBlockchainTxStatusEnum.CONFIRMED;
 
   
@@ -313,6 +314,53 @@ class BTCController implements OnlyControllerInterface {
           },
         });
       }
+    } catch (err: any) {
+      await commonHelper.save_error_logs("btc_send", err.message);
+      console.error("err", err as Error);
+    }
+  }
+
+  public async updateTransactionStatus(req: Request, res: Response) {
+    try {
+      console.log("req body btc updateTransactionStatus >>>", req.body);
+
+      const { tx_status, tx_hash } = req.body;
+
+      if(!tx_hash || !tx_status) {
+        return response.error(res, {
+          data: {
+            status: false,
+            message: "Transaction hash and status are required",
+          },
+        });
+      }
+
+      const  transaction: any = await dbHelper.getTrnxHistoryByTxId(tx_hash);
+
+      if(!transaction) {
+        return response.error(res, {
+          data: {
+            status: false,
+            message: "Transaction not found",
+          },
+        });
+      }
+
+      if(transaction) {
+        await Models.TrnxHistoryModel.update(
+          { status: tx_status },
+          { where: { tx_id: tx_hash, id : transaction.id } }
+        );
+      }
+     
+        return response.success(res, {
+          data: {
+            status: true,
+            message: "Transaction status updated successfully",
+            data: {},
+          },
+        });
+      
     } catch (err: any) {
       await commonHelper.save_error_logs("btc_send", err.message);
       console.error("err", err as Error);

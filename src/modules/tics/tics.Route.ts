@@ -32,6 +32,10 @@ class TicsRoute implements ControllerInterface {
       TicsMiddleware.requestInfo,
       TicsControllers.saveTransaction);
 
+      this.router.post(`${this.path}/:coin/updateTransactionStatus`,
+        jwtVerification.verifyToken,
+        TicsControllers.updateTransactionStatus);
+
     /** Not used */
     this.router.post(`${this.path}/:coin/nonce`,
       jwtVerification.verifyToken,
