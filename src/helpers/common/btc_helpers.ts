@@ -165,27 +165,85 @@ class utxo {
             return { status: false, data: err.message };
         }
     }
+    
+    //oldcode 
+    // public async getBalance(address: string) {
+    //     try {
+    //         // Use Blockstream testnet API for balance
+    //         const url = `https://blockstream.info/testnet/api/address/${address}`;
+    //         const response = await axios.get(url);
+    //         if (response.data && typeof response.data.chain_stats?.funded_txo_sum === "number" && typeof response.data.chain_stats?.spent_txo_sum === "number") {
+    //             // Calculate balance in satoshis
+    //             const funded = response.data.chain_stats.funded_txo_sum;
+    //             const spent = response.data.chain_stats.spent_txo_sum;
+    //             const balance = funded - spent;
+    //             return balance / 100000000; // Convert to BTC
+    //         }
+    //         return 0;
+    //     } catch (err: any) {
+    //         try {
+    //             const scanResult = await this.makeRpcCall('scantxoutset', ['start', [`addr(${address})`]]);
+    //             return scanResult.total_amount || 0;
+    //         } catch (fallbackError) {
+    //             console.error("Both Blockstream and scantxoutset failed for balance:", err);
+    //             return null;
+    //         }
+    //     }
+    // }
+
+    private async fetchBlockstreamBalance(address: string) {
+        const url = `https://blockstream.info/testnet/api/address/${address}`;
+        const response = await axios.get(url, { timeout: 5000 });
+        const { chain_stats, mempool_stats } = response.data || {};
+    
+        const funded = (chain_stats?.funded_txo_sum || 0) + (mempool_stats?.funded_txo_sum || 0);
+        const spent = (chain_stats?.spent_txo_sum || 0) + (mempool_stats?.spent_txo_sum || 0);
+    
+        return (funded - spent) / 1e8;
+    }
+    
+    private async fetchMempoolBalance(address: string) {
+        const url = `https://mempool.space/testnet/api/address/${address}`;
+        const response = await axios.get(url, { timeout: 5000 });
+        const { chain_stats, mempool_stats } = response.data || {};
+    
+        const funded = (chain_stats?.funded_txo_sum || 0) + (mempool_stats?.funded_txo_sum || 0);
+        const spent = (chain_stats?.spent_txo_sum || 0) + (mempool_stats?.spent_txo_sum || 0);
+    
+        return (funded - spent) / 1e8;
+    }
+    
+    private async fetchBlockCypherBalance(address: string) {
+        const url = `https://api.blockcypher.com/v1/btc/test3/addrs/${address}/balance`;
+        const response = await axios.get(url, { timeout: 5000 });
+        return (response.data?.balance || 0) / 1e8;
+    }
 
     public async getBalance(address: string) {
         try {
-            // Use Blockstream testnet API for balance
-            const url = `https://blockstream.info/testnet/api/address/${address}`;
-            const response = await axios.get(url);
-            if (response.data && typeof response.data.chain_stats?.funded_txo_sum === "number" && typeof response.data.chain_stats?.spent_txo_sum === "number") {
-                // Calculate balance in satoshis
-                const funded = response.data.chain_stats.funded_txo_sum;
-                const spent = response.data.chain_stats.spent_txo_sum;
-                const balance = funded - spent;
-                return balance / 100000000; // Convert to BTC
-            }
-            return 0;
-        } catch (err: any) {
+            // 1. Try Blockstream API first
+            return await this.fetchBlockstreamBalance(address);
+        } catch (err) {
+            console.warn("Blockstream failed, trying Mempool.space...");
             try {
-                const scanResult = await this.makeRpcCall('scantxoutset', ['start', [`addr(${address})`]]);
-                return scanResult.total_amount || 0;
-            } catch (fallbackError) {
-                console.error("Both Blockstream and scantxoutset failed for balance:", err);
-                return null;
+                // 2. Fallback: Mempool.space API
+                return await this.fetchMempoolBalance(address);
+            } catch (err2) {
+                console.warn("Mempool.space failed, trying BlockCypher...");
+                try {
+                    // 3. Fallback: BlockCypher API
+                    return await this.fetchBlockCypherBalance(address);
+                } catch (err3) {
+                    console.warn("BlockCypher failed, trying RPC...");
+                    try {
+                        // 4. Fallback: Your existing RPC scan
+                        const scanResult = await this.makeRpcCall('scantxoutset', ['start', [`addr(${address})`]]);
+                        return scanResult.total_amount || 0;
+                    } catch (fallbackError) {
+                        console.error("All balance fetch methods failed:", fallbackError);
+                        return null;
+                    }
+                }
             }
         }
     }

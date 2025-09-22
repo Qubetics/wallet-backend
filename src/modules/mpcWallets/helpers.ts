@@ -444,9 +444,7 @@ public async getMpcWallets(userId: number, wallet_address: string, coin_family: 
 
     // Normal success
     return {
-      status: true,
-      code: 200,
-      data: updatedMpcWallets
+     updatedMpcWallets
     };
 
   } catch (error: any) {
