@@ -27,6 +27,7 @@ class ChainAbstractionRoute implements ControllerInterface {
     this.router.post(
       `${this.path}/updateIntentStatus`,
       jwtVerification.verifyToken,
+      validateExpress(chainAbstraction_validator.changeIntentStatus),
       chainAbstractionController.changeIntentStatus
     );
     

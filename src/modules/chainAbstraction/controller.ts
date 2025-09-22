@@ -97,16 +97,24 @@ class ChainAbstractionController implements OnlyControllerInterface {
       });
     }
   }
-  public async changeIntentStatus(req: Request, res: Response) {
+  public async changeIntentStatus(req: any, res: any) {
     let lang: any = req.headers['content-language'] || 'en';
     try {
       const {
         hash,
         status
       } = req.body;
+
+      if(!hash || !status || hash == "" || status == "") {
+        return response.error(res, {
+          data: { status: false, message: language[lang].INVALID_REQUEST },
+        });
+      }
+
       let txId = 0;
       if(hash && hash !== "") {
-        const resultStatus: any = await dbHelper.getIntentTrnxHistory(hash);
+        const where = {tx_hash: hash};
+        const resultStatus: any = await dbHelper.getIntentTrnxHistory(where);
         console.log("🚀 ~ TicsController ~ sendIntent ~ tx_id:", resultStatus)
         if(!resultStatus) {
           return response.error(res, {
@@ -118,9 +126,11 @@ class ChainAbstractionController implements OnlyControllerInterface {
       const data = {
         tx_hash: hash,
         tx_id: txId,
+        status: status
       }
       console.log("🚀 ~ TicsController ~ sendIntent ~ data:", data)
-      const resultStatus: any = await dbHelper.updateIntentTrnxHistory({status: status},data);
+      const where = {tx_hash: hash};
+      const resultStatus: any = await dbHelper.updateIntentTrnxHistory(data, where);
       if (resultStatus.status && resultStatus.status == true) {
         return response.success(res, {
           data: {

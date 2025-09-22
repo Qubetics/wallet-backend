@@ -11,4 +11,10 @@ export default class chainAbstractionValidator {
         ).required(),
     }),
   };
+  static changeIntentStatus = {
+    body: Joi.object({
+      hash: Joi.string().required(),
+      status: Joi.string().valid("confirmed", "failed", "pending").required(),
+    }),
+  };
 }
