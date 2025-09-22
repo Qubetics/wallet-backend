@@ -438,13 +438,13 @@ public async getMpcWallets(userId: number, wallet_address: string, coin_family: 
     const anyRpcError = updatedMpcWallets.some((w: any) => w.message === "RPC not working");
     if (anyRpcError) {
       return {
-         updatedMpcWallets
+         data : updatedMpcWallets
       };
     }
 
     // Normal success
     return {
-     updatedMpcWallets
+     data : updatedMpcWallets
     };
 
   } catch (error: any) {
