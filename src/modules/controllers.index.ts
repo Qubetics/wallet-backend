@@ -15,7 +15,8 @@ import OnOffRampRoute from "./on_off_ramp/routes";
 import AdminRoute from "./admin/index";
 import ChainAbstractionRoute from "./chainAbstraction/route"
 import MpcWalletsRoute from "./mpcWallets/route";
-
+import FactPriceUpdateRoute from "./faitPriceUpdate/routes";
+  
 const controllers = [
   new UserRoute(),
   new WalletRoute(),
@@ -33,7 +34,8 @@ const controllers = [
   new SolRoute(),
   new OnOffRampRoute(),
   new ChainAbstractionRoute(),
-  new MpcWalletsRoute()
+  new MpcWalletsRoute(),
+  new FactPriceUpdateRoute()
 ]
 
 export default controllers;

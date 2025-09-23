@@ -13,11 +13,13 @@ import { ValidationError } from 'express-validation';
 import { GlblCode, GlblMessages, InfoMessages } from "./constants/global_enum";
 import ApiLimiter from "./middlewares/apiRateLimiter";
 import sanitizeHtml from "sanitize-html";
+import  schedule  from 'node-schedule';
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 const basicAuth = require('express-basic-auth');
 import fs from 'fs';
+import { factPriceUpdateHelper } from "./modules/faitPriceUpdate/helper";
 
 
 class Server implements ServerInterface {
@@ -94,6 +96,7 @@ class Server implements ServerInterface {
     });
 
     this.initializeControllers();
+    this.initializeFiatPriceUpdate();
 
     // Basic authentication middleware for Swagger UI
     this.app.use('/KU8S5Ln7siecCst', basicAuth({
@@ -184,6 +187,16 @@ class Server implements ServerInterface {
 
     controllers.forEach((controller) => {
       this.app.use(url, controller.router);
+    });
+  }
+  
+
+  // Temp fiat Price Update coinmarketcap every 10mins
+  public initializeFiatPriceUpdate() {
+    // Runs every 10 minutes Update fiat price
+    schedule.scheduleJob('*/10 * * * *', async () => {
+      console.log('Updating fiat price every 10 minutes 🚅🚅 ');
+      await factPriceUpdateHelper.updateFiatPrice();
     });
   }
 
