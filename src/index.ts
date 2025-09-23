@@ -193,9 +193,9 @@ class Server implements ServerInterface {
 
   // Temp fiat Price Update coinmarketcap every 10mins
   public initializeFiatPriceUpdate() {
-    // Runs every 10 minutes Update fiat price
-    schedule.scheduleJob('*/10 * * * *', async () => {
-      console.log('Updating fiat price every 10 minutes 🚅🚅 ');
+    // Runs every 15 minutes Update fiat price
+    schedule.scheduleJob('*/15 * * * *', async () => {
+      console.log('Updating fiat price every 15 minutes 🚅🚅 ');
       await factPriceUpdateHelper.updateFiatPrice();
     });
   }
