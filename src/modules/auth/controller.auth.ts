@@ -69,6 +69,47 @@ class AuthController implements OnlyControllerInterface {
       });
     }
   }
+
+  public async tokenByImpersonate(req: Request, res: Response) {
+    const lang = (req.headers['content-language'] as string) || 'en';
+    try {
+      
+      const {userId, device_token} = req.body || {};
+
+      if (!userId || !device_token) {
+        return res.status(GlblCode.ERROR_CODE).send({
+          code: GlblCode.ERROR_CODE,
+          status: false,
+          message: "userId and device_token are required"
+        });
+      }
+
+      const newJwtToken = await jwtHelper.createJSONWebToken(
+        userId || GlblBooleanEnum.false,
+        device_token
+      );
+
+      const newGeneratedRefreshToken = await jwtHelper.createJSONRefreshToken(
+        userId || GlblBooleanEnum.false,
+        device_token
+      );
+
+      return res.status(GlblCode.SUCCESS).send({
+        code: GlblCode.SUCCESS,
+        status: true,
+        message: language[lang].SUCCESS,
+        token: newJwtToken,
+        refreshToken: newGeneratedRefreshToken
+      });
+
+    } catch (error: unknown) {
+      return res.status(GlblCode.ERROR_CODE).send({
+        code: GlblCode.ERROR_CODE,
+        status: false,
+        message: language[lang].CATCH_MSG
+      });
+    }
+  }
 }
 
 export const authController = new AuthController();

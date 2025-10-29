@@ -854,6 +854,14 @@ class WalletController implements OnlyControllerInterface {
           },
         };
       }
+
+      if (type == TxTypesEnum.CHAIN_ABSTRACTION) {
+        where_clause = {
+          ...where_clause,
+          type: TxTypesEnum.CHAIN_ABSTRACTION,
+        };
+      }
+
       const query: any = {
         attributes: attr,
         where: where_clause,
@@ -891,8 +899,7 @@ class WalletController implements OnlyControllerInterface {
         ],
         order: [["id", "DESC"]],
         limit: limit,
-        offset: offset,
-        logging: console.log
+        offset: offset
       };
       const transaction_data: any = await Models.TrnxHistoryModel.findAndCountAll(
         { ...query, replacements }

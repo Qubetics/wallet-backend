@@ -153,7 +153,8 @@ export enum TxTypesEnum {
     CARD_FEES = 'card_fees',
     CARD_RECHARGE = 'card_recharge',
     LEVEL_UPGRADE = 'level_upgrade',
-    LEVEL_UPGRADATION_LEVEL = 'level_upgradation_fee'
+    LEVEL_UPGRADATION_LEVEL = 'level_upgradation_fee',
+    CHAIN_ABSTRACTION = 'chain_abstraction'
 }
 
 export enum TxReqTypesEnum {
