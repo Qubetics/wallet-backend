@@ -35,6 +35,7 @@ import { TicsPriceInFiatGraph } from './model.ticsPriceInFiatGraph';
 import TicsNativeAddressModel from './model.ticsNativeAddress';
 import IntentTrnxHistoryModel from './model.intentTrnxHistory';
 import MpcWalletsModel from './model.mpcWallets';
+import DvpnPlansModel from './model.dvpn_plans';
 export {
     AddressBookModel,
     AddressBookWalletsModel,
@@ -72,5 +73,6 @@ export {
     TicsPriceInFiatGraph,
     TicsNativeAddressModel,
     IntentTrnxHistoryModel,
-    MpcWalletsModel
+    MpcWalletsModel,
+    DvpnPlansModel
 }

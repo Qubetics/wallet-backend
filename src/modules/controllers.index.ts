@@ -16,6 +16,7 @@ import AdminRoute from "./admin/index";
 import ChainAbstractionRoute from "./chainAbstraction/route"
 import MpcWalletsRoute from "./mpcWallets/route";
 import FactPriceUpdateRoute from "./faitPriceUpdate/routes";
+import DvpnPlansRoute from "./dvpnPlans/routes";
   
 const controllers = [
   new UserRoute(),
@@ -35,7 +36,8 @@ const controllers = [
   new OnOffRampRoute(),
   new ChainAbstractionRoute(),
   new MpcWalletsRoute(),
-  new FactPriceUpdateRoute()
+  new FactPriceUpdateRoute(),
+  new DvpnPlansRoute()
 ]
 
 export default controllers;
