@@ -126,7 +126,7 @@ class Global_helper {
     public async get_new_token_balance(coinFamily: number, walletAddress: string, tokenAddress: string) {
         try {
             let tokenBalance: any;
-            let userBalance: string = '';
+            let userBalance: string | null | undefined = null;
             switch (coinFamily) {
                 case config.STATIC_COIN_FAMILY.BNB:
                     tokenBalance = (await bscEther.get_bep20_token_balance(tokenAddress, config.CONTRACT_ABI as AbiItem[], walletAddress))?.toString();
@@ -153,7 +153,8 @@ class Global_helper {
                 default:
                     throw GlblMessages.INVALID_COIN_FAMILY
             }
-            return { status: true, balance: userBalance };
+
+            return userBalance ? { status: true, balance: userBalance } : { status: false, balance: '0' };
         } catch (err: any) {
             console.error("Error in get_new_token_balance.", err)
             await commonHelper.save_error_logs("get_new_token_balance", err.message);

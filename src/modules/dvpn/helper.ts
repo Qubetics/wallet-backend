@@ -1,7 +1,8 @@
 import * as Models from "../../models/model/index";
 
-class DvpnPlansHelpers {
-
+class DvpnHelpers {
+  
+  //add dvpn plan
   public async addDvpnPlan(dvpnPlansData: any, userId: number) {
     try {
       
@@ -78,27 +79,21 @@ class DvpnPlansHelpers {
       };
     }
   }
-
-  public async getDvpnPlansList(userId: number, wallet_address: string, obj: any) {
+  
+  //get dvpn plans list
+  public async getDvpnPlansList(queryOptions: any) {
     try {
-        console.log("this is getDvpnPlansList", userId, wallet_address, obj);
          
         //get dvpn plans list
-        const dvpnPlansList: any = await Models.DvpnPlansModel.findAndCountAll({
-          where: {
-            user_id: userId,
-            wallet_address: wallet_address
-          },
-          ...obj
-        });
+        const dvpnPlansList: any = await Models.DvpnPlansModel.findAndCountAll(queryOptions);
          
         //return dvpn plans list
         return {
             dvpnPlansList: dvpnPlansList.rows,
             total: dvpnPlansList.count,
-            page: obj.page,
-            per_page: obj.limit,
-            total_pages: Math.ceil(dvpnPlansList.count / obj.limit)
+            page: queryOptions.page,
+            per_page: queryOptions.limit,
+            total_pages: Math.ceil(dvpnPlansList.count / queryOptions.limit)
         };
 
     } catch (error: any) {
@@ -110,10 +105,36 @@ class DvpnPlansHelpers {
       };
     }
   }
+  
+  //get dvpn session history
+  public async getDvpnSessionHistory(queryOptions: any) {
+    try {
+         
+        //get dvpn session history
+        const history: any = await Models.DvpnSessionsModel.findAndCountAll(queryOptions);
+         
+        //return dvpn session history
+        return {
+            history: history.rows,
+            total: history.count,
+            page: queryOptions.page,
+            per_page: queryOptions.limit,
+            total_pages: Math.ceil(history.count / queryOptions.limit)
+        };
+
+    } catch (error: any) {
+      console.error("Error in getDvpnSessionHistory>>>>", error);
+      return {
+        status: false,
+        message: "Error in getDvpnSessionHistory",
+        error: error?.message
+      };
+    }
+  }
 
 
 }
 
-export const dvpnPlansHelper = new DvpnPlansHelpers()
+export const dvpnHelper = new DvpnHelpers()
 
 

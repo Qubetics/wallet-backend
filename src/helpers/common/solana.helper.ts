@@ -1,10 +1,11 @@
 import { config } from "../../config";
-import { AccountLayout } from "@solana/spl-token";
+import { AccountLayout, getAccount ,  TOKEN_2022_PROGRAM_ID,  getMint, getTokenMetadata, unpackAccount,} from "@solana/spl-token";
 import { PublicKey, Connection } from "@solana/web3.js";
 const spltokenReg = require("@solana/spl-token-registry");
 import {
   mplTokenMetadata,
   fetchDigitalAsset,
+  fetchMetadata,
 } from "@metaplex-foundation/mpl-token-metadata";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { publicKey } from "@metaplex-foundation/umi";
@@ -67,10 +68,10 @@ class SolanaHelpers {
     tokenAddress: string,
     walletAddress: string,
     isString: boolean
-  ): Promise<number | string> {
+  ): Promise<number | string | null> {
     const fetchTokenAccountBalance = async (
       connection: any
-    ): Promise<number | string> => {
+    ): Promise<number | string | null> => {
       const walletPublicKey = new PublicKey(walletAddress);
       const mintPublicKey = new PublicKey(tokenAddress);
 
@@ -93,17 +94,17 @@ class SolanaHelpers {
           const balance = Number(amount) / 10 ** decimals;
           return isString ? balance.toString() : balance;
         }
-        return 0;
+        return null;
       } catch (error) {
         console.log("🔥 ~ ~ Error fetching token balance:", error);
-        return 0;
+        return null;
       }
     };
 
     let balance = await fetchTokenAccountBalance(this.connectionNew);
 
     // If no balance from the "new" connection, fall back to public node
-    if (balance === 0) {
+    if (balance === null) {
       console.log("🚀 ~ Falling back to PUBLIC NODE");
       balance = await fetchTokenAccountBalance(this.connectionPublic);
     }
@@ -141,33 +142,75 @@ class SolanaHelpers {
     }
   }
 
-  public searchToken = async (token_address: string, lang: string) => {
+ 
+  public searchToken = async (address: string, lang: string) => {
+    const pubkey = new PublicKey(address);
+
+    // ✅ 1. Get basic account info
+    const info = await this.connection.getAccountInfo(pubkey);
+    if (!info) throw new Error("Address not found");
+
+    // ✅ 2. Detect if this is a token account → extract mint address
+    let mintAddress = address;
     try {
-      const umi = createUmi(config.NODE.SOL_RPC_URL).use(mplTokenMetadata());
-      const myPublicKey = publicKey(token_address);
-      const asset = await fetchDigitalAsset(umi, myPublicKey);
-      const tokenData: any = {
-        name: asset?.metadata?.name,
-        symbol: asset?.metadata?.symbol,
-        decimals: asset?.mint?.decimals,
-      };
-      if (tokenData) {
-        return tokenData;
-      } else {
-        const tokenList = await new spltokenReg.TokenListProvider()
-          .resolve()
-          .then((tokens: any) => {
-            return tokens.filterByClusterSlug("mainnet-beta").getList();
-          });
-        const foundToken = await tokenList.find(
-          (token: any) => token.address == token_address
-        );
-        return foundToken;
-      }
-    } catch (error) {
-      console.log("🔥 ~ ~ searchToken node.solana.helper.ts error", error);
-      throw new Error(language[lang].ERC20_TOKEN_SEARCH);
+      const account = unpackAccount(pubkey, info);
+      mintAddress = account.mint.toBase58();
+    } catch (_) {
+      // Not a token account → assume mint itself
     }
+
+    console.log("✅ Mint Address:", mintAddress);
+
+    // ✅ 3. Detect whether mint belongs to Token-2022
+    const mintInfo = await this.connection.getAccountInfo(new PublicKey(mintAddress));
+    const isToken2022 = mintInfo?.owner.equals(TOKEN_2022_PROGRAM_ID);
+
+    console.log("✅ Is Token-2022:", isToken2022);
+
+    // ✅ 4. TOKEN-2022 → Do NOT use Metaplex NFT metadata
+    if (isToken2022) {
+      try {
+        const mint = await getMint(
+          this.connection,
+          new PublicKey(mintAddress),
+          "confirmed",
+          TOKEN_2022_PROGRAM_ID
+        );
+
+        let metadata = null;
+        try {
+          metadata = await getTokenMetadata(
+            this.connection,
+            new PublicKey(mintAddress),
+            "confirmed",
+            TOKEN_2022_PROGRAM_ID
+          );
+
+          console.log("This is  Metadata : ", metadata)
+        } catch (_) {
+          metadata = null; // extension not enabled
+        }
+
+        return {
+          name: metadata?.name ?? null,
+          symbol: metadata?.symbol ?? null,
+          decimals: mint.decimals,
+        };
+      } catch (err: any) {
+        console.log("❌ Token-2022 parse error:", err.message);
+        throw err;
+      }
+    }
+
+    // ✅ 5. Standard SPL Token → Metaplex DigitalAsset metadata + mint info
+    const umi = createUmi(config.NODE.SOL_RPC_URL).use(mplTokenMetadata());
+    const asset: any = await fetchDigitalAsset(umi, publicKey(mintAddress));
+
+    return {
+      name: asset.metadata.name,
+      symbol: asset.metadata.symbol,
+      decimals: asset.mint.decimals,
+    };
   };
 
   public validateSolAddress = async (wallet_address: string) => {

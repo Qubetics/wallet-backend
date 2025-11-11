@@ -691,7 +691,7 @@ class WalletController implements OnlyControllerInterface {
               { to_user_id: userId },
               {
                 [Op.or]: [
-                  { merchant_id: { [Op.not]: null } },
+                  // { merchant_id: { [Op.not]: null } },
                   { blockchain_status: GlblBlockchainTxStatusEnum.CONFIRMED }
                 ]
               }
@@ -1001,6 +1001,7 @@ class WalletController implements OnlyControllerInterface {
       if (tokenDetailsStr) {
         tokenDetails = JSON.parse(tokenDetailsStr);
       } else {
+        console.log("this is in ELSE  condition in searchToken")
         tokenDetails = await global_helper.return_decimals_name_symbol(
           coinFamily,
           tokenAddress,

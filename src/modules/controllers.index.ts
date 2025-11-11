@@ -16,7 +16,7 @@ import AdminRoute from "./admin/index";
 import ChainAbstractionRoute from "./chainAbstraction/route"
 import MpcWalletsRoute from "./mpcWallets/route";
 import FactPriceUpdateRoute from "./faitPriceUpdate/routes";
-import DvpnPlansRoute from "./dvpnPlans/routes";
+import DvpnPlansRoute from "./dvpn/routes";
   
 const controllers = [
   new UserRoute(),

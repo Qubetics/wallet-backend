@@ -88,6 +88,5 @@ let dataObjIndex = {
 
 const DvpnPlansModel = db.db_write.define<DvpnPlansInstance>("dvpn_plans", dataObj, dataObjIndex);
 
-DvpnPlansModel.sync({alter : true})
 
 export default DvpnPlansModel;
