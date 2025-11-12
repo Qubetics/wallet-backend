@@ -1,18 +1,15 @@
 import { config } from "../../config";
-import { AccountLayout, getAccount ,  TOKEN_2022_PROGRAM_ID,  getMint, getTokenMetadata, unpackAccount,} from "@solana/spl-token";
+import { AccountLayout ,  TOKEN_2022_PROGRAM_ID,  getMint, getTokenMetadata, unpackAccount,} from "@solana/spl-token";
 import { PublicKey, Connection } from "@solana/web3.js";
-const spltokenReg = require("@solana/spl-token-registry");
 import {
   mplTokenMetadata,
   fetchDigitalAsset,
-  fetchMetadata,
 } from "@metaplex-foundation/mpl-token-metadata";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { publicKey } from "@metaplex-foundation/umi";
 import { CoinInterface } from "../../models";
 import { GlblBooleanEnum } from "../../constants/global_enum";
 import commonHelper from "./common.helpers";
-import { language } from "../../constants";
 import { bigNumberSafeMath } from "./globalFunctions";
 
 class SolanaHelpers {

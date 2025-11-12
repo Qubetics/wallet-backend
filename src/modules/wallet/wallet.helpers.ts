@@ -383,7 +383,7 @@ class WalletHelpers implements OnlyControllerInterface {
         [["wallet_id", "ASC"]]
       );
       if (!wallet_data) {
-        let tokenBalData: any = await global_helper.get_new_token_balance(
+        const tokenBalData: any = await global_helper.get_new_token_balance(
           coinFamily,
           walletAddress,
           tokenAddress
