@@ -1980,7 +1980,8 @@ class WalletController implements OnlyControllerInterface {
                   if (nftObj?.image && findNft?.image_extension == null) {
                     let tokenImage: any = nftObj?.image;
                     let image_data: any = await global_helper.check_nft_image(
-                      tokenImage
+                      tokenImage,
+                      nftObj.coin_family
                     );
                     let image_extension: string | null = null;
                     let text_data: string | null = null;
@@ -1988,13 +1989,15 @@ class WalletController implements OnlyControllerInterface {
                       !image_data.status &&
                       nftObj?.image.indexOf("ipfs") > -1
                     ) {
+                      console.log('console.log first');
                       let imageHash = nftObj?.image?.substring(
                         nftObj?.image.lastIndexOf("/") + 1,
                         nftObj?.image?.length
                       );
                       tokenImage = `https://gateway.ipfs.io/ipfs/${imageHash}`;
                       image_data = await global_helper.check_nft_image(
-                        tokenImage
+                        tokenImage,
+                        nftObj.coin_family
                       );
                       if (!image_data.status) {
                         let ipfs_image = await global_helper.get_ipfs_image(
@@ -2002,7 +2005,8 @@ class WalletController implements OnlyControllerInterface {
                         );
                         tokenImage = ipfs_image !== "" ? ipfs_image : null; //nftObj.token_uri;
                         image_data = await global_helper.check_nft_image(
-                          tokenImage
+                          tokenImage,
+                          nftObj.coin_family
                         );
                         if (!image_data.status) {
                           tokenImage = null;
@@ -2047,7 +2051,8 @@ class WalletController implements OnlyControllerInterface {
                     let image_data: any | null = null;
                     if (token_uri_fetch) {
                       image_data = await global_helper.check_nft_image(
-                        token_uri_fetch?.image
+                        token_uri_fetch?.image,
+                        nftObj.coin_family
                       );
                     }
                     nftObj.image = token_uri_fetch?.image || null;
@@ -2378,7 +2383,8 @@ class WalletController implements OnlyControllerInterface {
                 if (nftObj?.image && findNft?.image_extension == null) {
                   let tokenImage: any = nftObj?.image;
                   let image_data: any = await global_helper.check_nft_image(
-                    tokenImage
+                    tokenImage,
+                    nftObj.coin_family
                   );
                   let image_extension: string | null = null;
                   let text_data: string | null = null;
@@ -2393,7 +2399,8 @@ class WalletController implements OnlyControllerInterface {
                     );
                     tokenImage = `https://gateway.ipfs.io/ipfs/${imageHash}`;
                     image_data = await global_helper.check_nft_image(
-                      tokenImage
+                      tokenImage,
+                      nftObj.coin_family
                     );
                     if (!image_data.status) {
                       let ipfs_image = await global_helper.get_ipfs_image(
@@ -2401,7 +2408,8 @@ class WalletController implements OnlyControllerInterface {
                       );
                       tokenImage = ipfs_image !== "" ? ipfs_image : null; //nftObj.token_uri;
                       image_data = await global_helper.check_nft_image(
-                        tokenImage
+                        tokenImage,
+                        nftObj.coin_family
                       );
                       if (!image_data.status) {
                         tokenImage = null;
@@ -2422,18 +2430,44 @@ class WalletController implements OnlyControllerInterface {
                           : null;
                     }
                   } else {
-                    console.log('ddddddddddd 22222222222');
-                    let ipfs_image = await global_helper.get_ipfs_image(
-                      tokenImage
-                    );
-                    console.log('ddddddddddd 22222222222444', ipfs_image);
+                    if (nftObj.coin_family !== 7) {
+                      let ipfs_image = await global_helper.get_ipfs_image(
+                        tokenImage
+                      );
+                      tokenImage = ipfs_image !== "" ? ipfs_image : tokenImage;
+                      image_extension = image_data.imgExtension;
+                      text_data = image_data.text_data !== "" ? image_data.text_data : null;
+                    } else {
+                      console.log('console.log second');
 
-                    tokenImage = ipfs_image !== "" ? ipfs_image : tokenImage;
-                    image_extension = image_data.imgExtension;
-                    text_data =
-                      image_data.text_data !== ""
-                        ? image_data.text_data
-                        : null;
+                      let image_data2: any = await global_helper.check_nft_image(
+                        tokenImage, nftObj.coin_family
+                      );
+                      console.log('image_data2 >>>.', image_data2);
+                      if (
+                        image_data2.status
+                      ) {
+                        let ipfs_image = await global_helper.get_ipfs_image(
+                          tokenImage
+                        );
+                        tokenImage = ipfs_image !== "" ? ipfs_image : tokenImage;
+                        image_extension = image_data.imgExtension;
+                        text_data = image_data.text_data !== "" ? image_data.text_data : null;
+                      }
+
+                    }
+                    // console.log('ddddddddddd 22222222222');
+                    // let ipfs_image = await global_helper.get_ipfs_image(
+                    //   tokenImage
+                    // );
+                    // console.log('ddddddddddd 22222222222444', ipfs_image);
+
+                    // tokenImage = ipfs_image !== "" ? ipfs_image : tokenImage;
+                    // image_extension = image_data.imgExtension;
+                    // text_data =
+                    //   image_data.text_data !== ""
+                    //     ? image_data.text_data
+                    //     : null;
                   }
                   nftObj.image = tokenImage;
                   nftObj.image_extension = image_extension;
@@ -2450,7 +2484,8 @@ class WalletController implements OnlyControllerInterface {
                   let image_data: any | null = null;
                   if (token_uri_fetch) {
                     image_data = await global_helper.check_nft_image(
-                      token_uri_fetch?.image
+                      token_uri_fetch?.image,
+                      nftObj.coin_family
                     );
                   }
                   nftObj.image = token_uri_fetch?.image || null;

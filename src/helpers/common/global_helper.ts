@@ -125,7 +125,7 @@ class Global_helper {
     public async get_new_token_balance(coinFamily: number, walletAddress: string, tokenAddress: string) {
         try {
             let tokenBalance: any;
-            let userBalance: string = '';
+            let userBalance: string | null | undefined = null;
             switch (coinFamily) {
                 case config.STATIC_COIN_FAMILY.BNB:
                     tokenBalance = (await bscEther.get_bep20_token_balance(tokenAddress, config.CONTRACT_ABI as AbiItem[], walletAddress))?.toString();
@@ -152,7 +152,7 @@ class Global_helper {
                 default:
                     throw GlblMessages.INVALID_COIN_FAMILY
             }
-            return { status: true, balance: userBalance };
+            return userBalance ? { status: true, balance: userBalance } : { status: false, balance: 0 };
         } catch (err: any) {
             console.error("Error in get_new_token_balance.", err)
             await commonHelper.save_error_logs("get_new_token_balance", err.message);
@@ -624,13 +624,15 @@ class Global_helper {
                 });
         });
     }
-    public check_nft_image = async (url: string) => {
+    public check_nft_image = async (url: string, coin_family: number) => {
         return new Promise(async (resolve, reject) => {
+            console.log('imgExtension 2222>>>>');
             let imgExtension: any = '';
             let extension = url?.substring(url?.lastIndexOf('.') + 1);
             imgExtension = await this.checkExtension(extension);
-            if (imgExtension !== 'text' && imgExtension !== 'undefined' && imgExtension !== undefined) {
-                resolve({ status: true, imgExtension: imgExtension, text_data: '' });
+            if (imgExtension !== 'text' && imgExtension !== 'undefined' && imgExtension !== undefined && coin_family !== 7) {
+                console.log('imgExtension >>>>', imgExtension);
+                resolve({ status: true, imgExtension: imgExtension, text_data: '', image: "" });
             }
 
             await axios.get(url, { timeout: 20000 })
@@ -644,6 +646,7 @@ class Global_helper {
                         }
                         resolve({ status: true, imgExtension: imgExtension, text_data: text_data });
                     } else {
+                        console.log('imgExtension >>>>', imgExtension);
                         resolve({ status: false, imgExtension: '', text_data: '' });
                     }
                 })
