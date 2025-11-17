@@ -2354,9 +2354,9 @@ class WalletController implements OnlyControllerInterface {
                           : null,
                     image:
                       tokenInstances.media_url !== null
-                        ? 'https://gateway.ipfs.io/ipfs/' + tokenInstances.media_url
+                        ? 'https://gateway.lighthouse.storage/ipfs/' + tokenInstances.media_url
                         : tokenInstances.metadata != "" && tokenInstances.metadata.image
-                          ? 'https://gateway.ipfs.io/ipfs/' + tokenInstances.metadata.image
+                          ? 'https://gateway.lighthouse.storage/ipfs/' + tokenInstances.metadata.image
                           : null,
                     description:
                       tokenInstances.metadata != "" && tokenInstances.metadata.description
