@@ -657,7 +657,7 @@ class Global_helper {
         });
     }
 
-    public get_ipfs_image = async (url: string) => {
+    public get_ipfs_image = async (url: string, coin_family: number) => {
         let ipfs_image = '';
         const splitData = url.split("ipfs://");
         if (splitData?.length > 0 && splitData[1]) {
@@ -672,7 +672,7 @@ class Global_helper {
             if (check_ips_data?.length > 0) {
                 ips_data = check_ips_data[0];
             }
-            ipfs_image = ips_data ? `https://gateway.ipfs.io/ipfs/${ips_data}` : "";
+            ipfs_image = ips_data ? coin_family !== 7 ? `https://gateway.ipfs.io/ipfs/${ips_data}` : `https://gateway.lighthouse.storage/ipfs/${ips_data}` : "";
         } else {
             let newSplitData = splitData[0].split("ipfs/");
             let ips_data = '';
@@ -682,7 +682,7 @@ class Global_helper {
                 if (check_ips_data?.length > 0) {
                     ips_data = check_ips_data[0];
                 }
-                ipfs_image = ips_data ? `https://gateway.ipfs.io/ipfs/${ips_data}` : '';
+                ipfs_image = ips_data ? coin_family !== 7 ? `https://gateway.ipfs.io/ipfs/${ips_data}` : `https://gateway.lighthouse.storage/ipfs/${ips_data}` : '';
             } else {
                 ipfs_image = splitData[0];
             }
