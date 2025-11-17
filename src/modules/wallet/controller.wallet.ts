@@ -2397,7 +2397,7 @@ class WalletController implements OnlyControllerInterface {
                       nftObj?.image.lastIndexOf("/") + 1,
                       nftObj?.image?.length
                     );
-                    tokenImage = `https://gateway.ipfs.io/ipfs/${imageHash}`;
+                    tokenImage = nftObj.coin_family !== 7 ? `https://gateway.ipfs.io/ipfs/${imageHash}` : `https://gateway.lighthouse.storage/ipfs/${imageHash}`;
                     image_data = await global_helper.check_nft_image(
                       tokenImage,
                       nftObj.coin_family
