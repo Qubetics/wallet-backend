@@ -79,6 +79,12 @@ let dataObj: any = {
         defaultValue: null,
         Comment: 'session start at',
     },
+    extra_data: {
+        type: DataTypes.JSON,
+        allowNull: true,
+        defaultValue: null,
+        Comment: 'extra data',
+    },
 };
 
 let dataObjIndex = {
@@ -91,7 +97,5 @@ let dataObjIndex = {
   };
 
 const DvpnSessionsModel = db.db_write.define<DvpnSessionsInstance>("dvpn_sessions", dataObj, dataObjIndex);
-
-DvpnSessionsModel.sync({alter : true})
 
 export default DvpnSessionsModel;
