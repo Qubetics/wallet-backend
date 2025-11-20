@@ -626,7 +626,6 @@ class Global_helper {
     }
     public check_nft_image = async (url: string, coin_family: number) => {
         return new Promise(async (resolve, reject) => {
-            console.log('imgExtension 2222>>>>');
             let imgExtension: any = '';
             let extension = url?.substring(url?.lastIndexOf('.') + 1);
             imgExtension = await this.checkExtension(extension);
@@ -635,7 +634,11 @@ class Global_helper {
                 resolve({ status: true, imgExtension: imgExtension, text_data: '', image: "" });
             }
 
-            await axios.get(url, { timeout: 20000 })
+            const headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36'
+            };
+
+            await axios.get(url, { timeout: 20000, headers })
                 .then(async data => {
                     if (data?.status == 200 && data?.statusText?.toUpperCase() == 'OK') {
                         let image_content_type = data.headers['content-type'];

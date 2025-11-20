@@ -2332,6 +2332,12 @@ class WalletController implements OnlyControllerInterface {
                 } else {
                   const tokenInstances = nft?.token_instances[0];
                   existedAddress.push({ token_address: nft.token.address_hash, token_id: tokenInstances?.id });
+
+                  const  nftImage = tokenInstances.media_url !== null ?  tokenInstances.media_url
+                  : tokenInstances.metadata != "" && tokenInstances.metadata.image ? tokenInstances.metadata.image : null;
+                  
+                  const nftImageUrl = nftImage.indexOf("ipfs") > -1 ?  nftImage : `https://gateway.lighthouse.storage/ipfs/${nftImage}`;
+                    
                   nftObj = {
                     token_address: nft.token.address_hash,
                     token_type: nft.token.type == "ERC-721" ? TokenType.ERC721 : TokenType.ERC1155,
@@ -2354,12 +2360,7 @@ class WalletController implements OnlyControllerInterface {
                         : tokenInstances.metadata != "" && tokenInstances.metadata?.symbol
                           ? tokenInstances.metadata.symbol
                           : null,
-                    image:
-                      tokenInstances.media_url !== null
-                        ? 'https://gateway.lighthouse.storage/ipfs/' + tokenInstances.media_url
-                        : tokenInstances.metadata != "" && tokenInstances.metadata.image
-                          ? 'https://gateway.lighthouse.storage/ipfs/' + tokenInstances.metadata.image
-                          : null,
+                    image: nftImageUrl,
                     description:
                       tokenInstances.metadata != "" && tokenInstances.metadata.description
                         ? tokenInstances.metadata.description
@@ -2399,7 +2400,7 @@ class WalletController implements OnlyControllerInterface {
                       nftObj?.image.lastIndexOf("/") + 1,
                       nftObj?.image?.length
                     );
-                    tokenImage = nftObj.coin_family !== 7 ? `https://gateway.ipfs.io/ipfs/${imageHash}` : `https://gateway.lighthouse.storage/ipfs/${imageHash}`;
+                    tokenImage = nftObj.coin_family !== 7 ? `https://gateway.ipfs.io/ipfs/${imageHash}` : `https://ipfs.io/ipfs/${imageHash}`;
                     image_data = await global_helper.check_nft_image(
                       tokenImage,
                       nftObj.coin_family
