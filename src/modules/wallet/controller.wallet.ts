@@ -2333,11 +2333,11 @@ class WalletController implements OnlyControllerInterface {
                   const tokenInstances = nft?.token_instances[0];
                   existedAddress.push({ token_address: nft.token.address_hash, token_id: tokenInstances?.id });
 
-                  const  nftImage = tokenInstances.media_url !== null ?  tokenInstances.media_url
-                  : tokenInstances.metadata != "" && tokenInstances.metadata.image ? tokenInstances.metadata.image : null;
-                  
-                  const nftImageUrl = nftImage.indexOf("ipfs") > -1 ?  nftImage : `https://gateway.lighthouse.storage/ipfs/${nftImage}`;
-                    
+                  const nftImage = tokenInstances.media_url !== null ? tokenInstances.media_url
+                    : tokenInstances.metadata != "" && tokenInstances.metadata.image ? tokenInstances.metadata.image : null;
+
+                  const nftImageUrl = nftImage.indexOf("ipfs") > -1 ? nftImage : `https://gateway.lighthouse.storage/ipfs/${nftImage}`;
+
                   nftObj = {
                     token_address: nft.token.address_hash,
                     token_type: nft.token.type == "ERC-721" ? TokenType.ERC721 : TokenType.ERC1155,
@@ -2395,10 +2395,11 @@ class WalletController implements OnlyControllerInterface {
                     !image_data.status &&
                     nftObj?.image.indexOf("ipfs") > -1
                   ) {
+                    const cleanImage = nftObj?.image?.replace(/\/$/, "");
                     console.log('ddddddddddd111111111111');
-                    let imageHash = nftObj?.image?.substring(
-                      nftObj?.image.lastIndexOf("/") + 1,
-                      nftObj?.image?.length
+                    const imageHash = cleanImage?.substring(
+                      cleanImage.lastIndexOf("/") + 1,
+                      cleanImage.length
                     );
                     tokenImage = nftObj.coin_family !== 7 ? `https://gateway.ipfs.io/ipfs/${imageHash}` : `https://ipfs.io/ipfs/${imageHash}`;
                     image_data = await global_helper.check_nft_image(
