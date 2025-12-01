@@ -28,6 +28,7 @@ export default class wallet_validator {
         .items(Joi.string().required()
         ).required(),
       fiat_type: Joi.string().required(),
+      is_balanced: Joi.boolean().optional()
     }),
   };
   static activeInactiveWallet = {

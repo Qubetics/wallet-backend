@@ -179,6 +179,7 @@ class WalletController implements OnlyControllerInterface {
       const search = req.body.search?.trim();
       const pageNo: any = parseInt(page as string) || GlblBooleanEnum.true;
       const limitNo: any = parseInt(limit as string) || 10;
+      const isBalanced: boolean = req.body.is_balanced ? req.body.is_balanced : false;
       let offset: number = GlblBooleanEnum.false;
       if (pageNo != GlblBooleanEnum.true) {
         offset = (pageNo - GlblBooleanEnum.true) * limitNo;
@@ -243,6 +244,7 @@ class WalletController implements OnlyControllerInterface {
           user_id: user_id,
           wallet_address: { [Op.in]: req.body.addressListKeys },
           status: GlblBooleanEnum.true,
+          [Op.and]: isBalanced ? { balance: { [Op.gt]: 0 } } : {}
         },
         include: [
           {
