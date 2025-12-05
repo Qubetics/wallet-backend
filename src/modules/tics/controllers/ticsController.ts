@@ -431,10 +431,18 @@ class TicsController implements OnlyControllerInterface {
           },
         });
       }
+      
+      let TX_STATUS = 'pending'
+      if(tx_status == 1 || tx_status == 'confirmed' || tx_status == 'completed'){
+        TX_STATUS = 'completed'
+      }else if(tx_status == 0 || tx_status == 'failed'){
+        TX_STATUS = 'failed'
+      }
+
 
       if(transaction) {
         await Models.TrnxHistoryModel.update(
-          { status: tx_status },
+          { status: TX_STATUS },
           { where: { tx_id: tx_hash, id : transaction.id } }
         );
       }
