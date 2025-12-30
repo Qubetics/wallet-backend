@@ -203,7 +203,7 @@ class utxo {
     }
     
     private async fetchMempoolBalance(address: string) {
-        const url = `https://mempool.space/testnet/api/address/${address}`;
+        const url = `https://mempool.space/testnet4/api/address/${address}`;
         const response = await axios.get(url, { timeout: 5000 });
         const { chain_stats, mempool_stats } = response.data || {};
     
