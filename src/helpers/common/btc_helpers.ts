@@ -222,15 +222,16 @@ class utxo {
     public async getBalance(address: string) {
         try {
             // 1. Try Blockstream API first
-            return await this.fetchBlockstreamBalance(address);
+            console.log("Getting balance from Mempool.space getBalance for BTC address ---->", address)
+            return await this.fetchMempoolBalance(address);
         } catch (err) {
-            console.warn("Blockstream failed, trying Mempool.space...");
+            console.warn("Mempool.space failed, trying BlockCypher...");
             try {
                 // 2. Fallback: Mempool.space API
-                return await this.fetchMempoolBalance(address);
+                return await this.fetchBlockstreamBalance(address);
             } catch (err2) {
-                console.warn("Mempool.space failed, trying BlockCypher...");
                 try {
+                    console.warn("Blockstream failed, trying Mempool.space...");
                     // 3. Fallback: BlockCypher API
                     return await this.fetchBlockCypherBalance(address);
                 } catch (err3) {
