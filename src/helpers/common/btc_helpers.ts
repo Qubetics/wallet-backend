@@ -225,6 +225,7 @@ class utxo {
             console.log("Getting balance from Mempool.space getBalance for BTC address ---->", address)
             return await this.fetchMempoolBalance(address);
         } catch (err) {
+            
             console.warn("Mempool.space failed, trying BlockCypher...");
             try {
                 // 2. Fallback: Mempool.space API
