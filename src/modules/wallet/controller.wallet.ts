@@ -14,6 +14,8 @@ import {
   GlblBlockchainTxStatusEnum,
   TxTypesEnum,
   TokenType,
+  NFTObject,
+  PopulateNFTContext,
 } from "../../constants/global_enum";
 import { global_helper } from "../../helpers/common/global_helper";
 import { language } from "../../constants";
@@ -22,8 +24,8 @@ import { coin_queries, wallet_queries } from "../../helpers/dbHelper/index";
 import userhelper from "../user/helper";
 import kafka_helper from "../../helpers/common/kafka_helper";
 import redisClient from "../../helpers/common/redis";
-import moment from "moment";
-import db from "../../helpers/common/db";
+// import moment from "moment";
+// import db from "../../helpers/common/db";
 
 class WalletController implements OnlyControllerInterface {
   constructor() {
@@ -2238,6 +2240,8 @@ class WalletController implements OnlyControllerInterface {
 
               const method = "get";
               const url = `https://deep-index.moralis.io/api/v2/${address}/nft${params}`;
+              // console.log('ddddd', url);
+              // console.log('config.KEYS.MORALIS', config.KEYS.MORALIS);
               const headers = { "X-API-Key": config.KEYS.MORALIS };
               const result: any = await global_helper.get_nft_data(
                 method,
@@ -2247,7 +2251,7 @@ class WalletController implements OnlyControllerInterface {
               if (result && result?.result?.length) {
                 fetchNftData = result.result;
               }
-              nextCursor = result.cursor;
+              nextCursor = result?.cursor;
             } else if (symbol.toUpperCase() == "TICS") {
               let paramsQuery: string = '';
               if (cursor) {
@@ -2272,7 +2276,7 @@ class WalletController implements OnlyControllerInterface {
               nextCursor = result.next_page_params;
 
             }
-            console.log('fetchNftData >>', fetchNftData);
+            // console.log('fetchNftData >>', fetchNftData);
             if (fetchNftData) {
               let existedAddress = [];
               for await (const nft of fetchNftData) {
@@ -2331,302 +2335,57 @@ class WalletController implements OnlyControllerInterface {
                         ? metadata.attributes
                         : null,
                   };
+                  nftObj = await this.populateNftData(nftObj, { user_id, address, symbol, nft });
+                  nfts.push(nftObj);
                 } else {
-                  const tokenInstances = nft?.token_instances[0];
-                  existedAddress.push({ token_address: nft.token.address_hash, token_id: tokenInstances?.id });
+                  const tokenInstances = nft?.token_instances;
+                  if (tokenInstances.length > 0) {
+                    for (const tokenInstance of tokenInstances) {
+                      existedAddress.push({ token_address: nft.token.address_hash, token_id: tokenInstance?.id });
 
-                  const nftImage = tokenInstances.media_url !== null ? tokenInstances.media_url
-                    : tokenInstances.metadata != "" && tokenInstances.metadata.image ? tokenInstances.metadata.image : null;
+                      const nftImage = tokenInstance.media_url !== null ? tokenInstance.media_url
+                        : tokenInstance.metadata != "" && tokenInstance.metadata.image ? tokenInstance.metadata.image : null;
 
-                  const nftImageUrl = nftImage.indexOf("ipfs") > -1 ? nftImage : `https://gateway.lighthouse.storage/ipfs/${nftImage}`;
+                      const nftImageUrl = nftImage.indexOf("ipfs") > -1 ? nftImage : `https://gateway.lighthouse.storage/ipfs/${nftImage}`;
 
-                  nftObj = {
-                    token_address: nft.token.address_hash,
-                    token_type: nft.token.type == "ERC-721" ? TokenType.ERC721 : TokenType.ERC1155,
-                    token_id: tokenInstances?.id,
-                    amount: nft.amount,
-                    owner_of: tokenInstances?.owner,
-                    token_uri: null,
-                    coin_family: coinFamily
-                      ? coinFamily
-                      : config.STATIC_COIN_FAMILY[symbol.toLowerCase()],
-                    name:
-                      tokenInstances.metadata != "" && tokenInstances.metadata.name
-                        ? tokenInstances.metadata.name
-                        : nft.token.name !== undefined && nft.token.name !== null
-                          ? nft.token.name
-                          : null,
-                    symbol:
-                      nft.token.symbol !== undefined && nft.token.symbol !== null
-                        ? nft.token.symbol
-                        : tokenInstances.metadata != "" && tokenInstances.metadata?.symbol
-                          ? tokenInstances.metadata.symbol
-                          : null,
-                    image: nftImageUrl,
-                    description:
-                      tokenInstances.metadata != "" && tokenInstances.metadata.description
-                        ? tokenInstances.metadata.description
-                        : null,
-                    attributes:
-                      tokenInstances.metadata != "" && tokenInstances.metadata.attributes
-                        ? tokenInstances.metadata.attributes
-                        : null,
-                  };
-                }
-
-                console.log('nftObj >>', nftObj);
-                const findNft: any = await Models.NFTModelModel.findOne({
-                  attributes: ["image", "image_extension", "text_data"],
-                  where: {
-                    wallet_address: { [Op.like]: address },
-                    token_id: nftObj.token_id.toString(),
-                    token_address: { [Op.like]: nftObj.token_address },
-                  },
-                  raw: true,
-                });
-
-                if (nftObj?.image && findNft?.image_extension == null) {
-                  let tokenImage: any = nftObj?.image;
-                  let image_data: any = await global_helper.check_nft_image(
-                    tokenImage,
-                    nftObj.coin_family
-                  );
-                  let image_extension: string | null = null;
-                  let text_data: string | null = null;
-                  if (
-                    !image_data.status &&
-                    nftObj?.image.indexOf("ipfs") > -1
-                  ) {
-                    const cleanImage = nftObj?.image?.replace(/\/$/, "");
-                    console.log('ddddddddddd111111111111');
-                    const imageHash = cleanImage?.substring(
-                      cleanImage.lastIndexOf("/") + 1,
-                      cleanImage.length
-                    );
-                    tokenImage = nftObj.coin_family !== 7 ? `https://gateway.ipfs.io/ipfs/${imageHash}` : `https://ipfs.io/ipfs/${imageHash}`;
-                    image_data = await global_helper.check_nft_image(
-                      tokenImage,
-                      nftObj.coin_family
-                    );
-                    if (!image_data.status) {
-                      const ipfs_image = await global_helper.get_ipfs_image(
-                        nftObj?.image,
-                        nftObj.coin_family
-                      );
-                      tokenImage = ipfs_image !== "" ? ipfs_image : null; //nftObj.token_uri;
-                      image_data = await global_helper.check_nft_image(
-                        tokenImage,
-                        nftObj.coin_family
-                      );
-                      if (!image_data.status) {
-                        tokenImage = null;
-                        image_extension = null;
-                        text_data = null;
-                      } else {
-                        image_extension = image_data.imgExtension;
-                        text_data =
-                          image_data.text_data !== ""
-                            ? image_data.text_data
-                            : null;
-                      }
-                    } else {
-                      image_extension = image_data.imgExtension;
-                      text_data =
-                        image_data.text_data !== ""
-                          ? image_data.text_data
-                          : null;
+                      nftObj = {
+                        token_address: nft.token.address_hash,
+                        token_type: nft.token.type == "ERC-721" ? TokenType.ERC721 : TokenType.ERC1155,
+                        token_id: tokenInstance?.id,
+                        amount: tokenInstance.value,
+                        owner_of: tokenInstance?.owner,
+                        token_uri: null,
+                        coin_family: coinFamily
+                          ? coinFamily
+                          : config.STATIC_COIN_FAMILY[symbol.toLowerCase()],
+                        name:
+                          tokenInstance.metadata != "" && tokenInstance.metadata.name
+                            ? tokenInstance.metadata.name
+                            : nft.token.name !== undefined && nft.token.name !== null
+                              ? nft.token.name
+                              : null,
+                        symbol:
+                          nft.token.symbol !== undefined && nft.token.symbol !== null
+                            ? nft.token.symbol
+                            : tokenInstance.metadata != "" && tokenInstance.metadata?.symbol
+                              ? tokenInstance.metadata.symbol
+                              : null,
+                        image: nftImageUrl,
+                        description:
+                          tokenInstance.metadata != "" && tokenInstance.metadata.description
+                            ? tokenInstance.metadata.description
+                            : null,
+                        attributes:
+                          tokenInstance.metadata != "" && tokenInstance.metadata.attributes
+                            ? tokenInstance.metadata.attributes
+                            : null,
+                      };
+                      nftObj = await this.populateNftData(nftObj, { user_id, address, symbol, nft });
+                      // console.log('nftObj >>>2222', nftObj);
+                      nfts.push(nftObj);
                     }
-                  } else {
-                    if (nftObj.coin_family !== 7) {
-                      const ipfs_image = await global_helper.get_ipfs_image(
-                        tokenImage,
-                        nftObj.coin_family
-                      );
-                      tokenImage = ipfs_image !== "" ? ipfs_image : tokenImage;
-                      image_extension = image_data.imgExtension;
-                      text_data = image_data.text_data !== "" ? image_data.text_data : null;
-                    } else {
-                      console.log('console.log second');
-
-                      const image_data2: any = await global_helper.check_nft_image(
-                        tokenImage, nftObj.coin_family
-                      );
-                      console.log('image_data2 >>>.', image_data2);
-                      if (
-                        image_data2.status
-                      ) {
-                        const ipfs_image = await global_helper.get_ipfs_image(
-                          tokenImage,
-                          nftObj.coin_family
-                        );
-                        tokenImage = ipfs_image !== "" ? ipfs_image : tokenImage;
-                        image_extension = image_data.imgExtension;
-                        text_data = image_data.text_data !== "" ? image_data.text_data : null;
-                      }
-
-                    }
-                    // console.log('ddddddddddd 22222222222');
-                    // let ipfs_image = await global_helper.get_ipfs_image(
-                    //   tokenImage
-                    // );
-                    // console.log('ddddddddddd 22222222222444', ipfs_image);
-
-                    // tokenImage = ipfs_image !== "" ? ipfs_image : tokenImage;
-                    // image_extension = image_data.imgExtension;
-                    // text_data =
-                    //   image_data.text_data !== ""
-                    //     ? image_data.text_data
-                    //     : null;
                   }
-                  nftObj.image = tokenImage;
-                  nftObj.image_extension = image_extension;
-                  nftObj.text_data = text_data;
-                } else if (
-                  nftObj?.token_uri &&
-                  findNft?.image_extension == null
-                ) {
-                  console.log('ddddddddddd3333333333');
-                  const token_uri_fetch: any =
-                    await global_helper.check_nft_token_uri(
-                      nftObj?.token_uri
-                    );
-                  let image_data: any | null = null;
-                  if (token_uri_fetch) {
-                    image_data = await global_helper.check_nft_image(
-                      token_uri_fetch?.image,
-                      nftObj.coin_family
-                    );
-                  }
-                  nftObj.image = token_uri_fetch?.image || null;
-                  nftObj.image_extension =
-                    (image_data && image_data?.imgExtension) || null;
-                  nftObj.text_data =
-                    image_data && image_data.text_data !== ""
-                      ? image_data.text_data
-                      : null;
-                } else {
-                  nftObj.image =
-                    findNft && findNft?.image ? findNft.image : null;
-                  nftObj.image_extension =
-                    findNft && findNft?.image_extension
-                      ? findNft?.image_extension
-                      : null;
-                  nftObj.text_data =
-                    findNft && findNft?.text_data ? findNft?.text_data : null;
                 }
-                const findCoin = await Models.CoinsModel.findOne({
-                  attributes: ["coin_id", "coin_symbol", "coin_name"],
-                  where: {
-                    token_address: { [Op.like]: nftObj.token_address },
-                    token_type: nftObj.token_type,
-                  },
-                  raw: true,
-                });
-                let coinData: any = {};
-                /** save token if not exist */
-                if (!findCoin) {
-                  const saveCoinData = await Models.CoinsModel.create({
-                    coin_name: nftObj.name,
-                    coin_symbol: nftObj.symbol
-                      ? nftObj.symbol.toLowerCase()
-                      : null,
-                    coin_image: null,
-                    coin_family: coinFamily
-                      ? coinFamily
-                      : config.STATIC_COIN_FAMILY[symbol.toLowerCase()],
-                    coin_status: 1,
-                    is_token: 1,
-                    token_type:
-                      nft.contract_type == "ERC1155"
-                        ? TokenType.ERC1155
-                        : TokenType.ERC721,
-                    decimals: 0,
-                    token_address: nftObj.token_address,
-                    is_on_trading_view: 0,
-                    is_on_cmc: 0,
-                    added_by: 'user',
-                    for_swap: 0
-                  });
-                  const redisCoinData = {
-                    coin_id: saveCoinData.coin_id,
-                    is_token: saveCoinData.is_token,
-                    token_address: saveCoinData.token_address,
-                    coin_family: saveCoinData.coin_family,
-                    decimals: saveCoinData.decimals,
-                    token_type: saveCoinData.token_type,
-                    coin_symbol: saveCoinData.coin_symbol,
-                    added_by: saveCoinData.added_by,
-                    for_swap: saveCoinData.for_swap
-                  }
-                  /** update into redis*/
-                  await WalletHelper.updateNftTokenInRedis(
-                    redisCoinData
-                  );
-                  coinData = {
-                    coin_id: saveCoinData.coin_id,
-                    coin_symbol: nftObj.symbol
-                      ? nftObj.symbol.toLowerCase()
-                      : null,
-                    coin_name: nftObj.name,
-                  };
-                } else {
-                  coinData = findCoin;
-                }
-                nftObj.nft_coin_data = coinData;
-
-                /** save nft if not exist in wallet */
-                if (!findNft) {
-                  const nftTokenData: Interfaces.NFTInterface = {
-                    user_id: user_id,
-                    wallet_address: address,
-                    token_id: nftObj.token_id.toString(),
-                    token_address: nftObj.token_address,
-                    coin_family: coinFamily
-                      ? coinFamily
-                      : config.STATIC_COIN_FAMILY[symbol.toLowerCase()],
-                    image: nftObj?.image,
-                    description: nftObj.description,
-                    attributes: nftObj.attributes,
-                    token_uri: nftObj.token_uri,
-                    name: nftObj.name,
-                    available: 1,
-                    image_extension: nftObj.image_extension,
-                    text_data: nftObj.text_data,
-                    balance:
-                      nft.contract_type == "ERC1155" ? nftObj.amount : null,
-                    token_type:
-                      nft.contract_type == "ERC1155"
-                        ? TokenType.ERC1155
-                        : TokenType.ERC721,
-                  };
-                  await Models.NFTModelModel.create(nftTokenData);
-                } else {
-                  /** update nft if not exist */
-                  const nftTokenData: any = {
-                    description: nftObj.description,
-                    attributes: nftObj.attributes,
-                    token_uri: nftObj.token_uri,
-                    name: nftObj.name,
-                    balance:
-                      nft.contract_type == "ERC1155" ? nftObj.amount : null,
-                  };
-                  if (
-                    findNft.image == null ||
-                    findNft.image_extension == null
-                  ) {
-                    nftTokenData.image = nftObj?.image;
-                    nftTokenData.image_extension = nftObj.image_extension;
-                    nftTokenData.text_data = nftObj.text_data;
-                  }
-                  await Models.NFTModelModel.update(nftTokenData, {
-                    where: {
-                      wallet_address: address,
-                      token_id: nftObj.token_id.toString(),
-                      token_address: nftObj.token_address,
-                    },
-                  });
-                }
-                nfts.push(nftObj);
               }
               if (existedAddress.length) {
                 // Build allowed pairs (OR condition)
@@ -2677,6 +2436,260 @@ class WalletController implements OnlyControllerInterface {
       return res.status(data.code).send(data);
     }
   };
+
+  private async populateNftData(nftObj: NFTObject, nftData: PopulateNFTContext) {
+    // console.log('nftObj >>', nftObj);
+    const findNft: any = await Models.NFTModelModel.findOne({
+      attributes: ["image", "image_extension", "text_data"],
+      where: {
+        wallet_address: { [Op.like]: nftData.address },
+        token_id: nftObj.token_id.toString(),
+        token_address: { [Op.like]: nftObj.token_address },
+      },
+      raw: true,
+    });
+
+    if (nftObj?.image && findNft?.image_extension == null) {
+      let tokenImage: any = nftObj?.image;
+      let image_data: any = await global_helper.check_nft_image(
+        tokenImage,
+        nftObj.coin_family
+      );
+      let image_extension: string | null = null;
+      let text_data: string | null = null;
+      if (
+        !image_data.status &&
+        nftObj?.image.indexOf("ipfs") > -1
+      ) {
+        const cleanImage = nftObj?.image?.replace(/\/$/, "");
+        console.log('ddddddddddd111111111111');
+        const imageHash = cleanImage?.substring(
+          cleanImage.lastIndexOf("/") + 1,
+          cleanImage.length
+        );
+        tokenImage = nftObj.coin_family !== 7 ? `https://gateway.ipfs.io/ipfs/${imageHash}` : `https://ipfs.io/ipfs/${imageHash}`;
+        image_data = await global_helper.check_nft_image(
+          tokenImage,
+          nftObj.coin_family
+        );
+        if (!image_data.status) {
+          const ipfs_image = await global_helper.get_ipfs_image(
+            nftObj?.image,
+            nftObj.coin_family
+          );
+          tokenImage = ipfs_image !== "" ? ipfs_image : null; //nftObj.token_uri;
+          image_data = await global_helper.check_nft_image(
+            tokenImage,
+            nftObj.coin_family
+          );
+          if (!image_data.status) {
+            tokenImage = null;
+            image_extension = null;
+            text_data = null;
+          } else {
+            image_extension = image_data.imgExtension;
+            text_data =
+              image_data.text_data !== ""
+                ? image_data.text_data
+                : null;
+          }
+        } else {
+          image_extension = image_data.imgExtension;
+          text_data =
+            image_data.text_data !== ""
+              ? image_data.text_data
+              : null;
+        }
+      } else {
+        if (nftObj.coin_family !== 7) {
+          const ipfs_image = await global_helper.get_ipfs_image(
+            tokenImage,
+            nftObj.coin_family
+          );
+          tokenImage = ipfs_image !== "" ? ipfs_image : tokenImage;
+          image_extension = image_data.imgExtension;
+          text_data = image_data.text_data !== "" ? image_data.text_data : null;
+        } else {
+          console.log('console.log second');
+
+          const image_data2: any = await global_helper.check_nft_image(
+            tokenImage, nftObj.coin_family
+          );
+          console.log('image_data2 >>>.', image_data2);
+          if (
+            image_data2.status
+          ) {
+            const ipfs_image = await global_helper.get_ipfs_image(
+              tokenImage,
+              nftObj.coin_family
+            );
+            tokenImage = ipfs_image !== "" ? ipfs_image : tokenImage;
+            image_extension = image_data.imgExtension;
+            text_data = image_data.text_data !== "" ? image_data.text_data : null;
+          }
+
+        }
+        // console.log('ddddddddddd 22222222222');
+        // let ipfs_image = await global_helper.get_ipfs_image(
+        //   tokenImage
+        // );
+        // console.log('ddddddddddd 22222222222444', ipfs_image);
+
+        // tokenImage = ipfs_image !== "" ? ipfs_image : tokenImage;
+        // image_extension = image_data.imgExtension;
+        // text_data =
+        //   image_data.text_data !== ""
+        //     ? image_data.text_data
+        //     : null;
+      }
+      nftObj.image = tokenImage;
+      nftObj.image_extension = image_extension;
+      nftObj.text_data = text_data;
+    } else if (
+      nftObj?.token_uri &&
+      findNft?.image_extension == null
+    ) {
+      console.log('ddddddddddd3333333333');
+      const token_uri_fetch: any =
+        await global_helper.check_nft_token_uri(
+          nftObj?.token_uri
+        );
+      let image_data: any | null = null;
+      if (token_uri_fetch) {
+        image_data = await global_helper.check_nft_image(
+          token_uri_fetch?.image,
+          nftObj.coin_family
+        );
+      }
+      nftObj.image = token_uri_fetch?.image || null;
+      nftObj.image_extension =
+        (image_data && image_data?.imgExtension) || null;
+      nftObj.text_data =
+        image_data && image_data.text_data !== ""
+          ? image_data.text_data
+          : null;
+    } else {
+      nftObj.image =
+        findNft && findNft?.image ? findNft.image : null;
+      nftObj.image_extension =
+        findNft && findNft?.image_extension
+          ? findNft?.image_extension
+          : null;
+      nftObj.text_data =
+        findNft && findNft?.text_data ? findNft?.text_data : null;
+    }
+    const findCoin = await Models.CoinsModel.findOne({
+      attributes: ["coin_id", "coin_symbol", "coin_name"],
+      where: {
+        token_address: { [Op.like]: nftObj.token_address },
+        token_type: nftObj.token_type,
+      },
+      raw: true,
+    });
+    let coinData: any = {};
+    /** save token if not exist */
+    if (!findCoin) {
+      const saveCoinData = await Models.CoinsModel.create({
+        coin_name: nftObj.name,
+        coin_symbol: nftObj.symbol.toLowerCase(),
+        coin_image: null,
+        coin_family: nftObj.coin_family
+          ? nftObj.coin_family
+          : config.STATIC_COIN_FAMILY[nftData.symbol.toLowerCase()],
+        coin_status: 1,
+        is_token: 1,
+        token_type:
+          nftObj.token_type == "ERC1155"
+            ? TokenType.ERC1155
+            : TokenType.ERC721,
+        decimals: 0,
+        token_address: nftObj.token_address,
+        is_on_trading_view: 0,
+        is_on_cmc: 0,
+        added_by: 'user',
+        for_swap: 0
+      });
+      const redisCoinData = {
+        coin_id: saveCoinData.coin_id,
+        is_token: saveCoinData.is_token,
+        token_address: saveCoinData.token_address,
+        coin_family: saveCoinData.coin_family,
+        decimals: saveCoinData.decimals,
+        token_type: saveCoinData.token_type,
+        coin_symbol: saveCoinData.coin_symbol,
+        added_by: saveCoinData.added_by,
+        for_swap: saveCoinData.for_swap
+      }
+      /** update into redis*/
+      await WalletHelper.updateNftTokenInRedis(
+        redisCoinData
+      );
+      coinData = {
+        coin_id: saveCoinData.coin_id,
+        coin_symbol: nftObj.symbol
+          ? nftObj.symbol.toLowerCase()
+          : null,
+        coin_name: nftObj.name,
+      };
+    } else {
+      coinData = findCoin;
+    }
+    nftObj.nft_coin_data = coinData;
+
+    /** save nft if not exist in wallet */
+    if (!findNft) {
+      const nftTokenData: Interfaces.NFTInterface = {
+        user_id: nftData.user_id,
+        wallet_address: nftData.address,
+        token_id: nftObj.token_id.toString(),
+        token_address: nftObj.token_address,
+        coin_family: nftObj.coin_family
+          ? nftObj.coin_family
+          : config.STATIC_COIN_FAMILY[nftData.symbol.toLowerCase()],
+        image: nftObj?.image,
+        description: nftObj.description,
+        attributes: nftObj.attributes,
+        token_uri: nftObj.token_uri,
+        name: nftObj.name,
+        available: 1,
+        image_extension: nftObj.image_extension,
+        text_data: nftObj.text_data,
+        balance:
+          nftObj.token_type == "ERC1155" ? Number(nftObj.amount) : null,
+        token_type:
+          nftObj.token_type == "ERC1155"
+            ? TokenType.ERC1155
+            : TokenType.ERC721,
+      };
+      await Models.NFTModelModel.create(nftTokenData);
+    } else {
+      /** update nft if not exist */
+      const nftTokenData: Interfaces.NFTInterface = {
+        description: nftObj.description,
+        attributes: nftObj.attributes,
+        token_uri: nftObj.token_uri,
+        name: nftObj.name,
+        balance:
+          nftObj?.token_type == "ERC1155" ? Number(nftObj.amount) : null,
+      };
+      if (
+        findNft.image == null ||
+        findNft.image_extension == null
+      ) {
+        nftTokenData.image = nftObj?.image;
+        nftTokenData.image_extension = nftObj.image_extension;
+        nftTokenData.text_data = nftObj.text_data;
+      }
+      await Models.NFTModelModel.update(nftTokenData, {
+        where: {
+          wallet_address: nftData.address,
+          token_id: nftObj.token_id.toString(),
+          token_address: nftObj.token_address,
+        },
+      });
+    }
+    return nftObj;
+  }
 
   public async getCoinGraphData(req: Request, res: Response) {
     try {

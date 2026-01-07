@@ -1,6 +1,6 @@
 export interface CoinInterface {
   coin_id: number;
-  coin_name: string;
+  coin_name?: string;
   coin_symbol: string;
   coin_image?: string | null;
   coin_family: number;

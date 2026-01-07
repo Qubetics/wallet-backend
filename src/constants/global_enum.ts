@@ -173,3 +173,38 @@ export type TradingSourceResponse = {
     graphSource: string | null;
     graphPair: string;
 };
+
+export interface NFTObject {
+    token_address: string;
+    token_type: TokenType;
+    token_id: string | number;
+    amount?: string | number;
+    owner_of?: string;
+    token_uri?: string | null;
+
+    coin_family: number;
+
+    name: string;
+    symbol: string;
+    image?: string | null;
+    image_extension?: string | null;
+    text_data?: string | null;
+
+    description?: string | null;
+    attributes?: any;
+
+    nft_coin_data?: {
+        coin_id: number;
+        coin_symbol: string | null;
+        coin_name: string | null;
+    };
+}
+
+export interface PopulateNFTContext {
+    user_id: number;
+    address: string;
+    symbol: string;
+    nft: any; // raw chain response (Moralis / TicsScan)
+}
+
+
