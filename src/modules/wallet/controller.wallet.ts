@@ -2346,7 +2346,25 @@ class WalletController implements OnlyControllerInterface {
                       const nftImage = tokenInstance.media_url !== null ? tokenInstance.media_url
                         : tokenInstance.metadata != "" && tokenInstance.metadata.image ? tokenInstance.metadata.image : null;
 
-                      const nftImageUrl = nftImage.indexOf("ipfs") > -1 ? nftImage : `https://gateway.lighthouse.storage/ipfs/${nftImage}`;
+                      const KNOWN_NFT_IMAGE_DOMAINS = [
+                        "dweb.link",
+                        "arweave.net",
+                        "gateway.pinata.cloud"
+                      ];
+
+                      const domainExist = KNOWN_NFT_IMAGE_DOMAINS.some(domain =>
+                        nftImage?.includes(domain)
+                      );
+                      console.log('domainExist >>>', domainExist);
+
+                      let nftImageUrl = nftImage;
+                      console.log('nftImageUrl >>>', nftImageUrl);
+
+                      if (!domainExist && nftImage) {
+                        console.log('nftImageUrl 222 >>>', nftImageUrl);
+                        nftImageUrl = nftImage.indexOf("ipfs") > -1 ? nftImage : `https://gateway.lighthouse.storage/ipfs/${nftImage}`;
+                      }
+
 
                       nftObj = {
                         token_address: nft.token.address_hash,
@@ -2510,22 +2528,26 @@ class WalletController implements OnlyControllerInterface {
           image_extension = image_data.imgExtension;
           text_data = image_data.text_data !== "" ? image_data.text_data : null;
         } else {
-          console.log('console.log second');
-
-          const image_data2: any = await global_helper.check_nft_image(
-            tokenImage, nftObj.coin_family
-          );
-          console.log('image_data2 >>>.', image_data2);
-          if (
-            image_data2.status
-          ) {
-            const ipfs_image = await global_helper.get_ipfs_image(
-              tokenImage,
-              nftObj.coin_family
-            );
-            tokenImage = ipfs_image !== "" ? ipfs_image : tokenImage;
+          console.log('console.log second', image_data);
+          if (image_data.status) {
             image_extension = image_data.imgExtension;
             text_data = image_data.text_data !== "" ? image_data.text_data : null;
+          } else {
+            const image_data2: any = await global_helper.check_nft_image(
+              tokenImage, nftObj.coin_family
+            );
+            console.log('image_data2 >>>.', image_data2);
+            if (
+              image_data2.status
+            ) {
+              const ipfs_image = await global_helper.get_ipfs_image(
+                tokenImage,
+                nftObj.coin_family
+              );
+              tokenImage = ipfs_image !== "" ? ipfs_image : tokenImage;
+              image_extension = image_data2.imgExtension;
+              text_data = image_data2.text_data !== "" ? image_data2.text_data : null;
+            }
           }
 
         }
