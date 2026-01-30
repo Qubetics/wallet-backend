@@ -2485,7 +2485,7 @@ class WalletController implements OnlyControllerInterface {
           cleanImage.lastIndexOf("/") + 1,
           cleanImage.length
         );
-        tokenImage = nftObj.coin_family !== 7 ? `https://gateway.ipfs.io/ipfs/${imageHash}` : `https://ipfs.io/ipfs/${imageHash}`;
+        tokenImage = nftObj.coin_family != 7 ? `https://gateway.ipfs.io/ipfs/${imageHash}` : `https://ipfs.io/ipfs/${imageHash}`;
         image_data = await global_helper.check_nft_image(
           tokenImage,
           nftObj.coin_family
@@ -2519,7 +2519,7 @@ class WalletController implements OnlyControllerInterface {
               : null;
         }
       } else {
-        if (nftObj.coin_family !== 7) {
+        if (nftObj.coin_family != 7) {
           const ipfs_image = await global_helper.get_ipfs_image(
             tokenImage,
             nftObj.coin_family

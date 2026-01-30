@@ -629,7 +629,7 @@ class Global_helper {
             let imgExtension: any = '';
             let extension = url?.substring(url?.lastIndexOf('.') + 1);
             imgExtension = await this.checkExtension(extension);
-            if (imgExtension !== 'text' && imgExtension !== 'undefined' && imgExtension !== undefined && coin_family !== 7) {
+            if (imgExtension !== 'text' && imgExtension !== 'undefined' && imgExtension !== undefined && coin_family != 7) {
                 console.log('imgExtension >>>>', imgExtension);
                 resolve({ status: true, imgExtension: imgExtension, text_data: '', image: "" });
             }
@@ -675,7 +675,7 @@ class Global_helper {
             if (check_ips_data?.length > 0) {
                 ips_data = check_ips_data[0];
             }
-            ipfs_image = ips_data ? coin_family !== 7 ? `https://gateway.ipfs.io/ipfs/${ips_data}` : `https://gateway.lighthouse.storage/ipfs/${ips_data}` : "";
+            ipfs_image = ips_data ? coin_family != 7 ? `https://gateway.ipfs.io/ipfs/${ips_data}` : `https://gateway.lighthouse.storage/ipfs/${ips_data}` : "";
         } else {
             let newSplitData = splitData[0].split("ipfs/");
             let ips_data = '';
@@ -685,7 +685,7 @@ class Global_helper {
                 if (check_ips_data?.length > 0) {
                     ips_data = check_ips_data[0];
                 }
-                ipfs_image = ips_data ? coin_family !== 7 ? `https://gateway.ipfs.io/ipfs/${ips_data}` : `https://gateway.lighthouse.storage/ipfs/${ips_data}` : '';
+                ipfs_image = ips_data ? coin_family != 7 ? `https://gateway.ipfs.io/ipfs/${ips_data}` : `https://gateway.lighthouse.storage/ipfs/${ips_data}` : '';
             } else {
                 ipfs_image = splitData[0];
             }
