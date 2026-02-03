@@ -33,6 +33,8 @@ import MenuListsModel from './model_menu_lists.';
 import PermissionsModel from './model_permissions';
 import { TicsPriceInFiatGraph } from './model.ticsPriceInFiatGraph';
 import TicsNativeAddressModel from './model.ticsNativeAddress';
+import DvpnSessionsModel from './model.dvpn_sessions';
+
 export {
     AddressBookModel,
     AddressBookWalletsModel,
@@ -68,6 +70,7 @@ export {
     MenuListsModel,
     PermissionsModel,
     TicsPriceInFiatGraph,
-    TicsNativeAddressModel
+    TicsNativeAddressModel,
+    DvpnSessionsModel
 
 }
