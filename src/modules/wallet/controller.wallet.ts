@@ -1947,28 +1947,28 @@ class WalletController implements OnlyControllerInterface {
                     name:
                       nft.name !== undefined && nft.name !== null
                         ? nft.name
-                        : metadata != "" && metadata.name
-                          ? metadata.name
+                        : metadata != "" && metadata.name !== undefined && metadata.name !== null
+                          ? metadata?.name
                           : null,
                     symbol:
                       nft.symbol !== undefined && nft.symbol !== null
                         ? nft.symbol
-                        : metadata != "" && metadata?.symbol
-                          ? metadata.symbol
+                        : metadata != "" && metadata?.symbol !== undefined && metadata?.symbol !== null
+                          ? metadata?.symbol
                           : null,
                     image:
                       nftImage !== null
                         ? nftImage
-                        : metadata != "" && metadata.image
-                          ? metadata.image
+                        : metadata != "" && metadata?.image !== undefined && metadata?.image !== null
+                          ? metadata?.image
                           : null,
                     description:
-                      metadata != "" && metadata.description
-                        ? metadata.description
+                      metadata != "" && metadata?.description !== undefined && metadata?.description !== null
+                        ? metadata?.description
                         : null,
                     attributes:
-                      metadata != "" && metadata.attributes
-                        ? metadata.attributes
+                      metadata != "" && metadata?.attributes !== undefined && metadata?.attributes !== null
+                        ? metadata?.attributes
                         : null,
                   };
                   const findNft: any = await Models.NFTModelModel.findOne({
@@ -2323,16 +2323,16 @@ class WalletController implements OnlyControllerInterface {
                     image:
                       nftImage !== null
                         ? nftImage
-                        : metadata != "" && metadata.image
-                          ? metadata.image
+                        : metadata != "" && metadata?.image
+                          ? metadata?.image
                           : null,
                     description:
-                      metadata != "" && metadata.description
-                        ? metadata.description
+                      metadata != "" && metadata?.description
+                        ? metadata?.description
                         : null,
                     attributes:
-                      metadata != "" && metadata.attributes
-                        ? metadata.attributes
+                      metadata != "" && metadata?.attributes
+                        ? metadata?.attributes
                         : null,
                   };
                   nftObj = await this.populateNftData(nftObj, { user_id, address, symbol, nft });
@@ -2344,7 +2344,7 @@ class WalletController implements OnlyControllerInterface {
                       existedAddress.push({ token_address: nft.token.address_hash, token_id: tokenInstance?.id });
 
                       const nftImage = tokenInstance.media_url !== null ? tokenInstance.media_url
-                        : tokenInstance.metadata != "" && tokenInstance.metadata.image ? tokenInstance.metadata.image : null;
+                        : tokenInstance.metadata != "" && tokenInstance.metadata?.image ? tokenInstance.metadata?.image : null;
 
                       const KNOWN_NFT_IMAGE_DOMAINS = [
                         "dweb.link",
@@ -2377,8 +2377,8 @@ class WalletController implements OnlyControllerInterface {
                           ? coinFamily
                           : config.STATIC_COIN_FAMILY[symbol.toLowerCase()],
                         name:
-                          tokenInstance.metadata != "" && tokenInstance.metadata.name
-                            ? tokenInstance.metadata.name
+                          tokenInstance.metadata != "" && tokenInstance.metadata?.name
+                            ? tokenInstance.metadata?.name
                             : nft.token.name !== undefined && nft.token.name !== null
                               ? nft.token.name
                               : null,
@@ -2386,16 +2386,16 @@ class WalletController implements OnlyControllerInterface {
                           nft.token.symbol !== undefined && nft.token.symbol !== null
                             ? nft.token.symbol
                             : tokenInstance.metadata != "" && tokenInstance.metadata?.symbol
-                              ? tokenInstance.metadata.symbol
+                              ? tokenInstance.metadata?.symbol
                               : null,
                         image: nftImageUrl,
                         description:
-                          tokenInstance.metadata != "" && tokenInstance.metadata.description
-                            ? tokenInstance.metadata.description
+                          tokenInstance.metadata != "" && tokenInstance.metadata?.description
+                            ? tokenInstance.metadata?.description
                             : null,
                         attributes:
-                          tokenInstance.metadata != "" && tokenInstance.metadata.attributes
-                            ? tokenInstance.metadata.attributes
+                          tokenInstance.metadata != "" && tokenInstance.metadata?.attributes
+                            ? tokenInstance.metadata?.attributes
                             : null,
                       };
                       nftObj = await this.populateNftData(nftObj, { user_id, address, symbol, nft });
