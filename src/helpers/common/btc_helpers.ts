@@ -202,15 +202,22 @@ class utxo {
         return (funded - spent) / 1e8;
     }
     
-    private async fetchMempoolBalance(address: string) {
-        const url = `https://mempool.space/testnet4/api/address/${address}`;
-        const response = await axios.get(url, { timeout: 5000 });
-        const { chain_stats, mempool_stats } = response.data || {};
-    
-        const funded = (chain_stats?.funded_txo_sum || 0) + (mempool_stats?.funded_txo_sum || 0);
-        const spent = (chain_stats?.spent_txo_sum || 0) + (mempool_stats?.spent_txo_sum || 0);
-    
-        return (funded - spent) / 1e8;
+    public async fetchMempoolBalance(address: string) {
+        try {
+            const url = `https://mempool.space/testnet/api/address/${address}`;
+            const response = await axios.get(url, { 
+                timeout: 5000
+            });
+            const { chain_stats, mempool_stats } = response.data || {};
+
+            const funded = (chain_stats?.funded_txo_sum || 0) + (mempool_stats?.funded_txo_sum || 0);
+            const spent = (chain_stats?.spent_txo_sum || 0) + (mempool_stats?.spent_txo_sum || 0);
+
+            return (funded - spent) / 1e8;
+        } catch (err: any) {
+            console.error("Error fetching balance from mempool.space:", err);
+            return null;
+        }
     }
     
     private async fetchBlockCypherBalance(address: string) {

@@ -11,6 +11,7 @@ import commonHelper from "../../helpers/common/common.helpers";
 import response from "../../helpers/response/response.helpers";
 import { language } from "../../constants";
 import dbHelper from "../../helpers/dbHelper";
+import { utxobtc } from "../../helpers/common/btc_helpers";
 
 class MpcWalletsController implements OnlyControllerInterface {
   constructor() {
@@ -61,6 +62,40 @@ class MpcWalletsController implements OnlyControllerInterface {
       return res.status(data.code).send(data);
     }
   }
+
+  public async fetchMempoolBalance(req: Request, res: Response) {
+    try {
+      const address: any = req.params.address;
+
+      if(!address) {
+        return res.status(GlblCode.ERROR_CODE).send({
+          status: false,
+          code: GlblCode.ERROR_CODE,
+          message: "BTC address is required",
+        });
+      }
+
+      const data: any = await utxobtc.fetchMempoolBalance(address);
+
+      return res.status(GlblCode.SUCCESS).send({
+        status: true,
+        code: GlblCode.SUCCESS,
+        message: data.message,
+        data: data,
+      });
+    } catch (error) {
+      const data = {
+        code: GlblCode.ERROR_CODE,
+        status: false,
+        data: error,
+      };
+      return res.status(data.code).send(data);
+    }
+  }
+
+
+
+
 }
 
 export const mpcWalletsController = new MpcWalletsController();

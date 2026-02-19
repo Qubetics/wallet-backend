@@ -26,8 +26,12 @@ class MpcWalletsRoute implements ControllerInterface {
       jwtVerification.verifyToken,
       mpcWalletsController.getMpcWallets
     );
-   
-    
+
+    this.router.get(
+      `${this.path}/fetchMempoolBalance/:address`,
+      jwtVerification.verifyToken,
+      mpcWalletsController.fetchMempoolBalance
+    );  
   }
 }
 export default MpcWalletsRoute;
