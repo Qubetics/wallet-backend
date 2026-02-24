@@ -20,6 +20,7 @@ class utxo {
             method: 'post',
             url: `${config.NODE.BTC_TESTNET_RPC_URL}`,
             headers: {
+                'apikey': `${config.NODE.BTC_API_KEY}`,
                 'Content-Type': 'application/json',
             }
         };

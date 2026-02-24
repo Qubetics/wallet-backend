@@ -216,7 +216,9 @@ class BTCController implements OnlyControllerInterface {
 
       const gasBtc: any = req.body.gas_estimate / 100000000;
       const withdrawAmount: any = req.body.amount;
-      const userBtcBalance: any = await utxobtc.getBalance(req.body.from);
+      // const userBtcBalance: any = await utxobtc.getBalance(req.body.from);
+      const userBtcBalance: any = await utxobtc.get_balance(req.body.from);
+
       //Validate balance
       const finalWithdrawAmount: any = bigNumberSafeMath(
         withdrawAmount,

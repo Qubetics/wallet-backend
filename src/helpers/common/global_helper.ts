@@ -105,8 +105,8 @@ class Global_helper {
                 case config.STATIC_COIN_FAMILY.ETH:
                     return await ethEther.validate_eth_address(walletAddress);
                 case config.STATIC_COIN_FAMILY.BTC:
-                    // return await utxobtc.validate_btc_address(walletAddress);
-                    return await utxobtc.validateBtcAddress(walletAddress);
+                    return await utxobtc.validate_btc_address(walletAddress);
+                    // return await utxobtc.validateBtcAddress(walletAddress);
                 case config.STATIC_COIN_FAMILY.POL:
                     return await polEther.validate_pol_address(walletAddress);
                 case config.STATIC_COIN_FAMILY.TICS:
