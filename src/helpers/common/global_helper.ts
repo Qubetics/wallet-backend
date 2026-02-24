@@ -240,8 +240,8 @@ class Global_helper {
                     balance = (await ethEther.get_balance(coinData, wallet_address))?.toString()
                     break;
                 case config.STATIC_COIN_FAMILY.BTC:
-                    // balance = (await utxobtc.get_balance(wallet_address))?.toString()
-                    balance = (await utxobtc.getBalance(wallet_address))?.toString()
+                    balance = (await utxobtc.get_balance(wallet_address))?.toString()
+                    // balance = (await utxobtc.getBalance(wallet_address))?.toString()
                     break;
                 case config.STATIC_COIN_FAMILY.POL:
                     balance = (await polEther.get_balance(coinData, wallet_address))?.toString()
