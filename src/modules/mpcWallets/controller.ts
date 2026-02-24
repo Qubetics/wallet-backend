@@ -74,8 +74,11 @@ class MpcWalletsController implements OnlyControllerInterface {
           message: "BTC address is required",
         });
       }
+      
+      //use this endpoint for mempool balance (Testnet) currently  not in use
+      // const data: any = await utxobtc.fetchMempoolBalance(address);
+      const data: any = await utxobtc.get_balance(address);
 
-      const data: any = await utxobtc.fetchMempoolBalance(address);
 
       return res.status(GlblCode.SUCCESS).send({
         status: true,
