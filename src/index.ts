@@ -12,6 +12,7 @@ import { ValidationError } from 'express-validation';
 import { GlblCode, GlblMessages, InfoMessages } from "./constants/global_enum";
 import ApiLimiter from "./middlewares/apiRateLimiter";
 import sanitizeHtml from "sanitize-html";
+import dataLogger from "./helpers/common/dataLogger.helper";
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
@@ -175,11 +176,56 @@ class Server implements ServerInterface {
 
   public initializeControllers() {
     const url: string = `/api/v1`;
-    console.log(
-      "\n\n\n🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪",
-      url,
-      "🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪🌪\n"
-    );
+    dataLogger.info(`=========================== ${url} =================================`);
+
+    this.app.use(url, (req: Request, res: Response, next: NextFunction) => {
+      const startTime = Date.now();
+
+      let responseMessage: string | undefined;
+      const originalJson = res.json.bind(res);
+      const originalSend = res.send.bind(res);
+
+      // 🔹 log incoming request
+      dataLogger.logRequest({
+        method: req.method,
+        url: req.originalUrl,
+        body: req.body,
+        auth: req.headers.authorization,
+        ip: req.ip ?? req.socket.remoteAddress,
+        userAgent: req.headers["user-agent"],
+      });
+
+      // ✅ capture res.json
+      res.json = function (body?: any) {
+        responseMessage = body?.message;
+        return originalJson(body);
+      } as any;
+
+      // ✅ capture res.send (important for non-json responses)
+      res.send = function (body?: any) {
+        if (!responseMessage && typeof body === "object") {
+          responseMessage = body?.message;
+        }
+        return originalSend(body);
+      } as any;
+
+      // 🔹 after response finished
+      res.on("finish", () => {
+        const responseTime = Date.now() - startTime;
+
+        dataLogger.logResponse(
+          req.method,
+          req.originalUrl,
+          res.statusCode,
+          responseTime,
+          responseMessage || res.statusMessage
+        );
+
+        dataLogger.logSlowApi(req.method, req.originalUrl, responseTime);
+      });
+
+      next();
+    });
 
     controllers.forEach((controller) => {
       this.app.use(url, controller.router);

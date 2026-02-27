@@ -14,6 +14,8 @@ import SwftcRoute from "./swftc/routes";
 import OnOffRampRoute from "./on_off_ramp/routes";
 import AdminRoute from "./admin/index";
 import DvpnRoute from "./dvpn/routes";
+import MpcWalletsRoute from "./mpcWallets/route";
+import ChainAbstractionRoute from "./chainAbstraction/route";
 
 const controllers = [
   new UserRoute(),
@@ -31,7 +33,9 @@ const controllers = [
   new AdminRoute(),
   new SolRoute(),
   new OnOffRampRoute(),
-  new DvpnRoute()
+  new DvpnRoute(),
+  new MpcWalletsRoute(),
+  new ChainAbstractionRoute()
 ]
 
 export default controllers;

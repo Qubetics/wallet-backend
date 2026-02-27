@@ -355,6 +355,65 @@ class DbHelper {
     }
   }
 
+  public async saveIntentWithdrawTxDetails(data: any) {
+    try {
+      const resultStatus: any = await Models.IntentTrnxHistoryModel.create(data);
+      return resultStatus;
+    } catch (err: any) {
+      console.error("Error in saveIntentWithdrawTxDetails", err)
+      throw err;
+    }
+  }
+  public async getTrnxHistoryByTxId(tx_id: string) {
+    try {
+      const resultStatus: any = await Models.TrnxHistoryModel.findOne(
+        {
+          where: { tx_id: tx_id },
+          attributes: ["id", "tx_id"],
+          raw: true
+        });
+      return resultStatus;
+    } catch (err: any) {
+      console.error("Error in getTrnxHistoryByTxId", err)
+      throw err;
+    }
+  }
+  public async getIntentTrnxHistory(where: any) {
+    try {
+      const resultStatus: any = await Models.IntentTrnxHistoryModel.findOne(
+        {
+          where: where,
+          attributes: ["id" , "tx_id"],
+          raw: true
+        });
+      return resultStatus;
+    } catch (err: any) {
+      console.error("Error in getTrnxHistoryByTxId", err)
+      throw err;
+    }
+  }
+
+  async updateIntentTrnxHistory(data:any,where:any) {
+    try {
+  
+      const [updatedCount] = await Models.IntentTrnxHistoryModel.update(
+        data, // add more fields if needed
+        {
+          where: where,
+        }
+      );
+  
+      if (updatedCount === 0) {
+        throw new Error('No matching record found or no changes made');
+      }
+  
+      return { status: true, message: 'Transaction updated successfully' };
+    } catch (error) {
+      console.error('Error updating transaction history:', error);
+      throw error;
+    }
+  }
+
 }
 
 const dbHelper = new DbHelper();

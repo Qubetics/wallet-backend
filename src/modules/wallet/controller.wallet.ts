@@ -858,6 +858,22 @@ class WalletController implements OnlyControllerInterface {
           },
         };
       }
+        
+      if (type == TxTypesEnum.CHAIN_ABSTRACTION) {
+        where_clause = {
+          ...where_clause,
+          type: TxTypesEnum.CHAIN_ABSTRACTION,
+        };
+      }
+
+      // if type is all, then exclude chain abstraction
+      if(type == "all") {
+        where_clause = {
+          ...where_clause,
+          type: { [Op.not]: TxTypesEnum.CHAIN_ABSTRACTION },
+        };
+      }
+
       const query: any = {
         attributes: attr,
         where: where_clause,

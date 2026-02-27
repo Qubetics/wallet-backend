@@ -9,7 +9,8 @@ import response from "../../../helpers/response/response.helpers";
 import { ticsEther } from "../../../helpers/common/ether_tics_helpers";
 import commonHelper from "../../../helpers/common/common.helpers";
 import { AbiItem } from "../../../interfaces/ether.interface";
-import { TokenType } from "../../../constants/global_enum";
+import { GlblBlockchainTxStatusEnum, TokenType } from "../../../constants/global_enum";
+import { ethers } from "ethers";
 
 class TicsController implements OnlyControllerInterface {
   constructor() {
@@ -394,6 +395,164 @@ class TicsController implements OnlyControllerInterface {
       });
     }
   }
+
+  public async saveTransaction(req: Request, res: Response) {
+    try {
+      const transactionHash = req.body.tx_hash;
+      const {
+        gas_estimate,
+        gas_price
+      } = req.body;
+      
+      const gasPriceWei = ethers.parseUnits(gas_price.toString(), "gwei"); // BigInt in Wei
+
+      // // Multiply with gas estimate
+      const maxGas = gasPriceWei * BigInt(gas_estimate); // stays as BigInt
+
+      // // Now convert to ETH or TICS for display
+      const gasInTics = ethers.formatEther(maxGas); // converts BigInt -> string ETH
+
+
+      if (req.coininfo.is_token == false && req.coininfo.coin_symbol == "tics") {
+       
+      } else if (
+        req.coininfo.coin_family == config.STATIC_COIN_FAMILY.TICS &&
+        req.coininfo.is_token == true &&
+        req.coininfo.token_type === "ERC20"
+      ) {
+     
+
+      } else if (
+        req.coininfo.coin_family == config.STATIC_COIN_FAMILY.TICS &&
+        req.coininfo.is_token == true &&
+        req.coininfo.token_type === "ERC721"
+      ) {
+        
+
+       }
+
+        req.body.tx_hash = transactionHash;
+        req.body.tx_status = "pending";
+        req.body.tx_fee = gasInTics;
+        req.body.blockchain_status = GlblBlockchainTxStatusEnum.CONFIRMED;
+
+        const resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
+
+        if (
+          req.coininfo.is_token == true &&
+          req.coininfo.token_type === "ERC721"
+        ) {
+          await Models.NFTModelModel.update(
+            {
+              available: 0,
+            },
+            { where: { token_address: req.coininfo.token_address as string } }
+          );
+        }
+
+        if (resultStatus.status && resultStatus.status == true) {
+          if (req.body.tx_type == 'Approve') {
+
+            return response.success(res, {
+              data: {
+                status: true,
+                message: "Transaction saved successfully",
+                tx_hash: transactionHash,
+              },
+            });
+          } else if (req.body.tx_type == 'withdraw') {
+
+            return response.success(res, {
+              data: {
+                status: true,
+                message: "Transaction saved successfully",
+                tx_hash: transactionHash,
+              },
+            });
+          } else {
+            return response.success(res, {
+              data: {
+                status: true,
+                message: "Transaction saved successfully",
+                tx_hash: transactionHash,
+              },
+            });
+          }
+        } else {
+          return response.error(res, {
+            data: {
+              status: false,
+              message: "Transaction save failed",
+            },
+          });
+        }
+
+    } catch (err: any) {
+      return response.error(res, {
+        data: {
+          status: false,
+          message: "Transaction save failed",
+        },
+      });
+    }
+  }
+
+  public async updateTransactionStatus(req: Request, res: Response) {
+    try {
+      
+      const { tx_status, tx_hash } = req.body;
+
+      if(!tx_hash || !tx_status) {
+        return response.error(res, {
+          data: {
+            status: false,
+            message: "Transaction hash and status are required",
+          },
+        });
+      }
+      // const dapp_transaction: any = req.body.add_amount;
+      const  transaction: any = await dbHelper.getTrnxHistoryByTxId(tx_hash);
+
+      if(!transaction) {
+        return response.error(res, {
+          data: {
+            status: false,
+            message: "Transaction not found",
+          },
+        });
+      }
+      
+      let TX_STATUS = 'pending'
+      if(tx_status == 1 || tx_status == 'confirmed' || tx_status == 'completed'){
+        TX_STATUS = 'completed'
+      }else if(tx_status == 0 || tx_status == 'failed'){
+        TX_STATUS = 'failed'
+      }
+
+
+      if(transaction) {
+        await Models.TrnxHistoryModel.update(
+          { status: TX_STATUS },
+          { where: { tx_id: tx_hash, id : transaction.id } }
+        );
+      }
+
+      return response.success(res, {
+        data: {
+          status: true,
+          message: "Transaction status updated successfully",
+        },
+      });
+    }
+    catch (err: any) {
+      return response.error(res, {
+        data: {
+          status: false,
+          message: "Transaction status update failed",
+        },
+      });
+    }
+  }  
 }
 
 export const TicsControllers = new TicsController();
