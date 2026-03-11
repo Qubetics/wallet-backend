@@ -7,9 +7,10 @@ import { bigNumberSafeMath } from "../../../helpers/common/globalFunctions";
 import { config } from "../../../config";
 import { global_helper } from "../../../helpers/common/global_helper";
 import { utxobtc } from "../../../helpers/common/btc_helpers";
-import { GlblCode } from "../../../constants/global_enum";
+import { GlblBlockchainTxStatusEnum, GlblCode } from "../../../constants/global_enum";
 import commonHelper from "../../../helpers/common/common.helpers";
 import axios from "axios";
+import { TrnxHistoryModel } from "../../../models";
 
 class BTCController implements OnlyControllerInterface {
   constructor() {
@@ -142,6 +143,100 @@ class BTCController implements OnlyControllerInterface {
       console.error("ERROR in BTC unspent API", err)
     }
   }
+   
+
+  public async saveTransaction(req: Request, res: Response) {
+    try {
+      console.log("req body btc saveTransaction >>>", req.body);
+
+      const transactionHash = req.body.tx_hash;
+
+   
+      req.body.tx_hash = transactionHash;
+      req.body.tx_type = req.body.tx_type ,
+      req.body.nonce = req.body.nonce ? req.body.nonce : 0;
+      req.body.gas_price = req.body.eth_gas_price ? req.body.eth_gas_price : 0;
+      req.body.gas_estimate = req.body.gas_estimate ? req.body.gas_estimate : 0;
+      req.body.eth_gas_price = req.body.gas_estimate
+        ? req.body.gas_estimate
+        : 0;
+      req.body.tx_status = "pending";
+      req.body.blockchain_status = GlblBlockchainTxStatusEnum.CONFIRMED;
+
+  
+      const resultStatus: any = await dbHelper.saveWithdrawTxDetails(req);
+
+      if (resultStatus.status && resultStatus.status == true) {
+        return response.success(res, {
+          data: {
+            status: true,
+            message: "Transaction saved successfully",
+            data: {},
+          },
+        });
+      } else {
+        return response.error(res, {
+          data: {
+            status: false,
+            message: "Transaction save failed",
+            data: {},
+          },
+        });
+      }
+    } catch (err: any) {
+      await commonHelper.save_error_logs("btc_send", err.message);
+      console.error("err", err as Error);
+    }
+  }
+
+  public async updateTransactionStatus(req: Request, res: Response) {
+    try {
+      console.log("req body btc updateTransactionStatus >>>", req.body);
+
+      const { tx_status, tx_hash } = req.body;
+
+      if(!tx_hash || !tx_status) {
+        return response.error(res, {
+          data: {
+            status: false,
+            message: "Transaction hash and status are required",
+          },
+        });
+      }
+
+      const  transaction: any = await dbHelper.getTrnxHistoryByTxId(tx_hash);
+
+      if(!transaction) {
+        return response.error(res, {
+          data: {
+            status: false,
+            message: "Transaction not found",
+          },
+        });
+      }
+
+      if(transaction) {
+        await TrnxHistoryModel.update(
+          { status: tx_status },
+          { where: { tx_id: tx_hash, id : transaction.id } }
+        );
+      }
+     
+        return response.success(res, {
+          data: {
+            status: true,
+            message: "Transaction status updated successfully",
+            data: {},
+          },
+        });
+      
+    } catch (err: any) {
+      await commonHelper.save_error_logs("btc_send", err.message);
+      console.error("err", err as Error);
+    }
+  }
+
+
 }
 
 let btcController = new BTCController();
