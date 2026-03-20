@@ -9,7 +9,21 @@
       "email": "dev@qubetics.com"
     }
   },
-  "tags": [{ "name": "Wallets" }],
+  "basePath": "/api/v1",
+  "tags": [
+    { "name": "Wallets" },
+    { "name": "User" },
+    { "name": "Auth" },
+    { "name": "DVPN" },
+    { "name": "On-Chain" },
+    { "name": "SWFTC" },
+    { "name": "Solana" },
+    { "name": "On-Off Ramp" },
+    { "name": "MPC Wallets" },
+    { "name": "Chain Abstraction" },
+    { "name": "Qubetics" },
+    { "name": "Admin" }
+  ],
   "parameters": {
     "Authorization": {
       "in": "header",
@@ -39,7 +53,7 @@
     }
   },
   "paths": {
-    "/wallet/addToken": {
+    "/wallet/addtoken": {
       "post": {
         "tags": ["Wallets"],
         "summary": "",
@@ -507,7 +521,7 @@
         }
       }
     },
-    "/wallet/order/swap_coinlist": {
+    "/wallet/swap_coinlist": {
       "post": {
         "tags": ["Wallets"],
         "summary": "",
@@ -572,7 +586,7 @@
       }
     },
 
-    "/wallet/order/updateWatchlist": {
+    "/wallet/updateWatchlist": {
       "post": {
         "tags": ["Wallets"],
         "summary": "",
@@ -786,7 +800,7 @@
         }
       }
     },
-    "/user/wallet/allBalances": {
+    "/wallet/allBalances": {
       "post": {
         "tags": ["Wallets"],
         "summary": "",
@@ -880,62 +894,6 @@
         }
       }
     },
-    "/wallet/updateBalance": {
-      "post": {
-        "tags": ["Wallets"],
-        "summary": "",
-        "parameters": [
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "get Watch list",
-            "description": "",
-            "required": true,
-            "schema": {
-              "properties": {
-                "wallet_address": {
-                  "type": "string"
-                },
-                "coin_family": {
-                  "type": "string"
-                },
-                "coin_id": {
-                  "type": "number"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "portfolio created successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unable to create wallets.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
-        }
-      }
-    },
     "/wallet/fetchValue": {
       "get": {
         "tags": ["Wallets"],
@@ -972,49 +930,6 @@
         "parameters": [
           {
             "$ref": "#/parameters/Authorization"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved wallet details for the user.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {}
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid user ID provided. or User not found.",
-            "schema": {
-              "type": "object",
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/wallet/transaction/downloadcsv/{id}": {
-      "get": {
-        "tags": ["Wallets"],
-        "summary": "Get User Wallets",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "users-list",
-            "description": "Fetches the wallet information of a specific user by their user ID.",
-
-            "required": true,
-            "schema": {}
           }
         ],
         "responses": {
@@ -1772,94 +1687,6 @@
         }
       }
     },
-    "/ethereum/{coin}/sendSwapTrnx": {
-      "post": {
-        "tags": ["ethereum"],
-        "summary": "",
-        "parameters": [
-          {
-            "name": "coin",
-            "in": "path",
-            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "",
-            "required": true,
-            "schema": {
-              "properties": {
-                "tx_hash": {
-                  "type": "number"
-                },
-                "amount": {
-                  "type": "string"
-                },
-                "from": {
-                  "type": "string"
-                },
-                "to": {
-                  "type": "string"
-                },
-                "tx_type": {
-                  "type": "string"
-                },
-                "amount_in_fiat": {
-                  "type": "string"
-                },
-                "swap_fee": {
-                  "type": "string"
-                },
-                "fiat_type": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "tx_hash",
-                "amount",
-                "from",
-                "to",
-                "tx_type",
-                "amount_in_fiat",
-                "swap_fee",
-                "fiat_type"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "portfolio created successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unable to create wallets.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
-        }
-      }
-    },
     "/ethereum/{coin}/nonce": {
       "post": {
         "tags": ["ethereum"],
@@ -1887,73 +1714,6 @@
                 }
               },
               "required": ["wallet_address"]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "portfolio created successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unable to create wallets.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/ethereum/{coin}/get_raw_data_string": {
-      "post": {
-        "tags": ["ethereum"],
-        "summary": "",
-        "parameters": [
-          {
-            "name": "coin",
-            "in": "path",
-            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "",
-            "required": true,
-            "schema": {
-              "properties": {
-                "my_address": {
-                  "type": "string"
-                },
-                "dest_address": {
-                  "type": "string"
-                },
-                "amount": {
-                  "type": "string"
-                },
-                "coin_type": {
-                  "type": "string"
-                }
-              },
-              "required": ["my_address", "dest_address", "amount", "coin_type"]
             }
           }
         ],
@@ -2559,94 +2319,6 @@
         }
       }
     },
-    "/polygon/{coin}/sendSwapTrnx": {
-      "post": {
-        "tags": ["polygon"],
-        "summary": "",
-        "parameters": [
-          {
-            "name": "coin",
-            "in": "path",
-            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "",
-            "required": true,
-            "schema": {
-              "properties": {
-                "tx_hash": {
-                  "type": "number"
-                },
-                "amount": {
-                  "type": "string"
-                },
-                "from": {
-                  "type": "string"
-                },
-                "to": {
-                  "type": "string"
-                },
-                "tx_type": {
-                  "type": "string"
-                },
-                "amount_in_fiat": {
-                  "type": "string"
-                },
-                "swap_fee": {
-                  "type": "string"
-                },
-                "fiat_type": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "tx_hash",
-                "amount",
-                "from",
-                "to",
-                "tx_type",
-                "amount_in_fiat",
-                "swap_fee",
-                "fiat_type"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "portfolio created successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unable to create wallets.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
-        }
-      }
-    },
     "/polygon/{coin}/nonce": {
       "post": {
         "tags": ["polygon"],
@@ -2674,73 +2346,6 @@
                 }
               },
               "required": ["wallet_address"]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "portfolio created successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unable to create wallets.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
-        }
-      }
-    },
-    "/polygon/{coin}/get_raw_data_string": {
-      "post": {
-        "tags": ["polygon"],
-        "summary": "",
-        "parameters": [
-          {
-            "name": "coin",
-            "in": "path",
-            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "",
-            "required": true,
-            "schema": {
-              "properties": {
-                "my_address": {
-                  "type": "string"
-                },
-                "dest_address": {
-                  "type": "string"
-                },
-                "amount": {
-                  "type": "string"
-                },
-                "coin_type": {
-                  "type": "string"
-                }
-              },
-              "required": ["my_address", "dest_address", "amount", "coin_type"]
             }
           }
         ],
@@ -2849,26 +2454,19 @@
       }
     },
     "/bitcoin/unspent/{address}": {
-      "post": {
+      "get": {
         "tags": ["bitcoin"],
-        "summary": "",
+        "summary": "Get unspent outputs for address",
         "parameters": [
           {
-            "name": "coin",
+            "name": "address",
             "in": "path",
-            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
+            "description": "Bitcoin wallet address",
             "required": true,
             "type": "string"
           },
           {
             "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "",
-            "required": true,
-            "schema": {}
           }
         ],
         "responses": {
@@ -2899,460 +2497,1051 @@
         }
       }
     },
-
-    "/priceAlert/addNew": {
+    "/auth/authorisation": {
       "post": {
-        "tags": ["priceAlert"],
-        "summary": "",
+        "tags": ["Auth"],
+        "summary": "Generate new tokens",
         "parameters": [
           {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
             "in": "body",
-            "name": "transaction list",
-            "description": "",
+            "name": "body",
+            "description": "Refresh token for authorization",
             "required": true,
             "schema": {
+              "type": "object",
               "properties": {
-                "wallet_address": {
-                  "type": "string"
-                },
-                "coin_symbol": {
-                  "type": "string"
-                },
-                "coin_name": {
-                  "type": "string"
-                },
-                "percentage": {
-                  "type": "string"
-                },
-                "price_in_usd_per_unit": {
-                  "type": "string"
-                },
-                "alert_price": {
-                  "type": "string"
-                },
-                "coin_family": {
-                  "type": "string"
-                },
-                "token_address": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "wallet_address",
-                "coin_symbol",
-                "coin_name",
-                "percentage",
-                "price_in_usd_per_unit",
-                "alert_price",
-                "coin_family",
-                "token_address"
-              ]
+                "refreshToken": { "type": "string" }
+              }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "portfolio created successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unable to create wallets.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
+          "200": { "description": "Tokens generated successfully.", "schema": { "$ref": "#/definitions/ErrorResponse" } },
+          "400": { "description": "Unable to authorize.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
         }
       }
     },
-    "/priceAlert/changeStatus": {
+    "/bitcoin/{coin}/saveTransaction": {
       "post": {
-        "tags": ["priceAlert"],
-        "summary": "",
+        "tags": ["bitcoin"],
+        "summary": "Save Bitcoin transaction",
         "parameters": [
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "",
-            "required": true,
-            "schema": {
-              "properties": {
-                "price_id": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              },
-              "required": ["price_id", "status"]
-            }
-          }
+          { "name": "coin", "in": "path", "required": true, "type": "string" },
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
         ],
         "responses": {
-          "200": {
-            "description": "portfolio created successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unable to create wallets.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
         }
       }
     },
-    "/priceAlert/changeAmount": {
+    "/bitcoin/{coin}/updateTransactionStatus": {
       "post": {
-        "tags": ["priceAlert"],
-        "summary": "",
+        "tags": ["bitcoin"],
+        "summary": "Update Bitcoin transaction status",
         "parameters": [
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "",
-            "required": true,
-            "schema": {
-              "properties": {
-                "price_id": {
-                  "type": "string"
-                },
-                "amount": {
-                  "type": "string"
-                }
-              },
-              "required": ["price_id", "amount"]
-            }
-          }
+          { "name": "coin", "in": "path", "required": true, "type": "string" },
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
         ],
         "responses": {
-          "200": {
-            "description": "portfolio created successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unable to create wallets.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
         }
       }
     },
-    "/priceAlert/delete": {
+    "/chainAbstraction/getCoinList": {
+      "post": {
+        "tags": ["Chain Abstraction"],
+        "summary": "Get coin list",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/chainAbstraction/saveIntentHash": {
+      "post": {
+        "tags": ["Chain Abstraction"],
+        "summary": "Save intent hash",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/chainAbstraction/updateIntentStatus": {
+      "post": {
+        "tags": ["Chain Abstraction"],
+        "summary": "Update intent status",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/dvpn/sessionHistory": {
+      "post": {
+        "tags": ["DVPN"],
+        "summary": "Get DVPN session history",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "schema": { "type": "object", "properties": { "limit": { "type": "number" }, "page": { "type": "number" } } } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/dvpn/uploadBuild": {
+      "post": {
+        "tags": ["DVPN"],
+        "summary": "Upload DVPN build",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "formData", "name": "build", "type": "file", "description": "Build file" }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/dvpn/getBuildList": {
+      "get": {
+        "tags": ["DVPN"],
+        "summary": "Get DVPN build list",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "name": "platform", "in": "query", "type": "string", "enum": ["linux", "windows"] },
+          { "name": "limit", "in": "query", "type": "number" },
+          { "name": "page", "in": "query", "type": "number" }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/dvpn/downloadBuild/{buildId}/{platform}": {
+      "get": {
+        "tags": ["DVPN"],
+        "summary": "Download DVPN build",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "name": "buildId", "in": "path", "required": true, "type": "string" },
+          { "name": "platform", "in": "path", "required": true, "type": "string", "enum": ["linux", "windows"] }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "file" } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/dvpn/build/{platform}": {
+      "get": {
+        "tags": ["DVPN"],
+        "summary": "Get latest DVPN build",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "name": "platform", "in": "path", "required": true, "type": "string", "enum": ["linux", "windows"] }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/mpc/saveMpcWallets": {
+      "post": {
+        "tags": ["MPC Wallets"],
+        "summary": "Save MPC wallets",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/mpc/getMpcWallets": {
+      "post": {
+        "tags": ["MPC Wallets"],
+        "summary": "Get MPC wallets",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/mpc/fetchMempoolBalance/{address}": {
+      "get": {
+        "tags": ["MPC Wallets"],
+        "summary": "Fetch mempool balance",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "name": "address", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/on-chain/commision_data": {
+      "get": {
+        "tags": ["On-Chain"],
+        "summary": "Get commission data",
+        "parameters": [{ "$ref": "#/parameters/Authorization" }],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/on-chain/allowance": {
+      "post": {
+        "tags": ["On-Chain"],
+        "summary": "Check token allowance",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object", "properties": { "chain_id": { "type": "number" }, "tokenAddress": { "type": "string" }, "walletAddress": { "type": "string" } } } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/on-chain/swap": {
+      "post": {
+        "tags": ["On-Chain"],
+        "summary": "Execute swap",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/on-chain/quote": {
+      "post": {
+        "tags": ["On-Chain"],
+        "summary": "Get swap quote",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/on-chain/approval": {
+      "post": {
+        "tags": ["On-Chain"],
+        "summary": "Get token approval",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/on-chain/spender": {
+      "post": {
+        "tags": ["On-Chain"],
+        "summary": "Get spender info",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/on-chain/tokens": {
+      "post": {
+        "tags": ["On-Chain"],
+        "summary": "Get tokens",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/on_off_ramp/mercuryo/initiateTx": {
+      "post": {
+        "tags": ["On-Off Ramp"],
+        "summary": "Initiate Mercuryo transaction",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/on_off_ramp/mercuryo_webhook": {
+      "post": {
+        "tags": ["On-Off Ramp"],
+        "summary": "Mercuryo webhook",
+        "parameters": [
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/qubetics/{coin}/gas_estimation": {
+      "post": {
+        "tags": ["Qubetics"],
+        "summary": "Get gas estimation",
+        "parameters": [
+          { "name": "coin", "in": "path", "required": true, "type": "string" },
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/qubetics/{coin}/send": {
+      "post": {
+        "tags": ["Qubetics"],
+        "summary": "Send transaction",
+        "parameters": [
+          { "name": "coin", "in": "path", "required": true, "type": "string" },
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/qubetics/{coin}/saveTransaction": {
+      "post": {
+        "tags": ["Qubetics"],
+        "summary": "Save transaction",
+        "parameters": [
+          { "name": "coin", "in": "path", "required": true, "type": "string" },
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/qubetics/{coin}/updateTransactionStatus": {
+      "post": {
+        "tags": ["Qubetics"],
+        "summary": "Update transaction status",
+        "parameters": [
+          { "name": "coin", "in": "path", "required": true, "type": "string" },
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/qubetics/{coin}/nonce": {
+      "post": {
+        "tags": ["Qubetics"],
+        "summary": "Get nonce",
+        "parameters": [
+          { "name": "coin", "in": "path", "required": true, "type": "string" },
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/qubetics/send/nativeAddress": {
+      "post": {
+        "tags": ["Qubetics"],
+        "summary": "Send from native address",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/qubetics/gas_estimation/nativeAddress": {
+      "get": {
+        "tags": ["Qubetics"],
+        "summary": "Get gas estimation for native address",
+        "parameters": [{ "$ref": "#/parameters/Authorization" }],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/solana/{coin}/send": {
+      "post": {
+        "tags": ["Solana"],
+        "summary": "Send Solana transaction",
+        "parameters": [
+          { "name": "coin", "in": "path", "required": true, "type": "string" },
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/swftc/post_data": {
+      "post": {
+        "tags": ["SWFTC"],
+        "summary": "Post SWFTC data",
+        "parameters": [
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/swftc/queryCoinList": {
+      "post": {
+        "tags": ["SWFTC"],
+        "summary": "Query coin list",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object", "properties": { "addresses": { "type": "array", "items": { "type": "string" } } } } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/swftc/queryCoinData": {
+      "post": {
+        "tags": ["SWFTC"],
+        "summary": "Query coin data",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/swftc/getBaseInfo": {
+      "post": {
+        "tags": ["SWFTC"],
+        "summary": "Get base info",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object", "properties": { "depositCoinCode": { "type": "string" }, "receiveCoinCode": { "type": "string" } } } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/swftc/accountExchange": {
+      "post": {
+        "tags": ["SWFTC"],
+        "summary": "Account exchange",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/admin/auth/login": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Admin login",
+        "parameters": [{ "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/admin/auth/logout": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Admin logout",
+        "parameters": [{ "$ref": "#/parameters/Authorization" }],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/admin/auth/googleAuthStatus": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Get Google Auth status",
+        "parameters": [{ "$ref": "#/parameters/Authorization" }],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/admin/auth/googleAuthSecretkey": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Get Google Auth secret key",
+        "parameters": [{ "$ref": "#/parameters/Authorization" }],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/admin/auth/googleAuthEnabledisable": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Enable/disable Google Auth",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/admin/auth/google2faVerify": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Verify Google 2FA",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/admin/auth/changePassword": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Change password",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/admin/commission/getCommissionDetails": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Get commission details",
+        "parameters": [{ "$ref": "#/parameters/Authorization" }],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/admin/commission/updateCommissionDetails": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Update commission details",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/admin/wallet/menuList": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Get menu list",
+        "parameters": [{ "$ref": "#/parameters/Authorization" }],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/admin/wallet/transactionHistory": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Get transaction history",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/admin/wallet/dashboard": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Get dashboard data",
+        "parameters": [{ "$ref": "#/parameters/Authorization" }],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/admin/token/tokenList": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Get token list",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/admin/token/addToken": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Add token",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/admin/token/updateTokenLogo": {
+      "put": {
+        "tags": ["Admin"],
+        "summary": "Update token logo",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/admin/token/toogleSwap": {
+      "put": {
+        "tags": ["Admin"],
+        "summary": "Toggle swap",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/admin/token/toogleStatus": {
+      "put": {
+        "tags": ["Admin"],
+        "summary": "Toggle status",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/admin/token/searchToken": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Search token",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/admin/notification/list": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Get notification list",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/admin/notification/create": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Create notification",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/admin/notification/update": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Update notification",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/admin/notification/delete/{id}": {
       "delete": {
-        "tags": ["priceAlert"],
-        "summary": "",
+        "tags": ["Admin"],
+        "summary": "Delete notification",
         "parameters": [
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "",
-            "required": true,
-            "schema": {
-              "properties": {
-                "price_id": {
-                  "type": "string"
-                }
-              },
-              "required": ["price_id"]
-            }
-          }
+          { "$ref": "#/parameters/Authorization" },
+          { "name": "id", "in": "path", "required": true, "type": "string" }
         ],
         "responses": {
-          "200": {
-            "description": "portfolio created successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unable to create wallets.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
         }
       }
     },
-    "/priceAlert/delete-all": {
+    "/admin/banner/getBannerList": {
       "post": {
-        "tags": ["priceAlert"],
-        "summary": "",
+        "tags": ["Admin"],
+        "summary": "Get banner list",
         "parameters": [
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "",
-            "required": true,
-            "schema": {
-              "properties": {
-                "coin_id": {
-                  "type": "string"
-                }
-              },
-              "required": ["coin_id"]
-            }
-          }
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "schema": { "type": "object" } }
         ],
         "responses": {
-          "200": {
-            "description": "portfolio created successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unable to create wallets.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
         }
       }
     },
-    "/priceAlert/get": {
+    "/admin/banner/createBanner": {
       "post": {
-        "tags": ["priceAlert"],
-        "summary": "",
+        "tags": ["Admin"],
+        "summary": "Create banner",
         "parameters": [
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "",
-            "required": true,
-            "schema": {
-              "properties": {
-                "coin_id": {
-                  "type": "string"
-                }
-              },
-              "required": ["coin_id"]
-            }
-          }
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "formData", "name": "image", "type": "file" },
+          { "in": "body", "name": "body", "schema": { "type": "object" } }
         ],
         "responses": {
-          "200": {
-            "description": "portfolio created successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unable to create wallets.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
         }
       }
     },
-    "/priceAlert/coins": {
-      "post": {
-        "tags": ["priceAlert"],
-        "summary": "",
+    "/admin/banner/deleteBanner/{id}": {
+      "delete": {
+        "tags": ["Admin"],
+        "summary": "Delete banner",
         "parameters": [
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "",
-            "required": true,
-            "schema": {
-              "properties": {
-                "page": {
-                  "type": "string"
-                },
-                "limit": {
-                  "type": "string"
-                },
-                "coin_id": {
-                  "type": "string"
-                }
-              },
-              "required": ["coin_id", "page", "limit"]
-            }
-          }
+          { "$ref": "#/parameters/Authorization" },
+          { "name": "id", "in": "path", "required": true, "type": "string" }
         ],
         "responses": {
-          "200": {
-            "description": "portfolio created successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unable to create wallets.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
         }
       }
     },
-    "/priceAlert/getList": {
+    "/admin/banner/updateBanner": {
       "post": {
-        "tags": ["priceAlert"],
-        "summary": "",
+        "tags": ["Admin"],
+        "summary": "Update banner",
         "parameters": [
-          {
-            "$ref": "#/parameters/Authorization"
-          },
-          {
-            "in": "body",
-            "name": "transaction list",
-            "description": "",
-            "required": true,
-            "schema": {
-              "properties": {
-                "fiat_type": {
-                  "type": "string"
-                },
-                "addressList": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              },
-              "required": ["fiat_type"]
-            }
-          }
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
         ],
         "responses": {
-          "200": {
-            "description": "portfolio created successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unable to create wallets.",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/wallet/rpcUrl": {
+      "get": {
+        "tags": ["Wallets"],
+        "summary": "Get RPC URL",
+        "parameters": [],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/wallet/nativeCoinBalance": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "Get native coin balance",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object", "properties": { "wallet_address": { "type": "string" }, "coin_family": { "type": "number" } } } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/wallet/rpcBalance": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "Get RPC balance",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/wallet/coinWalletDetail": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "Get coin wallet detail",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/wallet/nft/from_moalis": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "Get NFTs from Moralis",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/wallet/nfts": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "Get NFTs",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/wallet/coin/graph/data": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "Get coin graph data",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/wallet/save/device/token": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "Save device token",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/user/create/wallet2": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Create wallet (v2)",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/user/create/wallet/native": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Create native wallet",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/user/logout": {
+      "post": {
+        "tags": ["User"],
+        "summary": "User logout",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/user/announcements": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Get announcements",
+        "parameters": [
+          { "$ref": "#/parameters/Authorization" },
+          { "in": "body", "name": "body", "schema": { "type": "object" } }
+        ],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/user/banners": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get banners",
+        "parameters": [{ "$ref": "#/parameters/Authorization" }],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
+        }
+      }
+    },
+    "/user/current_timestamp": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Get current timestamp",
+        "parameters": [{ "in": "body", "name": "body", "schema": { "type": "object" } }],
+        "responses": {
+          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
+          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
         }
       }
     }

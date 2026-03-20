@@ -1,7 +1,10 @@
 import express from "express";
+import { validate as validateExpress } from "express-validation";
 import { ControllerInterface } from "../../interfaces/controller.interface";
 import jwtVerification from "../../middlewares/verify.middleware";
-import { dvpnController } from "./controller"
+import { dvpnController } from "./controller";
+import dvpnValidator from "./validator";
+import { uploadBuildToHuawei } from "./middleware";
 
 class DvpnPlansRoute implements ControllerInterface {
     public path = "/dvpn";
@@ -11,14 +14,30 @@ class DvpnPlansRoute implements ControllerInterface {
         this.initializeRoutes();
     }
 
-    //Initialize the routes
     public initializeRoutes() {
-        
-        //get dvpn session history
         this.router.post(`${this.path}/sessionHistory`,
-         jwtVerification.verifyToken,
-         dvpnController.sessionHistory);
+            jwtVerification.verifyToken,
+            dvpnController.sessionHistory);
 
+        this.router.post(`${this.path}/uploadBuild`,
+            jwtVerification.verifyToken,
+            uploadBuildToHuawei,
+            dvpnController.uploadBuild);
+
+        this.router.get(`${this.path}/getBuildList`,
+            jwtVerification.verifyToken,
+            validateExpress(dvpnValidator.getBuildList),
+            dvpnController.getBuildList);
+
+        this.router.get(`${this.path}/downloadBuild/:buildId/:platform`,
+            jwtVerification.verifyToken,
+            validateExpress(dvpnValidator.downloadBuild),
+            dvpnController.downloadBuild);
+
+        this.router.get(`${this.path}/build/:platform`,
+            jwtVerification.verifyToken,
+            validateExpress(dvpnValidator.getLatestBuild),
+            dvpnController.getLatestBuild);
     }
 }
 export default DvpnPlansRoute;
