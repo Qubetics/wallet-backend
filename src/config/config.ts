@@ -114,6 +114,14 @@ export const config = {
   MORALIS_SCRIPT_ID: 'moralis-chart-widget',
   MORALIS_SCRIPT_SRC: 'https://moralis.com/static/embed/chart.js',
 
+  CMC_CONFIG_KEYS:{
+    KEY1: zookeeperConfig.config.CMC_CONFIG_KEYS.KEY1,
+    KEY2: zookeeperConfig.config.CMC_CONFIG_KEYS.KEY2,
+    KEY3: zookeeperConfig.config.CMC_CONFIG_KEYS.KEY3,
+    KEY4: zookeeperConfig.config.CMC_CONFIG_KEYS.KEY4,
+    KEY5: zookeeperConfig.config.CMC_CONFIG_KEYS.KEY5,
+  },
+
   CONTRACT_ABI: [
     {
       constant: true,

@@ -1,4 +1,6 @@
-import { Server as HTTPServer, createServer } from "https";
+// import { Server as HTTPServer, createServer } from "https";
+import { Server as HTTPServer, createServer } from "http";
+
 import express, { NextFunction, Request, Response } from "express";
 import { ServerInterface } from "./interfaces/server.interface";
 import controllers from "./modules/controllers.index";
@@ -17,24 +19,27 @@ import dataLogger from "./helpers/common/dataLogger.helper";
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 const basicAuth = require('express-basic-auth');
-import fs from 'fs';
+import { factPriceUpdateHelper } from "./modules/faitPriceUpdate/helper";
+import schedule from "node-schedule";
+import logger from "./helpers/common/logger.helper";
 
 
 class Server implements ServerInterface {
   public app: express.Application;
   public httpServer: HTTPServer;
-  public sslKey: Buffer;
-  public sslCert: Buffer;
+    // public sslKey: Buffer;
+    // public sslCert: Buffer;
 
   constructor() {
-    this.sslKey = fs.readFileSync(path.join(__dirname, './cert/key.pem'));
-    this.sslCert = fs.readFileSync(path.join(__dirname, './cert/cert.pem'));
+    // this.sslKey = fs.readFileSync(path.join(__dirname, './cert/key.pem'));
+    // this.sslCert = fs.readFileSync(path.join(__dirname, './cert/cert.pem'));
 
 
     this.app = express();
 
     this.app.use(expressFileUploader());
-    this.httpServer = createServer({ key: this.sslKey, cert: this.sslCert, passphrase: config.SSL_PASS_PHRASE }, this.app);
+    // this.httpServer = createServer({ key: this.sslKey, cert: this.sslCert, passphrase: config.SSL_PASS_PHRASE }, this.app);
+    this.httpServer = createServer(this.app);
 
     this.app.use(helmet());
     this.app.use(helmet.contentSecurityPolicy({
@@ -93,7 +98,7 @@ class Server implements ServerInterface {
     });
 
     this.initializeControllers();
-
+    this.initializeFiatPriceUpdate();
     // Basic authentication middleware for Swagger UI
     this.app.use('/KU8S5Ln7siecCst', basicAuth({
       users: { 'REDACTED': 'REDACTED' }, // Set your username and password here
@@ -134,7 +139,10 @@ class Server implements ServerInterface {
       console.log('server listen on port:', config.PORT);
     });
     this.app.get("/", (req: Request, res: Response) => {
-      res.send(InfoMessages.APP_INFO).status(GlblCode.SUCCESS);
+      res.json({
+        status: true,
+        message: `Stage Qubetics Live ☀️☀️`
+      });
     });
     this.app.get('/transaction-success', function (req, res) {
       res.sendFile(__dirname + '/views/index.html')
@@ -230,6 +238,22 @@ class Server implements ServerInterface {
     controllers.forEach((controller) => {
       this.app.use(url, controller.router);
     });
+  }
+
+  //   // Temp fiat Price Update coinmarketcap every 15 mins
+  public initializeFiatPriceUpdate() {
+    // Runs every 15 minutes Update fiat price
+    schedule.scheduleJob('*/15 * * * *', async () => {
+      logger.info('Updating fiat price every 15 minutes 🚅🚅 ');
+      await factPriceUpdateHelper.updateFiatPrice();
+    });
+     
+    //FOR TESTING ONLY
+    // // Run every 20 seconds
+    // schedule.scheduleJob('*/20 * * * * *', async () => {
+    //   logger.info('Updating fiat price every 20 seconds 🚅🚅 ');
+    //   await factPriceUpdateHelper.updateFiatPrice();
+    // });
   }
 
   public checkHealth() {
