@@ -80,6 +80,22 @@ class DvpnHelpers {
       return { status: false, error: error?.message, build: null };
     }
   }
+
+  public async getLatestBuildVersion(platform: string) {
+    try {
+      // Wrap response in an object for consistency and future extensibility
+      const buildVersion = await Models.DvpnBuildModel.findOne({ 
+        where: { platform }, 
+        order: [['created_at', 'DESC']], 
+        limit: 1, 
+        attributes: ['id', 'version', 'created_at'] 
+      });
+      return { status: !!buildVersion, buildVersion };
+    } catch (error: any) {
+      console.error("Error in getLatestBuildVersion>>>>", error);
+      return { status: false, error: error?.message, buildVersion: null };
+    }
+  }
 }
 
 export const dvpnHelper = new DvpnHelpers()

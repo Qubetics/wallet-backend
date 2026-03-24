@@ -255,6 +255,37 @@ class DvpnController implements OnlyControllerInterface {
       });
     }
   }
+
+
+  public async getLatestBuildVersion(req: Request, res: Response) {
+    try {
+      const { platform } = req.params;
+      const buildVersion = await dvpnHelper.getLatestBuildVersion(platform);
+
+      if (buildVersion?.status === false) {
+        return res.status(404).json({
+          status: false,
+          code: 404,
+          message: buildVersion?.error || 'Failed to get latest build version',
+        });
+      }
+
+     
+      return res.status(GlblCode.SUCCESS).json({
+        status: true,
+        code: GlblCode.SUCCESS,
+        message: 'Latest build fetched successfully',
+        data: { build_version: buildVersion?.buildVersion?.version },
+      });
+    } catch (err) {
+      console.error('Error in getLatestBuild:', err);
+      return res.status(GlblCode.ERROR_CODE).json({
+        status: false,
+        code: GlblCode.ERROR_CODE,
+        message: 'Failed to get latest build',
+      });
+    }
+  }
 }
 
 export const dvpnController = new DvpnController();

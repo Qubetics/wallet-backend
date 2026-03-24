@@ -38,6 +38,10 @@ class DvpnPlansRoute implements ControllerInterface {
             jwtVerification.verifyToken,
             validateExpress(dvpnValidator.getLatestBuild),
             dvpnController.getLatestBuild);
+
+        this.router.get(`${this.path}/build/version/latest/:platform`,
+            jwtVerification.verifyToken,
+            dvpnController.getLatestBuildVersion);
     }
 }
 export default DvpnPlansRoute;
