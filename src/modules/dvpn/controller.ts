@@ -9,11 +9,13 @@ import { config } from "../../config";
 const PLATFORM_EXTENSION_MAP: Record<string, string> = {
   linux: 'deb',
   windows: 'exe',
+  macos: 'pkg',
 };
 
 const EXTENSION_PLATFORM_MAP: Record<string, string> = {
   deb: 'linux',
   exe: 'windows',
+  pkg: 'macos'
 };
 
 class DvpnController implements OnlyControllerInterface {
@@ -92,7 +94,7 @@ class DvpnController implements OnlyControllerInterface {
         return res.status(GlblCode.ERROR_CODE).json({
           status: false,
           code: GlblCode.ERROR_CODE,
-          message: 'Platform is required (linux or windows) or must be inferrable from file extension (.deb or .exe)',
+          message: 'Platform is required (linux or windows or macos) or must be inferrable from file extension (.deb or .exe or .pkg)',
         });
       }
 
@@ -105,9 +107,9 @@ class DvpnController implements OnlyControllerInterface {
         });
       }
 
-      const extension = ext.slice(1) as 'deb' | 'exe';
+      const extension = ext.slice(1) as 'deb' | 'exe' | 'pkg';
       await DvpnBuildModel.create({
-        platform: platform as 'linux' | 'windows',
+        platform: platform as 'linux' | 'windows' | 'macos',  // eslint-disable-line
         extension,
         file_path: filePath,
         version: version || null,

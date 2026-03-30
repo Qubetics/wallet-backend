@@ -3,7 +3,7 @@ import s3Helper from "../../helpers/common/s3.helpers";
 import { GlblCode, GlblMessages } from "../../constants/global_enum";
 import logger from "../../helpers/common/logger.helper";
 
-const ALLOWED_EXTENSIONS = ['.deb', '.exe'];
+const ALLOWED_EXTENSIONS = ['.deb', '.exe', '.pkg'];
 const OBS_FOLDER = 'DvpnBuilds';
 
 export const uploadBuildToHuawei = async (req: Request, res: Response, next: NextFunction) => {
@@ -26,7 +26,7 @@ export const uploadBuildToHuawei = async (req: Request, res: Response, next: Nex
             const ext = fileName.toLowerCase().slice(fileName.lastIndexOf('.'));
             if (!ALLOWED_EXTENSIONS.includes(ext)) {
                 return res.status(GlblCode.ERROR_CODE).json({
-                    message: 'Invalid file extension. Allowed: .deb, .exe',
+                    message: 'Invalid file extension. Allowed: .deb, .exe, .pkg',
                     status: false,
                     code: GlblCode.ERROR_CODE,
                     data: {},

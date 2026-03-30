@@ -15,11 +15,11 @@ const dataObj: any = {
         autoIncrement: true,
     },
     platform: {
-        type: DataTypes.ENUM('linux', 'windows'),
+        type: DataTypes.ENUM('linux', 'windows', 'macos'),
         allowNull: false,
     },
     extension: {
-        type: DataTypes.ENUM('deb', 'exe'),
+        type: DataTypes.ENUM('deb', 'exe', 'pkg'),
         allowNull: false,
     },
     file_path: {
