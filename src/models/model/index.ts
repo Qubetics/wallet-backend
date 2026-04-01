@@ -36,6 +36,7 @@ import TicsNativeAddressModel from './model.ticsNativeAddress';
 import DvpnSessionsModel from './model.dvpn_sessions';
 import MpcWalletsModel from './model.mpcWallets';
 import IntentTrnxHistoryModel from './model.intentTrnxHistory';
+import DvpnBuildModel from './model.dvpn_build';
 
 export {
     AddressBookModel,
@@ -75,6 +76,7 @@ export {
     TicsNativeAddressModel,
     DvpnSessionsModel,
     MpcWalletsModel,
-    IntentTrnxHistoryModel
+    IntentTrnxHistoryModel,
+    DvpnBuildModel
 
 }

@@ -53,7 +53,26 @@ class S3Helper {
       throw err;
     }
   }
-  
+
+  public getPublicDownloadUrl(key: string): string {
+    const baseUrl = (config.HUAWEI_OBS.PUBLIC_BASE_URL || '').replace(/\/$/, '');
+    return baseUrl ? `${baseUrl}/${key}` : '';
+  }
+
+  public createPresignedDownloadUrl(key: string, expiresSeconds = 3600): string {
+    try {
+      const result = this.obsClient.createSignedUrlSync({
+        Method: 'GET',
+        Bucket: config.HUAWEI_OBS.BUCKET,
+        Key: key,
+        Expires: expiresSeconds,
+      });
+      return result.SignedUrl || '';
+    } catch (err) {
+      console.error('OBS createSignedUrl error:', err);
+      throw err;
+    }
+  }
 }
 
 const s3Helper = new S3Helper();
