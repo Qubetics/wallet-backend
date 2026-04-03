@@ -2231,7 +2231,7 @@ class WalletController implements OnlyControllerInterface {
       const cursor = req.body.cursor ? req.body.cursor : null;
       const limit = req.body.limit ? req.body.limit : null;
       const chains = [{ chain: "ethereum", type: "eth", symbol: "eth" }, { chain: "qubetics", type: "tics", symbol: "tics" }];
-      const user_id = req.userId;
+      const user_id = req.userId;     
       if (address_list?.length > 0) {
         const nfts: any = [];
 
@@ -2365,7 +2365,8 @@ class WalletController implements OnlyControllerInterface {
                       const KNOWN_NFT_IMAGE_DOMAINS = [
                         "dweb.link",
                         "arweave.net",
-                        "gateway.pinata.cloud"
+                        "gateway.pinata.cloud",
+                        "images.blazpay.com"
                       ];
 
                       const domainExist = KNOWN_NFT_IMAGE_DOMAINS.some(domain =>
