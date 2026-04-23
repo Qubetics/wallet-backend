@@ -16,9 +16,9 @@ class BTCController implements OnlyControllerInterface {
   constructor() {
     this.initialize();
   }
-  public initialize() { }
-  
-  public async send(req: Request, res: Response) {
+  public initialize = () => { }
+
+  public send = async (req: Request, res: Response) => {
     let lang: any = req.headers['content-language'] || 'en';
     try {
       console.log("req body btc send >>>", req.body)
@@ -216,9 +216,163 @@ class BTCController implements OnlyControllerInterface {
 
 
   //testnet mempool
-  public async unspent(req: Request, res: Response) {
+  // public async unspent(req: Request, res: Response) {
+  //   const lang: any = req.headers["content-language"] || "en";
+  //   const API_BASE = "https://mempool.space/testnet/api";
+
+  //   try {
+  //     const address = req.params?.address;
+
+  //     if (!address) {
+  //       return res.status(400).json({
+  //         status: false,
+  //         message: "Address is required",
+  //       });
+  //     }
+
+  //     // axios instance with timeout
+  //     const http = axios.create({
+  //       baseURL: API_BASE,
+  //       timeout: 10000, // 10 sec timeout
+  //     });
+
+  //     // 1️⃣ Fetch UTXOs
+  //     const utxoResult = await http.get(`/address/${address}/utxo`);
+
+  //     if (!Array.isArray(utxoResult.data) || utxoResult.data.length === 0) {
+  //       return response.success(res, {
+  //         data: {
+  //           status: true,
+  //           data: [],
+  //           message: "No UTXOs found",
+  //         },
+  //       });
+  //     }
+
+  //     // 2️⃣ Process all UTXOs in parallel (IMPORTANT)
+  //     const res_data = await Promise.all(
+  //       utxoResult.data.map(async (data: any) => {
+  //         const unspent_data: any = {
+  //           txid: data.txid,
+  //           block_height: data.status?.block_height || 0,
+  //           vout: data.vout,
+  //           satoshis: data.value,
+  //           confirmations: data.status?.confirmed ? 1 : 0,
+  //           scriptPubKey: "",
+  //           address: "",
+  //           tx_raw: "",
+  //         };
+
+  //         try {
+  //           // fetch tx + hex in parallel
+  //           const [txResult, hexResult] = await Promise.all([
+  //             http.get(`/tx/${data.txid}`),
+  //             http.get(`/tx/${data.txid}/hex`).catch(() => ({ data: "" })),
+  //           ]);
+
+  //           const tx = txResult.data;
+
+  //           if (tx?.vout?.length > data.vout) {
+  //             const voutObj = tx.vout[data.vout];
+
+  //             unspent_data.scriptPubKey = voutObj?.scriptpubkey || "";
+  //             unspent_data.address = voutObj?.scriptpubkey_address || "";
+  //           }
+
+  //           unspent_data.tx_raw = hexResult.data || "";
+  //         } catch (txErr) {
+  //           // fallback safe values
+  //           unspent_data.scriptPubKey = "";
+  //           unspent_data.address = "";
+  //           unspent_data.tx_raw = "";
+  //         }
+
+  //         return unspent_data;
+  //       })
+  //     );
+
+  //     return response.success(res, {
+  //       data: {
+  //         status: true,
+  //         data: res_data,
+  //         message: language[lang].SUCCESS,
+  //       },
+  //     });
+
+  //   } catch (err: any) {
+  //     await commonHelper.save_error_logs("btc_unspent", err.message);
+  //     console.error("ERROR in BTC unspent API", err);
+
+  //     return res.status(500).json({
+  //       status: false,
+  //       message: err.message || "Internal Server Error",
+  //     });
+  //   }
+  // }
+
+
+
+  // axios creator
+  public createHttp = async (baseURL: string) => {
+    return axios.create({
+      baseURL,
+      timeout: 8000,
+    });
+  }
+
+  // 🔁 Fetch UTXOs with fallback
+  public fetchUTXOs = async (address: string) => {
+   const PROVIDERS = [
+      {
+        name: "MEMPOOL",
+        baseURL: "https://mempool.space/testnet/api",
+        type: "mempool",
+      },
+      {
+        name: "BLOCKSTREAM",
+        baseURL: "https://blockstream.info/testnet/api",
+        type: "mempool",
+      },
+      {
+        name: "BLOCKCYPHER",
+        baseURL: "https://api.blockcypher.com/v1/btc/test3",
+        type: "blockcypher",
+      },
+    ];
+
+
+    for (const provider of PROVIDERS) {
+      try {
+        const http = await this.createHttp(provider.baseURL);
+
+        if (provider.type === "blockcypher") {
+          const res = await http.get(`/addrs/${address}?unspentOnly=true`);
+
+          return (res.data.txrefs || []).map((utxo: any) => ({
+            txid: utxo.tx_hash,
+            vout: utxo.tx_output_n,
+            value: utxo.value,
+            status: {
+              confirmed: !!utxo.confirmations,
+              block_height: utxo.block_height || 0,
+            },
+          }));
+        } else {
+          const res = await http.get(`/address/${address}/utxo`);
+          return res.data;
+        }
+      } catch (err: any) {
+        console.warn(`❌ ${provider.name} failed:`, err.message);
+        continue;
+      }
+    }
+
+    throw new Error("All UTXO providers failed");
+  }
+
+  // 🎯 MAIN API
+  public unspent = async (req: Request, res: Response) => {
     const lang: any = req.headers["content-language"] || "en";
-    const API_BASE = "https://mempool.space/testnet/api";
 
     try {
       const address = req.params?.address;
@@ -230,16 +384,10 @@ class BTCController implements OnlyControllerInterface {
         });
       }
 
-      // axios instance with timeout
-      const http = axios.create({
-        baseURL: API_BASE,
-        timeout: 10000, // 10 sec timeout
-      });
+      // 1️⃣ Fetch UTXOs (with fallback)
+      const utxos = await this.fetchUTXOs(address);
 
-      // 1️⃣ Fetch UTXOs
-      const utxoResult = await http.get(`/address/${address}/utxo`);
-
-      if (!Array.isArray(utxoResult.data) || utxoResult.data.length === 0) {
+      if (!Array.isArray(utxos) || utxos.length === 0) {
         return response.success(res, {
           data: {
             status: true,
@@ -249,9 +397,12 @@ class BTCController implements OnlyControllerInterface {
         });
       }
 
-      // 2️⃣ Process all UTXOs in parallel (IMPORTANT)
+      // Use stable provider for TX details
+      const http = await this.createHttp("https://mempool.space/testnet/api");
+
+      // 2️⃣ Process UTXOs
       const res_data = await Promise.all(
-        utxoResult.data.map(async (data: any) => {
+        utxos.map(async (data: any) => {
           const unspent_data: any = {
             txid: data.txid,
             block_height: data.status?.block_height || 0,
@@ -264,7 +415,6 @@ class BTCController implements OnlyControllerInterface {
           };
 
           try {
-            // fetch tx + hex in parallel
             const [txResult, hexResult] = await Promise.all([
               http.get(`/tx/${data.txid}`),
               http.get(`/tx/${data.txid}/hex`).catch(() => ({ data: "" })),
@@ -280,11 +430,8 @@ class BTCController implements OnlyControllerInterface {
             }
 
             unspent_data.tx_raw = hexResult.data || "";
-          } catch (txErr) {
-            // fallback safe values
-            unspent_data.scriptPubKey = "";
-            unspent_data.address = "";
-            unspent_data.tx_raw = "";
+          } catch (err) {
+            // silent fallback
           }
 
           return unspent_data;
@@ -381,7 +528,7 @@ class BTCController implements OnlyControllerInterface {
   // }
 
 
-  public async saveTransaction(req: Request, res: Response) {
+  public saveTransaction = async (req: Request, res: Response) => {
     try {
       console.log("req body btc saveTransaction >>>", req.body);
 
@@ -425,7 +572,7 @@ class BTCController implements OnlyControllerInterface {
     }
   }
 
-  public async updateTransactionStatus(req: Request, res: Response) {
+  public updateTransactionStatus = async (req: Request, res: Response) => {
     try {
       console.log("req body btc updateTransactionStatus >>>", req.body);
 
