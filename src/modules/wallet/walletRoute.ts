@@ -152,6 +152,11 @@ class WalletRoute implements ControllerInterface {
       jwtVerification.verifyToken,
       walletController.saveDeviceToken
     );
+    this.router.post(
+      `${this.path}/sync/balance`,
+      jwtVerification.verifyToken,
+      walletController.syncBalance
+    );
   }
 }
 export default WalletRoute;

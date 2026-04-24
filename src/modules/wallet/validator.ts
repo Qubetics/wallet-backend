@@ -173,6 +173,9 @@ export default class wallet_validator {
       limit: Joi.number().optional()
     }),
   };
+  static syncBalanceValidate = {
+    body: Joi.object({}),
+  };
   static order_update = {
     body: Joi.object({
       wallets: Joi.array()
