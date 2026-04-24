@@ -7,6 +7,8 @@ export const config = {
   REDIS_CONN: zookeeperConfig.config.REDIS_CONN,
   KAFKA_BROKER: zookeeperConfig.config.KAFKA_BROKER,
   KAFKA_CLIENT_ID: zookeeperConfig.config.KAFKA_CLIENT_ID,
+  BALANCE_SYNC_TOPIC: zookeeperConfig.config.BALANCE_SYNC_TOPIC || "wallet_balance_sync",
+  BALANCE_SYNC_GROUP: zookeeperConfig.config.BALANCE_SYNC_GROUP || "wallet-balance-sync-group",
   ADMIN_TOKEN: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.ADMIN_TOKEN}`,
   DB: {
     DB_USER: zookeeperConfig.config.DB_USER,

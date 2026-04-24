@@ -87,6 +87,26 @@ class WalletQueries {
             throw err;
         }
     }
+    public async getUserWalletsWithCoins(user_id: number): Promise<any[]> {
+        try {
+            const data: any = await Models.WalletModel.findAll({
+                attributes: ['wallet_id', 'wallet_address'],
+                where: { user_id, status: 1 },
+                include: [{
+                    model: Models.CoinsModel,
+                    attributes: ['coin_id', 'coin_family', 'coin_symbol', 'is_token', 'token_address', 'decimals', 'token_type', 'token_abi'],
+                    required: true,
+                }],
+                raw: false,
+            });
+            return data;
+        } catch (err: any) {
+            console.error("Error in getUserWalletsWithCoins>>", err);
+            await commonHelper.save_error_logs("getUserWalletsWithCoins", err.message);
+            return [];
+        }
+    }
+
     // public async walletJoinCoins(attr1: any, where1: any, attr2: any, where2: any) {
     //     try {
     //         let data: any = await Models.WalletModel.findAll({

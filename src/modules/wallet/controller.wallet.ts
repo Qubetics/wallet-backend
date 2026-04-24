@@ -31,7 +31,33 @@ class WalletController implements OnlyControllerInterface {
   constructor() {
     this.initialize();
   }
-  public initialize() { }
+  public initialize() {
+    setTimeout(async () => {
+      try {
+        const consumer = await kafka_helper.kafka.consumer({ groupId: "wallet-balance-sync-group" });
+        await consumer.subscribe({ topic: config.BALANCE_SYNC_TOPIC, fromBeginning: false });
+        await consumer.run({
+          eachMessage: async ({ message }: { message: any }) => {
+            try {
+              const data = JSON.parse(message.value.toString());
+              const balDetails: any = await global_helper.get_wallet_balance(data.coin_data, data.wallet_address);
+              if (balDetails.status) {
+                await wallet_queries.wallet_update(
+                  { balance: Number(balDetails.balance) },
+                  { wallet_id: data.wallet_id }
+                );
+              }
+              console.log(`Balance sync consumer: wallet_id=${data.wallet_id} balance=${balDetails.balance} status=${balDetails.status}`);
+            } catch (err: any) {
+              console.error("Balance sync consumer error:", err.message);
+            }
+          },
+        });
+      } catch (err: any) {
+        console.error("Failed to start balance sync Kafka consumer:", err.message);
+      }
+    }, 10000);
+  }
 
   /** Used in front end */
   public async addToken(req: Request, res: Response) {
@@ -3029,25 +3055,88 @@ class WalletController implements OnlyControllerInterface {
   // }
 
 
+  public async syncBalance(req: Request, res: Response) {
+    const lang: string = (req.headers["content-language"] as string) || "en";
+    try {
+      const user_id: number = req.userId;
 
+      const wallets: any[] = await wallet_queries.getUserWalletsWithCoins(user_id);
 
+      if (!wallets || wallets.length === 0) {
+        return res.status(GlblCode.ERROR_CODE).send({
+          status: false,
+          code: GlblCode.ERROR_CODE,
+          message: language[lang].NO_WALLETS_PROVIDED,
+        });
+      }
 
+      const QUEUE_THRESHOLD = 25;
 
+      if (wallets.length > QUEUE_THRESHOLD) {
+        for (const wallet of wallets) {
+          const coinData = wallet.coin;
+          await kafka_helper.produceMessage(config.BALANCE_SYNC_TOPIC, {
+            wallet_id: wallet.wallet_id,
+            wallet_address: wallet.wallet_address,
+            coin_data: coinData,
+          });
+        }
+        return res.status(GlblCode.SUCCESS).send({
+          status: true,
+          code: GlblCode.SUCCESS,
+          message: "Balance sync queued",
+          data: { total_wallets: wallets.length },
+        });
+      }
 
+      const walletResults = await Promise.all(
+        wallets.map(async (wallet: any) => {
+          try {
+            const coinData = wallet.coin;
+            const balDetails: any = await global_helper.get_wallet_balance(coinData, wallet.wallet_address);
+            if (balDetails.status) {
+              await wallet_queries.wallet_update(
+                { balance: Number(balDetails.balance) },
+                { wallet_id: wallet.wallet_id }
+              );
+            }
+            return {
+              wallet_id: wallet.wallet_id,
+              coin_symbol: coinData?.coin_symbol,
+              wallet_address: wallet.wallet_address,
+              balance: balDetails.status ? Number(balDetails.balance) : null,
+              sync_status: balDetails.status ? "success" : "failed",
+            };
+          } catch (e: any) {
+            return {
+              wallet_id: wallet.wallet_id,
+              wallet_address: wallet.wallet_address,
+              sync_status: "failed",
+              error: e?.message,
+            };
+          }
+        })
+      );
 
+      const synced = walletResults.filter((w: any) => w.sync_status === "success").length;
+      const failed = walletResults.length - synced;
 
-
-
-
-
-
-
-
-
-
-
-
-
+      return res.status(GlblCode.SUCCESS).send({
+        status: true,
+        code: GlblCode.SUCCESS,
+        message: "Balance sync completed",
+        data: { synced, failed, wallets: walletResults },
+      });
+    } catch (err: any) {
+      console.error("Error in wallet > syncBalance.", err);
+      await commonHelper.save_error_logs("wallet_syncBalance", err.message);
+      return res.status(GlblCode.ERROR_CODE).send({
+        status: false,
+        code: GlblCode.ERROR_CODE,
+        message: language[lang].CATCH_MSG,
+      });
+    }
+  }
 }
 
 export const walletController = new WalletController();
