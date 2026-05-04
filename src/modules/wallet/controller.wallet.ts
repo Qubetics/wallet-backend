@@ -3138,6 +3138,48 @@ class WalletController implements OnlyControllerInterface {
       });
     }
   }
+
+
+  public async getVersion(req: Request, res: Response) {
+    const lang: string = (req.headers["content-language"] as string) || "en";
+    try {
+      const { version, platform } = req.body;
+
+      let testing = false;
+      const titleName = `currentversion_${platform}`;
+
+      const currentSetting = await Models.SettingsModel.findOne({
+        where: { title: titleName }
+      });
+
+      if (currentSetting && currentSetting.value) {
+        const userVersionNum = parseInt(version.replace(/\./g, ""), 10);
+        const currentVersionNum = parseInt(currentSetting.value.replace(/\./g, ""), 10);
+
+        if (!isNaN(userVersionNum) && !isNaN(currentVersionNum)) {
+          testing = userVersionNum > currentVersionNum;
+        }
+      }
+
+      return res.status(GlblCode.SUCCESS).send({
+        status: true,
+        code: GlblCode.SUCCESS,
+        message: "Version check completed",
+        data: { testing },
+      });
+    } catch (err: any) {
+      console.error("Error in wallet > getVersion.", err);
+      await commonHelper.save_error_logs("wallet_getVersion", err.message);
+      return res.status(GlblCode.ERROR_CODE).send({
+        status: false,
+        code: GlblCode.ERROR_CODE,
+        message: language[lang].CATCH_MSG,
+      });
+    }
+  }
+
+
+
 }
 
 export const walletController = new WalletController();

@@ -189,4 +189,13 @@ export default class wallet_validator {
         .required(),
     }),
   };
+
+  static version = {
+    body: Joi.object({
+      version: Joi.string().required(),
+      platform: Joi.string().valid('android', 'ios').required(),
+    }),
+  };
+
+
 }
