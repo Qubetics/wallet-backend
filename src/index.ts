@@ -95,7 +95,7 @@ class Server implements ServerInterface {
 
     // Basic authentication middleware for Swagger UI
     this.app.use('/KU8S5Ln7siecCst', basicAuth({
-      users: { 'REDACTED': 'REDACTED' }, // Set your username and password here
+      users: { [config.SWAGGER_AUTH.USER]: config.SWAGGER_AUTH.PASS }, // Set your username and password here
       challenge: true, // Shows the login prompt
       unauthorizedResponse: 'Unauthorized access', // Response message if unauthorized
     }));

@@ -25,7 +25,7 @@ class SolanaHelpers {
       "confirmed"
     );
     this.connectionNew = new Connection(
-      "https://solana-mainnet.g.alchemy.com/v2/REDACTED"
+      `https://solana-mainnet.g.alchemy.com/v2/${config.ALCHEMY_SOLANA_KEY}`
     );
     this.connectionPublic = new Connection(
       "https://api.mainnet-beta.solana.com"

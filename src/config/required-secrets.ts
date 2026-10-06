@@ -6,6 +6,9 @@ export const REQUIRED_SECRETS: string[] = [
   "RSA_KEYS.ADMIN.PUBLIC",
   "SSL.KEY",
   "SSL.CERT",
+  "ALCHEMY_SOLANA_KEY",
+  "SWAGGER_AUTH.USER",
+  "SWAGGER_AUTH.PASS",
 ];
 
 export function assertRequiredSecrets(cfg: any, required: string[]): void {

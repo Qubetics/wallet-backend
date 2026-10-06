@@ -24,3 +24,16 @@ test("lists every missing key in one error", () => {
 test("treats an empty config as all missing", () => {
   assert.throws(() => assertRequiredSecrets({}, ["SSL.KEY"]), /SSL\.KEY/);
 });
+
+test("requires the Alchemy key and Swagger login moved out of source", () => {
+  const { REQUIRED_SECRETS } = require("../build/config/required-secrets");
+  for (const k of ["ALCHEMY_SOLANA_KEY", "SWAGGER_AUTH.USER", "SWAGGER_AUTH.PASS"]) {
+    assert.ok(REQUIRED_SECRETS.includes(k), k);
+  }
+});
+
+test("no source file still carries a redacted placeholder", () => {
+  const { execSync } = require("child_process");
+  const hits = execSync("git grep -n REDACTED -- src || true", { encoding: "utf8" }).trim();
+  assert.strictEqual(hits, "");
+});
