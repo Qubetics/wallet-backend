@@ -17,7 +17,6 @@ import dataLogger from "./helpers/common/dataLogger.helper";
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 const basicAuth = require('express-basic-auth');
-import fs from 'fs';
 
 
 class Server implements ServerInterface {
@@ -27,8 +26,8 @@ class Server implements ServerInterface {
   public sslCert: Buffer;
 
   constructor() {
-    this.sslKey = fs.readFileSync(path.join(__dirname, './cert/key.pem'));
-    this.sslCert = fs.readFileSync(path.join(__dirname, './cert/cert.pem'));
+    this.sslKey = Buffer.from(config.SSL.KEY);
+    this.sslCert = Buffer.from(config.SSL.CERT);
 
 
     this.app = express();

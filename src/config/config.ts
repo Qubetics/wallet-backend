@@ -86,10 +86,11 @@ export const config = {
   ENCRYPT_IV_SECRET: zookeeperConfig.config.ENCRYPT_IV_SECRET,
   REFRESH_SECRET: zookeeperConfig.config.REFRESH_SECRET,
   FCM_PUSH: zookeeperConfig.config.FCM_PUSH,
-  RSA_PRIVATE_KEY_NAME: zookeeperConfig.config.RSA_PRIVATE_KEY_NAME,
-  RSA_PUBLIC_KEY_NAME: zookeeperConfig.config.RSA_PUBLIC_KEY_NAME,
   STATIC_COIN_FAMILY: zookeeperConfig.config.STATIC_COIN_FAMILY,
   SSL_PASS_PHRASE: zookeeperConfig.config.SSL_PASS_PHRASE,
+  FIREBASE_SERVICE_ACCOUNT: zookeeperConfig.config.FIREBASE_SERVICE_ACCOUNT,
+  RSA_KEYS: zookeeperConfig.config.RSA_KEYS,
+  SSL: zookeeperConfig.config.SSL,
   NODE: {
     ETH_RPC_URL: zookeeperConfig.config.ETH_RPC_URL,
     BTC_RPC_URL: zookeeperConfig.config.BTC_RPC_URL,
