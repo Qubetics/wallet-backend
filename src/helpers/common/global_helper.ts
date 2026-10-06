@@ -16,7 +16,6 @@ import { SolanaHelper } from "./solana.helper";
 import cmcHelper from "./cmc.helpers";
 import { ticsEther } from "./ether_tics_helpers";
 import firebaseAdmin from 'firebase-admin';
-import { fcmServiceAccount } from "../../constants/firebase.admin.key";
 
 
 class Global_helper {
@@ -24,7 +23,7 @@ class Global_helper {
     constructor() {
         (async () => {
             firebaseAdmin.initializeApp({
-                credential: firebaseAdmin.credential.cert(fcmServiceAccount),
+                credential: firebaseAdmin.credential.cert(config.FIREBASE_SERVICE_ACCOUNT),
             });
             this.messaging = firebaseAdmin.messaging();
         })();

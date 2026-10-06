@@ -1,5 +1,4 @@
 import NodeRSA from "node-rsa";
-import fs from "fs";
 import { config } from "../../config";
 import { catch_err_msg_queries } from "../dbHelper/index";
 class CommonHelper {
@@ -27,7 +26,7 @@ class CommonHelper {
 
   public async decryptDataRSA(data: any) {
     try {
-      let privateKeyFile = await fs.readFileSync(`${__dirname}/../../config/keys/${config.RSA_PRIVATE_KEY_NAME}`, { encoding: "utf-8" })
+      let privateKeyFile: string = config.RSA_KEYS.USER.PRIVATE;
       let privateKey = Buffer.from(privateKeyFile);
       let RSAKey = new NodeRSA(privateKey);
       RSAKey.setOptions({ encryptionScheme: 'pkcs1' });
@@ -41,7 +40,7 @@ class CommonHelper {
 
   public async adminDecryptDataRSA(data: any) {
     try {
-      let privateKeyFile = await fs.readFileSync(`${__dirname}/../../config/admin_keys/${config.RSA_PRIVATE_KEY_NAME}`, { encoding: "utf-8" })
+      let privateKeyFile: string = config.RSA_KEYS.ADMIN.PRIVATE;
       let privateKey = Buffer.from(privateKeyFile);
       let RSAKey = new NodeRSA(privateKey);
       RSAKey.setOptions({ encryptionScheme: 'pkcs1' });
@@ -54,7 +53,7 @@ class CommonHelper {
   }
 
   public async encryptDataRSA(data: any) {
-    let publicKeyFile: any = fs.readFileSync(`${__dirname}/../../config/keys/${config.RSA_PUBLIC_KEY_NAME}`, { encoding: "utf-8" })
+    let publicKeyFile: any = config.RSA_KEYS.USER.PUBLIC;
     let publicKey: any = Buffer.from(publicKeyFile);
     let RSAKey: any = new NodeRSA(publicKey);
     RSAKey.setOptions({ encryptionScheme: 'pkcs1' });
@@ -65,7 +64,7 @@ class CommonHelper {
 
   public async adminEncryptDataRSA(data: any) {
     try {
-      let privateKeyFile = await fs.readFileSync(`${__dirname}/../../config/admin_keys/${config.RSA_PUBLIC_KEY_NAME}`, { encoding: "utf-8" })
+      let privateKeyFile: string = config.RSA_KEYS.ADMIN.PUBLIC;
       let privateKey = Buffer.from(privateKeyFile);
       let RSAKey = new NodeRSA(privateKey);
       RSAKey.setOptions({ encryptionScheme: 'pkcs1' });
