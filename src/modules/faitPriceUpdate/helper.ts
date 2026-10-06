@@ -1,15 +1,16 @@
 import * as Models from "../../models/model/index";
 import { Op, Sequelize } from "sequelize";
 import axios from "axios";
+import { config } from "../../config";
 
 
 const CMC_CONFIG = {
     URL: "https://pro-api.coinmarketcap.com/v2/cryptocurrency/",
-    KEY: "REDACTED",
-    KEY2: "REDACTED",
-    KEY3: "REDACTED",
-    KEY4: "REDACTED",
-    KEY5: "REDACTED",
+    KEY: config.CMC_ROTATION_KEYS[0],
+    KEY2: config.CMC_ROTATION_KEYS[1],
+    KEY3: config.CMC_ROTATION_KEYS[2],
+    KEY4: config.CMC_ROTATION_KEYS[3],
+    KEY5: config.CMC_ROTATION_KEYS[4],
 }
 
 // Array of all available API keys for rotation

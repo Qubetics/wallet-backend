@@ -88,6 +88,9 @@ export const config = {
   FIREBASE_SERVICE_ACCOUNT: zookeeperConfig.config.FIREBASE_SERVICE_ACCOUNT,
   RSA_KEYS: zookeeperConfig.config.RSA_KEYS,
   SSL: zookeeperConfig.config.SSL,
+  ALCHEMY_SOLANA_KEY: zookeeperConfig.config.ALCHEMY_SOLANA_KEY,
+  SWAGGER_AUTH: zookeeperConfig.config.SWAGGER_AUTH,
+  CMC_ROTATION_KEYS: zookeeperConfig.config.CMC_ROTATION_KEYS,
   NODE: {
     ETH_RPC_URL: zookeeperConfig.config.ETH_RPC_URL,
     BTC_RPC_URL: zookeeperConfig.config.BTC_RPC_URL,

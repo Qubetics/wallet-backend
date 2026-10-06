@@ -29,3 +29,21 @@ test("stage does not require SSL", () => {
   const { REQUIRED_SECRETS } = require("../build/config/required-secrets");
   assert.ok(!REQUIRED_SECRETS.some((k) => k.startsWith("SSL.")));
 });
+
+test("requires the Alchemy key and Swagger login moved out of source", () => {
+  const { REQUIRED_SECRETS } = require("../build/config/required-secrets");
+  for (const k of ["ALCHEMY_SOLANA_KEY", "SWAGGER_AUTH.USER", "SWAGGER_AUTH.PASS"]) {
+    assert.ok(REQUIRED_SECRETS.includes(k), k);
+  }
+});
+
+test("no source file still carries a redacted placeholder", () => {
+  const { execSync } = require("child_process");
+  const hits = execSync("git grep -n REDACTED -- src || true", { encoding: "utf8" }).trim();
+  assert.strictEqual(hits, "");
+});
+
+test("stage requires the CMC rotation keys", () => {
+  const { REQUIRED_SECRETS } = require("../build/config/required-secrets");
+  assert.ok(REQUIRED_SECRETS.includes("CMC_ROTATION_KEYS"));
+});
