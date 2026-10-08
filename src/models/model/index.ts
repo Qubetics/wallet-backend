@@ -27,7 +27,6 @@ import SwapSettingsModel from './model.swap_setting';
 import DappGroupModel from './model.dapp_groups';
 import SWFTCCoinsDataModel from './model.swftc_coins';
 import AdminErrLogsModel from './model.admin_err_logs';
-import OnOffRampLogModel from './model.on_off_ramp_logs';
 import AdminModel from './model.admins';
 import MenuListsModel from './model_menu_lists.';
 import PermissionsModel from './model_permissions';
@@ -62,7 +61,6 @@ export {
     SWFTCCoinsDataModel,
     AdminErrLogsModel,
     AdminModel,
-    OnOffRampLogModel,
     MenuListsModel,
     PermissionsModel
 }
