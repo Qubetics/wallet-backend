@@ -2817,19 +2817,7 @@
         }
       }
     },
-    "/on_off_ramp/mercuryo_webhook": {
-      "post": {
-        "tags": ["On-Off Ramp"],
-        "summary": "Mercuryo webhook",
-        "parameters": [
-          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
-        ],
-        "responses": {
-          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
-          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
-        }
-      }
-    },
+
     "/qubetics/{coin}/gas_estimation": {
       "post": {
         "tags": ["Qubetics"],
@@ -2945,19 +2933,7 @@
         }
       }
     },
-    "/swftc/post_data": {
-      "post": {
-        "tags": ["SWFTC"],
-        "summary": "Post SWFTC data",
-        "parameters": [
-          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
-        ],
-        "responses": {
-          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
-          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
-        }
-      }
-    },
+
     "/swftc/queryCoinList": {
       "post": {
         "tags": ["SWFTC"],
