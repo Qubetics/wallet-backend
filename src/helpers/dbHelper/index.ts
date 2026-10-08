@@ -1,9 +1,8 @@
 import { Request } from "express";
-import { WalletInterface } from "../../models/interface/index.interface";
 import { config } from "../../config";
 import * as Models from '../../models/model/index'
 import redisClient from "../common/redis";
-import { GlblBlockchainTxStatusEnum, TxReqTypesEnum, Status, GlblBooleanEnum } from "../../constants/global_enum";
+import { GlblBlockchainTxStatusEnum, TxReqTypesEnum, GlblBooleanEnum } from "../../constants/global_enum";
 import wallet_queries from "./wallets";
 import user_queries from "./users";
 import coin_queries from './coins';
@@ -16,7 +15,6 @@ import gas_prices_queries from './gas_prices';
 import custom_token_queries from './custom_tokens';
 import coin_price_in_fiat_queries from "./coin_price_in_fiat";
 import trnx_history_queries from './trnx_history';
-import { GlblCode, GlblMessages } from "../../constants/global_enum";
 import adminErrQueries from './admin_err_logs';
 import adminQueries from './admins';
 import swapSettingQueries from './swap_settings';
@@ -42,64 +40,6 @@ export {
 };
 
 class DbHelper {
-  public async send_response_without_pagination(data: any, err_exist: number) {
-    try {
-      let obj: any
-      if (err_exist == 0) {
-        obj = {
-          message: GlblMessages.SUCCESS,
-          status: Status.TRUE,
-          code: GlblCode.SUCCESS,
-        }
-        if (data) {
-          obj.data = data
-        } else {
-          obj.data = GlblMessages.SUCCESS
-        }
-      } else {
-        obj = {
-          message: data,
-          status: Status.FALSE,
-          code: GlblCode.ERROR_CODE,
-          data: {}
-        }
-      }
-      return obj;
-    } catch (err: any) {
-      console.error("Error in send_response_without_pagination>>", err)
-      throw err;
-    }
-  }
-
-  public async getWalletIdByAddress(
-    wallet_address: string,
-    coin_id: number
-  ): Promise<number | null> {
-    try {
-      var queryRes = await Models.WalletModel.findOne({
-        where: { wallet_address, coin_id },
-        attributes: ["wallet_id"],
-      });
-      if (queryRes) return queryRes.wallet_id;
-      else return null;
-    } catch (error) {
-      return null;
-    }
-  }
-  public async getWalletInfoByAddressAndCoinId(
-    wallet_address: string,
-    coin_id: number | undefined
-  ): Promise<WalletInterface | null> {
-    try {
-      let queryRes: any = await Models.WalletModel.findOne({
-        where: { wallet_address, coin_id },
-      });
-      if (queryRes) return queryRes;
-      else return null;
-    } catch (error) {
-      return null;
-    }
-  }
   public async getUserDeviceToken(
     address: string, coin_family: number
   ): Promise<{ device_token: Array<string> }> {
@@ -212,60 +152,6 @@ class DbHelper {
       return { status: false, data: null };
     }
   }
-  public async ifDepositTxExist(
-    txid: string,
-    toadrs: string
-  ): Promise<Boolean> {
-    let depositTxn: any = await Models.TrnxHistoryModel.findOne({
-      where: { tx_id: txid, to_adrs: toadrs },
-      attributes: ["id"],
-    });
-    if (depositTxn) return true;
-    else return false;
-  }
-  public async ifWithdrawTxExist(txid: string): Promise<Boolean> {
-    let withdrawTxn: any = await Models.TrnxHistoryModel.findOne({
-      where: { tx_id: txid },
-      attributes: ["id"],
-    });
-    if (withdrawTxn) return true;
-    else return false;
-  }
-  public async checkWithdrawTxWithAddress(
-    txid: string,
-    address: string
-  ): Promise<Boolean> {
-    var withdrawTxn = await Models.TrnxHistoryModel.findOne({
-      where: { tx_id: txid, from_adrs: address },
-    });
-    if (withdrawTxn) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-  public async find_one_coins_table(attributes: any, where_clause: any) {
-    try {
-      let coin_data: any;
-      if (attributes.length > 0) {
-        coin_data = await Models.CoinsModel.findOne({
-          attributes: attributes,
-          where: where_clause,
-          raw: true
-        })
-      } else {
-        coin_data = await Models.CoinsModel.findOne({
-          where: where_clause,
-          raw: true
-        })
-      }
-      return coin_data;
-    } catch (err: any) {
-      console.error(`Error in find_one_coins_table>>`, err);
-      return null;
-    }
-  }
-
   public async find_one_wallet_table(attributes: any, where_clause: any) {
     try {
       let user_wallet_data: any = await Models.WalletModel.findOne({
@@ -276,18 +162,6 @@ class DbHelper {
       return user_wallet_data;
     } catch (err: any) {
       console.error("Error in find_one_wallet_table>>", err)
-      throw err;
-    }
-  }
-  public async find_all_coins(where_clause: any) {
-    try {
-      let coins_data: any = await Models.CoinsModel.findAll({
-        where: where_clause,
-        raw: true
-      })
-      return coins_data;
-    } catch (err: any) {
-      console.error("Error in find_all_coins>>", err)
       throw err;
     }
   }
@@ -319,15 +193,6 @@ class DbHelper {
       return user_data;
     } catch (err: any) {
       console.error("Error in get_user_data>>>", err)
-      throw err;
-    }
-  }
-  public async update_user_table(obj: any, user_id: number) {
-    try {
-      await Models.UsersModel.update(obj, { where: { user_id: user_id } })
-      return true;
-    } catch (err: any) {
-      console.error("Error in update_user_table>>", err)
       throw err;
     }
   }

@@ -1,7 +1,6 @@
 import { config } from "../../config";
 import { AccountLayout, TOKEN_2022_PROGRAM_ID, getMint, getTokenMetadata, unpackAccount } from "@solana/spl-token";
 import { PublicKey, Connection } from "@solana/web3.js";
-const spltokenReg = require("@solana/spl-token-registry");
 import {
   mplTokenMetadata,
   fetchDigitalAsset,
@@ -11,7 +10,6 @@ import { publicKey } from "@metaplex-foundation/umi";
 import { CoinInterface } from "../../models";
 import { GlblBooleanEnum } from "../../constants/global_enum";
 import commonHelper from "./common.helpers";
-import { language } from "../../constants";
 import { bigNumberSafeMath } from "./globalFunctions";
 
 class SolanaHelpers {
@@ -140,35 +138,6 @@ class SolanaHelpers {
       return null;
     }
   }
-
-  public searchTokenOld = async (token_address: string, lang: string) => {
-    try {
-      const umi = createUmi(config.NODE.SOL_RPC_URL).use(mplTokenMetadata());
-      const myPublicKey = publicKey(token_address);
-      const asset = await fetchDigitalAsset(umi, myPublicKey);
-      const tokenData: any = {
-        name: asset?.metadata?.name,
-        symbol: asset?.metadata?.symbol,
-        decimals: asset?.mint?.decimals,
-      };
-      if (tokenData) {
-        return tokenData;
-      } else {
-        const tokenList = await new spltokenReg.TokenListProvider()
-          .resolve()
-          .then((tokens: any) => {
-            return tokens.filterByClusterSlug("mainnet-beta").getList();
-          });
-        const foundToken = await tokenList.find(
-          (token: any) => token.address == token_address
-        );
-        return foundToken;
-      }
-    } catch (error) {
-      console.log("🔥 ~ ~ searchToken node.solana.helper.ts error", error);
-      throw new Error(language[lang].ERC20_TOKEN_SEARCH);
-    }
-  };
 
 
   public searchToken = async (address: string, lang: string) => {

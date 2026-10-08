@@ -242,43 +242,6 @@ class BSCEther {
     }
   }
 
-  public async convertGweiToWei(value: number): Promise<string> {
-    try {
-      let valueInWei = ethers.parseUnits(value.toString(), 9);
-      return valueInWei.toString();
-    } catch (error) {
-      console.log('🔥 ~ ~ convertGweiToWei node.bsc.helper.ts error');
-      throw error;
-    }
-  }
-
-  public async getUserBEP20TokenBalance(
-    tokenAddress: string | null | undefined,
-    tokenAbi: AbiItem[],
-    walletAddress: string
-  ): Promise<number> {
-    try {
-      if (!tokenAddress) return 0;
-
-      const contract = new ethers.Contract(tokenAddress, tokenAbi, bscEther.provider);
-      const [decimals, balanceRaw] = await Promise.all([
-        contract.decimals(),
-        contract.balanceOf(walletAddress)
-      ]);
-
-      let tokenBalance: string;
-      if (Number(decimals) === 18) {
-        tokenBalance = ethers.formatUnits(balanceRaw, 18);
-      } else {
-        tokenBalance = (await bigNumberSafeMath(balanceRaw.toString(), "/", Math.pow(10, Number(decimals)))).toString();
-      }
-      return Number(tokenBalance);
-    } catch (error) {
-      console.log("getUserBEP20TokenBalance catch error: ", error);
-      return 0;
-    }
-  }
-
   public async broadcastBscRawTx(rawTx: string, cb: CallableFunction) {
     try {
       const prefixedRawTx = rawTx.startsWith('0x') ? rawTx : '0x' + rawTx;

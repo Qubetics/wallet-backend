@@ -643,19 +643,6 @@ class userHelper {
     }
   }
 
-  public async generateTicketId() {
-    try {
-      const alphabet: string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-      let firstTwoLetters: any = alphabet.slice(0, 2);
-      const randomNum: any = Math.floor(Math.random() * 10000);
-      const ticketId: any = `${firstTwoLetters}-${randomNum}`;
-      return ticketId;
-    } catch (err: any) {
-      console.error("Error in generateTicketId>>>>", err);
-      throw err;
-    }
-  }
-
   public async referral_already_used(data: any, lang: string) {
     try {
       let {

@@ -17,15 +17,6 @@ class ColorLogger {
 
 
 
-  // Info: Green
-  logColorful(message: string, data?: any) {
-    console.log(`\x1b[32m${message}\x1b[0m`);
-    if (data !== undefined) {
-      this.pinoLogger.info(data, message);
-    }
-    console.log('');
-  }
-
   // Request logging: Info (green)
   logRequest({method, url, body, auth, ip, userAgent}: {method: string, url: string, body?: any, auth?: string, ip?: string, userAgent?: string}) {
     this.pinoLogger.info('\x1b[32mREQUEST\x1b[0m');
