@@ -14,7 +14,6 @@ class SwftcRoute implements ControllerInterface {
     }
 
     public initializeRoutes() {
-        this.router.post(`${this.path}/post_data`, SWftcController.post_data);
         this.router.post(`${this.path}/queryCoinList`, [validateExpress(swftcValidator.queryCoinList)], jwtVerification.verifyToken, SWftcController.queryCoinList);
 
         this.router.post(`${this.path}/queryCoinData`, [validateExpress(swftcValidator.queryCoinData)], jwtVerification.verifyToken, SWftcController.queryCoinData);
