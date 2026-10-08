@@ -381,46 +381,6 @@ class Global_helper {
     }
 
 
-    public async sendNotification(data: any) {
-        try {
-            if (data.token?.length > 0) {
-                const notification = {
-                    title: data.title,
-                    body: data.message,
-                };
-                if (this.messaging) {
-                    this.messaging
-                        .sendEachForMulticast({
-                            tokens: data.token,
-                            notification: notification,
-                            data: {
-                                body: data.message ? data.message : "",
-                                title: data.title ? data.title : "",
-                                notification_type: data.notification_type ? data.notification_type : "",
-                                tx_id: data.tx_id ? data.tx_id.toString() : "0",
-                                tx_type: data.tx_type ? data.tx_type : "",
-                                from_user_id: data.from_user_id ? data.from_user_id?.toString() : "0",
-                                user_coin_id: data.coin_id ? data.coin_id?.toString() : "0"
-                            }
-                        })
-                        .then((response: any) => {
-                            console.log("💥🚀 ~ firebase admin push notification", JSON.stringify(response));
-                        })
-                        .catch((error: any) => {
-                            console.error(
-                                "💥 ~ firebase admin sending notification error",
-                                error
-                            );
-                        });
-                }
-            }
-            return true;
-        } catch (error) {
-            console.error(`🔥 ~ sendNewNotification utility.helper.ts error`, error);
-            return false;
-        }
-    }
-
     public async get_token_image_from_cmc(data: any) {
         try {
             let params: any = data.symbol ? `info?symbol=${data.symbol}` : data.id ? `info?id=${data.id}` : `info?address=${data.token_address}`;
