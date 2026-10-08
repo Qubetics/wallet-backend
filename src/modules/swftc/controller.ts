@@ -105,9 +105,6 @@ class SwftcController implements OnlyControllerInterface {
                 });
                 let image: any = null;
                 let cmcId: any = null;
-                // let result: any = await global_helper.get_token_image_from_cmc({
-                //   symbol: symbol,
-                // });
                 let data: any = {
                   token_address: token_address,
                 }
@@ -235,7 +232,6 @@ class SwftcController implements OnlyControllerInterface {
 
       const appVersion = req.headers["app-version"];
       const requiredVersion = "1.1";
-      // let coinWhere = coin_family !== 0 ? { coin_family } : {};
       let coinWhere = {};
       if (appVersion !== requiredVersion) {
         if (coin_family === 7) {

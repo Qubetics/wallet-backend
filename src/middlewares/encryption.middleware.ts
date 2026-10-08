@@ -1,19 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import response from "../helpers/response/response.helpers";
 import commonHelper from "../helpers/common/common.helpers";
-// import { config } from "../config/config";
-// import { GlblMessages } from "../constants/global_enum";
 import { language } from "../constants";
 
 export const encryptionMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   let lang: any = req.headers['content-language'] || 'en';
   try {
-    // console.log("Entered into src > middlewares > encryption.middleware.ts > encryptionMiddleware.ts")
     const method = req.method;
-    // console.log("\n\n🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀\n");
-    // console.log("req.originalUrl", method, "~~~", req.originalUrl);
-    // console.log("HEADER authorization >>>   ", req.headers.authorization);
-    // console.log("HEADER version >>>   ", req.headers["app-version"]);
 
     if ((req.body.dataString && method == "PUT" || method == "PATCH" || method == "POST" || method == "DELETE" || method == "PUT")) {
       if (req.body.dataString) {
@@ -42,17 +35,13 @@ export const encryptionMiddleware = async (req: Request, res: Response, next: Ne
         req.originalUrl == `/api/v1/wallet/activeinactive` ||
         req.originalUrl == `/api/v1/wallet/updateBalance` ||
         req.originalUrl == `/api/v1/wallet/nativeCoinFiatPrice`)) {
-        // console.log("get into special hooks i.e Webhook")
         next();
       } else {
-        // console.log("To remove this else condition ");
-        // console.log('without encryption req.body >>', req.body);
         next();
       }
     } else if (method == "GET") {
       next();
     } else {
-      // console.log("Entered into LAST ELSE condition")
       return response.error(res, {
         data: {
           status: false,

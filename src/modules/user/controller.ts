@@ -264,7 +264,6 @@ class UserController implements OnlyControllerInterface {
       }
 
 
-
       // Check if the input contains emojis
       if (userController.validateEmojis(wallet_name)) {
         return res.status(400).json({
@@ -372,180 +371,6 @@ class UserController implements OnlyControllerInterface {
     }
   }
 
-  // public async createWallet3(req: Request, res: Response) {
-  //   let lang: any = req.headers["content-language"] || "en";
-  //   try {
-  //     let {
-  //       wallet_address,
-  //       addressList,
-  //       wallet_name,
-  //       device_token,
-  //       device_id,
-  //       referral_code,
-  //       signature,
-  //       message
-  //     }: {
-  //       wallet_address: string;
-  //       addressList: any;
-  //       wallet_name: string;
-  //       device_token: string;
-  //       device_id: string;
-  //       referral_code: string;
-  //       signature: string;
-  //       message: string;
-  //     } = req.body;
-
-  //     // if (signature && typeof signature === "string") {
-  //     //   const currentUTCDate = new Date().toISOString().replace("T", " ").replace(/\..+/, "");
-  //     //   const timestamp = Date.parse(message);
-  //     //   const currentTimestamp = Date.parse(currentUTCDate);
-
-  //     //   const timeDiff = (((currentTimestamp - timestamp) / 1000) / 60);
-  //     //   if (+timeDiff > 1) {
-  //     //     return res.status(400).json({
-  //     //       success: false,
-  //     //       message: "Unauthorized.",
-  //     //     });
-  //     //   } else if (+timeDiff < -0.1) {
-  //     //     return res.status(400).json({
-  //     //       success: false,
-  //     //       message: ErrorMessages.SOMETHING_WENT_WRONG,
-  //     //     });
-  //     //   }
-
-  //     //   let verifiedAddress = ethers.verifyMessage(message, signature);
-  //     //   if (wallet_address !== verifiedAddress) {
-  //     //     return res.status(400).json({
-  //     //       success: false,
-  //     //       message: ErrorMessages.SOMETHING_WENT_WRONG,
-  //     //     });
-  //     //   }
-  //     // }
-  //     /** validate the wallet addresses */
-  //     for await (const wallet of addressList) {
-  //       if (!wallet?.address) continue;
-
-  //       const { address, symbol, coin_family }: {
-  //         address: string;
-  //         symbol: string;
-  //         coin_family: number;
-  //       } = wallet;
-
-  //       const isValid: boolean = await global_helper.validate_address(address, coin_family);
-
-  //       if (!isValid) {
-  //         throw new Error(`${language[lang].INVALID_ADDRESS} (${symbol?.toUpperCase()})`);
-  //       }
-  //     }
-
-
-
-  //     // Check if the input contains emojis
-  //     if (userController.validateEmojis(wallet_name)) {
-  //       return res.status(400).json({
-  //         success: false,
-  //         message: "Input contains emojis, which are not allowed.",
-  //       });
-  //     }
-
-  //     if (referral_code) {
-  //       /** check referral code is valid */
-  //       await userhelper.referral_code_is_valid(referral_code, lang);
-  //     }
-
-  //     // Check whether same wallet address exist
-  //     let checkAddressExists: any = null;
-
-  //     if (wallet_address) {
-  //       checkAddressExists = await wallet_queries.wallet_find_one(["user_id"], {
-  //         wallet_address: wallet_address,
-  //       });
-  //     }
-
-  //     // If Wallet Address exist
-  //     let userId: any = GlblBooleanEnum.false;
-
-  //     let user_referral_code: string = "";
-
-  //     if (checkAddressExists) {
-  //       userId = checkAddressExists?.user_id;
-
-  //       // Insert device id and referral code if not there
-  //       if (device_id) {
-  //         user_referral_code = await userhelper.old_user_generate_referral(
-  //           device_id,
-  //           userId
-  //         );
-  //       }
-  //     } else {
-  //       // Create New User
-  //       let code_userId: any = await userhelper.create_new_user(
-  //         device_id,
-  //         wallet_name
-  //       );
-
-  //       if (device_id) {
-  //         user_referral_code = code_userId.code;
-  //       }
-
-  //       userId = code_userId.user_id;
-  //     }
-
-  //     /** save referral data */
-  //     if (referral_code) {
-  //       /** check referral code already used */
-  //       await userhelper.referral_already_used(
-  //         { device_id: device_id, address: wallet_address, user_id: null },
-  //         lang
-  //       );
-  //       await userhelper.save_referral_code(
-  //         {
-  //           user_id: userId,
-  //           referral_code: referral_code,
-  //           device_id: device_id,
-  //         },
-  //         lang
-  //       );
-  //     }
-  //     // Updating balance
-  //     userhelper.updating_balance2(
-  //       addressList,
-  //       userId,
-  //       req,
-  //       wallet_name,
-  //       lang,
-  //       device_token,
-  //       device_id
-  //     );
-  //     let token: string;
-  //     let refreshToken: string;
-
-  //     token = await jwtHelper.createJSONWebToken(userId, device_token);
-
-  //     refreshToken = await jwtHelper.createJSONRefreshToken(
-  //       userId,
-  //       device_token
-  //     );
-
-  //     const newObject: any = {
-  //       token,
-  //       refreshToken,
-  //       userId: userId,
-  //       referral_code: user_referral_code,
-  //       wallet_name: wallet_name,
-  //     };
-  //     return response.success(res, {
-  //       data: {
-  //         status: true,
-  //         data: newObject,
-  //       },
-  //     });
-  //   } catch (err: any) {
-  //     console.error("Error in user > create wallet (2).", err);
-  //     await commonHelper.save_error_logs("users_createWallet", err.message);
-  //     return response.error(res, { data: { status: false } });
-  //   }
-  // }
 
   public async createWalletNative(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
@@ -1223,7 +1048,6 @@ class UserController implements OnlyControllerInterface {
       let data: any;
       let view_status: any;
       if (key == GlblBooleanEnum.true) {
-        // if send 1
         view_status = await Models.NotificationModel.findAll({
           attributes: ["notification_id", "view_status"],
           where: {
@@ -1269,7 +1093,6 @@ class UserController implements OnlyControllerInterface {
           }
         }
       } else {
-        // if send 0 it means all view status to be updated as 1
         await Models.NotificationModel.update(
           {
             view_status: 1,
@@ -1425,7 +1248,6 @@ class UserController implements OnlyControllerInterface {
         });
       }
 
-      // const currentTimestamp = Date.now();
       const currentTimestamp = new Date()
         .toISOString()
         .replace('T', ' ')

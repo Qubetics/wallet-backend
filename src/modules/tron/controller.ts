@@ -76,9 +76,6 @@ class TronController implements OnlyControllerInterface {
       const coin_id: number = req.body.coin_id;
       const amount: number = req.body.amount;
       const gas_price: number = req.body.gas_price;
-      // const gas_estimate: number = req.body.gas_estimate
-      // ? req.body.gas_estimate
-      // : 0; /// gas_estimate
       const trnx_raw: any = req.body.tx_raw;
       const fiat_currency: string = "USD";
 

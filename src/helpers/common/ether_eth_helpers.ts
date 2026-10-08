@@ -102,7 +102,6 @@ class EthEther {
     } catch (err: any) {
       console.error("Error in get_balance of eth", err);
       await commonHelper.save_error_logs("get_balance_eth", err.message);
-      // throw err;
       return null;
     }
   }
@@ -212,7 +211,6 @@ class EthEther {
     lang: string
   ) {
     try {
-      // const nonce = await this.provider.getTransactionCount(fromAddress, 'pending');
 
       const contract = new ethers.Contract(
         tokenAddress,
@@ -245,7 +243,6 @@ class EthEther {
     lang: string
   ) {
     try {
-      // const nonce = await this.provider.getTransactionCount(fromAddress, 'pending');
 
       const contract = new ethers.Contract(
         tokenAddress,
@@ -349,15 +346,6 @@ class EthEther {
     }
   }
 
-  // public async convertGweiToWei(value: number): Promise<string> {
-  //   try {
-  //     let valueInWei = ethers.parseUnits(value.toString(), 9);
-  //     return valueInWei.toString();
-  //   } catch (error) {
-  //     console.log('🔥 ~ ~ convertGweiToWei node.bsc.helper.ts error');
-  //     throw error;
-  //   }
-  // }
 }
 
 export const ethEther = new EthEther();

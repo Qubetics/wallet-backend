@@ -72,6 +72,4 @@ const MpcWalletsModel = db.db_write.define<MpcWalletsInstance>(
 );
 
 
-// MpcWalletsModel.sync({ alter: true });
-
 export default MpcWalletsModel;
