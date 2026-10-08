@@ -2803,20 +2803,7 @@
         }
       }
     },
-    "/on_off_ramp/mercuryo/initiateTx": {
-      "post": {
-        "tags": ["On-Off Ramp"],
-        "summary": "Initiate Mercuryo transaction",
-        "parameters": [
-          { "$ref": "#/parameters/Authorization" },
-          { "in": "body", "name": "body", "required": true, "schema": { "type": "object" } }
-        ],
-        "responses": {
-          "200": { "description": "Success.", "schema": { "type": "object", "properties": { "data": {} } } },
-          "400": { "description": "Error.", "schema": { "$ref": "#/definitions/ErrorResponse" } }
-        }
-      }
-    },
+
 
     "/qubetics/{coin}/gas_estimation": {
       "post": {
