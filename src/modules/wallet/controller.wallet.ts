@@ -22,7 +22,7 @@ import { coin_queries, wallet_queries } from "../../helpers/dbHelper/index";
 import userhelper from "../user/helper";
 import kafka_helper from "../../helpers/common/kafka_helper";
 import redisClient from "../../helpers/common/redis";
-import moment from "moment";
+// import moment from "moment";
 import db from "../../helpers/common/db";
 
 class WalletController implements OnlyControllerInterface {
