@@ -15,7 +15,6 @@ class OnOffRampRoute implements ControllerInterface {
 
     public initializeRoutes() {
         this.router.post(`${this.path}/mercuryo/initiateTx`, [validateExpress(onOffRampValidator.mercuryoInitiateTx)], jwtVerification.verifyToken, onOffRampController.mercuryoInitiateTx);
-        this.router.post(`${this.path}/mercuryo_webhook`, onOffRampController.mercuryoWebhook);
 
     }
 }
