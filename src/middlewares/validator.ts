@@ -257,18 +257,6 @@ export default class validator {
     })
   }
 
-  static getMrecuroTrnx_validate = {
-    body: Joi.object({
-      merchant_id: Joi.string().required(),
-    })
-  }
-
-  static mercuroSupportedCoins_validate = {
-    body: Joi.object({
-      fiat_type: Joi.string().required(),
-      addresses: Joi.string().required(),
-    })
-  }
   static getCoinsDetails_validate = {
     body: Joi.object({
       token_address: Joi.string().required(),
