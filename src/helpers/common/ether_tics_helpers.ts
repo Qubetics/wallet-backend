@@ -119,7 +119,6 @@ class TicsEther {
     } catch (err: any) {
       console.error("Error in get_balance of tics", err)
       await commonHelper.save_error_logs("get_balance_tics", err.message);
-      // throw err;
       return null;
     }
   }

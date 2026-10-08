@@ -15,10 +15,6 @@ class AuthRoute implements ControllerInterface {
      authController.generateNewTokens);
      
 
-    //use this api to generate new tokens by impersonate
-    // this.router.post(`${this.path}/tokenByImpersonate`,
-    // authController.tokenByImpersonate);
-
   }
 }
 

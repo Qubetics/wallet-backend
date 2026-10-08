@@ -51,10 +51,6 @@ let dataObj = {
         type: DataTypes.STRING,
         allowNull: true
     },
-    // merchant_id: {
-    //     type: DataTypes.STRING,
-    //     allowNull: true
-    // },
     order_id: {
         type: DataTypes.STRING,
         allowNull: true
@@ -79,10 +75,6 @@ let dataObj = {
         type: DataTypes.INTEGER,
         allowNull: true
     },
-    // nonce: {
-    //     type: DataTypes.INTEGER,
-    //     allowNull: true
-    // },
     tx_fee: {
         type: DataTypes.DOUBLE,
         allowNull: true
@@ -103,10 +95,6 @@ let dataObj = {
         type: DataTypes.DOUBLE,
         allowNull: true
     },
-    // fiat_price: {
-    //     type: DataTypes.DOUBLE,
-    //     allowNull: true
-    // },
     fiat_type: {
         type: DataTypes.STRING(191),
         allowNull: true
@@ -129,7 +117,6 @@ const TrnxHistoryModel = db.db_write.define<TrnxHistoryInstance>(
 );
 
 TrnxHistoryModel.belongsTo(CoinsModel, { foreignKey: 'coin_id', targetKey: 'coin_id', as: "coin_data" });
-
 
 
 export default TrnxHistoryModel;

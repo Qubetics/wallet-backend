@@ -110,9 +110,7 @@ class TicsController implements OnlyControllerInterface {
         from,
         tx_raw,
       } = req.body;
-      // const gasPriceInWei = await ticsEther.convertGweiToWei(gas_price);
       const maxGas = await bigNumberSafeMath(gas_price, '*', gas_estimate);
-      // const maxGas = gas_price * gas_estimate;
       const gasInTics = await ticsEther.convertWeiToTics(maxGas);
 
       // TICS only
@@ -257,9 +255,7 @@ class TicsController implements OnlyControllerInterface {
 
   public async saveTransaction(req: Request, res: Response) {
     try {
-      // const { token_address: contractAddress, token_abi: ABI } = req.coininfo;
       const transactionHash = req.body.tx_hash;
-      // const dapp_transaction: any = req.body.add_amount;
       const {
         gas_estimate,
         amount,
@@ -268,10 +264,7 @@ class TicsController implements OnlyControllerInterface {
         tx_raw,
       } = req.body;
       
-      // const maxGas = await bigNumberSafeMath(gas_price, '*', gas_estimate);
       
-      // const gasInTics = await ticsEther.convertWeiToTics(maxGas);
-
       // Directly use BigNumber here instead of bigNumberSafeMath
       // Convert gas price to wei first
       const gasPriceWei = ethers.parseUnits(gas_price.toString(), "gwei"); // BigInt in Wei
@@ -285,60 +278,16 @@ class TicsController implements OnlyControllerInterface {
 
       // TICS only
       if (req.coininfo.is_token == false && req.coininfo.coin_symbol == "tics") {
-        // let withdrawAmount;
-        // if (dapp_transaction == 1) {
-        //   withdrawAmount = bigNumberSafeMath('0', "+", gasInTics);
-        // } else {
-        //   withdrawAmount = bigNumberSafeMath(amount, "+", gasInTics);
-        // }
-        // const ticsBalance = await ticsEther.get_coin_balance(from, true);
-        // console.log("🚀 ~ TicsController ~ saveTransaction ~ ticsBalance:", ticsBalance)
-        // console.log("🚀 ~ TicsController ~ saveTransaction ~ withdrawAmount:", withdrawAmount)
-        // if (Number(ticsBalance) < Number(withdrawAmount)) {
-        //   return response.error(res, {
-        //     data: { status: false, message: language[lang].INSUFFICIENT },
-        //   });
-        // }
       } else if (
         req.coininfo.coin_family == config.STATIC_COIN_FAMILY.TICS &&
         req.coininfo.is_token == true &&
         req.coininfo.token_type === "ERC20"
       ) {
-        // const ticsBalance = await ticsEther.get_coin_balance(from, true);
-        // const ERC20TokenBalance = await ticsEther.get_erc20_token_balance(
-        //   contractAddress,
-        //   ABI as AbiItem[],
-        //   req.body.from
-        // );
-        // if (Number(ticsBalance) < Number(gasInTics)) {
-        //   return response.error(res, {
-        //     data: {
-        //       status: false,
-        //       message: language[lang].INSUFFICIENTTICS
-        //     },
-        //   });
-        // } else if (Number(ERC20TokenBalance) < Number(amount)) {
-        //   return response.error(res, {
-        //     data: {
-        //       status: false,
-        //       message: language[lang].ETH_INSUFFICIENT(req.coininfo.coin_symbol)
-        //     },
-        //   });
-        // }
       } else if (
         req.coininfo.coin_family == config.STATIC_COIN_FAMILY.TICS &&
         req.coininfo.is_token == true &&
         req.coininfo.token_type === "ERC721"
       ) {
-        // const ticsBalance = await ticsEther.get_coin_balance(from, true);
-        // if (Number(ticsBalance) < Number(gasInTics)) {
-        //   return response.error(res, {
-        //     data: {
-        //       status: false,
-        //       message: language[lang].ETH_GAS(gasInTics, 'TICS')
-        //     },
-        //   });
-        // }
        }
 
         req.body.tx_hash = transactionHash;
@@ -420,7 +369,6 @@ class TicsController implements OnlyControllerInterface {
           },
         });
       }
-      // const dapp_transaction: any = req.body.add_amount;
       const  transaction: any = await dbHelper.getTrnxHistoryByTxId(tx_hash);
 
       if(!transaction) {

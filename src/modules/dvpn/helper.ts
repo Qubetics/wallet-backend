@@ -37,7 +37,6 @@ class DvpnHelpers {
       });
       
 
-      //if dvpn plan already exists, return error
       if(existingDvpnPlan){
         return {
           status: false,
@@ -87,7 +86,6 @@ class DvpnHelpers {
         //get dvpn plans list
         const dvpnPlansList: any = await Models.DvpnPlansModel.findAndCountAll(queryOptions);
          
-        //return dvpn plans list
         return {
             dvpnPlansList: dvpnPlansList.rows,
             total: dvpnPlansList.count,
@@ -113,7 +111,6 @@ class DvpnHelpers {
         //get dvpn session history
         const history: any = await Models.DvpnSessionsModel.findAndCountAll(queryOptions);
          
-        //return dvpn session history
         return {
             history: history.rows,
             total: history.count,
@@ -136,5 +133,4 @@ class DvpnHelpers {
 }
 
 export const dvpnHelper = new DvpnHelpers()
-
 

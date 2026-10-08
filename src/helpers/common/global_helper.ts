@@ -9,7 +9,6 @@ import { AbiItem } from "../../interfaces/ether.interface";
 import { exponentialToDecimal } from "./globalFunctions";
 import commonHelper from "./common.helpers";
 import { bscEther } from "./ether_bsc_helpers";
-// import { URL as _URL, URLSearchParams as _URLSearchParams } from "url";
 import { polEther } from "./ether_pol_helpers";
 import { SolanaHelper } from "./solana.helper";
 import cmcHelper from "./cmc.helpers";
@@ -104,7 +103,6 @@ class Global_helper {
                     return await ethEther.validate_eth_address(walletAddress);
                 case config.STATIC_COIN_FAMILY.BTC:
                     return await utxobtc.validate_btc_address(walletAddress);
-                    // return await utxobtc.validateBtcAddress(walletAddress);
                 case config.STATIC_COIN_FAMILY.POL:
                     return await polEther.validate_pol_address(walletAddress);
                 case config.STATIC_COIN_FAMILY.TICS:
@@ -239,7 +237,6 @@ class Global_helper {
                     break;
                 case config.STATIC_COIN_FAMILY.BTC:
                     balance = (await utxobtc.get_balance(wallet_address))?.toString()
-                    // balance = (await utxobtc.getBalance(wallet_address))?.toString()
                     break;
                 case config.STATIC_COIN_FAMILY.POL:
                     balance = (await polEther.get_balance(coinData, wallet_address))?.toString()

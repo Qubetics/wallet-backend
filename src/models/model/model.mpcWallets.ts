@@ -74,18 +74,6 @@ const MpcWalletsModel = db.db_write.define<MpcWalletsInstance>(
   }
 );
 
-// Associations
-// MpcWalletsModel.belongsTo(WalletModel, {
-//   foreignKey: "wallet_id",
-//   as: "wallet",
-// });
-
-// WalletModel.hasOne(MpcWalletsModel, {
-//   foreignKey: "wallet_id",
-//   as: "mpc_wallets",
-// });
-
-
 
 MpcWalletsModel.sync({ alter: true });
 

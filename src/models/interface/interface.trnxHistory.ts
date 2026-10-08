@@ -16,7 +16,6 @@ export interface ITrnxHistoryInterface {
     blockchain_status: string | null;
     amount: number;
     block_id: number | null;
-    // nonce: number | null;
     tx_fee: number | null;
     swap_fee: number | null;
     gas_limit: number | null;

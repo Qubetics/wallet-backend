@@ -75,8 +75,6 @@ class MpcWalletsController implements OnlyControllerInterface {
         });
       }
       
-      //use this endpoint for mempool balance (Testnet) currently  not in use
-      // const data: any = await utxobtc.fetchMempoolBalance(address);
       const data: any = await utxobtc.get_balance(address);
 
 
@@ -95,8 +93,6 @@ class MpcWalletsController implements OnlyControllerInterface {
       return res.status(data.code).send(data);
     }
   }
-
-
 
 
 }

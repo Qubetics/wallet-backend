@@ -34,7 +34,6 @@ class OnOffRampController implements OnlyControllerInterface {
                 status: GlblBlockchainTxStatusEnum.PENDING,
                 blockchain_status: GlblBlockchainTxStatusEnum.PENDING,
                 amount: amount,
-                // fiat_price: fiat_price,
                 fiat_type: fiat_type,
                 merchant_id: merchant_id,
                 order_id: order_id ? order_id : null
@@ -86,7 +85,6 @@ class OnOffRampController implements OnlyControllerInterface {
 
                     let txDetail: any = await Models.TrnxHistoryModel.findOne({
                         attributes: ['id', 'user_id', 'to_adrs', 'coin_id', 'coin_family', 'status'],
-                        // where: { merchant_id: webhookData?.merchant_transaction_id },
                         raw: true
                     });
 
@@ -146,7 +144,6 @@ class OnOffRampController implements OnlyControllerInterface {
                             status: status,
                             blockchain_status: (status == GlblStatus.COMPLETED) ? GlblBlockchainTxStatusEnum.CONFIRMED : GlblBlockchainTxStatusEnum.FAILED
                         }
-                        // await Models.TrnxHistoryModel.update(dataToSave, { where: { merchant_id: webhookData?.merchant_transaction_id } });
                     }
 
                     await Models.OnOffRampLogModel.create({
@@ -192,7 +189,6 @@ class OnOffRampController implements OnlyControllerInterface {
                                 coin_symbol: webhookData?.currency.toLowerCase(),
                                 coin_family: txDetail.coin_family,
                                 coin_id: txDetail.coin_id,
-                                // state: notification_status
                             };
                             await Models.NotificationModel.create(notificationData);
                             /* send push notification */

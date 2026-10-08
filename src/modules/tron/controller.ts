@@ -76,9 +76,6 @@ class TronController implements OnlyControllerInterface {
       const coin_id: number = req.body.coin_id;
       const amount: number = req.body.amount;
       const gas_price: number = req.body.gas_price;
-      // const gas_estimate: number = req.body.gas_estimate
-      // ? req.body.gas_estimate
-      // : 0; /// gas_estimate
       const trnx_raw: any = req.body.tx_raw;
       const fiat_currency: string = "USD";
 
@@ -165,14 +162,11 @@ class TronController implements OnlyControllerInterface {
                 to_user_id: to_user_id,
                 req_type: TxReqTypesEnum.APP,
                 order_id: req.body.order_id,
-                // merchant_id: null,
                 block_id: null,
-                // nonce: null,
                 swap_fee: null,
                 gas_limit: null,
                 gas_reverted: null,
                 fiat_type: fiat_currency,
-                // fiat_price: null,
                 order_status: req.body.order_id
                   ? GlblBlockchainTxStatusEnum.PENDING
                   : null,

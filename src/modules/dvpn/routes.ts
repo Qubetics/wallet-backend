@@ -23,17 +23,6 @@ class DvpnPlansRoute implements ControllerInterface {
          jwtVerification.verifyToken,
          dvpnController.sessionHistory);
 
-        //Not  Required for Now
-        //get dvpn plans
-        // this.router.post(`${this.path}/plans`,
-        //     jwtVerification.verifyToken,
-        //     dvpnController.getDvpnPlansList);
-
-        // //add dvpn plan
-        // this.router.post(`${this.path}/addDvpnPlan`,
-        //     jwtVerification.verifyToken,
-        //     validateExpress(DvpnPlansValidator.addDvpnPlan),
-        //     dvpnController.addDvpnPlan);
     }
 }
 export default DvpnPlansRoute;

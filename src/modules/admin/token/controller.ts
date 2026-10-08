@@ -17,7 +17,6 @@ import commonHelper from "../../../helpers/common/common.helpers";
 import s3Helper from "../../../helpers/common/s3.helpers";
 
 
-
 class TokenController implements OnlyControllerInterface {
   constructor() {
     this.initialize();
@@ -139,205 +138,6 @@ class TokenController implements OnlyControllerInterface {
     }
   }
 
-  // public async addToken(req: Request, res: Response) {
-  //     try {
-  //         let { coin_family, token_address, coin_name, decimals, coin_symbol, is_shortlist, coin_image, policy_id, ip_address }: any = req.body;
-
-  //         await TokenHelper.searchToken(token_address , coin_family);
-
-  //         let coin_data: any = await CoinsModel.findOne({
-  //             where: {
-  //                 coin_family: coin_family,
-  //                 token_address: { [Op.like]: token_address }
-  //             },
-  //             raw: true
-  //         });
-  //         if (coin_data) {
-  //             if (coin_data?.status == "deleted") {
-  //                 let data_to_update: any = { status: "inactive" }
-  //                 if (coin_data?.added_by == 'user') {
-  //                     data_to_update.added_by = 'admin';
-  //                 }
-  //                 if (coin_image !== null) {
-  //                     data_to_update.coin_image = coin_image
-  //                 }
-  //                 await CoinsModel.update(
-  //                     data_to_update,
-  //                     { where: { coin_family: coin_family, token_address: { [Op.like]: token_address } } }
-  //                 );
-
-
-  //                 await common_helper.fetch_token_coin_market_price(coin_family, coin_data);
-  //                 return res.status(GlblCode.SUCCESS).send({
-  //                     data: {
-  //                         success: true,
-  //                         message: "Token added successfully",
-  //                     }
-  //                 });
-  //             } else {
-  //                 if (coin_data?.added_by == 'admin') {
-  //                     const resMsg: any = { message: "Token address already exist" };
-  //                     return res.status(GlblCode.ERROR_CODE).send({
-  //                         data: resMsg
-  //                     });
-  //                 } else {
-  //                     let data_to_update: any = { added_by: 'admin' }
-  //                     if (coin_image !== null) {
-  //                         data_to_update.coin_image = coin_image
-  //                     }
-  //                     await CoinsModel.update(
-  //                         data_to_update,
-  //                         { where: { coin_family: coin_family, token_address: { [Op.like]: token_address } } }
-  //                     );
-
-  //                     await common_helper.fetch_token_coin_market_price(coin_family, coin_data);
-  //                     return ReturnResponse.success(res, {
-  //                         data: {
-  //                             success: true,
-  //                             message: Messages.DATA_ADDED,
-  //                         }
-  //                     });
-  //                 }
-  //             }
-  //         } else {
-  //             let allow_swap = '0';
-  //             if (coin_family == ETH) {
-  //                 let response: any = await add_wallet_token_helper.eth_check_allow_swap(token_address);
-  //                 if (response == 0) {
-  //                     let token_data: any = {
-  //                         token_address: token_address,
-  //                         decimals: Math.pow(10, decimals),
-  //                         coin_symbol: coin_symbol,
-  //                         coin_name: coin_name,
-  //                     }
-  //                     let swap_exist_uniSwap: number = await add_wallet_token_helper.check_allow_swap_from_uniSwap(token_data);
-  //                     if (swap_exist_uniSwap == 1) {
-  //                         allow_swap = '1';
-  //                     }
-  //                 } else {
-  //                     allow_swap = '1';
-  //                 }
-  //             } else if (coin_family == BNB) {
-  //                 let response: any = await add_wallet_token_helper.bnb_check_allow_swap(token_address)
-  //                 if (response == 0) {
-  //                     let token_data: any = {
-  //                         token_address: token_address,
-  //                         decimals: Math.pow(10, decimals),
-  //                         coin_symbol: coin_symbol,
-  //                         coin_name: coin_name,
-  //                     }
-  //                     let swap_exist_pancakeV3: number = await add_wallet_token_helper.check_allow_swap_from_pancakeV3(token_data);
-  //                     if (swap_exist_pancakeV3 == 1) {
-  //                         allow_swap = '1';
-  //                     }
-  //                 } else {
-  //                     allow_swap = '1';
-  //                 }
-  //             } else if (coin_family == SOL) {
-  //                 let response: any = await add_wallet_token_helper.sol_check_allow_swap_from_jupiter(token_address);
-  //                 if (response == 1) {
-  //                     allow_swap = '1';
-  //                 } else {
-  //                     // let jupiterApi = `https://price.jup.ag/v4/price?ids=${token_address}`;
-  //                     let jupiterApi = `https://api.jup.ag/price/v2?ids=${token_address}`;
-  //                     let result: any = await axios.get(jupiterApi);
-  //                     let token_data = result.data?.data || null;
-  //                     // if (token_data && Object.keys(token_data)?.length > 0) {
-  //                     if (token_data && token_data[token_address]) {
-  //                         allow_swap = '1';
-  //                     } else {
-  //                         const result1: any = await axios.get(`https://api.phantom.app/tokens/v1/solana:101/address/${token_address}`);
-  //                         if (result1?.data?.data || result1?.data?.data?.spamStatus == "VERIFIED") {
-  //                             allow_swap = '1';
-  //                         }
-  //                     }
-  //                 }
-  //             } else if (coin_family == PLS) {
-  //                 allow_swap = '1';
-  //             }
-
-  //             // if (coin_family == PLS) {
-  //             //     allow_swap = "1";
-  //             // }
-
-  //             let coin_family_array = [ETH, BNB, MATIC, AVAX, CRO, PLS];
-  //             const hasValue = coin_family_array.includes(coin_family);
-  //             if (hasValue) {
-  //                 if (is_shortlist == 0 || is_shortlist == 1) {
-  //                     is_shortlist = is_shortlist
-  //                 } else {
-  //                     const resMsg = { status: false, message: Messages.INVALID_SHORTLIST_VALUE };
-  //                     return ReturnResponse.error(res, resMsg);
-  //                 }
-  //             } else {
-  //                 is_shortlist = 0
-  //             }
-
-  //             let token_type = await add_wallet_token_helper.check_token_type(coin_family);
-  //             let chain_id_data = [
-  //                 { 'coin_family': ETH, 'chain_id': 1 },
-  //                 { 'coin_family': BNB, 'chain_id': 56 },
-  //                 { 'coin_family': MATIC, 'chain_id': 137 },
-  //                 { 'coin_family': AVAX, 'chain_id': 43114 },
-  //                 { 'coin_family': CRO, 'chain_id': 25 },
-  //                 { 'coin_family': PLS, 'chain_id': 369 },
-  //             ];
-  //             let chain = chain_id_data.filter(chain_id_data => chain_id_data.coin_family == coin_family)[0];
-  //             let data_to_save: any = {
-  //                 is_token: 1,
-  //                 token_address: token_address,
-  //                 coin_name: coin_name,
-  //                 coin_family: coin_family,
-  //                 decimals: decimals !== 0 ? Math.pow(10, parseInt(decimals)) : 0,
-  //                 coin_symbol: coin_symbol,
-  //                 allow_swap: coin_family == PLS ? allow_swap : '0',
-  //                 is_token_allow_swap: allow_swap ? allow_swap : '0',
-  //                 status: "inactive",
-  //                 coin_image: coin_image ? coin_image : null,
-  //                 token_type: token_type,
-  //                 chain_id: chain?.chain_id || null,
-  //                 is_shortlist: is_shortlist,
-  //                 policy_id: policy_id !== undefined ? policy_id : null,
-  //             }
-  //             let coin_data: any = await Models.CoinModel.create(data_to_save);
-  //             await Models.AdminLogModel.create({
-  //                 admin_id: req.user_id,
-  //                 slug: "add_update_token",
-  //                 data: data_to_save,
-  //                 ip_address: ip_address,
-  //             });
-  //             let redis_token_data: any = {
-  //                 id: coin_data.id,
-  //                 coin_name: coin_data.coin_name,
-  //                 coin_symbol: coin_data.coin_symbol,
-  //                 coin_image: coin_data.coin_image,
-  //                 coin_family: coin_data.coin_family,
-  //                 is_token: coin_data.is_token,
-  //                 token_address: coin_data.token_address,
-  //                 token_type: coin_data.token_type,
-  //                 allow_swap: coin_data.allow_swap,
-  //                 is_token_allow_swap: coin_data.is_token_allow_swap,
-  //                 decimals: coin_data.decimals,
-  //                 chain_id: coin_data.chain_id,
-  //                 status: coin_data.status,
-  //                 created_at: coin_data.created_at,
-  //             }
-  //             // await redis_update.update_all_coin_list_by_coin_family(coin_family);
-  //             await redis_update.update_token_list(coin_family, redis_token_data);
-
-  //             await common_helper.fetch_token_coin_market_price(coin_family, coin_data);
-  //             return ReturnResponse.success(res, {
-  //                 data: {
-  //                     success: true,
-  //                     message: Messages.DATA_ADDED,
-  //                 }
-  //             });
-  //         }
-  //     } catch (err: any) {
-  //         console.log('🔥 ~ ~ add_token error');
-  //         global_helper.handle_catch(res, err)
-  //     }
-  // };
 
   public async addToken(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
@@ -427,10 +227,6 @@ class TokenController implements OnlyControllerInterface {
             }
   
             await userWalletHelper.update_token_in_redis_hash(redisCoinData);
-            // await userWalletHelper.update_token_in_redis(
-            //   { coin_family: coin_family },
-            //   coinDataExist.coin_id
-            // );
             return res.status(GlblCode.SUCCESS).send({
               data: { status: true, message: "Token updated successfully" },
             });
@@ -442,13 +238,6 @@ class TokenController implements OnlyControllerInterface {
         }
 
 
-        //
-        // if (coinDataExist.added_by == "user") {
-        //   await userWalletHelper.insert_entry_in_custom_token_table(
-        //     coinDataExist.coin_id,
-        //     req.userId
-        //   );
-        // }
       } else {
         const response: any = await TokenHelper.addCoinToTable(
           token_address,

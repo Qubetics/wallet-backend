@@ -49,7 +49,6 @@ class utxo {
         } catch (err: any) {
             console.error("Erorr in get balacne of BTC.", err)
             await commonHelper.save_error_logs("get_balance_btc", err.message);
-            // throw err;
             return null;
         }
     }
@@ -167,30 +166,6 @@ class utxo {
         }
     }
     
-    //oldcode 
-    // public async getBalance(address: string) {
-    //     try {
-    //         // Use Blockstream testnet API for balance
-    //         const url = `https://blockstream.info/testnet/api/address/${address}`;
-    //         const response = await axios.get(url);
-    //         if (response.data && typeof response.data.chain_stats?.funded_txo_sum === "number" && typeof response.data.chain_stats?.spent_txo_sum === "number") {
-    //             // Calculate balance in satoshis
-    //             const funded = response.data.chain_stats.funded_txo_sum;
-    //             const spent = response.data.chain_stats.spent_txo_sum;
-    //             const balance = funded - spent;
-    //             return balance / 100000000; // Convert to BTC
-    //         }
-    //         return 0;
-    //     } catch (err: any) {
-    //         try {
-    //             const scanResult = await this.makeRpcCall('scantxoutset', ['start', [`addr(${address})`]]);
-    //             return scanResult.total_amount || 0;
-    //         } catch (fallbackError) {
-    //             console.error("Both Blockstream and scantxoutset failed for balance:", err);
-    //             return null;
-    //         }
-    //     }
-    // }
 
     private async fetchBlockstreamBalance(address: string) {
         const url = `https://blockstream.info/testnet/api/address/${address}`;

@@ -22,7 +22,6 @@ import { coin_queries, wallet_queries } from "../../helpers/dbHelper/index";
 import userhelper from "../user/helper";
 import kafka_helper from "../../helpers/common/kafka_helper";
 import redisClient from "../../helpers/common/redis";
-// import moment from "moment";
 import db from "../../helpers/common/db";
 
 class WalletController implements OnlyControllerInterface {
@@ -306,7 +305,6 @@ class WalletController implements OnlyControllerInterface {
         ],
         limit: limitNo,
         offset: offset,
-        // logging: console.log
       });
       response.success(res, {
         data: {
@@ -346,20 +344,6 @@ class WalletController implements OnlyControllerInterface {
       const userId: number = req.userId;
       let message: string;
 
-      // const checkAddress = await wallet_queries.wallet_find_one(
-      //   ["wallet_id", "user_id"],
-      //   { wallet_address: walletAddress }
-      // );
-
-      // if (!checkAddress || checkAddress.user_id !== req.userId) {
-      //   return response.error(res, {
-      //     data: {
-      //       code: GlblCode.ERROR_CODE,
-      //       status: false,
-      //       message: language[lang].UNAUTHORIZED_ACCESS,
-      //     },
-      //   });
-      // }
 
       const coin_data: any = await coin_queries.coin_find_one(["coin_id", "coin_family", "is_token", "token_address", "token_type"], {
         coin_id: coinId,
@@ -663,9 +647,6 @@ class WalletController implements OnlyControllerInterface {
       }
 
 
-      // if (!coin_family.includes(7)) {
-      //   coin_family.push(7);
-      // }
       const userId: number = req.userId;
 
       let where_clause: any = {
@@ -862,7 +843,6 @@ class WalletController implements OnlyControllerInterface {
         };
       }
 
-      // if type is all, then exclude chain abstraction
       if(type == "all") {
         where_clause = {
           ...where_clause,
@@ -1739,7 +1719,6 @@ class WalletController implements OnlyControllerInterface {
         fiat_currency: string;
       } = req.body;
 
-      // const coinWalletdata: any = await Models.WalletModel.findOne({
       let coinWalletdata: any = await Models.WalletModel.findOne({
         attributes: ["balance"],
         where: {
@@ -2213,7 +2192,6 @@ class WalletController implements OnlyControllerInterface {
           type: duration,
         },
         raw: true,
-        // logging: console.log,
       });
 
       if (graphData) {
@@ -2222,9 +2200,6 @@ class WalletController implements OnlyControllerInterface {
           duration
         );
       }
-      // if (cmcId == 310559898) { // TO BE CHANGED
-      //   graphData = await walletController.getCoinGraphGroupedData(duration)
-      // }
 
       return res.status(GlblCode.SUCCESS).send({
         status: true,
@@ -2293,228 +2268,6 @@ class WalletController implements OnlyControllerInterface {
       return res.status(data.code).send(data);
     }
   }
-
-  // public async getCoinGraphGroupedData(duration: string) {
-  //   let rangeStart: Date;
-  //   let intervalExpression: string;
-
-  //   switch (duration) {
-  //     case '1d':
-  //       rangeStart = moment().subtract(1, 'day').toDate();
-  //       // 5-minute bucket
-  //       intervalExpression = `TIMESTAMP(DATE_FORMAT(created_at, '%Y-%m-%d %H:'), FLOOR(MINUTE(created_at) / 5) * 5)`;
-  //       break;
-  //     case '1w':
-  //       rangeStart = moment().subtract(7, 'days').toDate();
-  //       // 3-hour bucket
-  //       intervalExpression = `TIMESTAMP(DATE_FORMAT(created_at, '%Y-%m-%d %H:00:00'), FLOOR(HOUR(created_at) / 3) * 3)`;
-  //       break;
-  //     case '1m':
-  //       rangeStart = moment().subtract(30, 'days').toDate();
-  //       // 12-hour bucket
-  //       intervalExpression = `TIMESTAMP(DATE(created_at), FLOOR(HOUR(created_at) / 12) * 12)`;
-  //       break;
-  //     case '1y':
-  //       rangeStart = moment().subtract(365, 'days').toDate();
-  //       // 3-day bucket
-  //       intervalExpression = `DATE(DATE_SUB(created_at, INTERVAL MOD(DAY(created_at) - 1, 3) DAY))`;
-  //       break;
-  //     default:
-  //       rangeStart = moment().subtract(365, 'days').toDate();
-  //       intervalExpression = `DATE(DATE_SUB(created_at, INTERVAL MOD(DAY(created_at) - 1, 3) DAY))`;
-  //   }
-
-  //   const query = `
-  //     WITH bucketed AS (
-  //       SELECT
-  //         coin_id,
-  //         price,
-  //         timestamp,
-  //         created_at,
-  //         ${intervalExpression} AS time_stamp,
-  //         ROW_NUMBER() OVER (
-  //           PARTITION BY coin_id, ${intervalExpression}
-  //           ORDER BY created_at ASC
-  //         ) AS rn
-  //       FROM tics_price_in_fiat_graphs
-  //       WHERE created_at >= :rangeStart
-  //     )
-  //     SELECT
-  //       price,
-  //       timestamp
-  //     FROM bucketed
-  //     WHERE rn = 1
-  //     ORDER BY time_stamp ASC
-  //   `;
-
-  //   const response = await db.db_write.query(query, {
-  //     replacements: { rangeStart },
-  //     type: QueryTypes.SELECT,
-  //     // logging: true
-  //   });
-
-  //   return response;
-  // }
-  // public async isCorrectCmcId(token_address: string, cmc_id: number, coin_symbol: string, coin_family: number) : Promise<any> {
-      
-
-  //   let data: any = {
-  //     symbol: coin_symbol,
-  //     coinFamily: coin_family,
-  //     tokenAddress: token_address,
-  //   }
-  //   let result: any = await global_helper.getTokenImageFromCmcBySymbol(data);
-
-  //   if(result?.id == null){
-  //     console.log(`${token_address} is not found on cmc`);
-  //     return {
-  //       status: false,
-  //       data: {
-  //         new_cmc_id: null
-  //       }
-  //     }
-  //   }
-
-  //   console.log("Result API CMCID", result.id);
-  //   console.log("Cmc ID from DB", cmc_id);
-
-  //   if(result?.id == cmc_id){
-  //     console.log(result.id, "is correct cmc id", cmc_id);
-  //     return {
-  //       status: true,
-  //       data: {
-  //         new_cmc_id: cmc_id
-  //       }
-  //     }
-  //   }
-  //   else{
-  //     console.log(`${token_address} is incorrect cmc id ${cmc_id} and new cmc id is ${result.id}`);
-  //     return {
-  //       status: false,
-  //       data: {
-  //         new_cmc_id: result?.id
-  //       }
-  //     }
-  //   }
-
-
-
-  // }
-
-
-  // public async updateNewCmcId(token_address: string, cmc_id: number, coin_id: number, new_cmc_id: number) : Promise<any> {
-    
-  //   let update = await Models.CoinsModel.update(
-  //     { correct_cmc_id: new_cmc_id, is_correct_cmc_id: 0 },
-  //     { where: { coin_id: coin_id } }
-  //   );
-
-  //   if(update){
-  //     console.log(`${token_address} is updated with new cmc id ${new_cmc_id}`);
-  //   } else {
-  //     console.log(`${token_address} is not updated with new cmc id ${new_cmc_id}`);
-  //   }
-  // }
-
-  // public async recursiveCmcIdValidation(coinData: any, index: number = 0) : Promise<boolean> {
-
-  //   if(index >= coinData.length ) {
-
-  //     console.log(`All ${coinData.length} coins processed successfully`);
-  //     return true;
-  //   }
-
-  //   let coin = coinData[index];
-    
-
-  //   try {
-  //     let check = await this.isCorrectCmcId(coin.token_address, coin.cmc_id, coin.coin_symbol, coin.coin_family);
-
-  //     if(check.data.new_cmc_id == null){
-  //       console.log(`${coin.token_address} is not found on cmc`);
-  //       await new Promise(resolve => setTimeout(resolve, 1500));
-  //       return this.recursiveCmcIdValidation(coinData, index + 1);
-  //     }
-
-  //     if(check.status == true) {
-  //       console.log(`${coin.token_address} is correct cmc id ${coin.cmc_id}`);
-  //     } else {
-  //       await this.updateNewCmcId(coin.token_address, coin.cmc_id, coin.coin_id, check.data.new_cmc_id);
-  //       console.log(`${coin.token_address} is incorrect 💥💥💥💥 cmc id ${coin.cmc_id} and new cmc id is ${check.data.new_cmc_id}`);
-  //     }
-  //   } catch (error) {
-  //     console.error(`Error processing coin at index ${index}:`, error);
-  //   }
-    
-  //   // Add a one second delay before processing the next coin
-  //   await new Promise(resolve => setTimeout(resolve, 1500));
-    
-  //   // Continue with next coin regardless of success/failure of current one
-  //   return this.recursiveCmcIdValidation(coinData, index + 1);
-  // }
-
-  // public validateCmcIds = async (req: Request, res: Response) => {
-  //   try {
-  //     let coinData: any = await Models.CoinsModel.findAll({
-  //       attributes: ["cmc_id", "coin_id", "token_address", "coin_symbol", "coin_family"],
-  //       raw: true,
-  //       where: Sequelize.and(
-  //         // Sequelize.where(Sequelize.col('cmc_id'), {[Op.gt]: 0}),
-  //         // Sequelize.where(Sequelize.col('token_address'), {[Op.ne]: null})
-  //         // Sequelize.where(Sequelize.col('is_on_cmc'), {[Op.eq]: 0})
-  //       ),
-  //       limit: 50,
-  //       offset: 750
-  //     });
-      
-  //     coinData = coinData.map((coin: any) => ({
-  //       cmc_id: coin.cmc_id,
-  //       coin_id: coin.coin_id,
-  //       token_address: coin.token_address,
-  //       coin_symbol: coin.coin_symbol,
-  //       coin_family: coin.coin_family
-  //     }));
-
-  //     console.log("Processing coinData with length:", coinData.length);
-
-  //     // Start the validation process
-  //     this.recursiveCmcIdValidation(coinData)
-  //       .then(() => console.log("CMC ID validation completed"))
-  //       .catch(err => console.error("Error in CMC ID validation:", err));
-
-  //     return res.status(GlblCode.SUCCESS).send({
-  //       status: true,
-  //       code: GlblCode.SUCCESS,
-  //       message: "CMC IDs validation started in background",
-  //       data: { coinsToProcess: Math.min(coinData.length, 10) }
-  //     });
-  //   } catch (error: any) {
-  //     console.error("Error in validateCmcIds:", error);
-  //     return res.status(GlblCode.ERROR_CODE).send({
-  //       status: false,
-  //       code: GlblCode.ERROR_CODE,
-  //       message: "Error starting CMC ID validation",
-  //       error: error.message || "Unknown error"
-  //     });
-  //   }
-  // }
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

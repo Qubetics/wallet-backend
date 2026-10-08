@@ -41,7 +41,6 @@ class DvpnController implements OnlyControllerInterface {
       //get dvpn session history
       const history: any = await dvpnHelper.getDvpnSessionHistory(queryOptions);
       
-      //return success response
       return res.status(GlblCode.SUCCESS).json({
         status: true,
         code: GlblCode.SUCCESS,
@@ -109,7 +108,6 @@ class DvpnController implements OnlyControllerInterface {
         //add dvpn plan
         const data: any = await dvpnHelper.addDvpnPlan(dvpnPlansData, req.userId);
 
-        //if error in adding dvpn plan, return error
         if(!data.status){
             return res.status(GlblCode.ERROR_CODE).send({
                 status: false,
@@ -118,7 +116,6 @@ class DvpnController implements OnlyControllerInterface {
             });
         }
         
-        //return success response
         return res.status(GlblCode.SUCCESS).send({
             status: true,
             code: GlblCode.SUCCESS,

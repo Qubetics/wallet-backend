@@ -98,14 +98,8 @@ class userHelper {
       let code: any = await userhelper.generate_referral_code();
       let obj: any = {
         user_name: user_name,
-        // request_rejected: 0,
-        // gp_referred: 0,
-        // pre_fran_referred: 0,
-        // fran_referred: 0,
-        // mas_fran_referred: 0,
         referral_count: GlblBooleanEnum.false,
         referral_code: code,
-        // referral_type_id: 1,
         device_id: device_id ? device_id : null,
         created_at: currentUTCDate,
         updated_at: currentUTCDate,
@@ -263,14 +257,6 @@ class userHelper {
         
         // Check if this is a TICS wallet (coin_family 7 and qubetics1 prefix)
         const isTicsWallet = coin_family === 7 && address.startsWith("qubetics");
-        // let addressValidity: any = await global_helper.validate_address(
-        //   address,
-        //   coin_family
-        // );
-        // if (!addressValidity)
-        //   throw new Error(
-        //     `${language[lang].INVALID_ADDRESS} (${symbol.toUpperCase()})`
-        //   );
 
         // Getting Coin data
         const coinData: any = await coin_queries.coin_find_one(
@@ -352,7 +338,6 @@ class userHelper {
             const ifWalletExists: any = await wallet_queries.wallet_find_one(
               ["wallet_id"],
               {
-                // wallet_address: address,
                 coin_id: coinData.coin_id,
                 user_id: userId,
               }

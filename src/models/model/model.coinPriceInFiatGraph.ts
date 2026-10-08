@@ -30,14 +30,6 @@ let dataObj = {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  // latest_price: {
-  //   type: DataTypes.JSON,
-  //   allowNull: true,
-  // },
-  // latest_price_source: {
-  //   type: DataTypes.STRING,
-  //   allowNull: true,
-  // },
 };
 let dataObjIndex = {
   indexes: [

@@ -119,9 +119,7 @@ class EthController implements OnlyControllerInterface {
         from,
         tx_raw,
       } = req.body;
-      // const gasPriceInWei = await ethEther.convertGweiToWei(gas_price);
       const maxGas = await bigNumberSafeMath(gas_price, '*', gas_estimate)
-      // const maxGas = gas_price * gas_estimate;
       const gasInETH = await ethEther.convertWeiToEth(maxGas);
       // ETH only
       if (req.coininfo.is_token == false && req.coininfo.coin_symbol == "eth") {
