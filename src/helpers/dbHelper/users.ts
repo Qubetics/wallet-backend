@@ -101,37 +101,6 @@ class UserQueries {
         }
     }
 
-    public async usersJoinWalletsJoinCoinsToGetFiat(attr1: any, attr2: any, where2: any, attr3: any, where3: any) {
-        try {
-            let data: any = await Models.UsersModel.findAll({
-                attributes: attr1,
-                include: [{
-                    model: Models.WalletModel,
-                    attributes: attr2,
-                    where: where2,
-                    as: 'user_wallet_relation',
-                    required: true,
-                    include: [{
-                        model: Models.CoinsModel,
-                        attributes: attr3,
-                        where: where3,
-                        required: true,
-                        include: [{
-                            model: Models.CoinPriceInFiatModel,
-                            attributes: ["value"],
-                            as: "fiat_price_data"
-                        }]
-                    }]
-                }],
-            })
-            return data;
-        } catch (err: any) {
-            console.error("Error in usersJoinWalletsJoinCoins>>", err)
-            await commonHelper.save_error_logs("usersJoinWalletsJoinCoins", err.message);
-            throw err;
-        }
-    }
-
 }
 
 const user_queries = new UserQueries();

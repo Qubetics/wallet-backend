@@ -4,10 +4,9 @@ import { ethEther } from "./ether_eth_helpers";
 import { GlblCoins, GlblMessages, TradingSourceResponse } from "../../constants/global_enum";
 import { utxobtc } from "./btc_helpers";
 import { trxHelper } from "./trx_helper";
-import { CoinInterface, NotificationInterface } from "../../models";
+import { CoinInterface } from "../../models";
 import { AbiItem } from "../../interfaces/ether.interface";
 import { exponentialToDecimal } from "./globalFunctions";
-import * as Models from '../../models/model/index';
 import commonHelper from "./common.helpers";
 import { bscEther } from "./ether_bsc_helpers";
 // import { URL as _URL, URLSearchParams as _URLSearchParams } from "url";
@@ -323,26 +322,6 @@ class Global_helper {
         }
     }
 
-    public subtractDays(date: any, days: number) {
-        date.setDate(date.getDate() - days);
-        return date;
-    }
-
-    public subtractMonths(date: any, months: number) {
-        date.setMonth(date.getMonth() - months);
-        return date;
-    }
-
-    public async save_notification(object: NotificationInterface) {
-        try {
-            await Models.NotificationModel.create(object)
-            return true;
-        } catch (err: any) {
-            console.error("Error in save_notification>>>>", err)
-            return false;
-        }
-    }
-
 
     public async sendNotification(data: any) {
         try {
@@ -381,31 +360,6 @@ class Global_helper {
         } catch (error) {
             console.error(`🔥 ~ sendNewNotification utility.helper.ts error`, error);
             return false;
-        }
-    }
-
-    public async get_token_image_from_cmc(data: any) {
-        try {
-            let params: any = data.symbol ? `info?symbol=${data.symbol}` : data.id ? `info?id=${data.id}` : `info?address=${data.token_address}`;
-            let result: any = await cmcHelper.cmcApi(params);
-
-            let id: any = null;
-            let imageUrl: any = null;
-            if (result.data) {
-                let image: any;
-                if (data.id) {
-                    id = data.id;
-                    image = result.data.data[id as keyof typeof String].logo;
-                } else {
-                    id = result.data.data[data.symbol.toUpperCase() as keyof typeof String][0].id;
-                    image = result.data.data[data.symbol.toUpperCase() as keyof typeof String][0].logo;
-                }
-                imageUrl = await this.UpdateCmcImgUrl(image);
-            }
-            return { image: imageUrl, id: id };
-        } catch (err: any) {
-            console.error("Error in get_token_image_from_cmc", err);
-            return null;
         }
     }
 

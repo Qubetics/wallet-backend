@@ -72,17 +72,6 @@ class JWT {
     };
   }
 
-  public verifyRefreshToken = (token: string) => {
-    try {
-      const data = jwt.verify(token, config.REFRESH_SECRET || "");
-      if (data) {
-        const decodedData = this.decodeRefreshToken(token);
-        return decodedData;
-      }
-    } catch (error) {
-      return null;
-    }
-  }
 }
 
 const jwtHelper = new JWT();

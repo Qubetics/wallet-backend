@@ -56,16 +56,6 @@ class RedisServer {
     }
   }
 
-  // Admin del key
-  public async del(key: any) {
-    try {
-      this.client_write.DEL(key)
-    } catch (error: any) {
-      console.error("delKey ERROR>>>>>>", error);
-      return null;
-    }
-  }
-
   public async set_hash_table(key: string, field: any, value: any, expiryInSeconds?: number) {
     try {
       await this.client_write.HSET(key, field.toUpperCase(), value, (err: any, reply: any) => {

@@ -1,11 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import jwtHelper from '../../helpers/common/jwt';
-import { config } from "../../config";
 import { GlblCode, GlblMessages } from './../../constants/global_enum';
 import { Messages } from "./auth/enum";
 import { adminQueries } from "../../helpers/dbHelper";
-import jwt from 'jsonwebtoken';
-import commonHelper from "../../helpers/common/common.helpers";
 import s3Helper from "../../helpers/common/s3.helpers";
 import { CryptoHelper } from "../../helpers/common/cryptoJs";
 import BannerModel from "../../models/model/model.banner";
@@ -76,18 +73,6 @@ class AdminMiddleware {
                 code: GlblCode.INVALID_TOKEN,
                 data: {},
             });
-        }
-    }
-
-    public async generateToken(user_id: number) {
-        try {
-            const token: any = jwt.sign({ user_id: user_id }, config.JWT_SECRET, { expiresIn: "30d" });
-            const set_token: string = `JWT ${token}`
-            const encrypt_token: any = await commonHelper.encryptDataRSA(set_token);
-            return encrypt_token;
-        } catch (err: any) {
-            console.error("Error in generateToken.", err)
-            throw err;
         }
     }
 

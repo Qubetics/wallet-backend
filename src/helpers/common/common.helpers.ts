@@ -12,18 +12,6 @@ class CommonHelper {
     }
   }
 
-  public async implement_pagination(data: any, limitNo: number, offset: number) {
-    try {
-      let start_index: number = offset;
-      let end_index: number = start_index + limitNo;
-      let pagination_data: any = await data.slice(start_index, end_index)
-      return pagination_data;
-    } catch (err: any) {
-      console.error("Error in implement_pagination>>", err)
-      throw err;
-    }
-  }
-
   public async decryptDataRSA(data: any) {
     try {
       let privateKeyFile: string = config.RSA_KEYS.USER.PRIVATE;
@@ -60,20 +48,6 @@ class CommonHelper {
     let encryptedData: any = RSAKey.encrypt(data, 'base64');
     return encryptedData;
 
-  }
-
-  public async adminEncryptDataRSA(data: any) {
-    try {
-      let privateKeyFile: string = config.RSA_KEYS.ADMIN.PUBLIC;
-      let privateKey = Buffer.from(privateKeyFile);
-      let RSAKey = new NodeRSA(privateKey);
-      RSAKey.setOptions({ encryptionScheme: 'pkcs1' });
-      let decryptedData = await RSAKey.decrypt(data)
-      return decryptedData;
-    } catch (err: any) {
-      console.error("adminEncryptDataRSA error ======== ,", err.message);
-      throw new Error(err)
-    }
   }
 
 }
