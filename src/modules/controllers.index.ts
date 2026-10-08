@@ -11,7 +11,6 @@ import PolRoute from "./pol/route";
 import SolRoute from "./sol/route";
 import OnChainRoute from "./on-chain/route";
 import SwftcRoute from "./swftc/route";
-import OnOffRampRoute from "./on_off_ramp/route";
 import AdminRoute from "./admin/index";
 
 const controllers = [
@@ -29,7 +28,6 @@ const controllers = [
   new SwftcRoute(),
   new AdminRoute(),
   new SolRoute(),
-  new OnOffRampRoute()
 ]
 
 export default controllers;
