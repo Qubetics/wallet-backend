@@ -3,7 +3,7 @@ import { Request } from "express";
 import { config } from "../../config";
 import * as Models from '../../models/model/index'
 import redisClient from "../common/redis";
-import { GlblBlockchainTxStatusEnum, TxReqTypesEnum, GlblBooleanEnum } from "../../constants/enum";
+import { GlblBlockchainTxStatusEnum, TxReqTypesEnum } from "../../constants/enum";
 import walletQueries from "./wallets";
 import userQueries from "./users";
 import coinQueries from './coins';
@@ -100,26 +100,6 @@ class DbHelper {
   //     return null;
   //   }
   // }
-  public async getUserDeviceToken(
-    address: string, coin_family: number
-  ): Promise<{ device_token: Array<string> }> {
-    let deviceTokensData: any = await Models.DeviceTokenModel.findAll({
-      where: {
-        address: {
-          [Op.like]: address,
-        },
-        coin_family: coin_family,
-        push: GlblBooleanEnum.true
-      },
-      attributes: ["device_token"],
-    });
-    let newValue: any = [];
-    for await (let deviceToken of deviceTokensData) {
-      newValue.push(deviceToken.device_token);
-    }
-    if (newValue.length > 0) return { device_token: newValue as string[] };
-    else return { device_token: [] };
-  }
   public async saveWithdrawTxDetails(
     req: Request
   ) {
