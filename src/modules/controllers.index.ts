@@ -10,7 +10,6 @@ import PolRoute from "./pol/polRoute";
 import SolRoute from "./sol/solRoute";
 import OnChainRoute from "./on-chain/routes";
 import SwftcRoute from "./swftc/routes";
-import OnOffRampRoute from "./on_off_ramp/routes";
 import AdminRoute from "./admin/index";
 import DvpnRoute from "./dvpn/routes";
 import MpcWalletsRoute from "./mpcWallets/route";
@@ -30,7 +29,6 @@ const controllers = [
   new SwftcRoute(),
   new AdminRoute(),
   new SolRoute(),
-  new OnOffRampRoute(),
   new DvpnRoute(),
   new MpcWalletsRoute(),
   new ChainAbstractionRoute()
