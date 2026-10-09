@@ -21,7 +21,6 @@ export const language: any = {
         VALUE_FETCHED: 'Value fetched successfully.',
         ERROR_FETCHING_DATA: 'There was an error fetching your data.',
         MIN_BALANCE: (balance: any, currency: string, coin_symbol: string, coin: string, token_type: string) => `In order to send ${coin_symbol.toUpperCase()} (${token_type.toUpperCase()}), you need to fund ${coin.toUpperCase()} for the gas fee (Minimum ${balance} ${currency})`,
-        // Alchemy
         FAILED: 'FAILED',
         // BTC
         INSUFFICIENT: "Insufficient balance",
@@ -195,7 +194,6 @@ export const language: any = {
         ERROR_FETCHING_DATA: 'Se produjo un error al obtener sus datos.',
         MIN_BALANCE: (balance: any, currency: string, coin_symbol: string, coin: string, token_type: string) => `Para enviar ${coin_symbol.toUpperCase()
             } (${token_type.toUpperCase()}), necesita financiar ${coin.toUpperCase()} para la tarifa del gas(mínimo ${balance} ${currency})`,
-        // Alchemy
         FAILED: 'FALLIDA',
         // BTC
         INSUFFICIENT: "Saldo insuficiente",
