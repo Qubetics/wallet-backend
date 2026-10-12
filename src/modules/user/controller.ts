@@ -264,7 +264,6 @@ class UserController implements OnlyControllerInterface {
       }
 
 
-
       // Check if the input contains emojis
       if (userController.validateEmojis(wallet_name)) {
         return res.status(400).json({
@@ -1048,7 +1047,6 @@ class UserController implements OnlyControllerInterface {
       let data: any;
       let view_status: any;
       if (key == GlblBooleanEnum.true) {
-        // if send 1
         view_status = await Models.NotificationModel.findAll({
           attributes: ["notification_id", "view_status"],
           where: {
@@ -1094,7 +1092,6 @@ class UserController implements OnlyControllerInterface {
           }
         }
       } else {
-        // if send 0 it means all view status to be updated as 1
         await Models.NotificationModel.update(
           {
             view_status: 1,
@@ -1250,7 +1247,6 @@ class UserController implements OnlyControllerInterface {
         });
       }
 
-      // const currentTimestamp = Date.now();
       const currentTimestamp = new Date()
       .toISOString()
       .replace('T', ' ')
