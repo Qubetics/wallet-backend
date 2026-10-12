@@ -18,20 +18,6 @@ class DeviceTokensQueries {
             throw err;
         }
     }
-    // public async device_token_find_all(attr: any, where_clause: any, order: any) {
-    //     try {
-    //         let data: any = await Models.DeviceTokenModel.findAll({
-    //             attributes: attr,
-    //             where: where_clause,
-    //             order: order
-    //         })
-    //         return data;
-    //     } catch (err: any) {
-    //         console.error("Error in device_token_find_all >>", err)
-    //         await commonHelper.save_error_logs("device_token_find_all", err.message);
-    //         throw err;
-    //     }
-    // }
     public async device_token_update(set: any, where_clause: any) {
         try {
             let data: any = await Models.DeviceTokenModel.update(set, { where: where_clause })

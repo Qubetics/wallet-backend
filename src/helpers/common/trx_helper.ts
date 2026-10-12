@@ -12,7 +12,6 @@ import axios from 'axios';
 import { isString } from 'lodash';
 
 
-
 class TrxHelper {
 
     public TRX_FULLNODE: string = config.NODE.TRX_RPC_URL
@@ -61,7 +60,6 @@ class TrxHelper {
         console.log('contract_address >>.', contract_address);
         try {
             await this.tronWeb.setAddress(contract_address);
-            // let contract: any = await this.tronWeb.contract().at(contract_address);
             let contract: any = await this.tronWeb.contract(config.TRON_ABI, contract_address);
 
             let decimals: number = await contract.decimals().call();
@@ -100,7 +98,6 @@ class TrxHelper {
         } catch (err: any) {
             console.error(`Error in Fetch_Balance of tron. `, err);
             await commonHelper.save_error_logs("Fetch_Balance_trx", err.message);
-            // throw err;
             return null;
         }
     }
