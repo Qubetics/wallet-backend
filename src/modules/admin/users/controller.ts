@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { OnlyControllerInterface } from "../../../interfaces/controller.interface";
 import { GlblBooleanEnum, GlblCode, GlblMessages } from "../../../constants/global_enum";
 import { language } from "../../../constants";
-import { adminErrQueries, coin_queries, user_queries, wallet_queries } from "../../../helpers/dbHelper";
+import { adminErrQueries, user_queries, wallet_queries } from "../../../helpers/dbHelper";
 import commonHelper from "../../../helpers/common/common.helpers";
 import { Op } from "sequelize";
 

@@ -17,7 +17,6 @@ import cmcHelper from "./cmc.helpers";
 import { ticsEther } from "./ether_tics_helpers";
 import firebaseAdmin from 'firebase-admin';
 import { fcmServiceAccount } from "../../constants/firebase.admin.key";
-import { error } from "console";
 
 
 class Global_helper {
