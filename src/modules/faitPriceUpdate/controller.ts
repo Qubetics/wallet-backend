@@ -13,7 +13,7 @@ class FactPriceUpdateController implements OnlyControllerInterface {
   public async updateFactPrice(req: Request, res: Response) {
     try {
 
-        const  result = await factPriceUpdateHelper.updateFiatPrice();
+        await factPriceUpdateHelper.updateFiatPrice();
          
         const data =  {
             status: true,

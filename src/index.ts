@@ -10,7 +10,7 @@ import { config } from "./config";
 import helmet from "helmet";
 import { encryptionMiddleware } from "./middlewares/encryption.middleware";
 import { ValidationError } from 'express-validation';
-import { GlblCode, GlblMessages, InfoMessages } from "./constants/global_enum";
+import { GlblCode, GlblMessages } from "./constants/global_enum";
 import ApiLimiter from "./middlewares/apiRateLimiter";
 import sanitizeHtml from "sanitize-html";
 import dataLogger from "./helpers/common/dataLogger.helper";

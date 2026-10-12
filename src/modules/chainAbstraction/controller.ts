@@ -1,11 +1,6 @@
 import { Request, Response } from "express";
-import { Op } from "sequelize";
 import { OnlyControllerInterface } from "../../interfaces/controller.interface";
-import * as Models from "../../models/model/index";
-import {
-  GlblBooleanEnum,
-  GlblCode,
-} from "../../constants/global_enum";
+import { GlblCode } from "../../constants/global_enum";
 import { chainAbstractionHelper } from "./helpers";
 import commonHelper from "../../helpers/common/common.helpers";
 import response from "../../helpers/response/response.helpers";
