@@ -55,7 +55,6 @@ class AuthController implements OnlyControllerInterface {
                     data: {}
                 });
             }
-             //if google2fa_status is 1 then check if token is required
             if(checkEmailExist.google2fa_status == 1  ){
 
                 if(req.body.token == null || req.body.token == undefined || req.body.token == ""){
