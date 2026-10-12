@@ -9,7 +9,6 @@ import response from "../../../helpers/response/response.helpers";
 import { ticsEther } from "../../../helpers/common/ether_tics_helpers";
 import commonHelper from "../../../helpers/common/common.helpers";
 import { AbiItem } from "../../../interfaces/ether.interface";
-import BigNumber from "bignumber.js";
 import { ethers } from "ethers";
 import { GlblBlockchainTxStatusEnum } from "../../../constants/global_enum";
 class TicsController implements OnlyControllerInterface {
@@ -170,7 +169,7 @@ class TicsController implements OnlyControllerInterface {
           });
         }
       }
-      let transferData = await ticsEther.sendTicsOrTokens(
+      await ticsEther.sendTicsOrTokens(
         req,
         lang,
         tx_raw,
@@ -258,10 +257,7 @@ class TicsController implements OnlyControllerInterface {
       const transactionHash = req.body.tx_hash;
       const {
         gas_estimate,
-        amount,
         gas_price,
-        from,
-        tx_raw,
       } = req.body;
       
       

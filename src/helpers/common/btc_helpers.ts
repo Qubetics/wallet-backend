@@ -1,6 +1,5 @@
 import { config } from "../../config";
-import axios, { AxiosInstance } from "axios";
-import { global_helper } from "./global_helper";
+import axios from "axios";
 import commonHelper from "./common.helpers";
 
 class utxo {

@@ -17,7 +17,6 @@ import  schedule  from 'node-schedule';
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 const basicAuth = require('express-basic-auth');
-import fs from 'fs';
 import { factPriceUpdateHelper } from "./modules/faitPriceUpdate/helper";
 
 

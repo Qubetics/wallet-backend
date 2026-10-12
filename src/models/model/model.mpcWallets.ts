@@ -1,8 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import db from "../../helpers/common/db";
-import WalletModel from "./model.wallets";
 import { MpcWalletsInterface } from "../interface/interface.mpcWallets";
-import CoinsModel from "./model.coins";
 
 // Optional ID for creation
 interface MpcWalletsCreationAttrs extends Optional<MpcWalletsInterface, "id"> {}

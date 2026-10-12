@@ -2,10 +2,7 @@ import express from "express";
 import { ControllerInterface } from "../../interfaces/controller.interface";
 import jwtVerification from "../../middlewares/verify.middleware";
 import { dvpnController } from "./controller"
-import { validate as validateExpress } from "express-validation";
-import DvpnPlansValidator from "./validator";
 
-import { SolanaHelper } from "../../helpers/common/solana.helper";
 
 class DvpnPlansRoute implements ControllerInterface {
     public path = "/dvpn";

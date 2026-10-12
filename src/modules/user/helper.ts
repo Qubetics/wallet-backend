@@ -161,10 +161,6 @@ class userHelper {
             coinData,
             address
           );
-          let balance: string = "0";
-          if (balDetails.status) {
-            balance = balDetails.balance;
-          }
           let ifWalletExists: any = await wallet_queries.wallet_find_one(
             ["wallet_id"],
             {
@@ -271,7 +267,6 @@ class userHelper {
           { coin_family: coin_family, coin_symbol: symbol }
         );
         if (coinData) {
-          let balance: string = "0";
 
           // balance of coin
           if(!isTicsWallet)
@@ -280,9 +275,6 @@ class userHelper {
               coinData,
               address
             );
-            if (balDetails.status) {
-              balance = balDetails.balance;
-            }
             const ifWalletExists: any = await wallet_queries.wallet_find_one(
               ["wallet_id"],
               {

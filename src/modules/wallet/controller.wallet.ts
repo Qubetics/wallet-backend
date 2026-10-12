@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Op, QueryTypes, Sequelize } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import response from "../../helpers/response/response.helpers";
 import { OnlyControllerInterface } from "../../interfaces/controller.interface";
 import { config } from "../../config";
@@ -22,7 +22,6 @@ import { coin_queries, wallet_queries } from "../../helpers/dbHelper/index";
 import userhelper from "../user/helper";
 import kafka_helper from "../../helpers/common/kafka_helper";
 import redisClient from "../../helpers/common/redis";
-import db from "../../helpers/common/db";
 
 class WalletController implements OnlyControllerInterface {
   constructor() {

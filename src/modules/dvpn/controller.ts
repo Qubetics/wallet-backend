@@ -2,7 +2,6 @@ import { Response, Request } from "express";
 import { OnlyControllerInterface } from "../../interfaces/controller.interface";
 import { dvpnHelper } from "./helper"
 import { GlblCode } from "../../constants/global_enum";
-import { SolanaHelper } from "../../helpers/common/solana.helper";
 
 
 class DvpnController implements OnlyControllerInterface {

@@ -179,7 +179,6 @@ public updateFiatPrice = async () => {
                 raw: true,
               });
 
-              let coin_id: number = 0;
 
               if (!existingPrice) {
                 // Record doesn't exist - create new entry
@@ -195,7 +194,6 @@ public updateFiatPrice = async () => {
                   console.log(`⚠️ Coin not found in database for CMC ID: ${coinObj.id}`);
                   continue;
                 }
-                coin_id = coin.coin_id;
 
                 // Create new price record with all necessary data
                 await Models.CoinPriceInFiatModel.create({
@@ -220,7 +218,6 @@ public updateFiatPrice = async () => {
               } else {
                 // Record exists - update existing entry
                 console.log(`🔄 Updating existing price record for ${coinObj.symbol} in ${fiatCode}`);
-                coin_id = existingPrice.coin_id;
                 
                 await Models.CoinPriceInFiatModel.update(
                   {
