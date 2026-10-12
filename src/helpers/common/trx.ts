@@ -545,7 +545,6 @@ class TrxHelper {
         console.log("encodeParams inputs :", inputs);
         const AbiCoder = ethers.AbiCoder;
         const ADDRESS_PREFIX_REGEX = /^(41)/;
-        const ADDRESS_PREFIX = "41";
         try {
             let typesValues = inputs;
             let parameters = "";

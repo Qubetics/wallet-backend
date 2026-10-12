@@ -4,19 +4,13 @@ import * as Models from "../../models/model/index";
 import { config } from "../../config";
 import { GlblAddedBy, GlblBooleanEnum } from "../../constants/enum";
 import { exponentialToDecimal } from "../../helpers/common/functions";
-import {
-  coinPriceInFiatQueries,
-  coinQueries,
-  customTokenQueries,
-} from "../../helpers/dbHelper";
+import { coinQueries, customTokenQueries } from "../../helpers/dbHelper";
 import { language } from "../../constants";
 import { globalHelper } from "../../helpers/common/global";
 import commonHelper from "../../helpers/common/common";
-import currencyFiatQueries from "../../helpers/dbHelper/currency_fiats";
 import { walletQueries } from "../../helpers/dbHelper";
 import kafka_helper from "../../helpers/common/kafka";
 import resentGraphDataQueries from "../../helpers/dbHelper/resent_graph_data";
-import cmcHelper from "../../helpers/common/cmc";
 import { Op } from "sequelize";
 
 class WalletHelpers implements OnlyControllerInterface {
@@ -151,171 +145,6 @@ class WalletHelpers implements OnlyControllerInterface {
     }
   }
 
-  private async update_fiat_coin_price(
-    cmc_id: number,
-    coin_symbol: string,
-    coin_name: string,
-    coin_family: number,
-    token_address: any,
-    coin_id: number
-  ) {
-    try {
-      let coin_data: any = {
-        coin_symbol: coin_symbol,
-        coin_name: coin_name,
-        coin_family: coin_family,
-        token_address: token_address,
-      };
-      console.log("coin_data>>", coin_data);
-      let fiatCurrency: any =
-        await currencyFiatQueries.currencyFiatFindAll(
-          ["currency_code", "status"],
-          { status: 1 }
-        );
-      if (fiatCurrency) {
-        let codes: any = fiatCurrency.map((el: any) => el.currency_code);
-        let currencyFormat: any = codes.toString().replace(/[\[\]']+/g, "");
-        let result: any = await cmcHelper.cmcApi(
-          `quotes/latest?id=${cmc_id}&convert=${currencyFormat}`
-        );
-        if (result?.data?.data) {
-          for (let i: number = 0; i < fiatCurrency.length; i++) {
-            // Check cmc data in coin price in fiat
-            let data_exist: any =
-              await coinPriceInFiatQueries.coinPriceInFiatFindOne(
-                ["id"],
-                {
-                  cmc_id: cmc_id,
-                  fiat_type: fiatCurrency[i].currency_code.toLowerCase(),
-                }
-              );
-            if (!data_exist) {
-              let latest_price: any = {
-                price:
-                  result.data.data[cmc_id].quote[
-                    fiatCurrency[i].currency_code.toUpperCase()
-                  ].price,
-                timestamp:
-                  result.data.data[cmc_id].quote[
-                    fiatCurrency[i].currency_code.toUpperCase()
-                  ].last_updated,
-                volume_24h:
-                  result.data.data[cmc_id].quote[
-                    fiatCurrency[i].currency_code.toUpperCase()
-                  ].volume_24h,
-                price_change_24h:
-                  result.data.data[cmc_id].quote[
-                    fiatCurrency[i].currency_code.toUpperCase()
-                  ].percent_change_24h,
-              };
-              let data_to_insert: any = {
-                coin_id: coin_id,
-                coin_symbol: coin_data.coin_symbol,
-                coin_name: coin_data.coin_name,
-                coin_family: coin_data.coin_family,
-                cmc_id: cmc_id,
-                fiat_type: fiatCurrency[i].currency_code.toLowerCase(),
-                value:
-                  result.data.data[cmc_id].quote[
-                    fiatCurrency[i].currency_code.toUpperCase()
-                  ].price,
-                price_change_24h:
-                  result.data.data[cmc_id].quote[
-                    fiatCurrency[i].currency_code.toUpperCase()
-                  ].percent_change_24h,
-                price_change_percentage_24h:
-                  result.data.data[cmc_id].quote[
-                    fiatCurrency[i].currency_code.toUpperCase()
-                  ].percent_change_24h,
-                market_cap:
-                  result.data.data[cmc_id].quote[
-                    fiatCurrency[i].currency_code.toUpperCase()
-                  ].market_cap,
-                circulating: result.data.data[cmc_id].circulating_supply,
-                total_supply: result.data.data[cmc_id].total_supply,
-                rank: result.data.data[cmc_id].cmc_rank,
-                volume_24h:
-                  result.data.data[cmc_id].quote[
-                    fiatCurrency[i].currency_code.toUpperCase()
-                  ].volume_24h,
-                token_address: coin_data.token_address,
-                max_supply: result.data.data[cmc_id].max_supply,
-                latest_price: latest_price,
-              };
-              await coinPriceInFiatQueries.coinPriceInFiatCreate(
-                data_to_insert
-              );
-            }
-            let types = ["1d"];
-            let graph_data_exist: any =
-              await coinPriceInFiatQueries.coinPriceInFiatGraphFindOne(
-                ["id"],
-                {
-                  cmc_id: cmc_id,
-                  fiat_type: fiatCurrency[i].currency_code.toLowerCase(),
-                }
-              );
-            if (!graph_data_exist) {
-              let latest_price_graph: any = [
-                {
-                  price:
-                    result.data.data[cmc_id].quote[
-                      fiatCurrency[i].currency_code.toUpperCase()
-                    ].price,
-                  timestamp:
-                    result.data.data[cmc_id].quote[
-                      fiatCurrency[i].currency_code.toUpperCase()
-                    ].last_updated,
-                  volume_24h:
-                    result.data.data[cmc_id].quote[
-                      fiatCurrency[i].currency_code.toUpperCase()
-                    ].volume_24h,
-                  price_change_24h:
-                    result.data.data[cmc_id].quote[
-                      fiatCurrency[i].currency_code.toUpperCase()
-                    ].percent_change_24h,
-                },
-              ];
-
-              let data_to_insert_graph: any = {
-                coin_id: coin_id,
-                cmc_id: cmc_id,
-                sparkline: latest_price_graph,
-                coin_type: coin_data.coin_symbol,
-                type: types[0],
-                fiat_type: fiatCurrency[i].currency_code.toUpperCase(),
-                latest_price: latest_price_graph,
-                latest_price_source: types[0],
-                value:
-                  result.data.data[cmc_id].quote[
-                    fiatCurrency[i].currency_code.toUpperCase()
-                  ].price,
-                price_change_24h:
-                  result.data.data[cmc_id].quote[
-                    fiatCurrency[i].currency_code.toUpperCase()
-                  ].percent_change_24h,
-                price_change_percentage_24h:
-                  result.data.data[cmc_id].quote[
-                    fiatCurrency[i].currency_code.toUpperCase()
-                  ].percent_change_24h,
-              };
-              await coinPriceInFiatQueries.coinPriceInFiatGraphCreate(
-                data_to_insert_graph
-              );
-            }
-          }
-        } else {
-          console.log("no data in cmc");
-        }
-      } else {
-        console.log("no fiat currency");
-      }
-    } catch (err: any) {
-      console.error("Error in update_fiat_coin_price>>", err);
-      await commonHelper.saveErrorLogs("update_fiat_coin_price", err.message);
-      throw err;
-    }
-  }
 
   public async insertEntryInCustomToken(
     coinId: number,

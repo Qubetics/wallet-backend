@@ -168,7 +168,7 @@ class TicsController implements OnlyControllerInterface {
           });
         }
       }
-      let transferData = await ticsEther.sendTicsOrTokens(
+      await ticsEther.sendTicsOrTokens(
         req,
         lang,
         tx_raw,

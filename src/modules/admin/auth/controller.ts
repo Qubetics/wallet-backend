@@ -10,7 +10,7 @@ import { config } from "../../../config";
 import jwtHelper from "../../../helpers/common/jwt";
 import speakeasy from 'speakeasy';
 import QRCode from "qrcode";
-import { MenuListsModel, PermissionsModel } from "../../../models";
+import { MenuListsModel } from "../../../models";
 import permissionsQueries from "../../../helpers/dbHelper/permissions";
 
 class AuthController implements OnlyControllerInterface {

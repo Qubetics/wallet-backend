@@ -177,7 +177,7 @@ class EthController implements OnlyControllerInterface {
           });
         }
       }
-      let transferData = await ethEther.sendEthOrTokens(
+      await ethEther.sendEthOrTokens(
         req,
         lang,
         tx_raw,

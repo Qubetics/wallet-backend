@@ -1,4 +1,3 @@
-import { trxHelper } from '../../helpers/common/trx';
 
 class TronHelper {
 

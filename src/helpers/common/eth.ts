@@ -184,7 +184,7 @@ class EthEther {
     lang: string
   ) {
     try {
-      const nonce = await this.provider.getTransactionCount(fromAddress, 'pending');
+      await this.provider.getTransactionCount(fromAddress, 'pending');
 
       const contract = new ethers.Contract(
         tokenAddress,
@@ -217,7 +217,7 @@ class EthEther {
     lang: string
   ) {
     try {
-      const nonce = await this.provider.getTransactionCount(fromAddress, 'pending');
+      await this.provider.getTransactionCount(fromAddress, 'pending');
 
       const contract = new ethers.Contract(
         tokenAddress,
