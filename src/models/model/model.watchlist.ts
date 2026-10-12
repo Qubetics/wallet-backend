@@ -41,6 +41,4 @@ let dataObj = {
 const WatchlistsModel = db.db_write.define<WatchlistInstance>("watch_list", dataObj);
 
 
-// WatchlistsModel.sync({ alter: true });
-
 export default WatchlistsModel;

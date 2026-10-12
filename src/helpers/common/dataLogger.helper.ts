@@ -16,8 +16,6 @@ class ColorLogger {
   }
 
 
-
-  // Info: Green
   logColorful(message: string, data?: any) {
     console.log(`\x1b[32m${message}\x1b[0m`);
     if (data !== undefined) {

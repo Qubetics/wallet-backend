@@ -52,7 +52,6 @@ class DvpnController implements OnlyControllerInterface {
       //get dvpn session history
       const history: any = await dvpnHelper.getDvpnSessionHistory(queryOptions);
       
-      //return success response
       return res.status(GlblCode.SUCCESS).json({
         status: true,
         code: GlblCode.SUCCESS,

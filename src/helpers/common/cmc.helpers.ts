@@ -39,7 +39,6 @@ class CMCHelper {
             } else {
                 result = [];
             }
-            // console.log("url >>> ", url, "header", header)
             return result;
         } catch (err: any) {
             console.error("Error in cmcApi cmcApi cmcApi >>>", err);
