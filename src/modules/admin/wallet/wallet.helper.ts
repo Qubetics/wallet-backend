@@ -1,7 +1,6 @@
 import { CoinsModel, UsersModel } from "../../../models";
 import TrnxHistoryModel from "../../../models/model/model.trnxHistory";
 import { Op, Sequelize } from "sequelize";
-import sequelize from "sequelize";
 
 
 class WalletHelpers {

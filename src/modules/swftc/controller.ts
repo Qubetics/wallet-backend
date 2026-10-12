@@ -6,7 +6,7 @@ import rp from "request-promise";
 import { GlblCode } from "../../constants/global_enum";
 import { language } from "../../constants";
 import commonHelper from "../../helpers/common/common.helpers";
-import { Op, Sequelize } from "sequelize";
+import { Op } from "sequelize";
 
 class SwftcController implements OnlyControllerInterface {
   constructor() {

@@ -5,7 +5,6 @@ import { language } from "../../../constants";
 import { adminErrQueries } from "../../../helpers/dbHelper";
 import MenuListsModel from "../../../models/model/model_menu_lists.";
 import { WalletHelper } from "./wallet.helper";
-import { includes } from "lodash";
 import CoinsModel from "../../../models/model/model.coins";
 import { Op } from "sequelize";
 

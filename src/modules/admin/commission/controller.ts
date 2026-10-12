@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
 import { OnlyControllerInterface } from "../../../interfaces/controller.interface";
-import { GlblBooleanEnum, GlblCode, GlblMessages } from "../../../constants/global_enum";
+import { GlblCode, GlblMessages } from "../../../constants/global_enum";
 import { language } from "../../../constants";
-import { adminErrQueries, coin_queries, swapSettingQueries, user_queries, wallet_queries } from "../../../helpers/dbHelper";
-import commonHelper from "../../../helpers/common/common.helpers";
-import { Op } from "sequelize";
+import { adminErrQueries, swapSettingQueries } from "../../../helpers/dbHelper";
 import { ethers } from "ethers";
 
 
