@@ -105,7 +105,6 @@ class WalletHelpers implements OnlyControllerInterface {
         added_by: coinData.added_by,
         for_swap: coinData.for_swap
       }
-      // await WalletHelper.update_token_in_redis(coinData, 0);
       await WalletHelper.update_token_in_redis_hash(redisCoinData)
       await custom_token_queries.custom_token_create({
         coin_id: coinData.coin_id,

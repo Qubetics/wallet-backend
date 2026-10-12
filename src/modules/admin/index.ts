@@ -1,12 +1,9 @@
 import { Router } from 'express';
 import AuthRoute from './auth/router';
-// import UserRoute from './users/router';
-// import CommissionRoute from './commission/router';
 import WalletRoute from './wallet/router';
 import TokenRoute from './token/router'
 import NotificationRoute from './notification/router'
 import BannerRoute from './banner/router';
-
 
 
 class AdminRoute {
@@ -19,8 +16,6 @@ class AdminRoute {
 
     private initializeRoutes() {
         this.router.use(`${this.path}/auth`, AuthRoute)
-        // this.router.use(`${this.path}/users`, UserRoute)
-        // this.router.use(`${this.path}/commission`, CommissionRoute)
         this.router.use(`${this.path}/wallet`, WalletRoute)
         this.router.use(`${this.path}/token`, TokenRoute)
         this.router.use(`${this.path}/notification`, NotificationRoute)
