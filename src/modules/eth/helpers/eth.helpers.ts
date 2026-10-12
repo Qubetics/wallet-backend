@@ -60,7 +60,6 @@ class EthHelpers implements HelpersInterface {
         message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('ETH')
       };
 
-      //return 0;
     } catch (err: any) {
       await commonHelper.save_error_logs("eth_getErc20TokenTransferGasEstimationCost", err.message);
       console.error("error, for try catch", err);

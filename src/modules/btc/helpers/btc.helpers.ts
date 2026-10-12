@@ -2,7 +2,6 @@
 import { config } from "../../../config";
 import axios, { AxiosInstance } from "axios";
 
-//class UTXO {
 let utxoClass = class UTXO {
     public config: any;
 

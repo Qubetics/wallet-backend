@@ -35,29 +35,7 @@ class Global_helper {
             let responseDetails: any;
             console.log("Entered into swapSupportedByMatcha");
             if (coinFamily == 1) {
-                // responseDetails = await bsc_matcha_helper.getPriceOfBscToken(
-                //     {
-                //         sellToken: tokenAddress,
-                //         buyToken: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-                //         sellAmount: "1000000000000000000",
-                //         slippagePercentage: "0.01",
-                //         takerAddress: "0xC9549DE1cD1958b2f6AC2E589eF3aE851d1E9879",
-                //         feeRecipient: swapData.address,
-                //         buyTokenPercentageFee: swapData.percentage
-                //     }
-                // )
             } else if (coinFamily == 2) {
-                // responseDetails = await eth_matcha_helper.getPriceOfEthToken(
-                //     {
-                //         sellToken: tokenAddress,
-                //         buyToken: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-                //         sellAmount: "1000000000000000000",
-                //         slippagePercentage: "0.01",
-                //         takerAddress: "0xC9549DE1cD1958b2f6AC2E589eF3aE851d1E9879",
-                //         feeRecipient: swapData.address,
-                //         buyTokenPercentageFee: swapData.percentage
-                //     }
-                // )
             } else {
                 console.log("Not entered into eth or bnb")
                 responseDetails = { status: false }

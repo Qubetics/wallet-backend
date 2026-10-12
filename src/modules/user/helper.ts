@@ -334,7 +334,6 @@ class userHelper {
           push: 1,
         });
       } else {
-        //await device_token_queries.device_token_destroy({ where: { device_token: { [Op.ne]: device_token }, device_id: device_id, address: address, coin_family: coin_family } })
         await device_token_queries.device_token_update(
           { status: GlblBooleanEnum.true, device_token: device_token },
           { device_id: device_id, address: address, coin_family: coin_family }
