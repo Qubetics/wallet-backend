@@ -104,7 +104,7 @@ class TicsController implements OnlyControllerInterface {
     try {
       console.log("req body tics rawDataString >>>", req.body)
 
-      var { my_address, dest_address, amount, coin_type }: RawDataInterface =
+      var { my_address, dest_address, amount }: RawDataInterface =
         req.body;
       const web3: Web3 = new Web3(
         Web3.givenProvider || config.NODE.TICS_RPC_URL + ""
@@ -139,7 +139,7 @@ class TicsController implements OnlyControllerInterface {
       var transferAmount = await exponentialToDecimal(amount);
 
       // Determine the nonce
-      var count = await web3.eth.getTransactionCount(my_address);
+      await web3.eth.getTransactionCount(my_address);
       var contract = new web3.eth.Contract(
         minABI,
         req.coininfo.token_address || "",
@@ -235,7 +235,7 @@ class TicsController implements OnlyControllerInterface {
           });
         }
       }
-      let transferData = await ticsEther.sendTicsOrTokens(
+      await ticsEther.sendTicsOrTokens(
         req,
         lang,
         tx_raw,

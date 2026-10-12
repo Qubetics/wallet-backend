@@ -10,7 +10,6 @@ import { config } from "../../../config";
 import jwtHelper from "../../../helpers/common/jwt";
 import speakeasy from 'speakeasy';
 import QRCode from "qrcode";
-import adminMiddleware from "../middleware";
 
 class AuthController implements OnlyControllerInterface {
     constructor() {

@@ -5,15 +5,8 @@ import { Tron_Helper } from "./helper";
 import * as Models from "./../../models/model/index";
 import { trxHelper } from "../../helpers/common/trx_helper";
 import { config } from "../../config";
-import dbHelper from "../../helpers/dbHelper";
 import redisClient from "../../helpers/common/redis";
-import {
-  GlblBlockchainTxStatusEnum,
-  GlblCode,
-  GlblStatus,
-  TxTypesEnum,
-  TxReqTypesEnum,
-} from "../../constants/global_enum";
+import { GlblBlockchainTxStatusEnum, GlblStatus, TxTypesEnum, TxReqTypesEnum } from "../../constants/global_enum";
 import { language } from "../../constants";
 import commonHelper from "../../helpers/common/common.helpers";
 import BigNumber from "bignumber.js";
@@ -78,7 +71,7 @@ class TronController implements OnlyControllerInterface {
       const coin_id: number = req.body.coin_id;
       const amount: number = req.body.amount;
       const gas_price: number = req.body.gas_price;
-      const gas_estimate: number = req.body.gas_estimate
+      req.body.gas_estimate
         ? req.body.gas_estimate
         : 0; /// gas_estimate
       const trnx_raw: any = req.body.tx_raw;

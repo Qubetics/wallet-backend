@@ -114,7 +114,7 @@ class EthController implements OnlyControllerInterface {
     try {
       console.log("req body eth rawDataString >>>", req.body)
 
-      var { my_address, dest_address, amount, coin_type }: RawDataInterface =
+      var { my_address, dest_address, amount }: RawDataInterface =
         req.body;
       const web3: Web3 = new Web3(
         Web3.givenProvider || config.NODE.ETH_RPC_URL + ""
@@ -149,7 +149,7 @@ class EthController implements OnlyControllerInterface {
       var transferAmount = await exponentialToDecimal(amount);
 
       // Determine the nonce
-      var count = await web3.eth.getTransactionCount(my_address);
+      await web3.eth.getTransactionCount(my_address);
       var contract = new web3.eth.Contract(
         minABI,
         req.coininfo.token_address || "",
@@ -245,7 +245,7 @@ class EthController implements OnlyControllerInterface {
           });
         }
       }
-      let transferData = await ethEther.sendEthOrTokens(
+      await ethEther.sendEthOrTokens(
         req,
         lang,
         tx_raw,
