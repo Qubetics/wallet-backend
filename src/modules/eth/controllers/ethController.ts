@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { OnlyControllerInterface } from "../../../interfaces/controller.interface";
 import dbHelper from "../../../helpers/dbHelper";
 import { config } from "../../../config";
-import { bigNumberSafeMath, exponentialToDecimal } from "../../../helpers/common/globalFunctions";
+import { bigNumberSafeMath } from "../../../helpers/common/globalFunctions";
 import * as Models from '../../../models/model/index';
 import { language } from "../../../constants";
 import response from "../../../helpers/response/response.helpers";
@@ -175,7 +175,7 @@ class EthController implements OnlyControllerInterface {
           });
         }
       }
-      let transferData = await ethEther.sendEthOrTokens(
+      await ethEther.sendEthOrTokens(
         req,
         lang,
         tx_raw,

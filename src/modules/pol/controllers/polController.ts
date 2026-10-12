@@ -164,7 +164,7 @@ class PolController implements OnlyControllerInterface {
         }
       }
 
-      let transferData = await polEther.sendPolOrTokens(
+      await polEther.sendPolOrTokens(
         req,
         lang,
         tx_raw,

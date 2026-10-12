@@ -1,6 +1,5 @@
 import commonHelper from "../common/common.helpers";
 import * as Models from '../../models/model/index';
-import { Op } from "sequelize";
 
 
 class NotificationQueries {
