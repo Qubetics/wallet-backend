@@ -2805,29 +2805,6 @@ class WalletController implements OnlyControllerInterface {
   }
 
 
-  //   const query = `
-  //     WITH bucketed AS (
-  //       SELECT
-  //         coin_id,
-  //         price,
-  //         timestamp,
-  //         created_at,
-  //         ${intervalExpression} AS time_stamp,
-  //         ROW_NUMBER() OVER (
-  //           PARTITION BY coin_id, ${intervalExpression}
-  //           ORDER BY created_at ASC
-  //         ) AS rn
-  //       FROM tics_price_in_fiat_graphs
-  //       WHERE created_at >= :rangeStart
-  //     )
-  //     SELECT
-  //       price,
-  //       timestamp
-  //     FROM bucketed
-  //     WHERE rn = 1
-  //     ORDER BY time_stamp ASC
-  //   `;
-
 
   public async syncBalance(req: Request, res: Response) {
     const lang: string = (req.headers["content-language"] as string) || "en";
