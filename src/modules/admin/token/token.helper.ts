@@ -9,9 +9,6 @@ import { coin_queries } from "../../../helpers/dbHelper";
 import { WalletHelper } from "../../wallet/wallet.helpers";
 
 
-
-
-
 class TokenHelpers {
     constructor() {
       this.initialize();
@@ -163,7 +160,6 @@ class TokenHelpers {
             added_by: coinData.added_by,
             for_swap: coinData.for_swap
           }
-          // await WalletHelper.update_token_in_redis(coinData, 0);
           await WalletHelper.update_token_in_redis_hash(redisCoinData)
     
           return { coinData: coinData };
