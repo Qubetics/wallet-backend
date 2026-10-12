@@ -3,7 +3,6 @@ import jwtHelper from "../helpers/common/jwt";
 import response from "../helpers/response/response.helpers";
 var CryptoJS = require("crypto-js");
 import { config } from "../config";
-import userhelper from "../modules/user/helper";
 import { language } from "../constants";
 
 class JWTVerify {

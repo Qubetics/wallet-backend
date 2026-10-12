@@ -3,7 +3,7 @@ import { OnlyControllerInterface } from "../../interfaces/controller.interface";
 import jwtHelper from "../../helpers/common/jwt";
 import { config } from "../../config";
 import CryptoJS from "react-native-crypto-js";
-import { GlblBooleanEnum, GlblCode, GlblMessages } from "../../constants/global_enum";
+import { GlblBooleanEnum, GlblCode } from "../../constants/global_enum";
 import { language } from "../../constants";
 import commonHelper from "../../helpers/common/common.helpers";
 

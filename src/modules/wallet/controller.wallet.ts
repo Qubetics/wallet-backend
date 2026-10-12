@@ -8,25 +8,13 @@ import { WalletHelper } from "./wallet.helpers";
 import { Parser } from "json2csv";
 import * as Models from "../../models/model/index";
 import * as Interfaces from "../../models/interface/index.interface";
-import {
-  GlblBooleanEnum,
-  GlblCode,
-  GlblMessages,
-  Fiat_Currency,
-  GlblBlockchainTxStatusEnum,
-  TxTypesEnum,
-  Status,
-  TokenType,
-} from "../../constants/global_enum";
+import { GlblBooleanEnum, GlblCode, GlblMessages, Fiat_Currency, GlblBlockchainTxStatusEnum, TxTypesEnum, TokenType } from "../../constants/global_enum";
 import { global_helper } from "../../helpers/common/global_helper";
 import { language } from "../../constants";
 import commonHelper from "../../helpers/common/common.helpers";
 import { coin_queries, wallet_queries } from "../../helpers/dbHelper/index";
-const crypto = require("crypto");
-import userhelper from "../user/helper";
-import redisClient from "../../helpers/common/redis";
+require("crypto");
 import kafka_helper from "../../helpers/common/kafka_helper";
-import { CoinInterface } from "../../models";
 import { SolanaHelper } from "../../helpers/common/solana.helper";
 
 class WalletController implements OnlyControllerInterface {
@@ -47,16 +35,13 @@ class WalletController implements OnlyControllerInterface {
 
       let {
         coin_family,
-        coin_gicko_id,
         token_type,
         token_address,
         name,
         symbol,
-        coin_gicko_alias,
         decimals,
         wallet_address,
         wallet_name,
-        isSwapList,
       }: {
         coin_family: number;
         coin_gicko_id: string;

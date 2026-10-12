@@ -9,7 +9,6 @@ import commonHelper from './common.helpers';
 import { TokenData } from '../../interfaces/global.interface';
 import { language } from "../../constants";
 import axios from 'axios';
-import { isString } from 'lodash';
 
 
 class TrxWeb3 {
@@ -546,7 +545,6 @@ class TrxWeb3 {
         console.log("encodeParams inputs :", inputs);
         const AbiCoder = ethers.AbiCoder;
         const ADDRESS_PREFIX_REGEX = /^(41)/;
-        const ADDRESS_PREFIX = "41";
         try {
             let typesValues = inputs;
             let parameters = "";

@@ -109,7 +109,7 @@ class TicsHelpers implements HelpersInterface {
     }
   }
   public async broadcastTicsRawTx(rawTx: string, cb: CallableFunction) {
-    var sendRawRes = await ticsWeb3.web3.eth
+    await ticsWeb3.web3.eth
       .sendSignedTransaction("0x" + rawTx)
       .on("transactionHash", (txHash) => {
         cb(null, txHash);

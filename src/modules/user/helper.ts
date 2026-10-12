@@ -108,10 +108,6 @@ class userHelper {
                 if (coinData) {
                     // balance of coin
                     let balDetails: any = await global_helper.get_wallet_balance(coinData, address);
-                    let balance: string = "0";
-                    if (balDetails.status) {
-                        balance = balDetails.balance;
-                    }
 
 
                     let ifWalletExists: any = await wallet_queries.wallet_find_one(["wallet_id"], { wallet_address: address, coin_id: coinData.coin_id, user_id: userId })

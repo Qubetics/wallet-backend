@@ -97,7 +97,7 @@ class EthHelpers implements HelpersInterface {
     }
   }
   public async broadcastEthRawTx(rawTx: string, cb: CallableFunction) {
-    var sendRawRes = await ethWeb3.web3.eth
+    await ethWeb3.web3.eth
       .sendSignedTransaction("0x" + rawTx)
       .on("transactionHash", (txHash) => {
         cb(null, txHash);
