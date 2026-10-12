@@ -1,4 +1,3 @@
-import { response } from "express";
 import { CoinsModel } from "../../../models";
 import redisClient from "../../../helpers/common/redis";
 import { config } from "../../../config";
