@@ -1,6 +1,5 @@
 import commonHelper from "../common/common.helpers";
 import * as Models from '../../models/model/index';
-import { Sequelize } from "sequelize";
 
 
 class CoinQueries {
