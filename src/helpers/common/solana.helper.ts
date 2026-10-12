@@ -211,15 +211,7 @@ class SolanaHelpers {
             //     const foundToken = await tokenList.find((token: any) => token.address == token_address);
             //     return foundToken;
 
-            //     /*} else {
-            //         const result: any = await axios.get(`https://api.phantom.app/tokens/v1/solana:101/address/${token_address}`);
-            //         const finalResult: any = {
-            //             name: result?.data?.data.name,
-            //             symbol: result?.data?.data.symbol,
-            //             decimals: result?.data?.data.decimals,
-            //         }
-            //         return finalResult;
-            //     }*/
+            //
             // } catch (err1) {
             //     // console.log('🔥 ~ ~ searchToken node.solana.helper.ts filterByClusterSlug error', err);
             //     // const result: any = await axios.get(`https://api.phantom.app/tokens/v1/solana:101/address/${token_address}`);

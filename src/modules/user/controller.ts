@@ -659,51 +659,8 @@ class UserController implements OnlyControllerInterface {
             await Models.CoinsModel.update(arrayObj, {
               where: { coin_id: data_exist.coin_id },
             });
-          } /*else if (!data_exist) {
-              let image: string | null = null;
-              const symbol: string = token.symbol;
+          }
 
-              // Assuming global_helper.get_token_image_from_cmc returns a Promise
-              const data: any = await global_helper.get_token_image_from_cmc({
-                symbol: symbol,
-                token_address: token.address,
-              });
-              console.log(
-                "data>>",
-                data,
-                "token address >>,",
-                token.address,
-                "symbol>>>>",
-                symbol
-              );
-              if (data != null) {
-                image = data.image;
-              }
-              if (image !== null) {
-                const arrayObj: any = {
-                  cmc_id: data.id ? data.id : 0,
-                  is_on_cmc: 1,
-                  coin_name: token.name,
-                  coin_symbol: symbol,
-                  token_address: token.address,
-                  decimals: Math.pow(10, parseInt(token.decimals)),
-                  coin_family: coin_family,
-                  coin_image: image,
-                  coin_status: GlblBooleanEnum.true, // Assuming GlblBooleanEnum is defined elsewhere
-                  is_token: GlblBooleanEnum.true,
-                  token_type: "ERC20",
-                  added_by: "admin",
-                  for_swap: 1,
-                };
-                await Models.CoinsModel.create(arrayObj);
-                console.log("coin created >>>", token);
-              }
-            }*/
-
-          /*} else {
-            console.log('tesddddddddddd11');
-            return false;
-          }*/
           console.log('tesddddddddddd2222');
 
           i = i + 1;
