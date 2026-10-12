@@ -1,7 +1,6 @@
 import express from "express";
 import { ControllerInterface } from "../../interfaces/controller.interface";
 import { authController } from "./controller.auth";
-// import authVerification from "./verify.authMiddleware";
 
 class AuthRoute implements ControllerInterface {
   public path = "/auth";

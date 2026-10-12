@@ -1,11 +1,4 @@
-// import { config } from "../../config";
-// var aws = require("aws-sdk");
 const BigNumber = require('bignumber.js');
-// var s3 = new aws.S3({
-//   accessKeyId: config.S3_ACCESSID,
-//   secretAccessKey: config.S3_SECRETKEY,
-//   region: config.REGION
-// });
 
 
 export const exponentialToDecimal = function (exponential: number) {
@@ -77,7 +70,6 @@ export const bigNumberSafeMath = function (
       rtn = a.dividedBy(b);
       break;
     default:
-      //operator = operation;
       break;
   }
   return rtn;
@@ -89,34 +81,3 @@ export const bigNumberSafeConversion = function (val: number): number {
   return value.toFixed();
 };
 
-// export async function iconInstances(file: any) {
-//   // const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'text/csv'];
-//   // let types=allowedTypes.includes(file.mimetype);
-
-//   const params = {
-//     Bucket: config.S3_BUCKET, // bucket you want to upload to
-//     Key: `uploads/-${Date.now()}-${file.name}`, // put all image to fileupload folder with name scanskill-${Date.now()}${file.name}`
-//     Body: file.data,
-//     ACL: "public-read",
-//   };
-//   const data = await s3.upload(params).promise();
-//   console.log("data######!!!!!!!!!!!!!!####%", data.Location);
-//   return data.Location; // returns the url location
-// }
-
-// export async function multerInstances(file: any, type: any) {
-//   // const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'text/csv'];
-//   // let types=allowedTypes.includes(file.mimetype);
-
-//   console.log("INSIDE FILE", file)
-//   const params = {
-//     Bucket: config.S3_BUCKET, // bucket you want to upload to
-//     Key: `uploads/-${Date.now()}-${file.name}`, // put all image to fileupload folder with name scanskill-${Date.now()}${file.name}`
-//     Body: file.data,
-//     ACL: "public-read",
-//   };
-//   console.log("params@@@", params)
-//   const data = await s3.upload(params).promise();
-//   console.log("data######!!!!!!!!!!!!!!####%", data.Location);
-//   return { url: data.Location, type: type }; // returns the url location
-// }

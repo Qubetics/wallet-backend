@@ -3,8 +3,6 @@ import { ControllerInterface } from "../../interfaces/controller.interface";
 import jwtVerification from "../../middlewares/verify.middleware";
 import { EthControllers } from "./controllers/ethController"
 import EthMiddleware from "./middleware/ethMiddleware"
-// import { validate } from "express-validation"
-// import validator from "./../../middlewares/validator"
 
 class EthRoute implements ControllerInterface {
   public path = "/ethereum";

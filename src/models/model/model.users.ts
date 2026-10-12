@@ -2,7 +2,6 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { UserInterface } from "../interface/interface.users";
 import db from "../../helpers/common/db";
 import WalletModel from "./model.wallets";
-// import DeviceTokenModel from "./model.deviceToken";
 interface UserCreationModel extends Optional<UserInterface, "user_id"> { }
 interface UserInstance extends Model<UserInterface, UserCreationModel>, UserInterface { }
 
@@ -17,10 +16,6 @@ let dataObj = {
     type: DataTypes.STRING,
     allowNull: true
   },
-  // email: {
-  //   type: DataTypes.STRING,
-  //   allowNull: true
-  // },
   referral_type_id: {
     type: DataTypes.INTEGER,
     allowNull: false

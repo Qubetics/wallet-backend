@@ -30,5 +30,4 @@ export interface ITrnxHistoryInterface {
     country_code: string | null,
     order_status: string | null;
     referral_upgrade_level: string | null
-    // address_book_name: string
 }

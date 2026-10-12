@@ -4,8 +4,6 @@ import { global_helper } from "./global_helper";
 import commonHelper from "./common.helpers";
 
 class utxo {
-    // public btc_client_url = config.NODE.BTC_RPC_URL;
-    // public btc_axios_client: AxiosInstance;
     public config: any;
 
     constructor() {
@@ -16,12 +14,6 @@ class utxo {
                 'Content-Type': 'application/json',
             }
         };
-        // this.btc_axios_client = axios.create({
-        //     baseURL: this.btc_client_url,
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //     },
-        // });
     }
 
     public async validate_btc_address(address: string) {

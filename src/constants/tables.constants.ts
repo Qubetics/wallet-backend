@@ -8,6 +8,5 @@ export enum TableConstants {
     COINS = "coins",
     BLOCKLIST="block_lists",
     USER_CONTACT= "user_contacts",
-    // COIN_PRICE_IN_FIAT_GRAPH= "coin_price_in_fiat_graphs",
     CHAT= "chats",
 }

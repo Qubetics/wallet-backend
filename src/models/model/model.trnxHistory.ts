@@ -72,7 +72,6 @@ let dataObj = {
         allowNull: false
     },
     blockchain_status: {
-        // type: DataTypes.STRING,
         type: DataTypes.ENUM('pending', 'failed', 'confirmed'),
         allowNull: true
     },
@@ -150,7 +149,6 @@ const TrnxHistoryModel = db.db_write.define<TrnxHistoryInstance>(
 );
 
 TrnxHistoryModel.belongsTo(CoinsModel, { foreignKey: 'coin_id', targetKey: 'coin_id', as: "coin_data" });
-
 
 
 export default TrnxHistoryModel;

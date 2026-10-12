@@ -3,10 +3,7 @@ import { OnlyControllerInterface } from "../../interfaces/controller.interface";
 import jwtHelper from "../../helpers/common/jwt";
 import { config } from "../../config";
 import CryptoJS from "react-native-crypto-js";
-// import redisClient from "../../helpers/common/redis";
 import { GlblBooleanEnum, GlblCode, GlblMessages } from "../../constants/global_enum";
-// import userhelper from "../user/helper";
-// import * as Models from '../../models/model/index';
 import { language } from "../../constants";
 import commonHelper from "../../helpers/common/common.helpers";
 
@@ -38,22 +35,11 @@ class AuthController implements OnlyControllerInterface {
         };
         return res.status(data.code).send(data);
       }
-      // let already_exist: any = await Models.JwtsModel.findOne({
-      //   attributes: ["device_token_id", "token", "refresh"],
-      //   where: {
-      //     device_token_id: key_in_redis,
-      //     token: req.body.token,
-      //     refresh: req.body.refreshToken
-      //   },
-      //   raw: true
-      // })
-      // if(already_exist){
       let jwt_token: any = await jwtHelper.createJSONWebToken(Number(token.userId) || GlblBooleanEnum.false, token.device_token);
       let refreshToken1: any = await jwtHelper.createJSONRefreshToken(
         Number(token.userId) || GlblBooleanEnum.false,
         token.device_token
       );
-      // await userhelper.setting_token_in_db(token.device_token, token.userId, jwt_token, refreshToken1)
       let data = {
         token: jwt_token,
         refreshToken: refreshToken1,

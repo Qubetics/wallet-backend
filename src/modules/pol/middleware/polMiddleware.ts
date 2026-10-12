@@ -56,7 +56,6 @@ let polMiddleware = {
           is_token: coinData.is_token == 1 ? true : false,
           token_type: coinData.token_type,
           coin_id: coinData.coin_id,
-          // coin_symbol: req.params.coin,
           coin_symbol: coinData.coin_symbol,
           coin_family: coinData.coin_family,
         };

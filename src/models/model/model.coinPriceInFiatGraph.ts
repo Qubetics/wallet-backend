@@ -50,14 +50,6 @@ let dataObj = {
         type: DataTypes.DOUBLE,
         allowNull: true,
     },
-    // created_at: {
-    //   type: DataTypes.DATE,
-    //   allowNull: true,
-    // },
-    // updated_at: {
-    //   type: DataTypes.DATE,
-    //   allowNull: true,
-    // },
     latest_price: {
         type: DataTypes.JSON,
         allowNull: true,

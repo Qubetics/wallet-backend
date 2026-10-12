@@ -1,17 +1,11 @@
 import { Server as HTTPServer, createServer } from "http";
 import express, { NextFunction, Request, Response } from "express";
-// import { InfoMessages } from "./constants";
 import { ServerInterface } from "./interfaces/server.interface";
 import controllers from "./modules/controllers.index";
 import cors from "cors";
 import path from "path";
 import expressFileUploader from "express-fileupload";
 import { config } from "./config";
-// import OS from "os";
-// var CryptoJS = require("crypto-js");
-// import CryptoJS from "react-native-crypto-js";
-// import commonHelper from "./helpers/common/common.helpers";
-// import response from "./helpers/response/response.helpers";
 import helmet from "helmet";
 import { encryptionMiddleware } from "./middlewares/encryption.middleware";
 import { ValidationError, Joi } from 'express-validation';
@@ -49,7 +43,6 @@ class Server implements ServerInterface {
     this.app.use(helmet.noSniff());
     this.app.use(helmet.permittedCrossDomainPolicies());
     this.app.use(helmet.referrerPolicy());
-    // this.app.use(helmet.xssFilter());
 
     this.app.use((req: Request, res: Response, next: NextFunction) => {
       res.setHeader("X-XSS-Protection", "1; mode=block");
@@ -87,7 +80,6 @@ class Server implements ServerInterface {
       res: Response,
       next: NextFunction
     ) {
-      // console.log("req.body>>>",err.message)
       console.error('err >>>>>> ', err.details);
       if (err instanceof ValidationError) {
         return res.status(err.statusCode).json({

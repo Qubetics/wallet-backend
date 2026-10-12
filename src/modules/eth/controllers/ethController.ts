@@ -271,7 +271,6 @@ class EthController implements OnlyControllerInterface {
             }
 
             if (resultStatus.status && resultStatus.status == true) {
-              // if (req.body.approval == 1 && req.body.tx_type == 'Approve') {
               if (req.body.tx_type == 'Approve') {
 
                 return response.success(res, {
@@ -281,7 +280,6 @@ class EthController implements OnlyControllerInterface {
                     tx_hash: txid,
                   },
                 });
-                // } else if (req.body.approval == 0 && req.body.tx_type == 'withdraw') {
               } else if (req.body.tx_type == 'withdraw') {
 
                 return response.success(res, {

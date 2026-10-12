@@ -35,29 +35,7 @@ class Global_helper {
             let responseDetails: any;
             console.log("Entered into swapSupportedByMatcha");
             if (coinFamily == 1) {
-                // responseDetails = await bsc_matcha_helper.getPriceOfBscToken(
-                //     {
-                //         sellToken: tokenAddress,
-                //         buyToken: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-                //         sellAmount: "1000000000000000000",
-                //         slippagePercentage: "0.01",
-                //         takerAddress: "0xC9549DE1cD1958b2f6AC2E589eF3aE851d1E9879",
-                //         feeRecipient: swapData.address,
-                //         buyTokenPercentageFee: swapData.percentage
-                //     }
-                // )
             } else if (coinFamily == 2) {
-                // responseDetails = await eth_matcha_helper.getPriceOfEthToken(
-                //     {
-                //         sellToken: tokenAddress,
-                //         buyToken: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-                //         sellAmount: "1000000000000000000",
-                //         slippagePercentage: "0.01",
-                //         takerAddress: "0xC9549DE1cD1958b2f6AC2E589eF3aE851d1E9879",
-                //         feeRecipient: swapData.address,
-                //         buyTokenPercentageFee: swapData.percentage
-                //     }
-                // )
             } else {
                 console.log("Not entered into eth or bnb")
                 responseDetails = { status: false }
@@ -100,7 +78,6 @@ class Global_helper {
         } catch (error) {
             console.error("Error swapping tokens:", error);
             return 0;
-            // throw error;
         }
     }
 
@@ -382,28 +359,6 @@ class Global_helper {
     }
 
 
-    // public async get_coin_family_from_blockchain(coin: string) {
-    //     try {
-    //         let coin_family: number = 0
-    //         coin = coin.toLowerCase()
-    //         if (coin == "eth") {
-    //             coin_family = config.STATIC_COIN_FAMILY.ETH;
-    //         } else if (coin == "btc") {
-    //             coin_family = config.STATIC_COIN_FAMILY.BTC;
-    //         } else if (coin == 'trx') {
-    //             coin_family = config.STATIC_COIN_FAMILY.TRX;
-    //         } else if (coin == 'bnb') {
-    //             coin_family = config.STATIC_COIN_FAMILY.BNB;
-    //         } else if (coin == 'pol') {
-    //             coin_family = config.STATIC_COIN_FAMILY.POL;
-    //         }
-    //         return coin_family;
-    //     } catch (err: any) {
-    //         console.error("Error in get_coin_family_from_blockchain>>", err)
-    //         throw 0;
-    //     }
-    // }
-
     public async get_token_image_from_cmc(data: any) {
         try {
             let params: any = data.symbol ? `info?symbol=${data.symbol}` : data.id ? `info?id=${data.id}` : `info?address=${data.token_address}`;
@@ -643,156 +598,6 @@ class Global_helper {
             }
         }
     };
-
-    // public async get_token_image_from_coin_gicko(data: any) {
-    //     try {
-    //         let result: any = await this.coin_gicko_market_info_data('usd', data);
-    //         let image: any;
-    //         let id: any;
-    //         if (result.data.length) {
-    //             image = result.data[0].image;
-    //             id = result.data[0].id;
-    //         }
-    //         // let imageUrl: any = await this.UpdateCmcImgUrl(image)
-    //         return { image: image, id: id };
-    //     } catch (err: any) {
-    //         console.error("Error in get_token_image_from_coin_gicko", err);
-    //         return null;
-    //     }
-    // }
-
-    // public async get_coin_gicko_by_token_address(token_address: string, coin_family: number) {
-    //     try {
-    //         let url: any;
-    //         if (coin_family == 2) {
-    //             url = `https://pro-api.coingecko.com/api/v3/coins/ethereum/contract/${token_address}`
-
-    //         }
-    //         else if (coin_family == 1) {
-    //             url = `https://pro-api.coingecko.com/api/v3/coins/binance-smart-chain/contract/${token_address}`
-    //         }
-    //         else if (coin_family == 6) {
-    //             url = `https://pro-api.coingecko.com/api/v3/coins/tron/contract/${token_address}`
-    //         }
-
-    //         // let url: any = `${config.COIN_GECKO.COIN_GECKO_BY_TOKEN}/${}`
-
-    //         console.log("url::", url);
-    //         const headers = {
-    //             'x-cg-pro-api-key': config.COIN_GECKO.API_KEY,
-    //         };
-
-
-    //         const response = await axios.get(url, { headers });
-
-    //         console.log("result::", response.data);
-    //         //console.log("result1::",response.data[0]);
-
-
-    //         if (response?.data?.id) {
-    //             return { id: response?.data?.id, image: response?.data?.image?.small };
-    //         }
-    //         else {
-    //             console.log(`token address ${token_address} does not exist on coingecko`)
-    //             return null;
-    //         }
-
-    //     } catch (err: any) {
-    //         console.log("Error in coinGicko_info_data>>>", err);
-    //         return null;
-    //     }
-    // }
-    // // public async getGasLessStatus(tokenAddress: string, swapData: any) {
-    // //     try {
-
-    // //         let configData: any = {
-    // //             method: 'get',
-    // //             url: `https://api.0x.org/tx-relay/v1/swap/price?buyToken=0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee&sellAmount=10000000000000000000&sellToken=${tokenAddress}&takerAddress=0x967b464F8010587C50B6A2Df847F96e7d1041CEB&slippagePercentage=0.01&feeRecipient=${swapData.address}&buyTokenPercentageFee=${swapData.percentage}`,
-    // //             headers: {
-    // //                 '0x-chain-id': '1',
-    // //                 '0x-api-key': config.MATCHA_API_KEY
-    // //             }
-    // //         };
-
-    // //         let response: any = await axios(configData)
-    // //         return 1;
-    // //     } catch (err: any) {
-    // //         console.error("Error in getGasLessStatus>>>", err)
-    // //         return null;
-    // //     }
-    // // }
-
-    // public async coin_gicko_market_info_data(currency: any, coin_gicko_id: any) {
-    //     try {
-    //         let result: any = [];
-
-    //         let url: any = new URL(`${config.COIN_GECKO.COIN_GECKO_MARKET}`)
-    //         url.searchParams.append("ids", coin_gicko_id);
-    //         url.searchParams.append("vs_currency", currency);
-    //         url.searchParams.append("x_cg_pro_api_key", config.COIN_GECKO.API_KEY);
-
-
-    //         result = await axios({
-    //             method: "get",
-    //             url: url,
-    //         });
-    //         console.log("result::", result);
-    //         return result;
-    //     } catch (err: any) {
-    //         console.error("Error in coin_gicko_market_info_data>>>", err);
-    //         throw err;
-    //     }
-    // }
-
-    // public async coinGecko_quotes_latest_api(
-    //     currency: any,
-    //     coin_glicko_id: any
-    // ) {
-    //     try {
-    //         let result: any = await this.coin_gicko_market_info_data(
-    //             currency,
-    //             coin_glicko_id,
-    //         );
-    //         let marketData: any;
-    //         let price: any;
-    //         if (result.data.length) {
-    //             marketData = result.data[0];
-    //         }
-    //         console.log("result::", marketData);
-    //         return { data: marketData };
-    //     } catch (err: any) {
-    //         console.error("Error in coinGecko_quotes_latest_api", err);
-    //         return null;
-    //     }
-    // }
-    // public async coin_gicko_price_data(currencies: any, coin_gicko_id: any) {
-    //     try {
-    //         let result: any = [];
-
-    //         let url: any = new URL(`${config.COIN_GECKO.COIN_GECKO_PRICE}`)
-    //         url.searchParams.append("ids", coin_gicko_id);
-
-    //         url.searchParams.append("vs_currencies", currencies);
-    //         url.searchParams.append("include_market_cap", true);
-    //         url.searchParams.append("include_24hr_vol", true);
-    //         url.searchParams.append("include_24hr_change", true);
-    //         url.searchParams.append("x_cg_pro_api_key", config.COIN_GECKO.API_KEY);
-
-
-
-    //         result = await axios({
-    //             method: "get",
-    //             url: url
-    //         });
-
-    //         return result;
-    //     } catch (err: any) {
-    //         console.error("Error in coin_glicko_price_data>>>", err);
-    //         throw err;
-    //     }
-    // }
-
-
 
 
 }

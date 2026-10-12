@@ -142,8 +142,6 @@ class PolController implements OnlyControllerInterface {
       // If your token is divisible to 8 decimal places, 42 = 0.00000042 of your token
       let transferAmount = await exponentialToDecimal(amount);
 
-      // Determine the nonce
-      // var count = await web3.eth.getTransactionCount(my_address);
       let contract = new web3.eth.Contract(
         minABI,
         req.coininfo.token_address || "",
@@ -272,7 +270,6 @@ class PolController implements OnlyControllerInterface {
             }
 
             if (resultStatus.status && resultStatus.status == true) {
-              // if (req.body.approval == 1 && req.body.tx_type == 'Approve') {
               if (req.body.tx_type == 'Approve') {
 
                 return response.success(res, {
@@ -282,7 +279,6 @@ class PolController implements OnlyControllerInterface {
                     tx_hash: txid,
                   },
                 });
-                // } else if (req.body.approval == 0 && req.body.tx_type == 'withdraw') {
               } else if (req.body.tx_type == 'withdraw') {
 
                 return response.success(res, {

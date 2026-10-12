@@ -1,8 +1,6 @@
 import redis from 'redis';
 import { promisify } from "util";
 import { config } from "../../config";
-// import { CoinFamily } from '../../constants/global_enum';
-// import commonHelper from './common.helpers';
 
 
 class RedisServer {
@@ -15,12 +13,6 @@ class RedisServer {
       console.log('Connected to redis client successfully');
     });
   }
-  // public async initiateConnection(): Promise<void> {
-  //   this.client_write = redis.createClient({ url: config.REDIS_CONN });
-  //   this.client_write.on('connect', () => {
-  //     console.log('Connected to redis client successfully');
-  //   });
-  // }
 
   // Admin set login time
   public async setRedisSting(key: string, value: number | string) {
@@ -87,37 +79,6 @@ class RedisServer {
       throw err;
     }
   }
-  // public async set_hash_table_with_expiry(key: string, field: any, value: any, expiry: any) {
-  //   try {
-  //     field = field.toUpperCase()
-  //     this.client_write.HSET(key, field, value, (err: any, reply: any) => {
-  //       if (err) {
-  //         console.error('redis set_hash_table_with_expiry string data error...', err)
-  //       }
-  //       this.client_write.expire(key, expiry, (err: any, reply: any) => {
-  //         if (err) {
-  //           console.error('redis set_hash_table_with_expiry string data error...', err)
-  //         }
-  //       })
-  //     });
-  //   } catch (err: any) {
-  //     console.error('💥 ~ ~ set_hash_table_with_expiry error');
-  //     throw err;
-  //   }
-  // }
-  // public async setRedisSting_with_expiry(key: string, value: any, expiry: any) {
-  //   try {
-  //     this.client_write.set(key, value);
-  //     this.client_write.expire(key, expiry, (err: any, reply: any) => {
-  //       if (err) {
-  //         console.error('redis set_hash_table_with_expiry string data error...', err)
-  //       }
-  //     })
-  //   } catch (error) {
-  //     console.error('setRedisSting_with_expiry >>>>', error);
-  //     return null;
-  //   }
-  // }
 }
 
 const redisClient = new RedisServer();

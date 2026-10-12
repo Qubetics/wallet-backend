@@ -28,7 +28,6 @@ class SwftcController implements OnlyControllerInterface {
             const per_page: number = Number(req.body?.per_page || 500);
             const offset: number = (page - 1) * per_page;
             let where: any = { status: 1 };
-            //const total = await Models.SWFTCCoinsDataModel.count({ where: where });
             if (req.body?.search) {
                 let search: any = req.body.search == undefined ? (req.body.search = "%%") : (req.body.search = "%" + req.body.search + "%");
                 where = {
@@ -202,10 +201,6 @@ class SwftcController implements OnlyControllerInterface {
 
         try {
             req.body.sourceFlag = 'Qubetics';
-            // /** if receive coin amount not received then set here */
-            // if (req.body.receiveCoinAmt == undefined || req.body.receiveCoinAmt == null) {
-            //     req.body.receiveCoinAmt = GlblBooleanEnum.false;
-            // }
             const requestOptionsForListing = {
                 method: "POST",
                 uri: `${config.SWFTC.SWFTC_ACCOUNT_EXCHANGE}`,

@@ -12,7 +12,6 @@ import commonHelper from "../../helpers/common/common.helpers";
 import { address_book_queries, address_book_wallet_queries, device_token_queries, notification_queries, user_queries, wallet_queries } from '../../helpers/dbHelper/index'
 import { config } from "../../config";
 import emojiRegex from "emoji-regex";
-// const emojiRegex = require('emoji-regex');
 class UserController implements OnlyControllerInterface {
 
   constructor() {
@@ -59,12 +58,6 @@ class UserController implements OnlyControllerInterface {
 
       if (checkAddressExists) {
         userId = checkAddressExists?.user_id;
-        // Adding users all active coins to queue to update balance
-        // try {
-        //   await userhelper.adding_coins_to_queue(checkAddressExists?.user_id)
-        // } catch (err: any) {
-        //   console.error("Error in adding_coins_to_queue>>>> ", err)
-        // }
 
         // Insert device id and referral code if not there
         if (device_id) {
@@ -88,7 +81,6 @@ class UserController implements OnlyControllerInterface {
 
       // Updating balance
       await userhelper.updating_balance(addressList, userId, req, wallet_name, lang, device_token, device_id)
-      // await wallet_queries.wallet_update({ login_type: req.body.login_type }, { user_id: userId })
 
 
       let token: string;
@@ -98,7 +90,6 @@ class UserController implements OnlyControllerInterface {
 
       refreshToken = await jwtHelper.createJSONRefreshToken(userId, device_token);
 
-      //if (device_token) { await userhelper.device_token_helper(device_token, userId, lang) }
       const newObject: any = { token, refreshToken, userId: userId, referral_code: user_referral_code, wallet_name: wallet_name };
       return response.success(res, {
         data: {
@@ -157,11 +148,6 @@ class UserController implements OnlyControllerInterface {
         }
 
       }
-      // let checkUserDeviceToken: any = await device_token_queries.device_token_find_one(["id"], { user_id: userId, device_id: deviceId })
-
-      // if (checkUserDeviceToken) {
-      //   await device_token_queries.device_token_destroy({ device_id: deviceId, user_id: userId })
-      // }
 
 
       return response.success(res, {
@@ -199,10 +185,6 @@ class UserController implements OnlyControllerInterface {
         ['coin_name', 'coin_symbol'],
         ['currency_code', 'currency_symbol'],
         { coin_family: { [Op.in]: req.body.coin_family } },
-        // {
-        //   [Op.or]: [{ wallet_address: { [Op.in]: req?.body?.addrsListKeys } },
-        //   { to_user_id: req.userId }]
-        // }, 
         { wallet_address: { [Op.in]: req?.body?.addrsListKeys } },
         per_page, offset
       )
@@ -642,13 +624,7 @@ class UserController implements OnlyControllerInterface {
       if (Object.keys(tokens).length > 0) {
         let i = 0;
         for (const address of Object.keys(tokens)) {
-          //if (i <= 20) {
           const token = tokens[address];
-          // console.log(`Token Name: ${token.name}`);
-          // console.log(`Symbol: ${token.symbol}`);
-          // console.log(`Address: ${token.address}`);
-          // console.log(`Logo URI: ${token.logoURI}`);
-          // console.log('---');
           const data_exist: any = await Models.CoinsModel.findOne({
             attributes: ["coin_id", "for_swap"],
             where: { token_address: token.address, coin_family: coin_family },
@@ -666,60 +642,7 @@ class UserController implements OnlyControllerInterface {
           i = i + 1;
 
         };
-        // for await (let token of tokens) {
-        //   const data_exist: any = await Models.CoinsModel.findOne({
-        //     attributes: ["coin_id", "for_swap"],
-        //     where: { token_address: token.address, coin_family: coin_family },
-        //     raw: true,
-        //   });
-        //   if (data_exist && data_exist.for_swap == 0) {
-        //     const arrayObj: any = { for_swap: 1 };
-        //     await Models.CoinsModel.update(arrayObj, {
-        //       where: { coin_id: data_exist.coin_id },
-        //     });
-        //   } else if (!data_exist) {
-        //     let image: string | null = null;
-        //     const symbol: string = token.symbol;
 
-        //     // Assuming global_helper.get_token_image_from_cmc returns a Promise
-        //     const data: any = await global_helper.get_token_image_from_cmc({
-        //       symbol: symbol,
-        //       token_address: token.address,
-        //     });
-        //     console.log(
-        //       "data>>",
-        //       data,
-        //       "token address >>,",
-        //       token.address,
-        //       "symbol>>>>",
-        //       symbol
-        //     );
-        //     if (data != null) {
-        //       image = data.image;
-        //     }
-        //     if (image !== null) {
-        //       const arrayObj: any = {
-        //         cmc_id: 0,
-        //         is_on_cmc: 1,
-        //         coin_name: token.name,
-        //         coin_symbol: symbol,
-        //         token_address: token.address,
-        //         decimals: Math.pow(10, parseInt(token.decimals)),
-        //         coin_family: coin_family,
-        //         coin_image: image,
-        //         coin_status: GlblBooleanEnum.true, // Assuming GlblBooleanEnum is defined elsewhere
-        //         is_token: GlblBooleanEnum.true,
-        //         token_type: "ERC20",
-        //         added_by: "admin",
-        //         for_swap: 1,
-        //       };
-        //       await Models.CoinsModel.create(arrayObj);
-        //       console.log("coin created >>>", token);
-        //     }
-        //   } else {
-        //     console.log("Already exists");
-        //   }
-        // }
       }
       return response.success(res, {
         data: {

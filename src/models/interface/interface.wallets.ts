@@ -1,9 +1,6 @@
 export interface WalletInterface {
   wallet_id: number;
   user_id: number;
-  // email?: string | null,
-  // login_type: string,
-  // social_id: string,
   wallet_name: string;
   checker_code: string | null,
   wallet_address: string;

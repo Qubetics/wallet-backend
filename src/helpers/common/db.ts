@@ -1,4 +1,3 @@
-// import Coin from "../../modules/coin/model.coin";
 import { DBInterface } from "../../interfaces/db.interface";
 import { Sequelize } from "sequelize";
 import { config } from "../../config";
@@ -60,7 +59,6 @@ class Database implements DBInterface {
         acquire: 20000,
       },
     });
-    // this.syncTables();
 
     this.db_read
       .authenticate()

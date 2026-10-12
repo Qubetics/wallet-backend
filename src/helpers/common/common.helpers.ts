@@ -28,7 +28,6 @@ class CommonHelper {
   public async decryptDataRSA(data: any) {
     try {
       let privateKeyFile = await fs.readFileSync(`${__dirname}/../../config/keys/${config.RSA_PRIVATE_KEY_NAME}`, { encoding: "utf-8" })
-      // console.log('privateKeyFile>>>', privateKeyFile);
       let privateKey = Buffer.from(privateKeyFile);
       let RSAKey = new NodeRSA(privateKey);
       RSAKey.setOptions({ encryptionScheme: 'pkcs1' });

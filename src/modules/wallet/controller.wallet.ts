@@ -175,7 +175,6 @@ class WalletController implements OnlyControllerInterface {
         offset = (pageNo - GlblBooleanEnum.true) * limitNo;
       }
       let user_id: number = req.userId;
-      // let user_id: number = 5;
 
       let wallets: any = await Models.WalletModel.findAndCountAll({
         attributes: [
@@ -231,7 +230,6 @@ class WalletController implements OnlyControllerInterface {
                 ],
                 where: {
                   fiat_type: fiat_type,
-                  // coin_family:"$coins.coin_family$"
                 },
                 required: false,
               },
@@ -249,7 +247,6 @@ class WalletController implements OnlyControllerInterface {
             ],
           },
         ],
-        // order: [["sort_order", "ASC"]],
         order: Sequelize.literal(`(CASE WHEN (\`coin.fiat_price_data.value\` * wallets.balance) > 0 && sort_order IS NULL THEN (\`coin.fiat_price_data.value\` * wallets.balance) END) DESC,(CASE WHEN sort_order IS NULL THEN wallets.created_at END) ASC,(CASE WHEN sort_order IS NOT NULL THEN wallets.sort_order END) ASC`),
         limit: limitNo,
         offset: offset,
@@ -361,20 +358,6 @@ class WalletController implements OnlyControllerInterface {
           wallet_address: walletAddress,
           queue_count: 0,
         })
-        // await userhelper.adding_coins_to_queue(
-        //   config.BACKEND_WALLET_ADDRESSES,
-        //   {
-        //     coin_data: {
-        //       coin_id: coin_data.coin_id,
-        //       coin_family: coin_data.coin_family,
-        //       is_token: coin_data.is_token,
-        //       token_address: coin_data.token_address,
-        //       token_type: coin_data.token_type,
-        //     },
-        //     wallet_address: walletAddress,
-        //     queue_count: 0,
-        //   }
-        // );
       }
       return response.success(res, {
         data: {
@@ -562,9 +545,6 @@ class WalletController implements OnlyControllerInterface {
         ],
       };
 
-      // let attr: any = ['id',
-      //   [Sequelize.literal(`IF(type ='withdraw' OR type = 'deposit',(IF(FIND_IN_SET(from_adrs, "${address_list.toString()}"),'withdraw','deposit')),type)`), 'type']
-      //   , 'tx_fee', 'tx_id', 'user_id', 'req_type', 'from_adrs', 'to_adrs', 'coin_family', 'tx_raw', 'order_id', 'status', 'blockchain_status', 'coin_id', 'amount', 'fiat_price', 'fiat_type', 'created_at', 'updated_at', 'referral_upgrade_level'];
 
       let attr: any = [
         "id",
@@ -595,9 +575,6 @@ class WalletController implements OnlyControllerInterface {
       ];
 
       if (type == TxTypesEnum.DEPOSIT) {
-        // attr = ['id',
-        // [Sequelize.literal(`IF(type ='withdraw' OR type = 'deposit',(IF(FIND_IN_SET(to_adrs, "${address_list.toString()}"),'deposit','withdraw')),type)`), 'type']
-        // , 'tx_fee', 'tx_id', 'user_id', 'req_type', 'from_adrs', 'to_adrs', 'coin_family', 'tx_raw', 'order_id', 'status', 'blockchain_status', 'coin_id', 'amount', 'fiat_price', 'fiat_type', 'created_at', 'updated_at', 'referral_upgrade_level'];
 
         attr = [
           "id",
@@ -984,7 +961,6 @@ class WalletController implements OnlyControllerInterface {
         ETH_DAPP_RPC_URL: config.NODE.ETH_DAPP_RPC_URL,
         POL_RPC_URL: config.NODE.POL_RPC_URL,
         TICS_RPC_URL: config.NODE.TICS_RPC_URL,
-        // SOL_RPC_URL: config.NODE.SOL_RPC_URL
         SOL_RPC_URL: 'https://mainnet.helius-rpc.com/?api-key=REDACTED'
       };
 
@@ -1155,16 +1131,11 @@ class WalletController implements OnlyControllerInterface {
             required: isFav
           },
         ],
-        // order: [
-        //   [Sequelize.col('coins.created_at'), 'DESC']  // Correct ordering
-        // ],
-        // order: [[orderBy, orderType]],
         order: [
           [Sequelize.literal(orderBy), orderType]
         ],
         offset: offset,
         limit: limitNo,
-        // logging: true,
         subQuery: false
       });
       return res.status(GlblCode.SUCCESS).send({
@@ -1423,7 +1394,6 @@ class WalletController implements OnlyControllerInterface {
         = req.body;
 
       let checkerWalletData: any = [];
-      // let makerWalletData: any = [];
       let where: { status: GlblBooleanEnum; coin_family?: { [Op.notIn]: number[] } } = { status: GlblBooleanEnum.true };
       if (fetchFrom !== undefined && fetchFrom === 'extension') {
         where.coin_family = { [Op.notIn]: [config.STATIC_COIN_FAMILY.TRX] };
@@ -1458,7 +1428,6 @@ class WalletController implements OnlyControllerInterface {
           attributes: ["user_id"],
           where: { user_id: { [Op.in]: userIds } },
           include: commonPart,
-          // logging: true,
           order: [["user_id", "ASC"]]
         })
       }
@@ -1466,7 +1435,6 @@ class WalletController implements OnlyControllerInterface {
       return response.success(res, {
         data: {
           status: true,
-          // makerUserData: makerWalletData,
           data: checkerWalletData
         },
       });
@@ -1556,7 +1524,6 @@ class WalletController implements OnlyControllerInterface {
             },
           ]
         }],
-        // raw: true,
       });
       return res.status(GlblCode.SUCCESS).send({
         status: true,
@@ -1579,7 +1546,6 @@ class WalletController implements OnlyControllerInterface {
   public async downloadCsv(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
-      // let id: any = req.params.id;
       let userId: any = req.params.id;
       console.log("req body downloadCsv >>>", req.params)
 
@@ -1646,15 +1612,6 @@ class WalletController implements OnlyControllerInterface {
         ],
       };
 
-      //     let atr: any = [[
-      //       Sequelize.literal(`IF(type ='withdraw' OR type = 'deposit',
-      //     (IF(FIND_IN_SET(from_adrs, "${addresses.toString()}"),
-      //         CONCAT(UCASE(SUBSTRING('withdraw', 1, 1)), SUBSTRING('withdraw', 2)),
-      //         CONCAT(UCASE(SUBSTRING('deposit', 1, 1)), SUBSTRING('deposit', 2))
-      //     )),
-      //     CONCAT(UCASE(SUBSTRING(type, 1, 1)), SUBSTRING(type, 2))
-      // )`), 'type'
-      //     ], "from_adrs", "to_adrs", "tx_id", "status", "blockchain_status", "amount", "tx_fee", "created_at"];
 
       let atr: any = [
         [
@@ -1788,7 +1745,6 @@ class WalletController implements OnlyControllerInterface {
         });
       }
       const addressValidity: any = await global_helper.validate_address(wallet_address, coinData.coin_family);
-      // console.log('addressValidity >>>', addressValidity);
       if (!addressValidity) throw new Error(`${language[lang].INVALID_ADDRESS}`);
 
       // Get wallet balance from global helper
@@ -1835,19 +1791,7 @@ class WalletController implements OnlyControllerInterface {
   public nfts_from_moralis = async (req: Request, res: Response) => {
     try {
       let address_list = req.body.address_list ? req.body.address_list : [];
-      // let chains = [{ 'chain': 'ethereum', 'type': 'goerli', 'symbol': 'eth' }, { 'chain': 'binance', 'type': 'bsc testnet', 'symbol': 'bnb' }];
-      // // let chains = [
-      // //     { 'chain': 'ethereum', 'type': 'testnet', 'symbol': 'eth' },
-      // //     { 'chain': 'binance', 'type': 'testnet', 'symbol': 'bnb' },
-      // // ];
-      // if (config.SERVER == 'dev' || config.SERVER == 'prod') {
-      //let chains = [{ 'chain': 'ethereum', 'type': 'eth', 'symbol': 'eth' }, { 'chain': 'binance', 'type': 'bsc', 'symbol': 'bnb' }]
       let chains = [{ 'chain': 'ethereum', 'type': 'eth', 'symbol': 'eth' }]
-      // chains = [
-      //     { 'chain': 'ethereum', 'type': 'mainnet', 'symbol': 'eth' },
-      //     { 'chain': 'binance', 'type': 'mainnet', 'symbol': 'bnb' },
-      // ]
-      // }
       if (address_list?.length > 0) {
         let nfts: any = [];
         for await (let data of address_list) {
@@ -1855,14 +1799,11 @@ class WalletController implements OnlyControllerInterface {
           let address = data.wallet_address;
           let coin_family = data?.coin_family;
           let chain_data = chains.filter(chain => chain.symbol == symbol)[0];
-          // if (symbol.toUpperCase() == 'ETH' || symbol.toUpperCase() == 'BNB') {
           if (symbol.toUpperCase() == 'ETH') {
             try {
               let method = 'get';
               let url = `https://deep-index.moralis.io/api/v2/${address}/nft?chain=${chain_data.type}&format=decimal&media_items=true`;
               let headers = { 'X-API-Key': config.KEYS.MORALIS }
-              // let url = `https://app.zeeve.io/shared-api/blockchain-data/${chain_data.chain}/${chain_data.type}/api/v1/walletNFT/${address}`;
-              // let headers = { 'Authorization': config.KEYS.ZEEVE }
               let result: any = await global_helper.get_nft_data(method, url, headers);
               if (result && result?.result?.length) {
                 for await (let nft of result.result) {
@@ -2099,8 +2040,6 @@ class WalletController implements OnlyControllerInterface {
       return res.status(data.code).send(data);
     }
   }
-
-
 
 
 }

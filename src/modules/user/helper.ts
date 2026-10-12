@@ -1,11 +1,7 @@
 import { Fiat_Currency, GlblBooleanEnum, WalletName } from '../../constants/global_enum'
-// import * as Models from './../../models/index'
-// import { Messages } from './enum';
 import { Sequelize } from 'sequelize';
-// import rabbitMq from '../../helpers/common/rabbitMq';
 import { global_helper } from '../../helpers/common/global_helper';
 import redisClient from '../../helpers/common/redis';
-// import AWS from 'aws-sdk';
 import { config } from "../../config";
 import dbHelper, { wallet_queries, user_queries, coin_queries, device_token_queries, address_book_wallet_queries } from '../../helpers/dbHelper/index'
 import commonHelper from '../../helpers/common/common.helpers';
@@ -13,26 +9,8 @@ import { language } from '../../constants';
 import kafka_helper from '../../helpers/common/kafka_helper';
 
 
-// AWS.config.update({
-//     accessKeyId: config.S3_ACCESSID,
-//     secretAccessKey: config.S3_SECRETKEY,
-//     region: config.REGION
-// })
-// const s3 = new AWS.S3();
-
 class userHelper {
     constructor() { }
-    // public async adding_coins_to_queue(queueName: string, data: any) {
-    //     try {
-    //         await rabbitMq.assertQueue(queueName)
-    //         await rabbitMq.sendToQueue(queueName, Buffer.from(JSON.stringify(data)))
-    //         return true;
-    //     } catch (err: any) {
-    //         console.error("Error in adding_coins_to_queue>>>", err)
-    //         await commonHelper.save_error_logs("adding_coins_to_queue", err.message);
-    //         return null;
-    //     }
-    // }
     public async old_user_generate_referral(device_id: any, userId: any) {
         try {
             let user_exist: any = await user_queries.user_find_one(["referral_code", "device_id"], { user_id: userId })
@@ -91,7 +69,6 @@ class userHelper {
             let obj: any = {
                 user_name: user_name,
                 request_rejected: 0,
-                // email: email,
                 gp_referred: 0,
                 pre_fran_referred: 0,
                 fran_referred: 0,
@@ -125,12 +102,6 @@ class userHelper {
                 let addressValidity: any = await global_helper.validate_address(address, coin_family);
                 if (!addressValidity) throw new Error(`${language[lang].INVALID_ADDRESS} (${symbol.toUpperCase()})`);
 
-                // let token_data: any = null;
-
-                // Getting USDT token data default
-                // if (coin_family == config.STATIC_COIN_FAMILY.TRX) {
-                //     token_data = await coin_queries.coin_find_one(["coin_id", "coin_family", "coin_symbol", "is_token", "token_address"], { coin_family: coin_family, coin_symbol: "USDT" })
-                // }
 
                 // Getting Coin data 
                 let coinData: any = await coin_queries.coin_find_one(["coin_id", "coin_family", "coin_symbol", "is_token", "token_address", "token_type"], { coin_family: coin_family, coin_symbol: symbol })
@@ -141,12 +112,7 @@ class userHelper {
                     if (balDetails.status) {
                         balance = balDetails.balance;
                     }
-                    // let tokenBalance: any;
 
-                    // balance of token
-                    // if (coin_family == config.STATIC_COIN_FAMILY.TRX && token_data) {
-                    //     tokenBalance = await global_helper.get_wallet_balance(token_data, address);
-                    // }
 
                     let ifWalletExists: any = await wallet_queries.wallet_find_one(["wallet_id"], { wallet_address: address, coin_id: coinData.coin_id, user_id: userId })
                     if (ifWalletExists) {
@@ -181,16 +147,6 @@ class userHelper {
                                 token_type: coinData.token_type
                             }, wallet_address: address, queue_count: 0
                         })
-                        // await this.adding_coins_to_queue(config.BACKEND_WALLET_ADDRESSES,
-                        //     {
-                        //         coin_data: {
-                        //             coin_id: coinData.coin_id,
-                        //             coin_family: coinData.coin_family,
-                        //             is_token: coinData.is_token,
-                        //             token_address: coinData.token_address,
-                        //             token_type: coinData.token_type
-                        //         }, wallet_address: address, queue_count: 0
-                        //     })
                     }
                 }
                 if (device_token !== 'chrome' && device_token !== 'abc') {
@@ -251,7 +207,6 @@ class userHelper {
                     push: 1
                 })
             } else {
-                //await device_token_queries.device_token_destroy({ where: { device_token: { [Op.ne]: device_token }, device_id: device_id, address: address, coin_family: coin_family } })
                 await device_token_queries.device_token_update({ status: GlblBooleanEnum.true, device_token: device_token }, { device_id: device_id, address: address, coin_family: coin_family })
             }
             return true;
@@ -437,67 +392,7 @@ class userHelper {
             throw err;
         }
     }
-    // public async setting_token_in_db(device_token: string, userId: number, token: string, refreshToken: string) {
-    //     try {
-    //         let already_exist: any = await Models.JwtsModel.findOne({
-    //             attributes: ["user_id", "device_token"],
-    //             where: {
-    //                 device_token_id: `${device_token}_${userId}`
-    //             },
-    //             raw: true
-    //         })
-    //         if (already_exist) {
-    //             await Models.JwtsModel.update({ token: token, refresh: refreshToken }, { where: { device_token_id: `${device_token}_${userId}` } })
-    //         } else {
-    //             await Models.JwtsModel.create({
-    //                 user_id: userId,
-    //                 device_token: device_token,
-    //                 device_token_id: `${device_token}_${userId}`,
-    //                 token: token,
-    //                 refresh: refreshToken
-    //             })
-    //         }
 
-    //     } catch (err: any) {
-    //         console.error("Error in setting_token_in_db>>", err)
-    //         return err;
-    //     }
-    // }
-    // public async deleting_token_from_db(device_token_id: string) {
-    //     try {
-    //         let already_exist: any = await Models.JwtsModel.findOne({
-    //             attributes: ["user_id", "device_token"],
-    //             where: {
-    //                 device_token_id: device_token_id
-    //             },
-    //             raw: true
-    //         })
-    //         if (already_exist) {
-    //             await Models.JwtsModel.destroy({ where: { device_token_id: device_token_id } })
-    //         }
-    //     } catch (err: any) {
-    //         console.error("Error in deleting_token_from_db>>>", err)
-    //         return err;
-    //     }
-    // }
-    // public async getting_token_from_db(device_token_id: string) {
-    //     try {
-    //         let already_exist: any = await Models.JwtsModel.findOne({
-    //             attributes: ["token", "refresh"],
-    //             where: {
-    //                 device_token_id: device_token_id
-    //             },
-    //             raw: true
-    //         })
-    //         if (already_exist) {
-    //             return already_exist.token
-    //         }
-    //         return true;
-    //     } catch (err: any) {
-    //         console.error("Error in getting_token_from_db>>>", err)
-    //         return err;
-    //     }
-    // }
 }
 
 const userhelper = new userHelper();

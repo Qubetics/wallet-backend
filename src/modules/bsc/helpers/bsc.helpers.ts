@@ -8,19 +8,8 @@ import { bigNumberSafeMath } from "../../../helpers/common/globalFunctions";
 import { language } from "../../../constants";
 
 
-
 class BscHelpers {
-    // public web3: Web3;
-    // public abi: AbiItem[] | string;
-    // public token_address: string | null | undefined;
 
-    // constructor(abi: AbiItem[] | string = "", contractAddress: string = "") {
-    //     var provider = new Web3.providers.HttpProvider(config.NODE.BNB_RPC_URL || "");
-    //     this.web3 = new Web3(provider);
-    //     this.abi = abi != "" ? abi : "";
-    //     this.token_address = !contractAddress ? contractAddress : "";
-    //     this.initialize();
-    // }
 
     public initialize() { }
 

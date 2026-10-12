@@ -34,16 +34,6 @@ export const coinFamily_chainId: any = {
 }
 
 
-// export enum CoinFamily {
-//     BNB = 1,
-//     ETH = 2,
-//     BTC = 3,
-//     POL = 4,
-//     SOL = 5,
-//     TRX = 6,
-//     TICS = 7
-// }
-
 export enum WalletName {
     ETH = 'Eth',
     BTC = 'Btc',

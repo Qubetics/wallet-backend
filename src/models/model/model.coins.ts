@@ -17,10 +17,6 @@ let dataObj = {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  // coin_market_id: {
-  //   type: DataTypes.INTEGER,
-  //   allowNull: true,
-  // },
   coin_name: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -168,7 +164,6 @@ const CoinsModel = db.db_write.define<CoinInstance>(
   dataObj,
   dataObjIndex
 );
-
 
 
 CoinsModel.belongsTo(CoinPriceInFiatModel, { foreignKey: "cmc_id", targetKey: "cmc_id", as: "fiat_price_data" });

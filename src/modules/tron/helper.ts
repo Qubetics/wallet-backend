@@ -6,26 +6,8 @@ import { exponentialToDecimal } from '../../helpers/common/globalFunctions';
 import { trxWeb3 } from '../../helpers/common/web3_trx_helper';
 
 class TronHelper {
-    // public TRX_FULLNODE: string = config.NODE.TRX_RPC_URL
-    // public tronWeb: any;
 
-    // constructor() {
-    //     this.tronWeb = new TronWeb({
-    //         fullHost: this.TRX_FULLNODE,
-    //         headers: { apikey: config?.NODE?.TRX_API_KEY }
-    //     });
-    // }
 
-    // Validate_Address = async (
-    //     address: string
-    // ) => {
-    //     try {
-    //         return await this.tronWeb.isAddress(address);
-    //     } catch (error: any) {
-    //         console.error(`Tron_Helper Validate_Address error >>`, error);
-    //         return false;
-    //     }
-    // }
     Gas_Fee = async (
         toAddress: string,
         raw: string,

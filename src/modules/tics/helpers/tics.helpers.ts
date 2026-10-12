@@ -8,17 +8,7 @@ import { language } from "../../../constants";
 import commonHelper from "../../../helpers/common/common.helpers";
 
 class TicsHelpers implements HelpersInterface {
-  // public web3: Web3;
-  // public abi: AbiItem[] | string;
-  // public token_address: string | null | undefined;
 
-  // constructor(abi: AbiItem[] | string = "", contractAddress: string = "") {
-  //   var provider = new Web3.providers.HttpProvider(config.NODE.TICS_RPC_URL || "");
-  //   this.web3 = new Web3(provider);
-  //   this.abi = abi != "" ? abi : "";
-  //   this.token_address = !contractAddress ? contractAddress : "";
-  //   this.initialize();
-  // }
 
   public initialize() { }
 
@@ -75,7 +65,6 @@ class TicsHelpers implements HelpersInterface {
           .transfer(toAddress, tokenValue)
           .estimateGas({ from: fromAdress });
         gasLimit = gasLimit * 3;
-        // return gasLimit;
       }
       return {
         status: true,
@@ -84,7 +73,6 @@ class TicsHelpers implements HelpersInterface {
         message: language[lang].ESTIMATE_TRANSFER_GAS_FEE('TICS')
       };
 
-      //return 0;
     } catch (err: any) {
       await commonHelper.save_error_logs("tics_getErc20TokenTransferGasEstimationCost", err.message);
       console.error("error, for try catch", err);
@@ -113,7 +101,6 @@ class TicsHelpers implements HelpersInterface {
       };
     } catch (err: any) {
       console.error("error, for try catch", err);
-      // await commonHelper.save_error_logs("tics_getTicsGasLimit", err.message);
       return {
         status: false,
         gas_estimate: 30000,
@@ -160,7 +147,6 @@ class TicsHelpers implements HelpersInterface {
       }
     } catch (err: any) {
       console.error("Error, sendTicsOrToken===>", err);
-      // await commonHelper.save_error_logs("tics_sendTicsOrTokens", err.message);
 
     }
   }

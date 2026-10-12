@@ -22,7 +22,6 @@ class JWTVerify {
             const decodedData: any = jwtHelper.decodeToken(bearerToken);
 
             if (jwtHelper.verify(bearerToken)) {
-               // next();
             } else {
                let currentTimestamp: any = new Date().getTime() / 1000;
                let tokenIsExpired: any = decodedData.exp < currentTimestamp;
@@ -47,16 +46,8 @@ class JWTVerify {
             req.device_token = decodedData.device_token
             if (decodedData && decodedData.userId) {
                req.userId = parseInt(decodedData.userId);
-               // next();
             } else {
                req.userId = parseInt(decodedData.userId);
-               // next()
-               // return response.error(res, {
-               //    data: {
-               //       message: "Unable to decode data",
-               //       data: {},
-               //    },
-               // });
             }
             next();
          } else {

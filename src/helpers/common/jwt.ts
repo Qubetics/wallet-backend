@@ -7,8 +7,6 @@ class JWT {
   public async createJSONWebToken(userId: number, device_token: string) {
     try {
       let token: any = jwt.sign({ userId, device_token }, config.JWT_SECRET, {
-        // expiresIn: "7d", // 7 days
-        // expiresIn: 60 * 2, // 2 minutes
         expiresIn: 60 * 60 * 2, // 2 Hrs 
       });
       let Token: string = `JWT ${token}`;
@@ -25,7 +23,6 @@ class JWT {
     try {
       const options = {
         expiresIn: "365d",
-        // audience:userId
       };
       const token = jwt.sign(
         { userId, device_token },

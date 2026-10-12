@@ -2,10 +2,7 @@
 import { config } from "../../../config";
 import axios, { AxiosInstance } from "axios";
 
-//class UTXO {
 let utxoClass = class UTXO {
-    // private clientUrl = config.NODE.BTC_RPC_URL;
-    // private axiosClient: AxiosInstance;
     public config: any;
 
     constructor() {
@@ -16,13 +13,6 @@ let utxoClass = class UTXO {
                 'Content-Type': 'application/json',
             }
         };
-        // this.axiosClient = axios.create({
-        //     baseURL: this.clientUrl,
-        //     headers: {
-        //         // Authorization: this.clineAPIKEY,
-        //         "Content-Type": "application/json",
-        //     },
-        // });
     }
 
     public async sendRawTransaction(raw: string) {
