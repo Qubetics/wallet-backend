@@ -3,7 +3,6 @@ import { OnlyControllerInterface } from "../../../interfaces/controller.interfac
 import { GlblCode, GlblMessages } from "../../../constants/global_enum";
 import { language } from "../../../constants";
 import { adminErrQueries } from "../../../helpers/dbHelper";
-import MenuListsModel from "../../../models/model/model_menu_lists.";
 import { AnnouncementModel } from "../../../models";
 import { Op } from "sequelize";
 import { NotificationHelper } from "./notification.helper";
