@@ -9,9 +9,6 @@ import { coin_queries } from "../../../helpers/dbHelper";
 import { WalletHelper } from "../../wallet/wallet.helpers";
 
 
-
-
-
 class TokenHelpers {
     constructor() {
       this.initialize();
@@ -114,9 +111,6 @@ class TokenHelpers {
           let graphPair: string | null = null;
     
           if (tokenAddress && symbol) {
-            // let cmc_data: any = await global_helper.get_token_image_from_cmc({
-            //   symbol: symbol,
-            // });
             let data: any = {
               token_address: tokenAddress,
             }
@@ -169,7 +163,6 @@ class TokenHelpers {
             added_by: coinData.added_by,
             for_swap: coinData.for_swap
           }
-          // await WalletHelper.update_token_in_redis(coinData, 0);
           await WalletHelper.update_token_in_redis_hash(redisCoinData)
     
           return { coinData: coinData };

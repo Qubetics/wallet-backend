@@ -41,19 +41,6 @@ class WalletQueries {
             return null;
         }
     }
-    // public async wallet_find_all(attr: any, where_clause: any) {
-    //     try {
-    //         let data: any = await Models.WalletModel.findAll({
-    //             attributes: attr,
-    //             where: where_clause,
-    //         })
-    //         return data;
-    //     } catch (err: any) {
-    //         console.error("Error in wallet_find_all>>", err)
-    //         await commonHelper.save_error_logs("wallet_find_all", err.message);
-    //         throw err;
-    //     }
-    // }
     public async wallet_update(set: any, where_clause: any) {
         try {
             let data: any = await Models.WalletModel.update(set, { where: where_clause })
@@ -87,25 +74,6 @@ class WalletQueries {
             throw err;
         }
     }
-    // public async walletJoinCoins(attr1: any, where1: any, attr2: any, where2: any) {
-    //     try {
-    //         let data: any = await Models.WalletModel.findAll({
-    //             attributes: attr1,
-    //             where: where1,
-    //             include: [{
-    //                 model: Models.CoinsModel,
-    //                 attributes: attr2,
-    //                 where: where2,
-    //                 required: true
-    //             }]
-    //         })
-    //         return data;
-    //     } catch (err: any) {
-    //         console.error("Error in walletJoinCoins>>", err)
-    //         await commonHelper.save_error_logs("walletJoinCoins", err.message);
-    //         throw err;
-    //     }
-    // }
 
 }
 

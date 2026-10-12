@@ -137,7 +137,6 @@ class TronHelper {
     ) => {
         try {
             await trxHelper.tronWeb.setAddress(contract_address);
-            // let contract = await trxHelper.tronWeb.contract().at(contract_address);
             let contract: any = await trxHelper.tronWeb.contract(config.TRON_ABI, contract_address);
 
 
