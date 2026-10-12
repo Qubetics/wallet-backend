@@ -91,28 +91,6 @@ class TronController implements OnlyControllerInterface {
         return response.error(res, { data: resMsg });
       }
       if (trnx_raw) {
-        // let coin: any = await dbHelper.find_one_coins_table(
-        //   [
-        //     "coin_id",
-        //     "coin_name",
-        //     "cmc_id",
-        //     "is_on_cmc",
-        //     "coin_symbol",
-        //     "coin_image",
-        //     "coin_family",
-        //     "coin_status",
-        //     "is_token",
-        //     "token_type",
-        //     "decimals",
-        //     "token_abi",
-        //     "token_address",
-        //     "for_swap",
-        //     "added_by",
-        //     "created_at",
-        //     "updated_at",
-        //   ],
-        //   { coin_id: coin_id }
-        // );
         const coin : any = req.coininfo
         if (!coin) {
           console.error(`coin not found >>>`);
