@@ -1,4 +1,3 @@
-import AnnouncementModel from "../../../models/model/model.announcement";
 import BannerModel from "../../../models/model/model.banner";
 
 
