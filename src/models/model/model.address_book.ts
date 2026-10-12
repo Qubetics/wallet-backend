@@ -52,7 +52,5 @@ const options = {
 
 const AddressBookModel = db.db_write.define<AddressBookInstance>("address_books", dataObj, options);
 
-// AddressBookModel.sync({ alter: true });
 export default AddressBookModel;
-
 

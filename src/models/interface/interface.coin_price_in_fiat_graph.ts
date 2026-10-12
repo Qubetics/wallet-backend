@@ -4,7 +4,5 @@ export interface CoinPriceInFiatGraphInterface {
   fiat_type: string;
   sparkline?: string;
   type?: String;
-  // latest_price: string | null;
-  // latest_price_source: string | null;
   // value?: number | null
 }

@@ -103,10 +103,6 @@ const dataObj = {
         type: DataTypes.DOUBLE,
         allowNull: true
     },
-    // fiat_price: {
-    //     type: DataTypes.DOUBLE,
-    //     allowNull: true
-    // },
     fiat_type: {
         type: DataTypes.STRING(191),
         allowNull: true
@@ -179,9 +175,6 @@ const TrnxHistoryModel = db.db_write.define<TrnxHistoryInstance>(
 );
 
 TrnxHistoryModel.belongsTo(CoinsModel, { foreignKey: 'coin_id', targetKey: 'coin_id', as: "coin_data" });
-
-// TrnxHistoryModel.sync({ alter: true });
-
 
 
 export default TrnxHistoryModel;

@@ -38,10 +38,6 @@ const dataObj = {
     type: DataTypes.DOUBLE,
     allowNull: false,
   },
-  // default_wallet: {
-  //   type: DataTypes.TINYINT,
-  //   allowNull: true,
-  // },
   status: {
     type: DataTypes.TINYINT,
     allowNull: true,
@@ -50,10 +46,6 @@ const dataObj = {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  // is_private_wallet: {
-  //   type: DataTypes.TINYINT,
-  //   allowNull: true,
-  // },
   created_at: {
     type: DataTypes.DATE,
     allowNull: false,
@@ -95,14 +87,6 @@ const dataObjIndex = {
       fields: ["balance"],
     },
 
-    // {
-    //   unique: false,
-    //   fields: ["default_wallet"],
-    // },
-    // {
-    //   unique: false,
-    //   fields: ["is_verified"],
-    // },
     {
       unique: false,
       fields: ["status"],
@@ -141,6 +125,5 @@ CoinsModel.hasOne(WalletModel, {
   as: "wallet_data"
 });
 
-// WalletModel.sync({ alter: true });
 
 export default WalletModel;

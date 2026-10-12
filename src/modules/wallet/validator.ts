@@ -5,14 +5,12 @@ export default class wallet_validator {
     body: Joi.object({
       name: Joi.string().required(),
       symbol: Joi.string().required(),
-      // coin_gicko_alias: Joi.string().optional(),
       decimals: Joi.string().required(),
       token_address: Joi.string().required(),
       coin_family: Joi.number().required(),
       wallet_address: Joi.string().required(),
       // coin_gicko_id: Joi.string().allow(null, "").optional(),
       wallet_name: Joi.string().allow(null, "").optional(),
-      // isSwapList: Joi.bool().optional(),
       token_type: Joi.string().required(),
     }),
   };

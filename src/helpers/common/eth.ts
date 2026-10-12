@@ -102,38 +102,10 @@ class EthEther {
     } catch (err: any) {
       console.error("Error in get_balance of eth", err);
       await commonHelper.saveErrorLogs("get_balance_eth", err.message);
-      // throw err;
       return null;
     }
   }
 
-  // public async getBalance(coinData: CoinInterface, address: string) {
-  //   try {
-  //     let balance: string = "0";
-
-  //     if (coinData.is_token) {
-  //       balance = (
-  //         await this.get_erc20_token_balance(
-  //           coinData.token_address,
-  //           config.CONTRACT_ABI as AbiItem[],
-  //           address
-  //         )
-  //       ).toString();
-  //     } else {
-  //       balance = (await this.get_coin_balance(address, true)).toString();
-  //     }
-
-  //     if (typeof balance !== "boolean" && balance !== "false") {
-  //       balance = exponentialToDecimal(balance);
-  //     }
-
-  //     return balance;
-  //   } catch (err: any) {
-  //     console.error("Error in getBalance of eth", err);
-  //     await commonHelper.saveErrorLogs("getBalance_eth", err.message);
-  //     throw err;
-  //   }
-  // }
 
   public async getCoinBalance(address: string, inEth: boolean) {
     try {
@@ -349,15 +321,6 @@ class EthEther {
     }
   }
 
-  // public async convertGweiToWei(value: number): Promise<string> {
-  //   try {
-  //     let valueInWei = ethers.parseUnits(value.toString(), 9);
-  //     return valueInWei.toString();
-  //   } catch (error) {
-  //     console.log('🔥 ~ ~ convertGweiToWei node.bsc.helper.ts error');
-  //     throw error;
-  //   }
-  // }
 }
 
 export const ethEther = new EthEther();

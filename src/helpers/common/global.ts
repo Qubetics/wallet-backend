@@ -7,7 +7,6 @@ import { trxHelper } from "./trx";
 import { CoinInterface } from "../../models";
 import { AbiItem } from "../../interfaces/ether.interface";
 import { exponentialToDecimal } from "./functions";
-// import * as Models from '../../models/model/index';
 import commonHelper from "./common";
 import { bscEther } from "./bsc";
 import { URL as _URL, URLSearchParams as _URLSearchParams } from "url";
@@ -17,7 +16,6 @@ import cmcHelper from "./cmc";
 import { ticsEther } from "./tics";
 import firebaseAdmin from 'firebase-admin';
 import { fcmServiceAccount } from "../../constants/firebase";
-// import { error } from "console";
 
 
 class GlobalHelper {
@@ -161,53 +159,6 @@ class GlobalHelper {
         }
     }
 
-    // public async findPlateform(coin_family: number) {
-    //     try {
-    //         const coingecko_platforms_ids = [
-    //             {
-    //                 id: "ethereum",
-    //                 name: "ethereum",
-    //                 shortname: "ETH",
-    //                 coin_family: config.STATIC_COIN_FAMILY.ETH,
-    //                 symbol: GlblCoins.ETH
-    //             },
-    //             {
-    //                 id: "bitcoin",
-    //                 name: "bitcoin",
-    //                 shortname: "BTC",
-    //                 coin_family: config.STATIC_COIN_FAMILY.BTC,
-    //                 symbol: GlblCoins.BTC
-    //             },
-    //             {
-    //                 id: "TRON",
-    //                 name: "TRON",
-    //                 shortname: "TRON",
-    //                 coin_family: config.STATIC_COIN_FAMILY.TRX,
-    //                 symbol: GlblCoins.TRX
-    //             },
-    //             {
-    //                 id: "binance",
-    //                 name: "BNB",
-    //                 shortname: "BNB",
-    //                 coin_family: config.STATIC_COIN_FAMILY.BNB,
-    //                 symbol: GlblCoins.BNB
-    //             },
-    //             {
-    //                 id: "polygon",
-    //                 name: "POL",
-    //                 shortname: "POL",
-    //                 coin_family: config.STATIC_COIN_FAMILY.POL,
-    //                 symbol: GlblCoins.POL
-    //             },
-    //         ];
-    //         const platform_id: any = await coingecko_platforms_ids.find((pd) => pd.coin_family == coin_family);
-    //         return platform_id;
-    //     } catch (err: any) {
-    //         console.error("Error in findPlateForm helper", err)
-    //         await commonHelper.saveErrorLogs("findPlateform", err.message);
-    //         return null;
-    //     }
-    // }
 
     public async updateCmcImgUrl(image_url: string) {
         try {
@@ -263,64 +214,6 @@ class GlobalHelper {
         }
     }
 
-    // public async getWalletBalance(coinData: CoinInterface, wallet_address: string) {
-    //     try {
-    //         let balance: string | any = '0';
-    //         switch (coinData.coin_family) {
-    //             case config.STATIC_COIN_FAMILY.BNB:
-    //                 balance = (await bscEther.getBalance(coinData, wallet_address))?.toString()
-    //                 break;
-    //             case config.STATIC_COIN_FAMILY.ETH:
-    //                 balance = (await ethEther.getBalance(coinData, wallet_address))?.toString()
-    //                 break;
-    //             case config.STATIC_COIN_FAMILY.BTC:
-    //                 balance = (await utxobtc.get_balance(wallet_address))?.toString()
-    //                 break;
-    //             case config.STATIC_COIN_FAMILY.POL:
-    //                 balance = (await polEther.getBalance(coinData, wallet_address))?.toString()
-    //                 break;
-    //             case config.STATIC_COIN_FAMILY.TICS:
-    //                 balance = (await ticsEther.getBalance(coinData, wallet_address))?.toString()
-    //                 break;
-    //             case config.STATIC_COIN_FAMILY.TRX:
-    //                 balance = (await trxHelper.fetchBalance(wallet_address, coinData, true))?.toString()
-    //                 break;
-    //             case config.STATIC_COIN_FAMILY.SOL:
-    //                 balance = (await SolanaHelper.fetchBalance(wallet_address, coinData, true))?.toString()
-    //                 break;
-    //         }
-    //         return { status: true, balance: balance };
-    //     } catch (err: any) {
-    //         console.error("Error in get_wallet_balance.", err)
-    //         await commonHelper.saveErrorLogs("get_wallet_balance", err.message);
-    //         return { status: false, balance: '0' };
-    //     }
-    // }
-
-    // public async fetchData(method: string, url: string, header: Object) {
-    //     try {
-    //         let config_data: any = {
-    //             method: method,
-    //             url: url,
-    //             headers: header
-    //         }
-    //         let return_data: any;
-    //         await axios(config_data)
-    //             .then(function (response) {
-    //                 return_data = response?.data;
-    //                 return response?.data;
-    //             })
-    //             .catch(function (err: any) {
-    //                 console.error('axios catch error', err.message);
-    //                 return_data = null;
-    //                 return null;
-    //             });
-    //         return return_data;
-    //     } catch (err: any) {
-    //         console.error('🔥 ~ ~ fetchData error', err);
-    //         return null;
-    //     }
-    // }
 
     public subtractDays(date: any, days: number) {
         date.setDate(date.getDate() - days);
@@ -331,16 +224,6 @@ class GlobalHelper {
         date.setMonth(date.getMonth() - months);
         return date;
     }
-
-    // public async saveNotification(object: NotificationInterface) {
-    //     try {
-    //         await Models.NotificationModel.create(object)
-    //         return true;
-    //     } catch (err: any) {
-    //         console.error("Error in saveNotification>>>>", err)
-    //         return false;
-    //     }
-    // }
 
 
     public async getTokenImageFromCmc(data: any) {

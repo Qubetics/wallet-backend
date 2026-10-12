@@ -56,7 +56,6 @@ class Database implements DBInterface {
       .catch((error: any) => {
         console.error(`Unable to connect to the database: ${config.DB.DB_NAME}`, error);
       });
-    // this.syncTables();
   }
 
   public async syncTables() {

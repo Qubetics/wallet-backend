@@ -5,7 +5,6 @@ import response from "../../helpers/response";
 import dbHelper from "../../helpers/dbHelper";
 import { bigNumberSafeMath } from "../../helpers/common/functions";
 import { config } from "../../config";
-// import { globalHelper } from "../../helpers/common/global_helper";
 import { utxobtc } from "../../helpers/common/btc";
 import { GlblCode } from "../../constants/enum";
 import commonHelper from "../../helpers/common/common";
@@ -38,7 +37,6 @@ class BTCController implements OnlyControllerInterface {
       }
       req.body.tx_hash = "";
       req.body.tx_type = req.body.tx_type || "WITHDRAW";
-      // req.body.nonce = req.body.nonce ? req.body.nonce : 0;
       req.body.gas_price = req.body.eth_gas_price ? req.body.eth_gas_price : 0;
       req.body.gas_estimate = req.body.gas_estimate ? req.body.gas_estimate : 0;
       req.body.eth_gas_price = req.body.gas_estimate

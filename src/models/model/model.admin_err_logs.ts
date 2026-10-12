@@ -29,7 +29,5 @@ const options = {
 }
 const AdminErrLogsModel = db.db_write.define<AdminErrLogsInstance>("admin_err_logs", dataObj, options);
 
-// AdminErrLogsModel.sync({ alter: true });
 export default AdminErrLogsModel;
-
 

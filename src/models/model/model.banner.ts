@@ -41,6 +41,5 @@ const options = {
 
 const BannerModel = db.db_write.define<BannerInstance>("banners", dataObj, options);
 
-// BannerModel.sync({alter : true})
 
 export default BannerModel;

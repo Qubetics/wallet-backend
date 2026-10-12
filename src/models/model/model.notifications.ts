@@ -2,7 +2,6 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { NotificationInterface } from "../interface/interface.notifications";
 import db from "../../connections/db";
 import CoinsModel from "./model.coins";
-// import CurrencyFiatModel from "./model.currencyFiat";
 
 interface NotificationCreationModel
   extends Optional<NotificationInterface, "notification_id"> { }
@@ -61,10 +60,6 @@ const dataObj = {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  // state: {
-  //   type: DataTypes.STRING,
-  //   allowNull: true,
-  // },
   wallet_address: {
     type: DataTypes.STRING,
     allowNull: true,
@@ -75,10 +70,6 @@ const dataObjIndex = {
   createdAt: 'created_at',
   updatedAt: 'updated_at',
   indexes: [
-    // {
-    //   unique: false,
-    //   fields: ["fiat_type"],
-    // },
     {
       unique: false,
       fields: ["from_user_id"],
@@ -128,7 +119,6 @@ const NotificationModel = db.db_write.define<NotificationInstance>(
   dataObjIndex
 );
 NotificationModel.belongsTo(CoinsModel, { foreignKey: 'coin_id', targetKey: "coin_id", as: "coin_data" });
-// NotificationModel.belongsTo(CurrencyFiatModel, { foreignKey: 'fiat_type', targetKey: "currency_code", as: "currency_data" });
 
 
 export default NotificationModel;

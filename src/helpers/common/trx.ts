@@ -60,7 +60,6 @@ class TrxHelper {
         console.log('contract_address >>.', contract_address);
         try {
             await this.tronWeb.setAddress(contract_address);
-            // let contract: any = await this.tronWeb.contract().at(contract_address);
             let contract: any = await this.tronWeb.contract(config.TRON_ABI, contract_address);
 
             let decimals: number = await contract.decimals().call();
@@ -99,7 +98,6 @@ class TrxHelper {
         } catch (err: any) {
             console.error(`Error in fetchBalance of tron. `, err);
             await commonHelper.saveErrorLogs("fetchBalance", err.message);
-            // throw err;
             return null;
         }
     }
@@ -565,7 +563,6 @@ class TrxHelper {
                 values.push(value);
             }
 
-            // console.log(types, values);
             try {
                 parameters = abiCoder.encode(types, values).replace(/^(0x)/, "");
             } catch (ex) {

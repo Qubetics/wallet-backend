@@ -159,7 +159,6 @@ class TokenHelpers {
         added_by: coinData.added_by,
         for_swap: coinData.for_swap
       }
-      // await WalletHelper.update_token_in_redis(coinData, 0);
       await WalletHelper.updateTokenInRedisHash(redisCoinData)
 
       return { coinData: coinData };

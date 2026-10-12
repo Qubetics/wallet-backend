@@ -17,16 +17,6 @@ class SettingsQueries {
             throw err;
         }
     }
-    // public async settings_create(obj: any) {
-    //     try {
-    //         let data: any = await Models.SettingsModel.create(obj)
-    //         return data;
-    //     } catch (err: any) {
-    //         console.error("Error in settings_create>>", err)
-    //         await commonHelper.saveErrorLogs("settings_create", err.message);
-    //         throw err;
-    //     }
-    // }
 
 }
 

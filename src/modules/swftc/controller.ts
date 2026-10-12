@@ -43,7 +43,6 @@ class SwftcController implements OnlyControllerInterface {
 
       const appVersion = req.headers["app-version"];
       const requiredVersion = "1.1";
-      // let coinWhere = coin_family !== 0 ? { coin_family } : {};
       let coinWhere = {};
       if (appVersion !== requiredVersion) {
         if (coin_family === 7) {

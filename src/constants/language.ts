@@ -73,7 +73,6 @@ export const language: any = {
         FILE_SIZE_EXCEED_MB: "File size exceeds the limit of 1MB.",
         INFORMATIION_IN_REVIEW: 'Information in Review.',
         CARD_NOT_SUPPORT_RECHARGING: 'Card does not support Recharge.',
-        // Price_alerts, dapp, auth, swftc
         ALERT_EXISTS: 'This Alert already exists.',
         ALERT_CREATED: 'Alert created successfully',
         ALERT_FETCHED: 'Alert fetched successfully.',
@@ -136,8 +135,6 @@ export const language: any = {
         BSC_UNABLE_TO_ESTIMATE: 'Unable to estimate BEP20 token transfer gas fee. User dont have sufficient balance',
         REFERRED: 'Same Referral Exist',
         REFERRED_ALREADY_USED: 'Referral code already used',
-        // Maker - Checker
-        // INVALID_CHECKER_CODE: 'Invalid Checker Code',
         INVALID_WALLET_ADDRESS: 'Invalid Wallet Address',
         INVALID_WALLET_NAME: 'Invalid Wallet Name',
         INVALID_DEVICE_ID: 'Cannot be added as a Maker wallet on the same device',
@@ -241,7 +238,6 @@ export const language: any = {
         FILE_SIZE_EXCEED_MB: "El tamaño del archivo supera el límite de 1 MB.",
         INFORMATIION_IN_REVIEW: 'Información en revisión.',
         CARD_NOT_SUPPORT_RECHARGING: 'La tarjeta no admite recarga.',
-        // Price_alerts, dapp, auth, swftc
         ALERT_EXISTS: 'Esta alerta ya existe.',
         ALERT_CREATED: 'Alerta creada exitosamente',
         ALERT_FETCHED: 'Alerta obtenida exitosamente.',
@@ -304,8 +300,6 @@ export const language: any = {
         BSC_UNABLE_TO_ESTIMATE: 'No se puede estimar la tarifa de gas por transferencia de token BEP20. El usuario no tiene saldo suficiente',
         REFERRED: 'Existe la misma referencia',
 
-        // Maker - Checker
-        // INVALID_CHECKER_CODE: 'Código de verificación no válido',
         INVALID_WALLET_ADDRESS: 'Dirección de billetera no válida',
         INVALID_WALLET_NAME: 'Nombre de billetera no válido',
         INVALID_DEVICE_ID: 'No se puede agregar como billetera Maker en el mismo dispositivo',
@@ -334,7 +328,6 @@ export const language: any = {
         REQUEST_SESSION_EXPIRED: 'Solicitud caducada',
         // Changelly
         CHANGE_MIN_AMOUNT: (crytpAmount: string, coinSymbol: string) => `La cantidad mínima es ${crytpAmount} ${coinSymbol}.`
-
 
 
     }

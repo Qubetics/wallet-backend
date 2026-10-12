@@ -57,7 +57,5 @@ AddressBookModel.hasMany(AddressBookWalletModel, { foreignKey: "address_book_id"
 AddressBookWalletModel.belongsTo(CoinsModel, { foreignKey: "coin_family", targetKey: "coin_family", as: "coin_data" })
 AddressBookWalletModel.belongsTo(AddressBookModel, { foreignKey: "address_book_id", targetKey: "id", as: "book_data" });
 
-// AddressBookWalletModel.sync({ alter: true });
 export default AddressBookWalletModel;
-
 

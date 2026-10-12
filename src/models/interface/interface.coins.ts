@@ -10,7 +10,6 @@ export interface CoinInterface {
   is_token: number | 0;
   token_type: string | null;
   decimals: number | 0;
-  // token_abi?: string | null;
   token_address?: string | null;
   for_swap?: number;
   added_by?: string;

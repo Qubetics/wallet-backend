@@ -1,5 +1,4 @@
 import { Request } from "express";
-// import { WalletInterface } from "../../models/interface/index.interface";
 import { config } from "../../config";
 import * as Models from '../../models/model/index'
 import redisClient from "../common/redis";
@@ -16,7 +15,6 @@ import gasPricesQueries from './gas_prices';
 import customTokenQueries from './custom_tokens';
 import coinPriceInFiatQueries from "./coin_price_in_fiat";
 import trnxHistoryQueries from './trnx_history';
-// import { GlblCode, GlblMessages } from "../../constants/global_enum";
 import adminErrQueries from './admin_err_logs';
 import adminQueries from './admins';
 import swapSettingQueries from './swap_settings';
@@ -42,64 +40,7 @@ export {
 };
 
 class DbHelper {
-  // public async send_response_without_pagination(data: any, err_exist: number) {
-  //   try {
-  //     let obj: any
-  //     if (err_exist == 0) {
-  //       obj = {
-  //         message: GlblMessages.SUCCESS,
-  //         status: Status.TRUE,
-  //         code: GlblCode.SUCCESS,
-  //       }
-  //       if (data) {
-  //         obj.data = data
-  //       } else {
-  //         obj.data = GlblMessages.SUCCESS
-  //       }
-  //     } else {
-  //       obj = {
-  //         message: data,
-  //         status: Status.FALSE,
-  //         code: GlblCode.ERROR_CODE,
-  //         data: {}
-  //       }
-  //     }
-  //     return obj;
-  //   } catch (err: any) {
-  //     console.error("Error in send_response_without_pagination>>", err)
-  //     throw err;
-  //   }
-  // }
 
-  // public async getWalletIdByAddress(
-  //   wallet_address: string,
-  //   coin_id: number
-  // ): Promise<number | null> {
-  //   try {
-  //     var queryRes = await Models.WalletModel.findOne({
-  //       where: { wallet_address, coin_id },
-  //       attributes: ["wallet_id"],
-  //     });
-  //     if (queryRes) return queryRes.wallet_id;
-  //     else return null;
-  //   } catch (error) {
-  //     return null;
-  //   }
-  // }
-  // public async getWalletInfoByAddressAndCoinId(
-  //   wallet_address: string,
-  //   coin_id: number | undefined
-  // ): Promise<WalletInterface | null> {
-  //   try {
-  //     let queryRes: any = await Models.WalletModel.findOne({
-  //       where: { wallet_address, coin_id },
-  //     });
-  //     if (queryRes) return queryRes;
-  //     else return null;
-  //   } catch (error) {
-  //     return null;
-  //   }
-  // }
   public async saveWithdrawTxDetails(
     req: Request
   ) {
@@ -175,7 +116,6 @@ class DbHelper {
         gas_price: req.body.gas_price || null,
         gas_reverted: null,
         fiat_type: 'USD',
-        // country_code: null,
         order_status: req.body.order_id ? GlblBlockchainTxStatusEnum.PENDING : null
       });
 
@@ -189,59 +129,6 @@ class DbHelper {
       return { status: false, data: null };
     }
   }
-  // public async ifDepositTxExist(
-  //   txid: string,
-  //   toadrs: string
-  // ): Promise<Boolean> {
-  //   let depositTxn: any = await Models.TrnxHistoryModel.findOne({
-  //     where: { tx_id: txid, to_adrs: toadrs },
-  //     attributes: ["id"],
-  //   });
-  //   if (depositTxn) return true;
-  //   else return false;
-  // }
-  // public async ifWithdrawTxExist(txid: string): Promise<Boolean> {
-  //   let withdrawTxn: any = await Models.TrnxHistoryModel.findOne({
-  //     where: { tx_id: txid },
-  //     attributes: ["id"],
-  //   });
-  //   if (withdrawTxn) return true;
-  //   else return false;
-  // }
-  // public async checkWithdrawTxWithAddress(
-  //   txid: string,
-  //   address: string
-  // ): Promise<Boolean> {
-  //   var withdrawTxn = await Models.TrnxHistoryModel.findOne({
-  //     where: { tx_id: txid, from_adrs: address },
-  //   });
-  //   if (withdrawTxn) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-  // public async find_one_coins_table(attributes: any, where_clause: any) {
-  //   try {
-  //     let coin_data: any;
-  //     if (attributes.length > 0) {
-  //       coin_data = await Models.CoinsModel.findOne({
-  //         attributes: attributes,
-  //         where: where_clause,
-  //         raw: true
-  //       })
-  //     } else {
-  //       coin_data = await Models.CoinsModel.findOne({
-  //         where: where_clause,
-  //         raw: true
-  //       })
-  //     }
-  //     return coin_data;
-  //   } catch (err: any) {
-  //     console.error(`Error in find_one_coins_table>>`, err);
-  //     return null;
-  //   }
-  // }
 
   public async find_one_wallet_table(attributes: any, where_clause: any) {
     try {
@@ -256,27 +143,6 @@ class DbHelper {
       throw err;
     }
   }
-  // public async find_all_coins(where_clause: any) {
-  //   try {
-  //     let coins_data: any = await Models.CoinsModel.findAll({
-  //       where: where_clause,
-  //       raw: true
-  //     })
-  //     return coins_data;
-  //   } catch (err: any) {
-  //     console.error("Error in find_all_coins>>", err)
-  //     throw err;
-  //   }
-  // }
-  // public async create_wallet_data(obj: any) {
-  //   try {
-  //     let data: any = await Models.WalletModel.create(obj)
-  //     return data;
-  //   } catch (err: any) {
-  //     console.error("Error in create_wallet_data>>", err)
-  //     throw err;
-  //   }
-  // }
   public async get_referrer_from_data(referral_code: string) {
     try {
       const user_data: any = await this.get_user_data({ referral_code: referral_code })
@@ -289,7 +155,6 @@ class DbHelper {
   public async get_user_data(obj: any) {
     try {
       const user_data: any = await Models.UsersModel.findOne({
-        //attributes: ["user_id", "referral_code", "referral_type_id", "gp_referred", "fran_referred", "pre_fran_referred", "mas_fran_referred", "request_rejected"],
         attributes: ["user_id", "referral_code"],
         where: obj,
         raw: true
@@ -300,15 +165,6 @@ class DbHelper {
       throw err;
     }
   }
-  // public async update_user_table(obj: any, user_id: number) {
-  //   try {
-  //     await Models.UsersModel.update(obj, { where: { user_id: user_id } })
-  //     return true;
-  //   } catch (err: any) {
-  //     console.error("Error in update_user_table>>", err)
-  //     throw err;
-  //   }
-  // }
   public async checkIfuserReferred(obj: any) {
     try {
       const user_data: any = await Models.ReferralModel.findOne({

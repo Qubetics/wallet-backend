@@ -50,6 +50,5 @@ const PermissionsModel = db.db_write.define<IPermissionInstance>("permissions", 
 PermissionsModel.belongsTo(MenuListsModel, { foreignKey: 'menu_list_id', as: "menu_list_data" });
 MenuListsModel.hasMany(PermissionsModel, { foreignKey: 'menu_list_id', as: "permission_data" });
 
-// PermissionsModel.sync({ alter: true });
 
 export default PermissionsModel;

@@ -41,7 +41,5 @@ const options = {
 }
 
 const AnnouncementModel = db.db_write.define<AnnouncementInstance>("announcements", dataObj, options);
-// AnnouncementModel.sync({ alter: true })
 export default AnnouncementModel;
-
 

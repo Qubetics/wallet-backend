@@ -10,7 +10,6 @@ import { config } from "../../../config";
 import jwtHelper from "../../../helpers/common/jwt";
 import speakeasy from 'speakeasy';
 import QRCode from "qrcode";
-// import adminMiddleware from "../middleware";
 import { MenuListsModel, PermissionsModel } from "../../../models";
 import permissionsQueries from "../../../helpers/dbHelper/permissions";
 
@@ -55,7 +54,6 @@ class AuthController implements OnlyControllerInterface {
                     data: {}
                 });
             }
-            //if google2fa_status is 1 then check if token is required
             if (checkEmailExist.google2fa_status == 1) {
 
                 if (req.body.token == null || req.body.token == undefined || req.body.token == "") {
@@ -377,15 +375,12 @@ class AuthController implements OnlyControllerInterface {
                     data: {}
                 };
             } else if (verified == true) {
-                // const jwt_token: any = await jwtHelper.createJsonWebTokenForAdmin(adminData.id);
-                // let final_data = { id: adminData.id, user: adminData.username, email: adminData.email, token: jwt_token, google2fa_status: adminData.google2fa_status }
 
                 data = {
                     message: GlblMessages.SUCCESS,
                     status: true,
                     code: GlblCode.SUCCESS,
                     data: {}
-                    // data: final_data
                 };
 
             } else {

@@ -103,35 +103,10 @@ class BSCEther {
     } catch (err: any) {
       console.error("Error in get_balance of bnb", err)
       await commonHelper.saveErrorLogs("get_balance_bnb", err.message);
-      // throw err;
       return null;
     }
   }
 
-  // public async getBalance(coinData: CoinInterface, address: string) {
-  //   try {
-  //     let balance: string = "0";
-
-  //     if (coinData.is_token) {
-  //       balance = (
-  //         await this.get_bep20_token_balance(
-  //           coinData.token_address,
-  //           config.CONTRACT_ABI as AbiItem[],
-  //           address
-  //         )
-  //       ).toString();
-  //     } else {
-  //       balance = (await this.get_coin_balance(address, true)).toString();
-  //     }
-
-  //     balance = exponentialToDecimal(balance);
-  //     return balance;
-  //   } catch (err: any) {
-  //     console.error("Error in getBalance of bnb", err)
-  //     await commonHelper.saveErrorLogs("getBalance_bnb", err.message);
-  //     throw err;
-  //   }
-  // }
 
   public async getCoinBalance(address: string, inBsc: boolean) {
     try {

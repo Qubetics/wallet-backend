@@ -55,10 +55,6 @@ const dataObj = {
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
-  // token_abi: {
-  //   type: DataTypes.STRING,
-  //   allowNull: true,
-  // },
   token_address: {
     type: DataTypes.STRING,
     allowNull: true,
@@ -150,11 +146,6 @@ const CoinsModel = db.db_write.define<CoinInstance>(
   dataObj,
   dataObjIndex
 );
-// CoinsModel.hasOne(CoinsModel, {
-//   foreignKey: "coin_family",
-//   sourceKey: "coin_family",
-//   as: "native_coins_data",
-// });
 CoinsModel.belongsTo(CoinPriceInFiatModel, {
   foreignKey: "cmc_id",
   targetKey: "cmc_id",
@@ -166,5 +157,4 @@ CoinsModel.belongsTo(WatchlistsModel, {
   as: "watchlist_data",
 });
 
-// CoinsModel.sync({ alter: true })
 export default CoinsModel;

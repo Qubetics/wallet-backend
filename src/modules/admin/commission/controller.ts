@@ -3,8 +3,6 @@ import { OnlyControllerInterface } from "../../../interfaces/controller.interfac
 import { GlblCode, GlblMessages } from "../../../constants/enum";
 import { language } from "../../../constants";
 import { adminErrQueries, swapSettingQueries } from "../../../helpers/dbHelper";
-// import commonHelper from "../../../helpers/common/common.helpers";
-// import { Op } from "sequelize";
 import { ethers } from "ethers";
 import redisHelper from "../../../helpers/common/redis";
 import { config } from "../../../config";
@@ -104,7 +102,6 @@ class CommissionController implements OnlyControllerInterface {
             });
         }
     }
-
 
 
 }

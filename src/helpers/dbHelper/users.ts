@@ -95,7 +95,6 @@ class UserQueries {
                     required: true,
                 }],
                 order: [['user_id', 'DESC']],
-                // logging: console.log
             })
             return data;
         } catch (err: any) {

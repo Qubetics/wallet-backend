@@ -99,14 +99,8 @@ class userHelper {
       let code: any = await userhelper.generateReferralCode();
       let obj: any = {
         user_name: user_name,
-        // request_rejected: 0,
-        // gp_referred: 0,
-        // pre_fran_referred: 0,
-        // fran_referred: 0,
-        // mas_fran_referred: 0,
         referral_count: GlblBooleanEnum.false,
         referral_code: code,
-        // referral_type_id: 1,
         device_id: device_id ? device_id : null,
         created_at: currentUTCDate,
         updated_at: currentUTCDate,
@@ -170,10 +164,6 @@ class userHelper {
             address,
             false
           );
-          // let balance: string = "0";
-          // if (balDetails.status) {
-          //   balance = balDetails.balance;
-          // }
           const ifWalletExists: any = await walletQueries.walletFindOne(
             ["wallet_id"],
             {
@@ -192,12 +182,10 @@ class userHelper {
               user_id: userId,
               wallet_name: wallet_name,
               wallet_address: address,
-              // default_wallet: GlblBooleanEnum.true,
               status: GlblBooleanEnum.true,
               coin_id: coinData.coin_id,
               balance: balDetails.status ? balDetails.balance : "0",
               coin_family: coin_family,
-              // is_private_wallet: req.body.isPrivateKey,
               created_at: currentUTCDate,
               updated_at: currentUTCDate,
             };

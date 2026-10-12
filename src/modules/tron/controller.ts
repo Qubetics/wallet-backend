@@ -1,7 +1,6 @@
 import response from "../../helpers/response";
 import { OnlyControllerInterface } from "../../interfaces/controller.interface";
 import { Request, Response } from "express";
-// import { tronHelper } from "./helper";
 import * as Models from "./../../models/model/index";
 import { trxHelper } from "../../helpers/common/trx";
 import { config } from "../../config";
@@ -76,7 +75,6 @@ class TronController implements OnlyControllerInterface {
       const coin_id: number = req.body.coin_id;
       const amount: number = req.body.amount;
       const gas_price: number = req.body.gas_price;
-      //const gas_estimate: number = req.body.gas_estimate? req.body.gas_estimate: 0; /// gas_estimate
       const trnx_raw: any = req.body.tx_raw;
       const fiat_currency: string = "USD";
 
@@ -132,7 +130,6 @@ class TronController implements OnlyControllerInterface {
             coin_family: config.STATIC_COIN_FAMILY.TRX,
             amount: amount,
             tx_id: result.txid,
-            // gas_price: null,
             tx_raw: trnx_raw.txID,
             type: trnx_type,
             status: GlblStatus.COMPLETED,
@@ -145,10 +142,7 @@ class TronController implements OnlyControllerInterface {
             block_id: null,
             nonce: null,
             swap_fee: null,
-            // gas_limit: null,
-            // gas_reverted: null,
             fiat_type: fiat_currency,
-            // fiat_price: null,
             order_status: req.body.order_id
               ? GlblBlockchainTxStatusEnum.PENDING
               : null,

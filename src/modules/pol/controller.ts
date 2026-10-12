@@ -109,9 +109,7 @@ class PolController implements OnlyControllerInterface {
 
       const { gas_estimate, amount, gas_price, from, tx_raw } = req.body;
 
-      // const gasPriceInWei = await polEther.convertGweiToWei(gas_price);
       const maxGas = await bigNumberSafeMath(gas_price, '*', gas_estimate);
-      // const maxGas = gas_price * gas_estimate;
       const gasInPol = await polEther.convertWeiToEth(maxGas);
       console.log('gasInPol >>>', gasInPol);
       if (req.coininfo.is_token == false && req.coininfo.coin_symbol == "eth") {

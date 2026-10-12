@@ -115,33 +115,10 @@ class PolEther {
     } catch (err: any) {
       console.error("Error in get_balance of pol", err)
       await commonHelper.saveErrorLogs("get_balance_pol", err.message);
-      // throw err;
       return null;
     }
   }
 
-  // public async getBalance(coinData: CoinInterface, address: string) {
-  //   try {
-  //     let balance: string | any = "0";
-  //     if (coinData.is_token) {
-  //       balance = (
-  //         await this.get_erc20_token_balance(
-  //           coinData.token_address,
-  //           config.CONTRACT_ABI as AbiItem[],
-  //           address
-  //         )
-  //       ).toString();
-  //     } else {
-  //       balance = (await this.get_coin_balance(address, true)).toString();
-  //     }
-  //     balance = exponentialToDecimal(balance);
-  //     return balance;
-  //   } catch (err: any) {
-  //     console.error("Error in getBalance of pol", err)
-  //     await commonHelper.saveErrorLogs("getBalance_pol", err.message);
-  //     throw err;
-  //   }
-  // }
 
   public async getCoinBalance(address: string, inPol: boolean) {
     try {
