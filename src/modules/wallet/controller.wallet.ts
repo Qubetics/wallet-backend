@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Op, QueryTypes, Sequelize } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import response from "../../helpers/response/response.helpers";
 import { OnlyControllerInterface } from "../../interfaces/controller.interface";
 import { config } from "../../config";

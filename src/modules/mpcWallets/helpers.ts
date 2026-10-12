@@ -3,7 +3,6 @@ import commonHelper from "../../helpers/common/common.helpers";
 import { global_helper } from "../../helpers/common/global_helper";
 import { coin_queries } from "../../helpers/dbHelper";
 import { config } from "../../config/config";
-import { Op } from "sequelize";
 
 class MpcWalletsHelpers {
 
