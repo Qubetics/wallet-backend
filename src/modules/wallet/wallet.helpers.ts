@@ -27,10 +27,6 @@ class WalletHelpers implements OnlyControllerInterface {
   public initialize() { }
   public async add_coin_to_table(tokenAddress: string, symbol: string, name: string, coinFamily: number, tokenType: string, decimals: any, lang: any, currentUTCDate: any, userId: number) {
     try {
-      // let swapData: any = await swapSettingQueries.swapSettingsFindOne(
-      //   ['id', 'address', 'percentage'],
-      //   { id: 1 },
-      //   [['id', 'ASC']])
       let swapSupported: number = 0;
 
       if (coinFamily == config.STATIC_COIN_FAMILY.ETH || coinFamily == config.STATIC_COIN_FAMILY.BNB || coinFamily == config.STATIC_COIN_FAMILY.POL) {
