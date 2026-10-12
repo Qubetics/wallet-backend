@@ -166,10 +166,6 @@ class userHelper {
             coinData,
             address
           );
-          let balance: string = "0";
-          if (balDetails.status) {
-            balance = balDetails.balance;
-          }
           let ifWalletExists: any = await wallet_queries.wallet_find_one(
             ["wallet_id"],
             {

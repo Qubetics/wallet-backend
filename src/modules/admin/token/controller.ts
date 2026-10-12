@@ -1,15 +1,11 @@
-import { Request, response, Response } from "express";
+import { Request, Response } from "express";
 import { OnlyControllerInterface } from "../../../interfaces/controller.interface";
 import { GlblAddedBy, GlblCode, GlblMessages } from "../../../constants/global_enum";
 import { language } from "../../../constants";
 import { adminErrQueries, coin_queries } from "../../../helpers/dbHelper";
-import MenuListsModel from "../../../models/model/model_menu_lists.";
 import { TokenHelper } from "./token.helper";
-import { includes } from "lodash";
 import CoinsModel from "../../../models/model/model.coins";
 import { Op } from "sequelize";
-import { WalletHelper } from "../wallet/wallet.helper";
-import { Messages } from "../../user/enum";
 import {WalletHelper as userWalletHelper} from "../../wallet/wallet.helpers"
 import { config } from "../../../config";
 import kafka_helper from "../../../helpers/common/kafka_helper";
@@ -193,7 +189,7 @@ class TokenController implements OnlyControllerInterface {
             } else {
               console.log("coin status is active");
               if (coinDataExist.added_by == GlblAddedBy.USER) {
-               const updateCoinData = await coin_queries.coin_update(
+               await coin_queries.coin_update(
                   { added_by: GlblAddedBy.ADMIN },
                   { coin_id: coinDataExist.coin_id }
                 );

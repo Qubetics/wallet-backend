@@ -33,7 +33,6 @@ class NotificationHelpers {
     public async createNotification(title: string, message: string){
         try {
             //announce to all users
-            const user_id : string = "admin";
 
             const create_notification: any = await AnnouncementModel.create({ title, message });
             return {

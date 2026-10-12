@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { OnlyControllerInterface } from "../../../interfaces/controller.interface";
-import { GlblBooleanEnum, GlblCode, GlblMessages } from "../../../constants/global_enum";
+import { GlblCode, GlblMessages } from "../../../constants/global_enum";
 import { language } from "../../../constants";
 import { adminErrQueries } from "../../../helpers/dbHelper";
 import AnnouncementModel from "../../../models/model/model.announcement";
