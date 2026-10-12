@@ -1,13 +1,11 @@
 import axios from "axios";
 import { config } from "../../config";
-// import { ethWeb3 } from "./web3_eth_helpers";
 import { ethEther } from "./ether_eth_helpers";
 import { GlblCoins, GlblMessages, TradingSourceResponse } from "../../constants/global_enum";
 import { utxobtc } from "./btc_helpers";
 import { trxHelper } from "./trx_helper";
 import { CoinInterface, NotificationInterface } from "../../models";
 import { AbiItem } from "../../interfaces/ether.interface";
-// import { AbiItem } from "web3-utils";
 import { exponentialToDecimal } from "./globalFunctions";
 import * as Models from '../../models/model/index';
 import commonHelper from "./common.helpers";
@@ -37,29 +35,7 @@ class Global_helper {
             let responseDetails: any;
             console.log("Entered into swapSupportedByMatcha");
             if (coinFamily == 1) {
-                // responseDetails = await bsc_matcha_helper.getPriceOfBscToken(
-                //     {
-                //         sellToken: tokenAddress,
-                //         buyToken: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-                //         sellAmount: "1000000000000000000",
-                //         slippagePercentage: "0.01",
-                //         takerAddress: "0xC9549DE1cD1958b2f6AC2E589eF3aE851d1E9879",
-                //         feeRecipient: swapData.address,
-                //         buyTokenPercentageFee: swapData.percentage
-                //     }
-                // )
             } else if (coinFamily == 2) {
-                // responseDetails = await eth_matcha_helper.getPriceOfEthToken(
-                //     {
-                //         sellToken: tokenAddress,
-                //         buyToken: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-                //         sellAmount: "1000000000000000000",
-                //         slippagePercentage: "0.01",
-                //         takerAddress: "0xC9549DE1cD1958b2f6AC2E589eF3aE851d1E9879",
-                //         feeRecipient: swapData.address,
-                //         buyTokenPercentageFee: swapData.percentage
-                //     }
-                // )
             } else {
                 console.log("Not entered into eth or bnb")
                 responseDetails = { status: false }

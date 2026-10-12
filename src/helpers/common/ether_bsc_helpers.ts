@@ -147,8 +147,6 @@ class BSCEther {
   }
 
 
-
-
     // Used in bsc 
     public async getBep20TokenTransferGasEstimationCost(
         token_contract: string | null | undefined,
@@ -169,8 +167,6 @@ class BSCEther {
                     message: language[lang].BSC_UNABLE_TO_ESTIMATE,
                 };
             }
-            // const signer = await this.provider.getSigner(fromAdress);
-            // const contractWithSigner = contract.connect(signer);
             
             const gasLimit = await contract.getFunction("transfer").estimateGas(toAddress, tokenValue);
             

@@ -9,7 +9,6 @@ import { AbiItem } from "web3-utils";
 import { RawDataInterface } from "../interfaces/interfaces.eth";
 import { language } from "../../../constants";
 import response from "../../../helpers/response/response.helpers";
-// import { ethWeb3 } from "../../../helpers/common/web3_eth_helpers";
 import { ethEther } from "../../../helpers/common/ether_eth_helpers";
 import commonHelper from "../../../helpers/common/common.helpers";
 import { TokenType } from "../../../constants/global_enum";

@@ -42,7 +42,5 @@ router.post(`/changePassword`,
 
 // Testing
 
-// router.post(`/encryptPassowrd`,
-//     authController.encryptPassowrd);
 
 export default router;

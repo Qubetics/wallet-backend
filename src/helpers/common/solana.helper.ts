@@ -30,7 +30,6 @@ class SolanaHelpers {
     this.connectionPublic = new Connection(
       "https://api.mainnet-beta.solana.com"
     );
-    //this.connectionNew = new Connection("https://api.tatum.io/v3/blockchain/node/solana-mainnet/t-668bc6a95cc8a5001c84cfe5-f77baac94da7436aa48fe793");
     this.initialize();
   }
 

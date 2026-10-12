@@ -64,7 +64,6 @@ class AuthController implements OnlyControllerInterface {
                 { login_status: GlblBooleanEnum.true },
                 { id: checkEmailExist.id });
 
-            //await redisClient.set_hash_table(config.ADMIN_TOKEN, checkEmailExist.email, jwtToken)
 
             let adminData: any = await adminQueries.adminFindOne(
                 ["id", "username", "email", "mobile_no", "google2fa_secret", "google2fa_status", "login_status"],
@@ -410,26 +409,6 @@ class AuthController implements OnlyControllerInterface {
         }
     }
 
-    // public async encryptPassowrd(req: Request, res: Response) {
-    //     try {
-    //         const { password }: { password: string } = req.body;
-    //         const newPassword: string = await bcrypt.hash(password, 10);
-    //         return res.status(GlblCode.SUCCESS).send({
-    //             message: GlblMessages.SUCCESS,
-    //             status: true,
-    //             code: GlblCode.SUCCESS,
-    //             data: newPassword
-    //         });
-    //     } catch (err: any) {
-    //         console.error("Error in encryptPassowrd API", err)
-    //         return res.status(GlblCode.ERROR_CODE).send({
-    //             message: GlblMessages.CATCH_MSG,
-    //             status: false,
-    //             code: GlblCode.ERROR_CODE,
-    //             data: {}
-    //         });
-    //     }
-    // }
 }
 
 export const authController = new AuthController();

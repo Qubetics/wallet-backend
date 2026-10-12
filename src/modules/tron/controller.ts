@@ -70,13 +70,9 @@ class TronController implements OnlyControllerInterface {
     try {
       console.log("req body tron send>>>", req.body);
       const user_id = req.userId;
-      // let card_id: any = req.body.card_id;
       const trnx_type: any = req.body.tx_type
         ? req.body.tx_type
         : TxTypesEnum.WITHDRAW;
-      // if (trnx_type == "card_fees") {
-      //   card_id = card_id ? card_id : 1;
-      // }
       const from_address: string = req.body.from;
       const to_address: string = req.body.to;
       const coin_id: number = req.body.coin_id;
@@ -87,27 +83,6 @@ class TronController implements OnlyControllerInterface {
         : 0; /// gas_estimate
       const trnx_raw: any = req.body.tx_raw;
       const fiat_currency: string = "USD";
-      // if (
-      //   (trnx_type == "card_fees" && card_id == 1) ||
-      //   (trnx_type == "card_fees" && card_id == 3)
-      // ) {
-      //   return res.status(GlblCode.ERROR_CODE).send({
-      //     status: false,
-      //     code: GlblCode.ERROR_CODE,
-      //     message: language[lang].CARDS_MAINTENANCE_MODE,
-      //   });
-      // } else if (
-      //   (trnx_type == "card_recharge" && card_id == 1) ||
-      //   (trnx_type == "card_recharge" && card_id == 3)
-      // ) {
-      //   return res.status(GlblCode.ERROR_CODE).send({
-      //     status: false,
-      //     code: GlblCode.ERROR_CODE,
-      //     message: language[lang].CARD_NOT_SUPPORT_RECHARGING,
-      //   });
-      // } else {
-      //   console.log(" no card fee or card recharge check", trnx_type, card_id);
-      // }
       if (from_address == to_address) {
         let resMsg = {
           status: false,
