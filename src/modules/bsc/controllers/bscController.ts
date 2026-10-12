@@ -97,7 +97,7 @@ class BNBController implements OnlyControllerInterface {
                     });
                 }
             }
-            let transferData: any = await BscHelper.sendBscOrTokens(
+            await BscHelper.sendBscOrTokens(
                 req,
                 lang,
                 tx_raw,

@@ -6,7 +6,6 @@ import response from "../../../helpers/response/response.helpers";
 import dbHelper from "../../../helpers/dbHelper";
 import { bigNumberSafeMath } from "../../../helpers/common/globalFunctions";
 import { config } from "../../../config";
-import { global_helper } from "../../../helpers/common/global_helper";
 import { utxobtc } from "../../../helpers/common/web3_btc_helpers";
 import { GlblCode } from "../../../constants/global_enum";
 import commonHelper from "../../../helpers/common/common.helpers";

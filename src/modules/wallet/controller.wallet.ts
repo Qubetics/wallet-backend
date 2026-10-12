@@ -8,26 +8,14 @@ import { WalletHelper } from "./wallet.helpers";
 import { Parser } from "json2csv";
 import * as Models from "../../models/model/index";
 import * as Interfaces from "../../models/interface/index.interface";
-import {
-  GlblBooleanEnum,
-  GlblCode,
-  GlblMessages,
-  Fiat_Currency,
-  GlblBlockchainTxStatusEnum,
-  TxTypesEnum,
-  Status,
-  TokenType,
-} from "../../constants/global_enum";
+import { GlblBooleanEnum, GlblCode, GlblMessages, Fiat_Currency, GlblBlockchainTxStatusEnum, TxTypesEnum, TokenType } from "../../constants/global_enum";
 import { global_helper } from "../../helpers/common/global_helper";
 import { language } from "../../constants";
 import commonHelper from "../../helpers/common/common.helpers";
 import { coin_queries, wallet_queries } from "../../helpers/dbHelper/index";
-const crypto = require("crypto");
+require("crypto");
 import userhelper from "../user/helper";
-import redisClient from "../../helpers/common/redis";
 import kafka_helper from "../../helpers/common/kafka_helper";
-import { CoinInterface } from "../../models";
-import { SolanaHelper } from "../../helpers/common/solana.helper";
 
 class WalletController implements OnlyControllerInterface {
   constructor() {

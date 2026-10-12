@@ -109,7 +109,7 @@ class PolController implements OnlyControllerInterface {
     try {
       console.log("req body pol rawDataString >>>", req.body)
 
-      let { my_address, dest_address, amount, coin_type }: RawDataInterface = req.body;
+      let { my_address, dest_address, amount }: RawDataInterface = req.body;
       const web3: Web3 = new Web3(
         Web3.givenProvider || config.NODE.ETH_RPC_URL + ""
       );
@@ -241,7 +241,7 @@ class PolController implements OnlyControllerInterface {
         }
       }
       console.log('Raw >>>', gasInETH);
-      let transferData = await PolHelper.sendPolOrTokens(
+      await PolHelper.sendPolOrTokens(
         req,
         lang,
         tx_raw,

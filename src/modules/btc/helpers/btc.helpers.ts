@@ -1,6 +1,6 @@
 
 import { config } from "../../../config";
-import axios, { AxiosInstance } from "axios";
+import axios from "axios";
 
 let utxoClass = class UTXO {
     public config: any;
