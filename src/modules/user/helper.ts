@@ -263,14 +263,6 @@ class userHelper {
         
         // Check if this is a TICS wallet (coin_family 7 and qubetics1 prefix)
         const isTicsWallet = coin_family === 7 && address.startsWith("qubetics");
-        // let addressValidity: any = await global_helper.validate_address(
-        //   address,
-        //   coin_family
-        // );
-        // if (!addressValidity)
-        //   throw new Error(
-        //     `${language[lang].INVALID_ADDRESS} (${symbol.toUpperCase()})`
-        //   );
 
         // Getting Coin data
         const coinData: any = await coin_queries.coin_find_one(
@@ -352,7 +344,6 @@ class userHelper {
             const ifWalletExists: any = await wallet_queries.wallet_find_one(
               ["wallet_id"],
               {
-                // wallet_address: address,
                 coin_id: coinData.coin_id,
                 user_id: userId,
               }

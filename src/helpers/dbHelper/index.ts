@@ -271,15 +271,6 @@ class DbHelper {
       throw err;
     }
   }
-  // public async create_wallet_data(obj: any) {
-  //   try {
-  //     let data: any = await Models.WalletModel.create(obj)
-  //     return data;
-  //   } catch (err: any) {
-  //     console.error("Error in create_wallet_data>>", err)
-  //     throw err;
-  //   }
-  // }
   public async get_referrer_from_data(referral_code: string) {
     try {
       let user_data: any = await this.get_user_data({ referral_code: referral_code })

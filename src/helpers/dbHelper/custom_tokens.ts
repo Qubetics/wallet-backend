@@ -18,16 +18,6 @@ class CustomTokensQueries {
             return null;
         }
     }
-    // public async custom_token_update(set: any, where_clause: any) {
-    //     try {
-    //         let data: any = await Models.CustomTokennModel.update(set, { where: where_clause })
-    //         return data;
-    //     } catch (err: any) {
-    //         console.error("Error in custom_token_update>>", err)
-    //         await commonHelper.save_error_logs("custom_token_update", err.message);
-    //         throw err;
-    //     }
-    // }
     public async custom_token_create(obj: any) {
         try {
             let data: any = await Models.CustomTokennModel.create(obj)
@@ -38,15 +28,6 @@ class CustomTokensQueries {
             return null;
         }
     }
-    // public async custom_token_destroy(where_clause: any) {
-    //     try {
-    //         await Models.CustomTokennModel.destroy({ where: where_clause })
-    //     } catch (err: any) {
-    //         console.error("Error in custom_token_destroy>>", err)
-    //         await commonHelper.save_error_logs("custom_token_destroy", err.message);
-    //         throw err;
-    //     }
-    // }
 
 }
 

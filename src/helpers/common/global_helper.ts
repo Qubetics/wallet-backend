@@ -10,7 +10,6 @@ import { exponentialToDecimal } from "./globalFunctions";
 import * as Models from '../../models/model/index';
 import commonHelper from "./common.helpers";
 import { bscEther } from "./ether_bsc_helpers";
-// import { URL as _URL, URLSearchParams as _URLSearchParams } from "url";
 import { polEther } from "./ether_pol_helpers";
 import { SolanaHelper } from "./solana.helper";
 import cmcHelper from "./cmc.helpers";

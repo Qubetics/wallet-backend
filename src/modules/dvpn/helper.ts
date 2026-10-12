@@ -9,7 +9,6 @@ class DvpnHelpers {
         //get dvpn session history
         const history: any = await Models.DvpnSessionsModel.findAndCountAll(queryOptions);
          
-        //return dvpn session history
         return {
             history: history.rows,
             total: history.count,
@@ -32,5 +31,4 @@ class DvpnHelpers {
 }
 
 export const dvpnHelper = new DvpnHelpers()
-
 
