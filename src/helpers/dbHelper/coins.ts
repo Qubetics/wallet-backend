@@ -177,7 +177,6 @@ class CoinQueries {
                         'ASC'
                     ]
                 ],
-                // logging: console.log
             })
             return data;
         } catch (err: any) {
@@ -217,7 +216,6 @@ class CoinQueries {
                         'ASC'
                     ]
                 ],
-                // logging: console.log
             })
             return data;
         } catch (err: any) {
@@ -259,7 +257,6 @@ class CoinQueries {
                         'ASC'
                     ]
                 ],
-                // logging: console.log
             })
             return data;
         } catch (err: any) {

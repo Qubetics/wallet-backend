@@ -11,7 +11,6 @@ import { BlockChain, TokenType } from "../../../constants/global_enum";
 import { AbiItem } from "../../../interfaces/ether.interface";
 
 
-
 class BNBController implements OnlyControllerInterface {
     constructor() {
         this.initialize();
@@ -48,8 +47,6 @@ class BNBController implements OnlyControllerInterface {
             const { token_address: contractAddress, token_abi: ABI } = req.coininfo;
             const dapp_transaction: any = req.body.add_amount;
 
-            // const maxGas: number = gas_price * gas_estimate;
-            // const gasPriceInWei = await bscEther.convertGweiToWei(gas_price);
             const maxGas = await bigNumberSafeMath(gas_price.toString(), '*', gas_estimate);
             const gasInBSC: any = await bscEther.convertWeiToEth(maxGas);
 

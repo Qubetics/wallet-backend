@@ -8,14 +8,12 @@ import {
   coin_price_in_fiat_queries,
   coin_queries,
   custom_token_queries,
-  // swapSettingQueries,
 } from "../../helpers/dbHelper";
 import { language } from "../../constants";
 import { global_helper } from "../../helpers/common/global_helper";
 import commonHelper from "../../helpers/common/common.helpers";
 import currency_fiat_queries from "../../helpers/dbHelper/currency_fiats";
 import { wallet_queries } from "../../helpers/dbHelper";
-// import userhelper from "../user/helper";
 import kafka_helper from "../../helpers/common/kafka_helper";
 import resent_graph_data_queries from "../../helpers/dbHelper/resent_graph_data";
 import cmcHelper from "../../helpers/common/cmc.helpers";
@@ -105,7 +103,6 @@ class WalletHelpers implements OnlyControllerInterface {
         added_by: coinData.added_by,
         for_swap: coinData.for_swap
       }
-      // await WalletHelper.update_token_in_redis(coinData, 0);
       await WalletHelper.update_token_in_redis_hash(redisCoinData)
       await custom_token_queries.custom_token_create({
         coin_id: coinData.coin_id,
