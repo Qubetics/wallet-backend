@@ -15,14 +15,6 @@ export enum TokenType {
     ERC721 = 'ERC721',
     ERC1155 = 'ERC1155'
 }
-export enum SWFTCCoins {
-    ETH = 'ETH',
-    BTC = 'BTC',
-    TRX = 'TRX',
-    BSC = 'BSC',
-    TICS = 'TICS',
-}
-
 export const chainId_coinFamily: any = {
     "56": 1,
     "1": 2
@@ -53,11 +45,6 @@ export enum InfoMessages {
     DB_CONNECTED = "DB Connected Successfully",
     APP_INFO = "Backend for Qubetics backend application initialized. please try to connect with url.",
     SOCKET_CONN = "🤙Connected to socket server🤙",
-}
-
-export enum GlblNetwork {
-    ETH = 'Ethereum',
-    TICS = 'Qubetics'
 }
 
 export enum GlblBooleanEnum {
@@ -130,10 +117,6 @@ export enum GlblBlockchainTxStatusEnum {
     PENDING = 'pending',
     FAILED = 'failed',
     CONFIRMED = 'confirmed',
-}
-export enum LoginType {
-    JWT = 'jwt',
-    EMAIL = 'email'
 }
 export enum Fiat_Currency {
     USD = 'usd'
