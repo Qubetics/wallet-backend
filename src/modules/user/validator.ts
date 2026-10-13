@@ -104,11 +104,4 @@ export default class user_validator {
             ).required(),
         })
     }
-    static announcementValidate = {
-        body: Joi.object({
-            limit: Joi.number().required(),
-            page: Joi.number().required(),
-            search: Joi.string().allow(null, '').optional(),
-        })
-    }
 }
