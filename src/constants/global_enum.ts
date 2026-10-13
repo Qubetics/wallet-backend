@@ -8,6 +8,8 @@ export enum GlblCoins {
 export enum TokenType {
     ERC20 = 'ERC20',
     BEP20 = 'BEP20',
+    TRC20 = 'TRC20',
+    SPL = 'SPL',
     ERC721 = 'ERC721',
     ERC1155 = 'ERC1155'
 }
@@ -34,8 +36,6 @@ export enum BlockChain {
     BNB = 'bnb',
 }
 
-export enum InfoMessages {
-}
 
 export enum GlblBooleanEnum {
     false = 0,
