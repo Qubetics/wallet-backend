@@ -4,7 +4,3 @@ export interface TokenData {
     symbol: string;
   }
 
-export interface FCMObject {
-  details:string;
-  title : string
-}
