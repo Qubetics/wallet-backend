@@ -108,6 +108,6 @@ class ColorLogger {
 }
 
 // Export singleton instance
-export const colorLogger = new ColorLogger();
+const colorLogger = new ColorLogger();
 export default colorLogger;
 
