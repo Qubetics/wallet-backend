@@ -18,7 +18,6 @@ import WatchlistsModel from './model.watchlist';
 import CustomTokennModel from './model.custom_tokens';
 import AnnouncementModel from './model.announcement';
 import AnnouncementStatusModel from './model.announcement_view';
-import JwtsModel from './jwts';
 import CatchErrorMsgsModel from './model_catch_error_logs';
 import GasPriceModel from './model.gas_price';
 import AppLanguagesModel from './model.app_languages';
@@ -48,7 +47,6 @@ export {
     WatchlistsModel,
     CustomTokennModel,
     AnnouncementModel,
-    JwtsModel,
     CatchErrorMsgsModel,
     GasPriceModel,
     AppLanguagesModel,
@@ -58,5 +56,5 @@ export {
     DappGroupModel,
     SWFTCCoinsDataModel,
     AdminErrLogsModel,
-    AdminModel,
+    AdminModel
 }
