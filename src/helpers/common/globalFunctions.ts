@@ -74,11 +74,6 @@ export const bigNumberSafeMath = function (
   return rtn;
 };
 
-export const bigNumberSafeConversion = function (val: number): number {
-  var amount = val.toString();
-  var value = new BigNumber(amount);
-  return value.toFixed();
-};
 
 export const handleErrorMessage = async function (error: any) {
   try {
