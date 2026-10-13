@@ -1,12 +1,2 @@
 export enum TableConstants {
-    WALLETS = "wallets",
-    USERS = "users",
-    CURRENCY_FIAT = "currency_fiats",
-    NOTIFICATIONS = "notifications",
-    TRNX_WITHDRAW = "trnx_withdraws",
-    TRNX_DEPOSIT = "trnx_deposits",
-    COINS = "coins",
-    BLOCKLIST="block_lists",
-    USER_CONTACT= "user_contacts",
-    CHAT= "chats",
 }
