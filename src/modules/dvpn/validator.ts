@@ -1,21 +1,7 @@
 import { Joi } from "express-validation";
 
 export default class dvpnValidator {
-  static sessionHistory = {
-    body: Joi.object({
-      limit: Joi.number().optional(),
-      page: Joi.number().optional(),
-    }),
-  };
 
-  static uploadBuild = {
-    files: Joi.object({
-      build: Joi.any().required().messages({
-        "any.required": "build is required",
-        "any.empty": "build is required"
-      }),
-    })
-  };
 
   static getBuildList = {
     query: Joi.object({

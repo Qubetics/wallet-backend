@@ -105,7 +105,6 @@ class UserRoute implements ControllerInterface {
 
     this.router.post(
       `${this.path}/announcements`,
-      // [validate(validator.announcementValidate)],
       jwtVerification.verifyToken,
       userController.getAnnouncementList
     );
