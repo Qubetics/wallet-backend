@@ -1,12 +1,8 @@
-export enum GlblCoins {
-}
 export enum TokenType {
     ERC20 = 'ERC20',
     BEP20 = 'BEP20',
     ERC721 = 'ERC721',
     ERC1155 = 'ERC1155'
-}
-export enum SWFTCCoins {
 }
 
 export const chainId_coinFamily: any = {
@@ -36,8 +32,6 @@ export enum InfoMessages {
     APP_INFO = "Backend for Qubetics backend application initialized. please try to connect with url.",
 }
 
-export enum GlblNetwork {
-}
 
 export enum GlblBooleanEnum {
     false = 0,
@@ -70,8 +64,6 @@ export enum GlblBlockchainTxStatusEnum {
     FAILED = 'failed',
     CONFIRMED = 'confirmed',
 }
-export enum LoginType {
-}
 export enum Fiat_Currency {
     USD = 'usd'
 }
@@ -93,8 +85,6 @@ export enum TxReqTypesEnum {
     APP = 'APP',
 }
 
-export enum Status {
-}
 
 export type TradingSourceResponse = {
     status: boolean;
