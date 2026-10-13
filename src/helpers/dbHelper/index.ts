@@ -13,7 +13,6 @@ import address_book_wallet_queries from './address_book_wallet';
 import address_book_queries from './address_books';
 import gas_prices_queries from './gas_prices';
 import custom_token_queries from './custom_tokens';
-import coin_price_in_fiat_queries from "./coin_price_in_fiat";
 import trnx_history_queries from './trnx_history';
 import adminErrQueries from './admin_err_logs';
 import adminQueries from './admins';
@@ -31,8 +30,6 @@ export {
   address_book_queries,
   gas_prices_queries,
   custom_token_queries,
-  coin_price_in_fiat_queries,
-  trnx_history_queries,
   adminErrQueries,
   adminQueries,
   swapSettingQueries,
