@@ -8,7 +8,6 @@ export { DeviceTokenInterface } from './interface.device_token';
 export { GasPriceInterface } from './interface.gasprice';
 export { NotificationInterface } from './interface.notifications';
 export { SettingsInterface } from './interface.settings';
-export { SwapInterface } from './interface.swapList';
 export { ITrnxHistoryInterface } from './interface.trnx_history';
 export { TrnxBandwidthInterface } from './interface.trnx_bandwidth';
 export { UserInterface } from './interface.users';
