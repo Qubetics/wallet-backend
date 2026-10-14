@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { authController } from './controller';
-import { validate as validateExpress } from "express-validation"
+import { validate as validateExpress } from "../../../middlewares/validate"
 import adminValidator from './validator';
 import adminMiddleware from '../middleware';
 

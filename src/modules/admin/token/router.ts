@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { tokenController } from './controller';
 import adminMiddleware from '../middleware';
 import tokenValidate from "./validator"
-import { validate as validateExpress } from "express-validation";
+import { validate as validateExpress } from "../../../middlewares/validate";
 import walletValidator from '../wallet/validator';
 import {walletController as userWalletController} from '../../wallet/controller.wallet';
 

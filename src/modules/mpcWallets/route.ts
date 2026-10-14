@@ -1,7 +1,7 @@
 import express from "express";
 import { ControllerInterface } from "../../interfaces/controller.interface";
 import jwtVerification from "../../middlewares/verify.middleware";
-import { validate as validateExpress } from "express-validation";
+import { validate as validateExpress } from "../../middlewares/validate";
 import mpcWallets_validator from "./validator";
 import { mpcWalletsController } from "./controller";
 

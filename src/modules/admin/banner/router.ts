@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { bannerController } from "./controller";
-import { validate as validateExpress } from "express-validation";
+import { validate as validateExpress } from "../../../middlewares/validate";
 import BannerValidator from "./validator";
 import adminMiddleware from "../middleware";
 

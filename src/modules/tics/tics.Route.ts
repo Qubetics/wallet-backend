@@ -4,7 +4,7 @@ import jwtVerification from "../../middlewares/verify.middleware";
 import { TicsControllers } from "./controllers/ticsController"
 import TicsMiddleware from "./middleware/ticsMiddlewaver"
 import validator from "./validator/validator";
-import { validate } from "express-validation";
+import { validate } from "../../middlewares/validate";
 
 class TicsRoute implements ControllerInterface {
   public path = "/qubetics";
