@@ -2,7 +2,7 @@ import { OnlyControllerInterface } from "../../interfaces/controller.interface";
 import * as Models from "../../models/model/index";
 import { Request, Response } from "express";
 import { config } from "../../config";
-import rp from "request-promise";
+import axios from "axios";
 import { GlblCode } from "../../constants/global_enum";
 import { language } from "../../constants";
 import commonHelper from "../../helpers/common/common.helpers";
@@ -219,15 +219,14 @@ class SwftcController implements OnlyControllerInterface {
     let lang: any = req.headers["content-language"] || "en";
     try {
       req.body.sourceFlag = "Qubetics";
-      const requestOptionsForListing = {
-        method: "POST",
-        uri: `${config.SWFTC.SWFTC_BASE_INFO}`,
-        body: JSON.stringify(req.body),
+      const response = await axios.post(`${config.SWFTC.SWFTC_BASE_INFO}`, JSON.stringify(req.body), {
         headers: {
           "Content-Type": "application/json",
         },
-      };
-      let result = await rp(requestOptionsForListing);
+        // keep the raw response text: it is parsed below exactly as before
+        transformResponse: [(body: string) => body],
+      });
+      let result = response.data;
       let data = {
         data: JSON.parse(result),
         status: true,
@@ -253,15 +252,14 @@ class SwftcController implements OnlyControllerInterface {
 
     try {
       req.body.sourceFlag = "Qubetics";
-      const requestOptionsForListing = {
-        method: "POST",
-        uri: `${config.SWFTC.SWFTC_ACCOUNT_EXCHANGE}`,
-        body: JSON.stringify(req.body),
+      const response = await axios.post(`${config.SWFTC.SWFTC_ACCOUNT_EXCHANGE}`, JSON.stringify(req.body), {
         headers: {
           "Content-Type": "application/json",
         },
-      };
-      let result = await rp(requestOptionsForListing);
+        // keep the raw response text: it is parsed below exactly as before
+        transformResponse: [(body: string) => body],
+      });
+      let result = response.data;
       let data = {
         data: JSON.parse(result),
         status: true,
