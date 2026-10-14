@@ -193,7 +193,7 @@ class DvpnController implements OnlyControllerInterface {
 
   public async downloadBuild(req: Request, res: Response) {
     try {
-      const { buildId, platform } = req.params;
+      const { buildId, platform } = req.params as { buildId: string; platform: string };
       const build = await dvpnHelper.getBuildById(parseInt(buildId, 10), platform);
 
       if (!build) {
@@ -226,7 +226,7 @@ class DvpnController implements OnlyControllerInterface {
 
   public async getLatestBuild(req: Request, res: Response) {
     try {
-      const { platform } = req.params;
+      const { platform } = req.params as { platform: string };
       const build = await dvpnHelper.getLatestBuild(platform);
 
       if (build.status === false) {
@@ -260,7 +260,7 @@ class DvpnController implements OnlyControllerInterface {
 
   public async getLatestBuildVersion(req: Request, res: Response) {
     try {
-      const { platform } = req.params;
+      const { platform } = req.params as { platform: string };
       const buildVersion = await dvpnHelper.getLatestBuildVersion(platform);
 
       if (buildVersion?.status === false) {
