@@ -13,17 +13,18 @@ import { polEther } from "./ether_pol_helpers";
 import { SolanaHelper } from "./solana.helper";
 import cmcHelper from "./cmc.helpers";
 import { ticsEther } from "./ether_tics_helpers";
-import firebaseAdmin from 'firebase-admin';
+import { initializeApp, cert } from 'firebase-admin/app';
+import { getMessaging, Messaging } from 'firebase-admin/messaging';
 
 
 class Global_helper {
-    public messaging: firebaseAdmin.messaging.Messaging | undefined;
+    public messaging: Messaging | undefined;
     constructor() {
         (async () => {
-            firebaseAdmin.initializeApp({
-                credential: firebaseAdmin.credential.cert(config.FIREBASE_SERVICE_ACCOUNT),
+            initializeApp({
+                credential: cert(config.FIREBASE_SERVICE_ACCOUNT),
             });
-            this.messaging = firebaseAdmin.messaging();
+            this.messaging = getMessaging();
         })();
     }
 
