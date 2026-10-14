@@ -35,7 +35,8 @@ class Server implements ServerInterface {
     this.app.use(expressFileUploader());
     this.httpServer = createServer({ key: this.sslKey, cert: this.sslCert, passphrase: config.SSL_PASS_PHRASE }, this.app);
 
-    this.app.use(helmet());
+    // crossOriginEmbedderPolicy is no longer on by default since helmet 7; keep sending it as before
+    this.app.use(helmet({ crossOriginEmbedderPolicy: true }));
     this.app.use(helmet.contentSecurityPolicy({
       useDefaults: true,
       directives: {
@@ -43,7 +44,6 @@ class Server implements ServerInterface {
       },
     }));
     this.app.use(helmet.dnsPrefetchControl());
-    this.app.use(helmet.expectCt());
     this.app.use(helmet.frameguard({
       action: "deny",
     }));
