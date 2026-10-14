@@ -21,7 +21,7 @@ class JWT {
   }
   public async createJSONRefreshToken(userId: number, device_token: string) {
     try {
-      const options = {
+      const options: jwt.SignOptions = {
         expiresIn: "365d",
       };
       const jwtToken = jwt.sign(
