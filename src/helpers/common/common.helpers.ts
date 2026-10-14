@@ -18,7 +18,7 @@ class CommonHelper {
       let privateKey = Buffer.from(privateKeyFile);
       let RSAKey = new NodeRSA(privateKey);
       RSAKey.setOptions({ encryptionScheme: 'pkcs1' });
-      let decryptedData = await RSAKey.decrypt(data)
+      let decryptedData = await RSAKey.decrypt(data, "utf8")
       return decryptedData;
     } catch (err: any) {
       console.error("decryptDataRSA error ======== ,", err.message);
@@ -32,7 +32,7 @@ class CommonHelper {
       let privateKey = Buffer.from(privateKeyFile);
       let RSAKey = new NodeRSA(privateKey);
       RSAKey.setOptions({ encryptionScheme: 'pkcs1' });
-      let decryptedData = await RSAKey.decrypt(data)
+      let decryptedData = await RSAKey.decrypt(data, "utf8")
       return decryptedData;
     } catch (err: any) {
       console.error("adminDecryptDataRSA error ======== ,", err.message);
