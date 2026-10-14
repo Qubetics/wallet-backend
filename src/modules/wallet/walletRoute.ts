@@ -2,7 +2,7 @@ import express from "express";
 import { ControllerInterface } from "../../interfaces/controller.interface";
 import jwtVerification from "../../middlewares/verify.middleware";
 import { walletController } from "./controller.wallet";
-import { validate as validateExpress } from "express-validation";
+import { validate as validateExpress } from "../../middlewares/validate";
 import wallet_validator from "./validator";
 
 class WalletRoute implements ControllerInterface {

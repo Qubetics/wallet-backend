@@ -2,7 +2,7 @@ import express from "express";
 import { ControllerInterface } from "../../interfaces/controller.interface";
 import jwtVerification from "../../middlewares/verify.middleware";
 import { chainAbstractionController } from "./controller";
-import { validate as validateExpress } from "express-validation";
+import { validate as validateExpress } from "../../middlewares/validate";
 import chainAbstraction_validator from "./validator";
 
 class ChainAbstractionRoute implements ControllerInterface {

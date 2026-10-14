@@ -8,7 +8,7 @@ import expressFileUploader from "express-fileupload";
 import { config } from "./config";
 import helmet from "helmet";
 import { encryptionMiddleware } from "./middlewares/encryption.middleware";
-import { ValidationError } from 'express-validation';
+import { ValidationError } from "./middlewares/validate";
 import { GlblCode, GlblMessages, InfoMessages } from "./constants/global_enum";
 import ApiLimiter from "./middlewares/apiRateLimiter";
 import sanitizeHtml from "sanitize-html";

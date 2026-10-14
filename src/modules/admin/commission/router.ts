@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { commissionController } from './controller';
-import { validate as validateExpress } from "express-validation"
+import { validate as validateExpress } from "../../../middlewares/validate"
 import commissionValidator from './validator';
 import adminMiddleware from '../middleware';
 

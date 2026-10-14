@@ -1,5 +1,5 @@
 import express from "express";
-import { validate } from "express-validation";
+import { validate } from "../../middlewares/validate";
 import { ControllerInterface } from "../../interfaces/controller.interface";
 import jwtVerification from "../../middlewares/verify.middleware";
 import { userController } from "./controller";

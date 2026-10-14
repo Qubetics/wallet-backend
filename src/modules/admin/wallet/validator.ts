@@ -1,4 +1,4 @@
-import { Joi } from 'express-validation';
+import { Joi } from "../../../middlewares/validate";
 
 export default class walletValidator {
 

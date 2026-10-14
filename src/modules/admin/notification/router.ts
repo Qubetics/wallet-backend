@@ -4,7 +4,7 @@ import adminMiddleware from '../middleware';
 
 
 import notificationValidator from './validator';
-import { validate as validateExpress } from "express-validation";
+import { validate as validateExpress } from "../../../middlewares/validate";
 
 
 const router = Router();
