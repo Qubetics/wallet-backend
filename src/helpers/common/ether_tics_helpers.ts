@@ -60,7 +60,9 @@ class TicsEther {
 
   private async isValidCosmosAddress(address: string, expectedPrefix: string = "qubetics"): Promise<boolean> {
     try {
-      const decoded = fromBech32(address);
+      // @cosmjs/encoding 0.39 passes Infinity as the default length limit, which its bech32 library now rejects;
+      // 90 is the standard bech32 maximum length
+      const decoded = fromBech32(address, 90);
       return decoded.prefix === expectedPrefix;
     } catch (err: any) {
       console.error("Bech32 decoding failed:", err.message);
