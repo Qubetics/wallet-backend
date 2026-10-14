@@ -31,6 +31,8 @@ class Server implements ServerInterface {
 
 
     this.app = express();
+    // Express 5 parses query strings with the "simple" parser by default; keep the Express 4 "extended" one (nested objects and arrays)
+    this.app.set("query parser", "extended");
 
     this.app.use(expressFileUploader());
     this.httpServer = createServer({ key: this.sslKey, cert: this.sslCert, passphrase: config.SSL_PASS_PHRASE }, this.app);
@@ -62,6 +64,12 @@ class Server implements ServerInterface {
 
     this.app.use(express.json({ limit: '50mb' }));
     this.app.use(express.urlencoded({ limit: '50mb', extended: true }));
+    // Express 5 leaves req.body undefined when a request has no body (Express 4 gave {}). Many handlers and the
+    // encryption middleware read req.body.<field> on every request, so keep the Express 4 default.
+    this.app.use((req: Request, res: Response, next: NextFunction) => {
+      if (req.body === undefined) req.body = {};
+      next();
+    });
     this.app.use(cors());
     this.app.use(
       `/api/v1/static`,
