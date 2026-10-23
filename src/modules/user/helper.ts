@@ -1,3 +1,4 @@
+import { randomInt } from "crypto";
 import {
   Fiat_Currency,
   GlblBooleanEnum,
@@ -79,7 +80,7 @@ class userHelper {
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       let code: string = "";
       for (let i: number = GlblBooleanEnum.false; i < 8; i++) {
-        const randomIndex: any = Math.floor(Math.random() * characters.length);
+        const randomIndex: number = randomInt(characters.length);
         code += characters.charAt(randomIndex);
       }
       return code;
