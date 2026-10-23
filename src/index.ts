@@ -70,7 +70,12 @@ class Server implements ServerInterface {
       if (req.body === undefined) req.body = {};
       next();
     });
-    this.app.use(cors());
+    // CORS_ORIGINS (optional): browser origins allowed to call the API, as an array or a comma-separated string.
+    // When it is not set, any origin is allowed, as before.
+    const corsOrigins: string[] = Array.isArray(config.CORS_ORIGINS)
+      ? config.CORS_ORIGINS
+      : String(config.CORS_ORIGINS || "").split(",").map((origin) => origin.trim()).filter(Boolean);
+    this.app.use(corsOrigins.length ? cors({ origin: corsOrigins }) : cors());
     this.app.use(
       `/api/v1/static`,
       express.static(path.join(__dirname, "public"))
