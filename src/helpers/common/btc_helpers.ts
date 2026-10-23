@@ -45,7 +45,6 @@ class utxo {
     public async sendRawTransaction(raw: string) {
         try {
             this.config.url = `${config.NODE.BTC_RPC_URL}api/v2/sendtx/${raw}`;
-            console.log("this config >>>>", this.config)
             let response: any = await axios(this.config);
             return { status: true, data: response.data };
         } catch (err: any) {
