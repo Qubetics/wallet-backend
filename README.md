@@ -30,7 +30,7 @@ Every other setting is read from that ZooKeeper node, which holds a single JSON 
 
 | Area | Keys |
 |---|---|
-| Server | `PORT`, `SSL.KEY`, `SSL.CERT`, `SSL_PASS_PHRASE` |
+| Server | `PORT`, `SSL.KEY`, `SSL.CERT`, `SSL_PASS_PHRASE`, `CORS_ORIGINS` (optional: allowed browser origins; any origin when unset) |
 | Database | `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_HOST_WRITE`, `DB_HOST_READ` |
 | Redis / Kafka | `REDIS_CONN`, `KAFKA_BROKER` (comma-separated), `KAFKA_CLIENT_ID` |
 | Auth and encryption | `JWT_SECRET`, `REFRESH_SECRET`, `ENCRYPT_SECRET`, `ENCRYPT_IV_SECRET`, `RSA_KEYS` |
