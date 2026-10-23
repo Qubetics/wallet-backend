@@ -253,8 +253,6 @@ class AuthController implements OnlyControllerInterface {
             let data: any;
             const adminId: number = req.body.adminId;
             const { password, action, token }: { password: string, action: number, token: string } = req.body;
-            const {google2fa_secret : googleSecretKey} = req.body.adminDetails;
-            console.log("req googleSecretKey", googleSecretKey)
 
             let adminData: any = await adminQueries.adminFindOne(
                 ["password", "google2fa_secret"],
