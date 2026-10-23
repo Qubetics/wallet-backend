@@ -1,0 +1,3360 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "",
+    "version": "1.0.0",
+    "title": "Qubetics Backend",
+    "termsOfService": "",
+    "contact": {
+      "email": "dev@qubetics.com"
+    }
+  },
+  "tags": [{ "name": "Wallets" }],
+  "parameters": {
+    "Authorization": {
+      "in": "header",
+      "name": "Authorization",
+      "description": "Please enter the Bearer token here",
+      "required": true,
+      "schema": {
+        "properties": {
+          "Authorization": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "paths": {
+    "/wallet/addToken": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "Token Address",
+            "description": "Pass in the token address to add to database",
+            "required": true,
+            "schema": {
+              "properties": {
+                "coin_family": {
+                  "type": "string"
+                },
+                "coin_gicko_id": {
+                  "type": "string"
+                },
+                "token_type": {
+                  "type": "string"
+                },
+                "token_address": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "symbol": {
+                  "type": "string"
+                },
+                "coin_gicko_alias": {
+                  "type": "string"
+                },
+                "decimals": {
+                  "type": "string"
+                },
+                "wallet_address": {
+                  "type": "string"
+                },
+                "wallet_name": {
+                  "type": "string"
+                },
+                "isSwapList": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token has been added successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/wallet/portfolio": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "Add portfolio",
+            "description": "Pass following data for get portfolio data",
+            "required": true,
+            "schema": {
+              "properties": {
+                "page": {
+                  "type": "number"
+                },
+                "limit": {
+                  "type": "number"
+                },
+                "fiat_type": {
+                  "type": "string"
+                },
+                "search": {
+                  "type": "string"
+                },
+                "coin_family": {
+                  "type": "array",
+                  "description": "List of coin faimilies",
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "addressListKeys": {
+                  "type": "array",
+                  "description": "List of user addresses",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/wallet/activeinactive": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "activeinactive",
+            "description": "activeinactive",
+            "required": true,
+            "schema": {
+              "properties": {
+                "coinId": {
+                  "type": "number"
+                },
+                "walletAddress": {
+                  "type": "string"
+                },
+                "isActive": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token has been Active/Inactive successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/wallet/toggleCoinList": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "toggleCoinList",
+            "description": "Pass in the token address to add to database",
+            "required": true,
+            "schema": {
+              "properties": {
+                "page": {
+                  "type": "number"
+                },
+                "limit": {
+                  "type": "number"
+                },
+                "currency_code": {
+                  "type": "string"
+                },
+                "search": {
+                  "type": "string"
+                },
+                "coinFamilyKeys": {
+                  "type": "array",
+                  "description": "List of coin faimilies",
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "addrsListKeys": {
+                  "type": "array",
+                  "description": "List of user addresses",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/wallet/transaction/list": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "",
+        "required": ["page", "limit"],
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "page": {
+                  "type": "number"
+                },
+                "limit": {
+                  "type": "number"
+                },
+                "date_from": {
+                  "type": "string"
+                },
+                "date_to": {
+                  "type": "string"
+                },
+                "to": {
+                  "type": "string"
+                },
+                "coin_family": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/wallet/order/update": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "order update",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "wallets": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "order": {
+                        "type": "string"
+                      },
+                      "coin_id": {
+                        "type": "string"
+                      },
+                      "wallet_address": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/wallet/search": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "tokenAddress": {
+                  "type": "string"
+                },
+                "coinFamily": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/wallet/order/swap_coinlist": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "order update",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "coin_family": {
+                  "type": "array",
+                  "description": "List of coin_family",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "addresses": {
+                  "type": "array",
+                  "description": "List of user addresses",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "fiat_type": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+
+    "/wallet/order/updateWatchlist": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "update Watch list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "coin_id": {
+                    "type": "integer",
+                    "description": "Unique identifier for the coin"
+                  },
+                  "address": {
+                    "type": "string",
+                    "description": "wallet address"
+                  },
+                  "status": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/wallet/getWatchlist": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "get Watch list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "page": {
+                  "type": "number"
+                },
+                "limit": {
+                  "type": "number"
+                },
+                "wallet_address": {
+                  "type": "string"
+                },
+                "fiat_type": {
+                  "type": "string"
+                },
+                "is_fav": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/wallet/fee": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/wallet/nativeCoinFiatPrice": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "get Watch list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "fiat_currency": {
+                  "type": "string"
+                },
+                "coin_family": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/wallet/allBalances": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+
+    "/wallet/checkFiatBalance": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "checkFiatBalance",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "fiat_currency": {
+                  "type": "string"
+                },
+                "coin_family": {
+                  "type": "string"
+                },
+                "coin_symbol": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/wallet/updateBalance": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "get Watch list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "wallet_address": {
+                  "type": "string"
+                },
+                "coin_family": {
+                  "type": "string"
+                },
+                "coin_id": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/wallet/fetchValue": {
+      "get": {
+        "tags": ["Wallets"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved wallet details for the user.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user ID provided. or User not found.",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/wallet/currencyfiatlist": {
+      "get": {
+        "tags": ["Wallets"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved wallet details for the user.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user ID provided. or User not found.",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/wallet/transaction/downloadcsv/{id}": {
+      "get": {
+        "tags": ["Wallets"],
+        "summary": "Get User Wallets",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "users-list",
+            "description": "Fetches the wallet information of a specific user by their user ID.",
+
+            "required": true,
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved wallet details for the user.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user ID provided. or User not found.",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/create/wallet": {
+      "post": {
+        "tags": ["User"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "wallet_address": {
+                  "type": "string"
+                },
+                "wallet_name": {
+                  "type": "string"
+                },
+                "device_token": {
+                  "type": "string"
+                },
+                "device_id": {
+                  "type": "string"
+                },
+                "referral_code": {
+                  "type": "string"
+                },
+                "addressList": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "wallet_address",
+                "wallet_name",
+                "device_token",
+                "device_id",
+                "addressList"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/notification/list": {
+      "post": {
+        "tags": ["User"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "page": {
+                  "type": "number"
+                },
+                "limit": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/add_address_book": {
+      "post": {
+        "tags": ["User"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "wallet_address": {
+                  "type": "string"
+                },
+                "contact_name": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "string"
+                },
+                "coin_family": {
+                  "type": "string"
+                },
+                "wallet_name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+
+    "/user/address_book": {
+      "post": {
+        "tags": ["User"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "limit": {
+                  "type": "number"
+                },
+                "page": {
+                  "type": "number"
+                },
+                "search": {
+                  "type": "string"
+                },
+                "order_by": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "string"
+                },
+                "coin_family": {
+                  "type": "string"
+                }
+              },
+              "required": ["address", "coin_family"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/get_wallet_name": {
+      "post": {
+        "tags": ["User"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "address": {
+                  "type": "string"
+                },
+                "wallet_name": {
+                  "type": "string"
+                },
+                "coin_family": {
+                  "type": "string"
+                },
+                "contact_name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "address",
+                "coin_family",
+                "wallet_name",
+                "contact_name"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/search": {
+      "post": {
+        "tags": ["User"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "search": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/delete_address_book_wallet_address": {
+      "post": {
+        "tags": ["User"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "address_book_id": {
+                  "type": "string"
+                }
+              },
+              "required": ["id", "address_book_id"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/delete_address_book": {
+      "post": {
+        "tags": ["User"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              },
+              "required": ["id"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/announcement/view_status": {
+      "post": {
+        "tags": ["User"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "addressList": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": ["key", "addrsListKeys"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/app_language": {
+      "get": {
+        "tags": ["User"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user ID provided. or User not found.",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/ethereum/{coin}/gas_estimation": {
+      "post": {
+        "tags": ["ethereum"],
+        "summary": "",
+        "parameters": [
+          {
+            "name": "coin",
+            "in": "path",
+            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "from": {
+                  "type": "string"
+                },
+                "to": {
+                  "type": "string"
+                },
+                "coininfo": {
+                  "type": "object",
+                  "properties": {
+                    "token_address": {
+                      "type": "string"
+                    },
+                    "token_abi": {
+                      "type": "string"
+                    },
+                    "is_token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "required": ["coin", "coininfo", "from", "to"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/ethereum/{coin}/send": {
+      "post": {
+        "tags": ["ethereum"],
+        "summary": "",
+        "parameters": [
+          {
+            "name": "coin",
+            "in": "path",
+            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "is_maker": {
+                  "type": "number"
+                },
+                "amount": {
+                  "type": "string"
+                },
+                "gas_price": {
+                  "type": "string"
+                },
+                "from": {
+                  "type": "string"
+                },
+                "tx_raw": {
+                  "type": "string"
+                },
+                "gas_estimate": {
+                  "type": "string"
+                },
+                "coininfo": {
+                  "type": "object",
+                  "properties": {
+                    "token_address": {
+                      "type": "string"
+                    },
+                    "token_abi": {
+                      "type": "string"
+                    },
+                    "is_token": {
+                      "type": "string"
+                    },
+                    "coin_symbol": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "required": [
+                "coin",
+                "coininfo",
+                "from",
+                "tx_raw",
+                "gas_estimate",
+                "coininfo"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/ethereum/{coin}/sendSwapTrnx": {
+      "post": {
+        "tags": ["ethereum"],
+        "summary": "",
+        "parameters": [
+          {
+            "name": "coin",
+            "in": "path",
+            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "tx_hash": {
+                  "type": "number"
+                },
+                "amount": {
+                  "type": "string"
+                },
+                "from": {
+                  "type": "string"
+                },
+                "to": {
+                  "type": "string"
+                },
+                "tx_type": {
+                  "type": "string"
+                },
+                "amount_in_fiat": {
+                  "type": "string"
+                },
+                "swap_fee": {
+                  "type": "string"
+                },
+                "fiat_type": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "tx_hash",
+                "amount",
+                "from",
+                "to",
+                "tx_type",
+                "amount_in_fiat",
+                "swap_fee",
+                "fiat_type"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/ethereum/{coin}/nonce": {
+      "post": {
+        "tags": ["ethereum"],
+        "summary": "",
+        "parameters": [
+          {
+            "name": "coin",
+            "in": "path",
+            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "wallet_address": {
+                  "type": "string"
+                }
+              },
+              "required": ["wallet_address"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/ethereum/{coin}/get_raw_data_string": {
+      "post": {
+        "tags": ["ethereum"],
+        "summary": "",
+        "parameters": [
+          {
+            "name": "coin",
+            "in": "path",
+            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "my_address": {
+                  "type": "string"
+                },
+                "dest_address": {
+                  "type": "string"
+                },
+                "amount": {
+                  "type": "string"
+                },
+                "coin_type": {
+                  "type": "string"
+                }
+              },
+              "required": ["my_address", "dest_address", "amount", "coin_type"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/binancesmartchain/{coin}/gas_estimation": {
+      "post": {
+        "tags": ["binancesmartchain"],
+        "summary": "",
+        "parameters": [
+          {
+            "name": "coin",
+            "in": "path",
+            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "from": {
+                  "type": "string"
+                },
+                "to": {
+                  "type": "string"
+                },
+                "coininfo": {
+                  "type": "object",
+                  "properties": {
+                    "token_address": {
+                      "type": "string"
+                    },
+                    "token_abi": {
+                      "type": "string"
+                    },
+                    "is_token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "required": ["coin", "coininfo", "from", "to"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/binancesmartchain/{coin}/send": {
+      "post": {
+        "tags": ["binancesmartchain"],
+        "summary": "",
+        "parameters": [
+          {
+            "name": "coin",
+            "in": "path",
+            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "is_maker": {
+                  "type": "number"
+                },
+                "amount": {
+                  "type": "string"
+                },
+                "gas_price": {
+                  "type": "string"
+                },
+                "from": {
+                  "type": "string"
+                },
+                "tx_raw": {
+                  "type": "string"
+                },
+                "gas_estimate": {
+                  "type": "string"
+                },
+                "coininfo": {
+                  "type": "object",
+                  "properties": {
+                    "token_address": {
+                      "type": "string"
+                    },
+                    "token_abi": {
+                      "type": "string"
+                    },
+                    "is_token": {
+                      "type": "string"
+                    },
+                    "coin_symbol": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "required": [
+                "coin",
+                "coininfo",
+                "from",
+                "tx_raw",
+                "gas_estimate",
+                "coininfo"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/binancesmartchain/{coin}/nonce": {
+      "post": {
+        "tags": ["binancesmartchain"],
+        "summary": "",
+        "parameters": [
+          {
+            "name": "coin",
+            "in": "path",
+            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "wallet_address": {
+                  "type": "string"
+                }
+              },
+              "required": ["wallet_address"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/tron/{coin}/gas_estimation": {
+      "post": {
+        "tags": ["tron"],
+        "summary": "",
+        "parameters": [
+          {
+            "name": "coin",
+            "in": "path",
+            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "from": {
+                  "type": "string"
+                },
+                "to": {
+                  "type": "string"
+                },
+                "coininfo": {
+                  "type": "object",
+                  "properties": {
+                    "token_address": {
+                      "type": "string"
+                    },
+                    "token_abi": {
+                      "type": "string"
+                    },
+                    "is_token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "required": ["coin", "coininfo", "from", "to"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/tron/{coin}/send": {
+      "post": {
+        "tags": ["tron"],
+        "summary": "",
+        "parameters": [
+          {
+            "name": "coin",
+            "in": "path",
+            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "is_maker": {
+                  "type": "number"
+                },
+                "amount": {
+                  "type": "string"
+                },
+                "gas_price": {
+                  "type": "string"
+                },
+                "from": {
+                  "type": "string"
+                },
+                "tx_raw": {
+                  "type": "string"
+                },
+                "gas_estimate": {
+                  "type": "string"
+                },
+                "coininfo": {
+                  "type": "object",
+                  "properties": {
+                    "token_address": {
+                      "type": "string"
+                    },
+                    "token_abi": {
+                      "type": "string"
+                    },
+                    "is_token": {
+                      "type": "string"
+                    },
+                    "coin_symbol": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "required": [
+                "coin",
+                "coininfo",
+                "from",
+                "tx_raw",
+                "gas_estimate",
+                "coininfo"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/polygon/{coin}/gas_estimation": {
+      "post": {
+        "tags": ["polygon"],
+        "summary": "",
+        "parameters": [
+          {
+            "name": "coin",
+            "in": "path",
+            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "from": {
+                  "type": "string"
+                },
+                "to": {
+                  "type": "string"
+                },
+                "coininfo": {
+                  "type": "object",
+                  "properties": {
+                    "token_address": {
+                      "type": "string"
+                    },
+                    "token_abi": {
+                      "type": "string"
+                    },
+                    "is_token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "required": ["coin", "coininfo", "from", "to"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/polygon/{coin}/send": {
+      "post": {
+        "tags": ["polygon"],
+        "summary": "",
+        "parameters": [
+          {
+            "name": "coin",
+            "in": "path",
+            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "is_maker": {
+                  "type": "number"
+                },
+                "amount": {
+                  "type": "string"
+                },
+                "gas_price": {
+                  "type": "string"
+                },
+                "from": {
+                  "type": "string"
+                },
+                "tx_raw": {
+                  "type": "string"
+                },
+                "gas_estimate": {
+                  "type": "string"
+                },
+                "coininfo": {
+                  "type": "object",
+                  "properties": {
+                    "token_address": {
+                      "type": "string"
+                    },
+                    "token_abi": {
+                      "type": "string"
+                    },
+                    "is_token": {
+                      "type": "string"
+                    },
+                    "coin_symbol": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "required": [
+                "coin",
+                "coininfo",
+                "from",
+                "tx_raw",
+                "gas_estimate",
+                "coininfo"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/polygon/{coin}/sendSwapTrnx": {
+      "post": {
+        "tags": ["polygon"],
+        "summary": "",
+        "parameters": [
+          {
+            "name": "coin",
+            "in": "path",
+            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "tx_hash": {
+                  "type": "number"
+                },
+                "amount": {
+                  "type": "string"
+                },
+                "from": {
+                  "type": "string"
+                },
+                "to": {
+                  "type": "string"
+                },
+                "tx_type": {
+                  "type": "string"
+                },
+                "amount_in_fiat": {
+                  "type": "string"
+                },
+                "swap_fee": {
+                  "type": "string"
+                },
+                "fiat_type": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "tx_hash",
+                "amount",
+                "from",
+                "to",
+                "tx_type",
+                "amount_in_fiat",
+                "swap_fee",
+                "fiat_type"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/polygon/{coin}/nonce": {
+      "post": {
+        "tags": ["polygon"],
+        "summary": "",
+        "parameters": [
+          {
+            "name": "coin",
+            "in": "path",
+            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "wallet_address": {
+                  "type": "string"
+                }
+              },
+              "required": ["wallet_address"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/polygon/{coin}/get_raw_data_string": {
+      "post": {
+        "tags": ["polygon"],
+        "summary": "",
+        "parameters": [
+          {
+            "name": "coin",
+            "in": "path",
+            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "my_address": {
+                  "type": "string"
+                },
+                "dest_address": {
+                  "type": "string"
+                },
+                "amount": {
+                  "type": "string"
+                },
+                "coin_type": {
+                  "type": "string"
+                }
+              },
+              "required": ["my_address", "dest_address", "amount", "coin_type"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/bitcoin/{coin}/send": {
+      "post": {
+        "tags": ["bitcoin"],
+        "summary": "",
+        "parameters": [
+          {
+            "name": "coin",
+            "in": "path",
+            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "is_maker": {
+                  "type": "number"
+                },
+                "tx_type": {
+                  "type": "string"
+                },
+                "nonce": {
+                  "type": "string"
+                },
+                "eth_gas_price": {
+                  "type": "string"
+                },
+                "gas_estimate": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "is_maker",
+                "tx_type",
+                "nonce",
+                "eth_gas_price",
+                "gas_estimate"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/bitcoin/unspent/{address}": {
+      "post": {
+        "tags": ["bitcoin"],
+        "summary": "",
+        "parameters": [
+          {
+            "name": "coin",
+            "in": "path",
+            "description": "The coin type (e.g., ETH, USDT) for which gas estimation is being calculated",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+
+    "/priceAlert/addNew": {
+      "post": {
+        "tags": ["priceAlert"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "wallet_address": {
+                  "type": "string"
+                },
+                "coin_symbol": {
+                  "type": "string"
+                },
+                "coin_name": {
+                  "type": "string"
+                },
+                "percentage": {
+                  "type": "string"
+                },
+                "price_in_usd_per_unit": {
+                  "type": "string"
+                },
+                "alert_price": {
+                  "type": "string"
+                },
+                "coin_family": {
+                  "type": "string"
+                },
+                "token_address": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "wallet_address",
+                "coin_symbol",
+                "coin_name",
+                "percentage",
+                "price_in_usd_per_unit",
+                "alert_price",
+                "coin_family",
+                "token_address"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/priceAlert/changeStatus": {
+      "post": {
+        "tags": ["priceAlert"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "price_id": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              },
+              "required": ["price_id", "status"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/priceAlert/changeAmount": {
+      "post": {
+        "tags": ["priceAlert"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "price_id": {
+                  "type": "string"
+                },
+                "amount": {
+                  "type": "string"
+                }
+              },
+              "required": ["price_id", "amount"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/priceAlert/delete": {
+      "delete": {
+        "tags": ["priceAlert"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "price_id": {
+                  "type": "string"
+                }
+              },
+              "required": ["price_id"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/priceAlert/delete-all": {
+      "post": {
+        "tags": ["priceAlert"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "coin_id": {
+                  "type": "string"
+                }
+              },
+              "required": ["coin_id"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/priceAlert/get": {
+      "post": {
+        "tags": ["priceAlert"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "coin_id": {
+                  "type": "string"
+                }
+              },
+              "required": ["coin_id"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/priceAlert/coins": {
+      "post": {
+        "tags": ["priceAlert"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "page": {
+                  "type": "string"
+                },
+                "limit": {
+                  "type": "string"
+                },
+                "coin_id": {
+                  "type": "string"
+                }
+              },
+              "required": ["coin_id", "page", "limit"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/priceAlert/getList": {
+      "post": {
+        "tags": ["priceAlert"],
+        "summary": "",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "in": "body",
+            "name": "transaction list",
+            "description": "",
+            "required": true,
+            "schema": {
+              "properties": {
+                "fiat_type": {
+                  "type": "string"
+                },
+                "addressList": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": ["fiat_type"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "portfolio created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  }
+}
